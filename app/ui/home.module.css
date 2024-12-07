@@ -1,0 +1,29 @@
+.background {
+    background-image: url('/fondo.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    object-fit: contain;
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    display: flex;
+}
+
+.buttonservice {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 9999px;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    background: linear-gradient(90deg, rgb(0, 183, 202) 10%, rgb(0, 186, 167) 20%, rgb(0, 193, 83) 70%);
+    color: white;
+    padding: 12px 12px; 
+    margin-top: 24px;
+    cursor: pointer;
+}
+
+.buttonservice:hover {
+    background: linear-gradient(90deg, rgb(0, 0, 0) 4%, rgb(61, 61, 61) 37%, rgb(92, 92, 92) 65%);
+}
