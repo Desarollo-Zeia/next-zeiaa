@@ -1,5 +1,6 @@
 import "./globals.css";
 import { montserrat } from '@/app/ui/fonts'
+import { AuthProvider } from "./lib/auth-context";
 
 
 export default function RootLayout({
@@ -12,7 +13,9 @@ export default function RootLayout({
       <body
         className={`${montserrat.className} ${montserrat.className} antialiased`}
       >
-        {children}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );

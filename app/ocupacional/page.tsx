@@ -2,8 +2,10 @@
 import styles from '@/app/ui/home.module.css'
 import Image from 'next/image';
 import Link from 'next/link';
-import { CircleX, User, Lock, Eye, EyeOff  } from 'lucide-react';
+import Form from 'next/form';
+import { SendToBack , User, Lock, Eye, EyeOff  } from 'lucide-react';
 import { useState } from 'react';
+import { userValidation } from '../actions/validation';
 
 
 export default function Page() {
@@ -19,12 +21,12 @@ export default function Page() {
             className='p-4 absolute'
             alt='Logo zeia initial screen'
         />
-      <div className='w-full flex justify-end items-center gap-8 p-8'>
+      <Form className='w-full flex justify-end items-center gap-8 p-8' action={userValidation}>
         <div className='w-[350px] h-auto bg-white rounded-lg p-8 flex flex-col gap-2'>
-            <div className='flex justify-between items-center'>
+            <div className='flex justify-between items-center'>|
                 <p className='font-semibold text-lg'>Inicia sesión</p>
                 <Link href='/'> 
-                    <CircleX className='w-5 h-5'/>
+                    <SendToBack/>
                 </Link>
             </div>
             <p className='text-xs text-green-500'>Ingrese a su cuenta</p>
@@ -33,6 +35,7 @@ export default function Page() {
                     <User className="w-4 h-4 ml-2 text-gray-400" />
                     <input
                         type="email"
+                        name="email"
                         className="flex-1 bg-transparent outline-none p-2 box-border text-xs"
                         placeholder="example@zeia.com.pe"
                     />
@@ -43,17 +46,14 @@ export default function Page() {
                         type={avaiblePassword ? 'text' : 'password'}
                         className="flex-1 bg-transparent outline-none p-2 box-border text-xs"
                         placeholder="****"
+                        name='password'
                     />
                     { avaiblePassword ? <Eye className='h-4 w-4 mr-2 cursor-pointer' onClick={() => setAvaiblePassword(false)}/> : <EyeOff className='w-4 h-4 mr-2 cursor-pointer' onClick={()=> setAvaiblePassword(true)}/>}
                 </div>
             </div>
-            <div>
-                <Link href='/' className={styles.buttonservice}>
-                    <p className='text-xs text-center w-full'>Ingresar</p>
-                </Link>
-            </div>
+            <input type="submit" className={styles.buttonservice} placeholder='Ingresar'/>
         </div>
-      </div>
+      </Form>
     </section>
   )
 }
