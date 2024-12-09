@@ -23,8 +23,13 @@
     padding: 12px 12px; 
     margin-top: 24px;
     cursor: pointer;
+    font-weight: bolder;
+    font-size: small;
+    transition: ease-in-out;
+    transition-duration: 2s;
 }
 
 .buttonservice:hover {
     background: linear-gradient(90deg, rgb(0, 0, 0) 4%, rgb(61, 61, 61) 37%, rgb(92, 92, 92) 65%);
+    
 }
