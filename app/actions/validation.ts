@@ -1,6 +1,6 @@
 'use server'
 import { redirect } from 'next/navigation'
-import { setToken } from '../lib/auth'
+import { removeToken, setToken } from '../lib/auth'
 import { baseUrl } from '../lib/constant'
  
 export async function userValidation(prevState: string, formData: FormData) {
@@ -18,6 +18,7 @@ export async function userValidation(prevState: string, formData: FormData) {
       const data = await response.json()
       await setToken(data.token)
     } else {
+      await removeToken()
       return { message: 'Lo sentimos, valide correo o contraseña' }
     }
   } catch (error) {
