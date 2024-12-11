@@ -33,3 +33,21 @@
     background: linear-gradient(90deg, rgb(0, 0, 0) 4%, rgb(61, 61, 61) 37%, rgb(92, 92, 92) 65%);
     
 }
+
+
+@keyframes pulse {
+    0%, 100% {
+        background-color: #ce1111; 
+    }
+    50% {
+        background-color: #ff0000; 
+    }
+}
+
+.blinkingcircle {
+    width: 16px;
+    height: 16px;
+    background-color: #a60000; /* Color inicial */
+    border-radius: 50%; /* Hace que sea un círculo */
+    animation: pulse 1s infinite; /* Animación continua */
+}

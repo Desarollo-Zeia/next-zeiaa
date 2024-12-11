@@ -1,14 +1,12 @@
-import { fetchWithAuth } from "@/app/lib/api"
-import RoomStatusCard from "@/app/ui/rooms/room-status-card"
+import RoomStatusCard from '@/app/ui/rooms/room-status-card'
+import React from 'react'
 
-export default async function Page() {
-
-  const rooms = await fetchWithAuth('enterprise/api/enterprise/basic/room-list/')
-
+function page() {
   return (
-    <div className="p-4">
+    <section className='p-4'>
       <RoomStatusCard/>
-    </div>
+    </section>
   )
 }
 
+export default page
