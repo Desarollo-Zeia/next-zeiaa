@@ -31,7 +31,7 @@ export default function Layout({ children }) {
               </BreadcrumbList>
             </Breadcrumb> */}
           </div>
-          <div className="pr-4 pt-4">
+          <div className="pr-4 pt-4 hidden md:block">
             <RoomFilter/>
           </div>
         </header>
