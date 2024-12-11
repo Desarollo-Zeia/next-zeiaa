@@ -7,20 +7,29 @@ export default function RoomFilter() {
   
   return (
     <div className="flex space-x-4 mb-4">
-      <Select >
-        <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="Filter by location" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="none">All locations</SelectItem>
-          <SelectItem value='none'>None</SelectItem>
-        </SelectContent>
-      </Select>
       <Input
         type="text"
         placeholder="Search rooms..."
-        className="max-w-sm"
+        className="max-w-xs"
       />
+      <Select>
+        <SelectTrigger className="w-[240px] bg-[#00b0c7]">
+          <SelectValue placeholder="Selecciona un sala" className="text-white font-bold"/>
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="salas">Salas</SelectItem>
+          <SelectItem value='none'>None</SelectItem>
+        </SelectContent>
+      </Select>
+      <Select>
+        <SelectTrigger className="w-[240px] bg-[#00b0c7]">
+          <SelectValue placeholder="Selecciona un estado" className="text-white font-bold"/>
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="salas">Salas</SelectItem>
+          <SelectItem value='none'>None</SelectItem>
+        </SelectContent>
+      </Select>
     </div>
   )
 }
