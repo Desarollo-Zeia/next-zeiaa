@@ -38,7 +38,7 @@ export default function RoomStatusCard(
           </div>
           <div className="flex justify-between">
             <span className="text-sm font-medium">Estado:</span>
-            <span className="text-sm">{isActivated ? true : false}</span>
+            <span className="text-sm">{isActivated ? 'Conectado' : 'Desconectado'}</span>
           </div>
         </div>
 
