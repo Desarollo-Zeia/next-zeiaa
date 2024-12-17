@@ -8,7 +8,6 @@ import styles from '/app/ui/home.module.css'
 export default async function page() {
   const roomList = await fetchWithAuth('enterprise/api/enterprise/room-list/') 
   
-  console.log(roomList)
   return (
     <section className={styles.roomCardsContainer}>
       {
