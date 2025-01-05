@@ -10,7 +10,7 @@ export async function fetchWithAuth(url: string, options: RequestInit = {}) {
   const headers = new Headers(options.headers)
   headers.set('Authorization', `token ${token}`)
 
-  const response = await fetch(`${baseUrl}/${url}`, { ...options, headers })
+  const response = await fetch(`${baseUrl}${url}`, { ...options, headers })
   if (!response.ok) {
     throw new Error('API request failed')
   }

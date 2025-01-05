@@ -9,7 +9,6 @@ import { userValidation } from '../actions/validation';
 import { useActionState } from 'react'
 
 export default function Page() {
-
     
     const [avaiblePassword, setAvaiblePassword] = useState<boolean>(false)
     const [state, formAction] = useActionState(userValidation, '')

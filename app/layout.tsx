@@ -1,3 +1,4 @@
+'use client'
 import "./globals.css";
 import { montserrat } from '@/app/ui/fonts'
 
@@ -6,6 +7,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+
   return (
     <html lang="en">
       <body
