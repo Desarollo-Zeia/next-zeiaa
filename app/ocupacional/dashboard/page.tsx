@@ -5,6 +5,7 @@ import RoomSearchFilter from '@/app/ui/filters/search'
 import FiltersContainer from '@/app/ui/filters/filters-container'
 import { roomsList } from '@/app/sevices/enterprise/room-list'
 import HeadquarterSelectFilter from '@/app/ui/filters/headquearter'
+import NoResultFound from '@/app/ui/no-result-found'
 
 interface Room {
   id: number
@@ -35,19 +36,25 @@ export default async function page({ searchParams } : PageProps ) {
         <RoomSearchFilter/>
         <HeadquarterSelectFilter/>
       </FiltersContainer>
-      <section className={styles.roomCardsContainer}>
-        {
-          rooms?.results.map((room: Room) => (
-            <RoomStatusCard
-              key={room.id}
-              name={room.name}
-              status={room.status}
-              isActivated={room.is_activated}
-            />
-          ))
-        }
-        
-      </section>
+      {
+        rooms?.results.length > 0 ? (
+          <section className={styles.roomCardsContainer}>
+            {
+              rooms?.results.map((room: Room) => (
+                <RoomStatusCard
+                  key={room.id}
+                  name={room.name}
+                  status={room.status}
+                  isActivated={room.is_activated}
+                />
+              ))
+            }
+          </section>
+        ) : (
+          <NoResultFound/>
+        )
+      }
+      
     </div>
   )
 }
