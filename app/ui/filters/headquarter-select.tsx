@@ -36,7 +36,7 @@ export default function HeadquarterSelect({ headquarters } : { headquarters : He
   return (
     <Select onValueChange={handleRoomChange}>
       <SelectTrigger className="w-[240px] bg-[#00b0c7]">
-        <SelectValue placeholder="Selecciona un sala" className="text-white font-bold"/>
+        <SelectValue placeholder="Selecciona una sede" className="text-white font-bold"/>
       </SelectTrigger>
       <SelectContent>
         <SelectItem value='none'>Sin área</SelectItem>
