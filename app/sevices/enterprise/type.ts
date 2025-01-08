@@ -3,5 +3,6 @@ export interface RoomList {
   headquarter?: string,
   status?: string,
   page?: string,
-  limit?: string
+  limit?: string,
+  offset?: string
 }

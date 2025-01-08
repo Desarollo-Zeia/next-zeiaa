@@ -6,6 +6,7 @@ import FiltersContainer from '@/app/ui/filters/filters-container'
 import { roomsList } from '@/app/sevices/enterprise/room-list'
 import HeadquarterSelectFilter from '@/app/ui/filters/headquearter'
 import NoResultFound from '@/app/ui/no-result-found'
+import PaginationComponent from '@/app/ui/pagination'
 
 interface Room {
   id: number
@@ -20,15 +21,16 @@ interface PageProps {
     status?: string,
     headquarter?: string,
     page?: string,
-    limit?: string
+    limit?: string,
+    offset?: string
   }
 }
 
 export default async function page({ searchParams } : PageProps ) {
 
-  const { search, status, headquarter, page, limit } = await searchParams
+  const { search, status, headquarter, page, limit, offset } = await searchParams
 
-  const rooms = await roomsList({ search, status, headquarter, page, limit })
+  const rooms = await roomsList({ search, status, headquarter, page, limit, offset })
 
   return (
     <div>
@@ -54,7 +56,7 @@ export default async function page({ searchParams } : PageProps ) {
           <NoResultFound/>
         )
       }
-      
+      <PaginationComponent count={rooms?.count} itemsPerPage={10}/>
     </div>
   )
 }
