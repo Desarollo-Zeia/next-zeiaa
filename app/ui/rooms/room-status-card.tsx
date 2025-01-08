@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import Image from "next/image"
+import Link from "next/link"
 
 type Props = {
     name: string,
@@ -48,9 +49,14 @@ export default function RoomStatusCard(
         </div>
       </CardContent>
       <CardFooter>
-        <Button className="w-full">
-          Ir a detalles de la sala
-        </Button>
+        <Link 
+          className="w-full"
+          href={`/ocupacional/dashboard/monitoreo?room=${12}`}
+          >
+          <Button className="w-full" >
+              Ir a detalles de la sala
+          </Button>
+        </Link>
       </CardFooter>
     </Card>
   )
