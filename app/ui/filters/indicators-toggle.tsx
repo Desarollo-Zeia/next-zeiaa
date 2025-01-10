@@ -1,27 +1,38 @@
 "use client"
 
-import { useState } from "react"
+import { Indicator, INDICATOR_UNIT_RAW } from "@/app/utils/formatter";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 
-const indicators = [
-  { id: "co2", name: "CO2", value: "850 ppm" },
-  { id: "hcho", name: "HCHO", value: "0.03 mg/m3" },
-  { id: "temp", name: "Temperatura", value: "24.5 °C" },
-  { id: "humidity", name: "Humedad", value: "55%" },
-]
+interface IndicatorToggleProps {
+  indicators: { indicator: string, unit: string }[]
+}
 
-export default function IndicatorToggle() {
-  const [selectedIndicator, setSelectedIndicator] = useState(indicators[0].id)
+export default function IndicatorToggle( { indicators } : IndicatorToggleProps) {
 
-  const handleValueChange = (value: string) => {
-    if (value) setSelectedIndicator(value)
+  const searchParams = useSearchParams()
+  const pathname = usePathname()
+  const { replace } = useRouter()
+
+  const params = new URLSearchParams(searchParams);
+  const indicator = params.get('indicator') as Indicator
+
+  const handleValueChange = (indicator : Indicator ) => {
+    const params = new URLSearchParams(searchParams)
+
+    if (indicator) {
+      params.set('indicator', indicator);
+      params.set('unit', INDICATOR_UNIT_RAW[indicator]);
+    } 
+
+    replace(`${pathname}?${params.toString()}`);
   }
 
   return (
-    <ToggleGroup type="single" value={selectedIndicator} onValueChange={handleValueChange} className="justify-center">
-      {indicators.map((indicator) => (
-        <ToggleGroupItem key={indicator.id} value={indicator.id} aria-label={indicator.name}>
-          {indicator.name}
+    <ToggleGroup type="single" value={indicator} onValueChange={handleValueChange}  className="justify-center">
+      {indicators.map((indicator : { indicator: string, unit: string }) => (
+        <ToggleGroupItem key={indicator.indicator} value={indicator.indicator} aria-label={indicator.indicator}>
+          {indicator.indicator}  
         </ToggleGroupItem>
       ))}
     </ToggleGroup>

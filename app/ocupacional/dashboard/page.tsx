@@ -3,10 +3,10 @@ import React from 'react'
 import styles from '/app/ui/home.module.css'
 import RoomSearchFilter from '@/app/ui/filters/search'
 import FiltersContainer from '@/app/ui/filters/filters-container'
-import { roomsList } from '@/app/sevices/enterprise/room-list'
 import HeadquarterSelectFilter from '@/app/ui/filters/headquearter'
 import NoResultFound from '@/app/ui/no-result-found'
 import PaginationComponent from '@/app/ui/pagination'
+import { roomsList } from '@/app/sevices/enterprise/data'
 
 interface Room {
   id: number

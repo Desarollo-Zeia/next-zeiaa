@@ -1,11 +1,10 @@
 'use client'
 import IndicatorToggle from "../filters/indicators-toggle";
 import { TrendingUp } from "lucide-react"
-import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
+import { CartesianGrid, Line, LineChart, ReferenceLine, XAxis, YAxis } from "recharts"
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -17,36 +16,65 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart"
 
-const chartData = [
-    { month: "January", desktop: 186 },
-    { month: "February", desktop: 305 },
-    { month: "March", desktop: 237 },
-    { month: "April", desktop: 73 },
-    { month: "May", desktop: 209 },
-    { month: "June", desktop: 214 },
-  ]
+interface IndicatorStructure {
+  indicator: string,
+  value: string,
+  unit: string,
+  status: string,
+  hours: string,
+  date: string
+}
+
+interface IndicatorToogle {
+  indicator: string,
+  unit: string
+}
+
+interface RoomDataStructure {
+  id: number,
+  name: string,
+  status: string,
+  headquarter: {
+    id: number,
+    name: string
+  }
+  indicators_activated: IndicatorToogle[],
+  indicators_pollutants: IndicatorToogle[],
+  is_activated: boolean
+}
+
+interface ChartComponentProps {
+  results: IndicatorStructure[]
+  generalRoomData: RoomDataStructure
+}
+
   const chartConfig = {
     desktop: {
       label: "Desktop",
-      color: "hsl(var(--chart-1))",
+      color: "#00b0c7",
     },
+    value: {
+      label: "CO2",
+    }
+    
   } satisfies ChartConfig
   
 
-export default function ChartComponent() {
-    
+export default function ChartComponent({ results, generalRoomData} : ChartComponentProps) {
+
+  const { indicators_pollutants: indicators } = generalRoomData
+
   return (
     <Card className="w-full max-w-4xl mx-auto">
-        <IndicatorToggle/>
+        <IndicatorToggle indicators={indicators}/>
         <CardHeader>
-            <CardTitle>Line Chart</CardTitle>
-            <CardDescription>January - June 2024</CardDescription>
+            <CardTitle>Estadísticas</CardTitle>
         </CardHeader>
         <CardContent>
             <ChartContainer config={chartConfig}>
             <LineChart
                 accessibilityLayer
-                data={chartData}
+                data={results}
                 margin={{
                 left: 12,
                 right: 12,
@@ -54,23 +82,37 @@ export default function ChartComponent() {
             >
                 <CartesianGrid vertical={false} />
                 <XAxis
-                dataKey="month"
+                dataKey="hours"
                 tickLine={false}
                 axisLine={false}
                 tickMargin={8}
-                tickFormatter={(value) => value.slice(0, 3)}
+                // tickFormatter={}
                 />
+                 <YAxis
+                    tickLine={false}
+                    axisLine={false}
+                    hide={true}
+                    tickMargin={8}
+                    dataKey="value"
+                    // tickFormatter={}
+                    domain={[0, 2000]}
+                  />
+                    
                 <ChartTooltip
                 cursor={false}
-                content={<ChartTooltipContent hideLabel />}
+                content={<ChartTooltipContent hideLabel/>}
                 />
+                <ReferenceLine y={1000} stroke="red" strokeWidth={2} strokeDasharray="3 3" isFront={true}/>
+                <ReferenceLine y={800} stroke="orange" strokeWidth={2} strokeDasharray="3 3" isFront={true}/>
                 <Line
-                dataKey="desktop"
-                type="natural"
-                stroke="var(--color-desktop)"
-                strokeWidth={2}
-                dot={false}
+                  dataKey="value" 
+                  type="natural"
+                  stroke="var(--color-desktop)"
+                  strokeWidth={2}
+                  dot={false}
+                  
                 />
+                {/* <Legend verticalAlign="bottom" height={36}/> */}
             </LineChart>
             </ChartContainer>
         </CardContent>
@@ -81,6 +123,7 @@ export default function ChartComponent() {
             <div className="leading-none text-muted-foreground">
             Showing total visitors for the last 6 months
             </div>
+          
         </CardFooter>
     </Card>
   )

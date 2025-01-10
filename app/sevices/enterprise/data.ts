@@ -2,6 +2,12 @@ import { fetchWithAuth } from "@/app/lib/api"
 import { baseUrl } from "@/app/lib/constant"
 import { RoomList } from "./type"
 
+export async function detail() {
+  const res = await fetchWithAuth('/enterprise/api/enterprise/detail/')
+  
+  return res 
+}
+
 export async function roomsList({ search, status, headquarter, page, limit, offset } : RoomList) {
 
   const url = new URL('enterprise/api/enterprise/room-list/', baseUrl)
@@ -16,3 +22,5 @@ export async function roomsList({ search, status, headquarter, page, limit, offs
   const res = await fetchWithAuth(`${url.pathname}${url.search}`)
   return res
 }
+
+
