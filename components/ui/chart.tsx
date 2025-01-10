@@ -4,7 +4,7 @@ import * as React from "react"
 import * as RechartsPrimitive from "recharts"
 
 import { cn } from "@/lib/utils"
-import { INDICATOR_UNIT_CONVERTED, Indicator } from "@/app/utils/formatter"
+import { UNIT_CONVERTED, Unit } from "@/app/utils/formatter"
 
 // Format: { THEME_NAME: CSS_SELECTOR }
 const THEMES = { light: "", dark: ".dark" } as const
@@ -191,7 +191,7 @@ const ChartTooltipContent = React.forwardRef<
             const key = `${nameKey || item.name || item.dataKey || "value"}`
             const itemConfig = getPayloadConfigFromPayload(config, item, key)
             const indicatorColor = color || item.payload.fill || item.color
-            const indicatorUnit = item.payload.indicator as Indicator
+            const indicatorUnit = item.payload.unit as Unit
 
             return (
               <div
@@ -236,14 +236,14 @@ const ChartTooltipContent = React.forwardRef<
                       )}
                     >
                       <div className="grid gap-1.5">
-                        {nestLabel ? tooltipLabel : null}
+                        {nestLabel ? tooltipLabel : null} 
                         <span className="text-muted-foreground">
-                          {itemConfig?.label || item.name}:  
+                          {itemConfig?.label || item.payload.indicator}:  
                         </span>
                       </div>
                       {item.value && (
                         <span className="font-mono font-medium tabular-nums text-foreground pl-2">
-                          {item.value.toLocaleString()} {INDICATOR_UNIT_CONVERTED[indicatorUnit]}
+                          {item.value.toLocaleString()} {UNIT_CONVERTED[indicatorUnit]}
                         </span>
                       )}
                     </div>

@@ -6,7 +6,8 @@ import Link from "next/link"
 type Props = {
     name: string,
     status: string,
-    isActivated: boolean
+    isActivated: boolean,
+    room: number
 }
 
 export default function RoomStatusCard(
@@ -14,6 +15,7 @@ export default function RoomStatusCard(
     name,
     status,
     isActivated,
+    room
   } : Props
 ) {
 
@@ -51,7 +53,7 @@ export default function RoomStatusCard(
       <CardFooter>
         <Link 
           className="w-full"
-          href={`/ocupacional/dashboard/monitoreo?room=${12}`}
+          href={`/ocupacional/dashboard/monitoreo?room=${room}&indicator=CO2&unit=PPM`}
           >
           <Button className="w-full" >
               Ir a detalles de la sala

@@ -15,6 +15,9 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
+import { useSearchParams } from "next/navigation";
+import { Indicator, Unit, UNIT_CONVERTED } from "@/app/utils/formatter";
+import { UNIT_INDICATOR_THRESHOLD } from "@/app/utils/threshold";
 
 interface IndicatorStructure {
   indicator: string,
@@ -43,6 +46,8 @@ interface RoomDataStructure {
   is_activated: boolean
 }
 
+type ThresholdPointer = "ICA" | "PPB" | "CO2" | "HCHO" | "PM10" | "PM2_5"
+
 interface ChartComponentProps {
   results: IndicatorStructure[]
   generalRoomData: RoomDataStructure
@@ -50,25 +55,51 @@ interface ChartComponentProps {
 
   const chartConfig = {
     desktop: {
-      label: "Desktop",
       color: "#00b0c7",
     },
-    value: {
-      label: "CO2",
-    }
     
   } satisfies ChartConfig
   
 
-export default function ChartComponent({ results, generalRoomData} : ChartComponentProps) {
+export default function ChartComponent({ results, generalRoomData, } : ChartComponentProps) {
 
   const { indicators_pollutants: indicators } = generalRoomData
+
+  let thresholdPointer
+  const searchParams = useSearchParams()
+  const params = new URLSearchParams(searchParams);
+  const indicator = params.get('indicator') 
+  const unit = params.get('unit') as Unit
+
+  if (indicator === 'TVOC') {
+    thresholdPointer = unit
+  } else {
+    thresholdPointer = indicator
+  }
 
   return (
     <Card className="w-full max-w-4xl mx-auto">
         <IndicatorToggle indicators={indicators}/>
         <CardHeader>
             <CardTitle>Estadísticas</CardTitle>
+            <br/>
+            <div className="w-full">
+            <div className="text-xs font-medium mb-2">Umbrales:</div>
+            <div className="flex flex-wrap gap-4">
+              <div className="flex items-center gap-2">
+                <div className="text-yellow-500 font-bold">---</div>
+                <span className="font-normal">{UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.bottom} {UNIT_CONVERTED[unit]}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="text-orange-500 font-bold">---</div>
+                <span className="font-normal">{UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.center} {UNIT_CONVERTED[unit]}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="text-red-500 font-bold">---</div>
+                <span className="font-normal">{UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.top} {UNIT_CONVERTED[unit]}</span>
+              </div>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
             <ChartContainer config={chartConfig}>
@@ -95,36 +126,26 @@ export default function ChartComponent({ results, generalRoomData} : ChartCompon
                     tickMargin={8}
                     dataKey="value"
                     // tickFormatter={}
-                    domain={[0, 2000]}
+                    domain={[0, UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.top * 1.1]}
                   />
-                    
                 <ChartTooltip
                 cursor={false}
                 content={<ChartTooltipContent hideLabel/>}
                 />
-                <ReferenceLine y={1000} stroke="red" strokeWidth={2} strokeDasharray="3 3" isFront={true}/>
-                <ReferenceLine y={800} stroke="orange" strokeWidth={2} strokeDasharray="3 3" isFront={true}/>
+                <ReferenceLine y={UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.bottom} stroke="yellow" strokeWidth={2} strokeDasharray="3 3" isFront={true}/>
+                <ReferenceLine y={UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.center} stroke="orange" strokeWidth={2} strokeDasharray="3 3" isFront={true}/>
+                <ReferenceLine y={UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.top} stroke="red" strokeWidth={2} strokeDasharray="3 3" isFront={true}/>
                 <Line
                   dataKey="value" 
                   type="natural"
                   stroke="var(--color-desktop)"
                   strokeWidth={2}
                   dot={false}
-                  
                 />
-                {/* <Legend verticalAlign="bottom" height={36}/> */}
             </LineChart>
             </ChartContainer>
         </CardContent>
-        <CardFooter className="flex-col items-start gap-2 text-sm">
-            <div className="flex gap-2 font-medium leading-none">
-            Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-            </div>
-            <div className="leading-none text-muted-foreground">
-            Showing total visitors for the last 6 months
-            </div>
-          
-        </CardFooter>
+      
     </Card>
   )
 }

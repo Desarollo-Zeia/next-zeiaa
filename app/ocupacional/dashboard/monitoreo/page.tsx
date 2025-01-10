@@ -20,7 +20,7 @@ export default async function page({ searchParams }) {
   return (
     <div>
       <FiltersContainer>
-        <RoomSelectFilter/>
+        <RoomSelectFilter firstRoom={firstRoom}/>
       </FiltersContainer>
       <TableComponent data={data}/>
       <br />

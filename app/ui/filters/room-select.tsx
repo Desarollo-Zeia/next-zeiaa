@@ -12,9 +12,10 @@ interface Room {
   is_activated: boolean
 }
 
-export default function RoomSelect({ rooms } : { rooms: Room[] }) {
+export default function RoomSelect({ rooms, firstRoom} : { rooms: Room[], firstRoom: string }) {
 
   const searchParams = useSearchParams()
+  const currentRoom = searchParams.get('room') as string
   const pathname = usePathname()
   const { replace } = useRouter()
 
@@ -32,7 +33,7 @@ export default function RoomSelect({ rooms } : { rooms: Room[] }) {
   }
   
   return (
-    <Select onValueChange={handleRoomChange}>
+    <Select onValueChange={handleRoomChange} value={currentRoom ? currentRoom : firstRoom.toString()}>
       <SelectTrigger className="w-[240px] bg-[#00b0c7]">
         <SelectValue placeholder="Selecciona un sala" className="text-white font-bold"/>
       </SelectTrigger>

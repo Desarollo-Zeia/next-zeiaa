@@ -48,6 +48,7 @@ export default async function page({ searchParams } : PageProps ) {
                   name={room.name}
                   status={room.status}
                   isActivated={room.is_activated}
+                  room={room.id}
                 />
               ))
             }
