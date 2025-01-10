@@ -21,6 +21,16 @@ export const INDICATOR_UNIT_RAW = {
   PPB: 'PPB'
 }
 
+export const UNIT_CONVERTED = {
+  PPM: 'ppm' ,
+  MG_M3: 'mg/m³' ,
+  UG_M3: 'µg/m³',
+  PERCENT: '%',
+  CELSIUS: '°C',
+  ICA: 'ica',
+  PPB: 'ppb'
+}
+
 export const INDICATOR_UNIT_CONVERTED = {
   CO2: 'ppm',
   HCHO: 'mg/m³',
@@ -28,8 +38,7 @@ export const INDICATOR_UNIT_CONVERTED = {
   PM2_5: 'µg/m³',
   HUMIDITY: '%',
   TEMPERATURE: '°C',
-  ICA:  'ica',
-  PPB: 'ppb'
 }
 
 export type Indicator = keyof typeof INDICATOR_UNIT_RAW;
+export type Unit = keyof typeof UNIT_CONVERTED
