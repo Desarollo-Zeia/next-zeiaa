@@ -7,7 +7,7 @@ import TableComponent from "@/app/ui/monitoreo/table"
 
 export default async function page({ searchParams }) {
 
-  const { room, indicator, unit } = await searchParams
+  const { room, indicator = 'CO2', unit = 'PPM' } = await searchParams
 
   const { first_room: firstRoom} = await detail()
 
@@ -15,6 +15,18 @@ export default async function page({ searchParams }) {
 
   const data = await roomLastData({ roomId: currentFirstRoom})
   const { results } = await readingsData({ roomId: currentFirstRoom, indicator, unit })
+
+  const sortResults = results.sort((a, b) => {
+
+    const [aHours] = a.hours.split(' ')
+    const [bHours] = b.hours.split(' ')
+
+    const timeA = new Date(`1970-01-01T${aHours}`)
+    const timeB = new Date(`1970-01-01T${bHours}`)
+
+    return timeA - timeB;
+  })
+
   const generalRoomData = await roomGeneralData({ roomId: currentFirstRoom})
 
   return (
@@ -24,7 +36,7 @@ export default async function page({ searchParams }) {
       </FiltersContainer>
       <TableComponent data={data}/>
       <br />
-      <ChartComponent results={results} generalRoomData={generalRoomData}/>
+      <ChartComponent results={sortResults} generalRoomData={generalRoomData} indicator={indicator} unit={unit}/>
     </div>
   )
 }

@@ -8,13 +8,15 @@ export default function RoomSearchFilter() {
 
    const searchParams = useSearchParams()
    const pathname = usePathname()
+   const params = new URLSearchParams(searchParams)
    const { replace } = useRouter()
 
   const handleSearch = useDebouncedCallback((search) => {
+    
    
-    const params = new URLSearchParams(searchParams);
     if (search) {
       params.set('search', search)
+      params.delete('offset')
     } else {
       params.delete('search')
     }

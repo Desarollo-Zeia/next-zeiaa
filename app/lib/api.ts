@@ -15,6 +15,11 @@ export async function fetchWithAuth(url: string, options: RequestInit = {}) {
     throw new Error('API request failed')
   }
 
+  const contentType = response.headers.get('Content-Type');
+  if (contentType && contentType.includes('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')) {
+    return response.blob();
+  }
+
   return response.json()
 }
 

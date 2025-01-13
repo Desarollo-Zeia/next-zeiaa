@@ -1,3 +1,4 @@
+'use server'
 import { fetchWithAuth } from "@/app/lib/api"
 import { baseUrl } from "@/app/lib/constant"
 import { RoomList } from "./type"

@@ -6,19 +6,21 @@ import { useState } from "react";
 
 interface IndicatorToggleProps {
   indicators: { indicator: string, unit: string }[]
+  indicatorParam: string
 }
 
-export default function IndicatorToggle( { indicators } : IndicatorToggleProps) {
+export default function IndicatorToggle( { indicators, indicatorParam } : IndicatorToggleProps) {
 
-  const [checkedIndicator, setCheckedIndicator] = useState<string>('CO2')
   const searchParams = useSearchParams()
+  const params = new URLSearchParams(searchParams)
   const pathname = usePathname()
   const { replace } = useRouter()
 
   const handleValueChange = (indicatorObj : { indicator: string, unit: string} ) => {
-    const params = new URLSearchParams(searchParams)
+
+    params.set('page', '1')
+    
     const { indicator, unit } = indicatorObj
-    setCheckedIndicator(indicator)
     if (indicator && unit) {
       params.set('indicator', indicator)
       params.set('unit', unit)
@@ -28,10 +30,10 @@ export default function IndicatorToggle( { indicators } : IndicatorToggleProps) 
   }
 
   return (
-    <ToggleGroup type="single" value={checkedIndicator} onValueChange={handleValueChange}  className="justify-center">
+    <ToggleGroup type="single" onValueChange={handleValueChange}  className="justify-center">
       {indicators.map((indicator : { indicator: string, unit: string }) => {
         return (
-          <ToggleGroupItem className={`${checkedIndicator === indicator.indicator ? 'bg-[#00b0c7] text-white hover:bg-[#00b0c7] hover:text-white' : 'bg-inherit' } `} key={indicator.indicator} value={indicator} aria-label={indicator.indicator}>
+          <ToggleGroupItem className={`${indicatorParam === indicator.indicator ? 'bg-[#00b0c7] text-white hover:bg-[#00b0c7] hover:text-white' : 'bg-inherit' } `} key={indicator.indicator} value={indicator} aria-label={indicator.indicator}>
             {indicator.indicator}  
           </ToggleGroupItem>
         )

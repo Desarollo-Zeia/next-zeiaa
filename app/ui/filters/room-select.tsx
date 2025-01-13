@@ -16,11 +16,16 @@ export default function RoomSelect({ rooms, firstRoom} : { rooms: Room[], firstR
 
   const searchParams = useSearchParams()
   const currentRoom = searchParams.get('room') as string
+  const params = new URLSearchParams(searchParams);
   const pathname = usePathname()
   const { replace } = useRouter()
 
   const handleRoomChange = (room: string) => {
-    const params = new URLSearchParams(searchParams);
+
+    params.set('indicator', 'CO2')
+    params.set('unit', 'PPM')
+    params.set('page', '1')
+  
     if (room) {
       params.set('room', room);
     } 

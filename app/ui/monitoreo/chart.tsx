@@ -1,12 +1,10 @@
 'use client'
 import IndicatorToggle from "../filters/indicators-toggle";
-import { TrendingUp } from "lucide-react"
 import { CartesianGrid, Line, LineChart, ReferenceLine, XAxis, YAxis } from "recharts"
 import {
   Card,
   CardContent,
-  CardFooter,
-  CardHeader,
+  CardHeader, 
   CardTitle,
 } from "@/components/ui/card"
 import {
@@ -46,11 +44,11 @@ interface RoomDataStructure {
   is_activated: boolean
 }
 
-type ThresholdPointer = "ICA" | "PPB" | "CO2" | "HCHO" | "PM10" | "PM2_5"
-
 interface ChartComponentProps {
   results: IndicatorStructure[]
   generalRoomData: RoomDataStructure
+  indicator: string,
+  unit: string
 }
 
   const chartConfig = {
@@ -61,15 +59,11 @@ interface ChartComponentProps {
   } satisfies ChartConfig
   
 
-export default function ChartComponent({ results, generalRoomData, } : ChartComponentProps) {
+export default function ChartComponent({ results, generalRoomData, indicator, unit } : ChartComponentProps) {
 
   const { indicators_pollutants: indicators } = generalRoomData
 
   let thresholdPointer
-  const searchParams = useSearchParams()
-  const params = new URLSearchParams(searchParams);
-  const indicator = params.get('indicator') 
-  const unit = params.get('unit') as Unit
 
   if (indicator === 'TVOC') {
     thresholdPointer = unit
@@ -84,22 +78,22 @@ export default function ChartComponent({ results, generalRoomData, } : ChartComp
             <CardTitle>Estadísticas</CardTitle>
             <br/>
             <div className="w-full">
-            <div className="text-xs font-medium mb-2">Umbrales:</div>
-            <div className="flex flex-wrap gap-4">
-              <div className="flex items-center gap-2">
-                <div className="text-yellow-500 font-bold">---</div>
-                <span className="font-normal">{UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.bottom} {UNIT_CONVERTED[unit]}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="text-orange-500 font-bold">---</div>
-                <span className="font-normal">{UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.center} {UNIT_CONVERTED[unit]}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="text-red-500 font-bold">---</div>
-                <span className="font-normal">{UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.top} {UNIT_CONVERTED[unit]}</span>
+              <div className="text-xs font-medium mb-2">Umbrales:</div>
+              <div className="flex flex-wrap gap-4">
+                <div className="flex items-center gap-2">
+                  <div className="text-yellow-500 font-bold">---</div>
+                  <span className="font-normal">{UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.bottom} {UNIT_CONVERTED[unit]}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="text-orange-500 font-bold">---</div>
+                  <span className="font-normal">{UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.center} {UNIT_CONVERTED[unit]}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="text-red-500 font-bold">---</div>
+                  <span className="font-normal">{UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.top} {UNIT_CONVERTED[unit]}</span>
+                </div>
               </div>
             </div>
-          </div>
         </CardHeader>
         <CardContent>
             <ChartContainer config={chartConfig}>
