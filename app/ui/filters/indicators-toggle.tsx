@@ -2,7 +2,6 @@
 
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
-import { useState } from "react";
 
 interface IndicatorToggleProps {
   indicators: { indicator: string, unit: string }[]

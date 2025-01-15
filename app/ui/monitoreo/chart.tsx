@@ -73,7 +73,7 @@ export default function ChartComponent({ results, generalRoomData, indicator, un
 
   return (
     <Card className="w-full max-w-4xl mx-auto">
-        <IndicatorToggle indicators={indicators}/>
+        <IndicatorToggle indicators={indicators} indicatorParam={indicator}/>
         <CardHeader>
             <CardTitle>Estadísticas</CardTitle>
             <br/>

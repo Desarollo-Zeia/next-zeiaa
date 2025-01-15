@@ -37,7 +37,7 @@ export async function readingsPeaks({ roomId, indicator = 'CO2', unit = 'PPM', d
     return res 
 }
 
-export async function readingsGraph({ roomId, indicator = 'CO2', unit = 'PPM', date_after, date_before  } : { roomId : string | number, indicator: string, unit: string, date_after?: string,  date_before?: string}) {
+export async function readingsGraph({ roomId, indicator, unit, date_after, date_before  } : { roomId : string | number, indicator: string, unit: string, date_after?: string,  date_before?: string}) {
 
   const url = new URL(`/readings/api/room/${roomId}/indicator/graph`, baseUrl)
 

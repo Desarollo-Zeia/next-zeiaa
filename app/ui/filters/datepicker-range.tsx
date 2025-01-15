@@ -34,15 +34,15 @@ export function DatepickerRange({
   const handleSelect = (fecha) => {
 
     if (fecha?.from) {
-      const from = format(fecha?.from, "yyyy-MM-dd" )
-      params.set('date_after', from)
+      // const from = format(fecha?.from, "yyyy-MM-dd" )
+      params.set('date_after', fecha.from)
     } else {
       params.delete('date_after')
     }
 
     if (fecha?.to) {
-      const to = format(fecha?.to, "yyyy-MM-dd" )
-      params.set('date_before', to)
+      // const to = format(fecha?.to, "yyyy-MM-dd" )
+      params.set('date_before', fecha.to)
     } else {
       params.delete('date_before')
     }

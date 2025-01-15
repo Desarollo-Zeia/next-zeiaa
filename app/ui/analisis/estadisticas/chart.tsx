@@ -1,7 +1,7 @@
 "use client"
 
 import { TrendingUp } from "lucide-react"
-import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
+import { CartesianGrid, Line, LineChart, ReferenceLine, XAxis, YAxis } from "recharts"
 
 import {
   Card,
@@ -18,15 +18,8 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart"
 import { useMemo } from "react"
-
-const chartData = [
-  { month: "January", desktop: 186, mobile: 80 },
-  { month: "February", desktop: 305, mobile: 200 },
-  { month: "March", desktop: 237, mobile: 120 },
-  { month: "April", desktop: 73, mobile: 190 },
-  { month: "May", desktop: 209, mobile: 130 },
-  { month: "June", desktop: 214, mobile: 140 },
-]
+import IndicatorToggle from "../../filters/indicators-toggle"
+import { UNIT_INDICATOR_THRESHOLD } from "@/app/utils/threshold"
 
 const chartConfig = {
   desktop: {
@@ -39,39 +32,61 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export function ChartComponent({ readings }) {
+const generateColors = (numColors) => {
+  const colors = new Set(); // Usamos un Set para evitar duplicados
+
+  while (colors.size < numColors) {
+    // Generar un color aleatorio en formato hexadecimal
+    const color = `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`;
+    colors.add(color);
+  }
+
+  return Array.from(colors); // Convertir el Set a un Array
+};  
+
+export function ChartComponent({ readings, generalRoomData, indicator, unit }) {
+
+  const { indicators_pollutants: indicators } = generalRoomData
 
   const chartData = useMemo(() => {
     const allHours = Array.from(new Set(Object.values(readings).flatMap(points => points.map(p => p.hour)))).sort()
-    
+
     return allHours.map(hour => {
-      const point = { hour }
+      const point = { hour, indicator, unit }
       Object.entries(readings).forEach(([date, points]) => {
         const dataPoint = points.find(p => p.hour === hour)
         point[date] = dataPoint ? dataPoint.value : null
       })
       return point
     })
-  }, [readings])
+  }, [readings, indicator, unit])
 
+  const chartLines = useMemo(() => {
+    const chartDataObject = Object.keys(chartData[0])
+    const dates = chartDataObject.filter(ref => ref !== 'hour' && ref !== 'indicator' && ref !== 'unit')
 
-  const refObj = Object.keys(chartData[0])
+    return dates.map(date => ({ key: date, stroke: generateColors(1)}))
 
-  const jiji = refObj.filter(ref => ref !== 'hour')
+  }, [chartData])
 
-  const linesConfig = jiji.map(ji => {
-    return {
-      key: ji,
-    }
-  })
+  let thresholdPointer
 
-  console.log(linesConfig)
-  
+  if (indicator === 'TVOC') {
+    thresholdPointer = unit
+  } else {
+    thresholdPointer = indicator
+  }
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Line Chart - Multiple</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle>Line Chart - Multiple</CardTitle>
+            <CardDescription>January - June 2024</CardDescription>
+          </div>
+          <IndicatorToggle indicators={indicators} indicatorParam={indicator}/>
+        </div>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
@@ -85,37 +100,42 @@ export function ChartComponent({ readings }) {
           >
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey="month"
+              dataKey="hour"
               tickLine={false}
               axisLine={false}
               tickMargin={8}
-              tickFormatter={(value) => value.slice(0, 3)}
+              // ticks={horas.filter((_, index) => index % 2 === 0)}   
+              // tickFormatter={(value) => value.slice(0, 3)}
             />
+             <YAxis
+                tickLine={false}
+                axisLine={false}
+                hide={true}
+                tickMargin={8}
+                dataKey="value"
+                // tickFormatter={}
+                domain={[0, UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.top * 1.1]}
+              />
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
             {
-              linesConfig.map(data => (
+              chartLines.map(data => (
                 <Line
                 key={data.key}
                 dataKey={data.key}
                 type="monotone"
-                stroke="var(--color-desktop)"
+                stroke={data.stroke}
                 strokeWidth={2}
                 dot={false}
                 />
               ))
             }
-           
-            <Line
-              dataKey="mobile"
-              type="monotone"
-              stroke="var(--color-mobile)"
-              strokeWidth={2}
-              dot={false}
-            />
+            <ReferenceLine y={UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.bottom} stroke="yellow" strokeWidth={2} strokeDasharray="3 3" isFront={true}/>
+            <ReferenceLine y={UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.center} stroke="orange" strokeWidth={2} strokeDasharray="3 3" isFront={true}/>
+            <ReferenceLine y={UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.top} stroke="red" strokeWidth={2} strokeDasharray="3 3" isFront={true}/>
           </LineChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter>
+      {/* <CardFooter>
         <div className="flex w-full items-start gap-2 text-sm">
           <div className="grid gap-2">
             <div className="flex items-center gap-2 font-medium leading-none">
@@ -126,7 +146,7 @@ export function ChartComponent({ readings }) {
             </div>
           </div>
         </div>
-      </CardFooter>
+      </CardFooter> */}
     </Card>
   )
 }
