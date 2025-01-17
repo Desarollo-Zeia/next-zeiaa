@@ -59,11 +59,11 @@ const data = {
       items: [
         {
           title: "Indicadores",
-          url: "/ocupacional/dashboard/analisis",
+          url: "/ocupacional/dashboard/analisis?page=1",
         },
         {
           title: "Picos históricos",
-          url: "/ocupacional/dashboard/analisis/picoshistoricos",
+          url: "/ocupacional/dashboard/analisis/picoshistoricos?page=1",
         },
         {
           title: "Estadísticas",

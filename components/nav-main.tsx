@@ -91,7 +91,7 @@ export function NavMain({
       <SidebarMenu>
         <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <Link href={'/ocupacional/dashboard/covid'}>
+              <Link href={'/ocupacional/dashboard/covid?page=1'}>
                 <ShieldAlert   />
                 <span>Normativa covid</span>
               </Link>
@@ -99,7 +99,7 @@ export function NavMain({
         </SidebarMenuItem>
         <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <Link href={'/ocupacional/dashboard/alertas'}>
+              <Link href={'/ocupacional/dashboard/alertas?page=1'}>
                 <Megaphone />
                 <span>Alertas</span>
               </Link>

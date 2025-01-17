@@ -1,8 +1,7 @@
 "use client"
 
 import { TrendingUp } from "lucide-react"
-import { CartesianGrid, Line, LineChart, ReferenceLine, XAxis, YAxis } from "recharts"
-
+import { CartesianGrid, LineChart, ReferenceLine, XAxis, YAxis } from "recharts"
 import {
   Card,
   CardContent,
@@ -17,9 +16,21 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import IndicatorToggle from "../../filters/indicators-toggle"
 import { UNIT_INDICATOR_THRESHOLD } from "@/app/utils/threshold"
+import 'chart.js/auto';
+import { Line } from 'react-chartjs-2'
+import { Chart, Colors } from 'chart.js/auto'
+import { format, getTime, parse } from "date-fns"
+import 'chartjs-adapter-date-fns';
+import annotationPlugin from 'chartjs-plugin-annotation';
+import { UNIT_CONVERTED } from "@/app/utils/formatter"
+import { es } from 'date-fns/locale';
+import { capitalizeFirstLetter } from "@/app/utils/func"
+import { Button } from "@/components/ui/button"
+
+Chart.register(Colors, annotationPlugin)
 
 const chartConfig = {
   desktop: {
@@ -46,7 +57,11 @@ const generateColors = (numColors) => {
 
 export function ChartComponent({ readings, generalRoomData, indicator, unit }) {
 
+  const [toggleChart, setToggleChart] = useState(true)
+
   const { indicators_pollutants: indicators } = generalRoomData
+
+
 
   const chartData = useMemo(() => {
     const allHours = Array.from(new Set(Object.values(readings).flatMap(points => points.map(p => p.hour)))).sort()
@@ -69,6 +84,58 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit }) {
 
   }, [chartData])
 
+  function hours ({ readings }) {
+    const dataRecopilationFromAllDays = []
+    for (const i in readings) {
+      const data = []
+      for (let e = 0; e < readings[i].length; e++) {
+        const aaa = parse(readings[i][e].hour, 'HH:mm', new Date())
+        const milliseconds = getTime(aaa);
+        data.push({
+          x: milliseconds,
+          y: readings[i][e].value
+        })
+      }
+      dataRecopilationFromAllDays.push({
+        data,
+        date: i,
+        tension: 0.8,
+        pointRadius: 0,
+         // Ajusta este valor para cambiar la curvatura
+        // borderColor: 'rgba(75, 192, 192, 1)', // Color de la línea
+        // backgroundColor: 'rgba(75, 192, 192, 0.2)', // Color de fondo
+      
+  
+      })
+    }
+  
+    return dataRecopilationFromAllDays
+  }
+
+function days ({ readings }) {
+  const dataRecopilationFromAllDays = []
+  for (const i in readings) {
+    for (let e = 0; e < readings[i].length; e++) {
+      const dateTemplate = `${i} ${readings[i][e].hour}`
+      const date = parse(dateTemplate, 'yyyy-MM-dd HH:mm', new Date())
+      const milliseconds = getTime(date);
+      dataRecopilationFromAllDays.push({
+        x: milliseconds,
+        y: readings[i][e].value
+      })
+    }
+  }
+
+  return [
+    {
+      data: dataRecopilationFromAllDays,
+      tension: 0.2,
+      pointRadius: 0,
+      label: 'Tendencia'
+     }
+    ]
+  }
+
   let thresholdPointer
 
   if (indicator === 'TVOC') {
@@ -81,58 +148,170 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit }) {
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
-          <div>
-            <CardTitle>Line Chart - Multiple</CardTitle>
-            <CardDescription>January - June 2024</CardDescription>
+        
+          <div className="flex flex-col">
+            <CardTitle>Estadísticas</CardTitle>
+            <br/>
+            <div className="w-full">
+              <div className="text-xs font-medium mb-2">Umbrales:</div>
+              <div className="flex flex-wrap gap-4">
+                <div className="flex items-center gap-2">
+                  <div className="text-yellow-500 font-bold">---</div>
+                  <span className="font-normal">{UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.bottom} {UNIT_CONVERTED[unit]}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="text-orange-500 font-bold">---</div>
+                  <span className="font-normal">{UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.center} {UNIT_CONVERTED[unit]}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="text-red-500 font-bold">---</div>
+                  <span className="font-normal">{UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.top} {UNIT_CONVERTED[unit]}</span>
+                </div>
+              </div>
+            </div>
           </div>
           <IndicatorToggle indicators={indicators} indicatorParam={indicator}/>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="relative">
+        <Button className="absolute right-0 mt-8 mr-10" onClick={() => setToggleChart(prev => !prev)}>Cambiar formato</Button>
+
         <ChartContainer config={chartConfig}>
-          <LineChart
-            accessibilityLayer
-            data={chartData}
-            margin={{
-              left: 12,
-              right: 12,
+          
+          <Line
+            data={{ datasets: toggleChart ?  days({ readings }) : hours({ readings }) }}
+            options={{
+                animation: false,
+                parsing: false,
+                responsive: true,
+                interaction: {
+                  mode: 'nearest',
+                  axis: 'x',
+                  intersect: false
+                },
+                scales: {
+                  x: {
+                    type: 'time',
+                    time: {
+                      displayFormats: {
+                        hour: 'HH:mm'
+                      },
+                      unit: toggleChart ? 'day' : 'hour'
+                    },
+                    alignToPixels: true,
+                    grid: {
+                      display: false,
+                      tickLength: 50
+                    },
+                    ticks: {
+                      callback: (ctx) => {
+                        console.log(ctx)
+                        if (toggleChart) {
+                          const date = new Date(ctx)
+                          const formattedDate = format(date, 'PP', { locale: es })
+                          return `${formattedDate.split(' ')[0]} ${formattedDate.split(' ')[1]} `
+                        }
+
+                        const date = new Date(ctx)
+                        const formattedDate = format(date, 'p', { locale: es })
+                        return formattedDate
+
+
+                      } 
+                    } 
+          
+                  },
+                  y: {
+                    grid: {
+                      display: false
+                    },
+                    ticks: {
+                      display: false
+                    }
+                  }
+                },
+                plugins: {
+                  colors: {
+                    forceOverride: true
+                  },
+                  legend: {
+                    display: false
+                  },
+                  annotation: {
+                    annotations: {
+                      line1: {
+                        type: 'line',
+                        yMin: UNIT_INDICATOR_THRESHOLD[thresholdPointer].bottom,
+                        yMax: UNIT_INDICATOR_THRESHOLD[thresholdPointer].bottom,
+                        borderColor: '#d9c308',
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        // label: {
+                        //   display: true,
+                        //   content: [`${UNIT_INDICATOR_THRESHOLD[thresholdPointer].bottom} ${UNIT_CONVERTED[thresholdPointer]}`],
+                        //   color: 'white',
+                        //   backgroundColor: '#d9c308'
+                        // }
+                      },
+                      line2: {
+                        type: 'line',
+                        yMin: UNIT_INDICATOR_THRESHOLD[thresholdPointer].center,
+                        yMax: UNIT_INDICATOR_THRESHOLD[thresholdPointer].center,
+                        borderColor: 'orange',
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        // label: {
+                        //   display: true,
+                        //   content: [`${UNIT_INDICATOR_THRESHOLD[thresholdPointer].center} ${UNIT_CONVERTED[thresholdPointer]}`],
+                        //   color: 'white',
+                        //   backgroundColor: 'orange'
+                        // }
+                      },
+                      line3: {
+                        type: 'line',
+                        yMin: UNIT_INDICATOR_THRESHOLD[thresholdPointer].top * 1.05,
+                        yMax: UNIT_INDICATOR_THRESHOLD[thresholdPointer].top * 1.05,
+                        borderColor: 'red',
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        // label: {
+                        //   display: true,
+                        //   content: [`${UNIT_INDICATOR_THRESHOLD[thresholdPointer].top} ${UNIT_CONVERTED[thresholdPointer]}`],
+                        //   color: 'white',
+                        //   backgroundColor: 'red'
+                        // }
+                      }
+                    }
+                  },
+                  decimation: {
+                    enabled: true,
+                    algorithm: 'lttb',
+                    samples: 100,
+                    threshold: 5
+                  },
+                  tooltip: {
+                    callbacks: {
+                      title: (ctx) => {
+                        if (toggleChart) {
+                          return 'Reporte diario'
+                        }
+                        return ctx[0].label.split(',')[2]
+                      },
+                      label: (ctx) => {
+                        if (toggleChart) {
+                          const date = parse(ctx.label, 'MMM dd, yyyy, h:mm:ss a', new Date())
+                          const formattedDate = format(date, 'EEEE, dd \'de\' MMMM \'de\' yyyy', { locale: es });
+                          return capitalizeFirstLetter(formattedDate) 
+                        }
+                        const date = parse(ctx.dataset.date, 'yyyy-MM-dd', new Date())
+                        const formattedDate = format(date, 'EEEE, dd \'de\' MMMM \'de\' yyyy', { locale: es })
+                        return `${capitalizeFirstLetter(formattedDate)}: ${ctx.formattedValue} ${UNIT_CONVERTED[unit]}`
+                      }
+                    }
+                  }
+                }
             }}
-          >
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="hour"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              // ticks={horas.filter((_, index) => index % 2 === 0)}   
-              // tickFormatter={(value) => value.slice(0, 3)}
-            />
-             <YAxis
-                tickLine={false}
-                axisLine={false}
-                hide={true}
-                tickMargin={8}
-                dataKey="value"
-                // tickFormatter={}
-                domain={[0, UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.top * 1.1]}
-              />
-            <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-            {
-              chartLines.map(data => (
-                <Line
-                key={data.key}
-                dataKey={data.key}
-                type="monotone"
-                stroke={data.stroke}
-                strokeWidth={2}
-                dot={false}
-                />
-              ))
-            }
-            <ReferenceLine y={UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.bottom} stroke="yellow" strokeWidth={2} strokeDasharray="3 3" isFront={true}/>
-            <ReferenceLine y={UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.center} stroke="orange" strokeWidth={2} strokeDasharray="3 3" isFront={true}/>
-            <ReferenceLine y={UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.top} stroke="red" strokeWidth={2} strokeDasharray="3 3" isFront={true}/>
-          </LineChart>
+          />
         </ChartContainer>
       </CardContent>
       {/* <CardFooter>
