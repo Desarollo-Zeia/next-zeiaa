@@ -10,12 +10,12 @@ export default async function page({ searchParams }) {
 
   const { first_room: firstRoom} = await detail()
 
-  const { room, indicator = 'CO2', unit = 'PPM', date_after = format(new Date(), "yyyy-MM-dd"), date_before = format(new Date(), "yyyy-MM-dd"), page } = await searchParams
+  const { room, indicator = 'CO2', unit = 'PPM', date_after = new Date(), date_before = new Date(), page } = await searchParams
 
   const currentFirstRoom = room ? room : firstRoom
 
   const generalRoomData = await roomGeneralData({ roomId: currentFirstRoom})
-  const readings = await readingsPeaks({ roomId: currentFirstRoom, indicator, unit, date_after, date_before, page })
+  const readings = await readingsPeaks({ roomId: currentFirstRoom, indicator, unit, date_after: format(date_after, "yyyy-MM-dd"), date_before: format(date_before, "yyyy-MM-dd"), page })
 
   return (
     <div>
