@@ -40,9 +40,10 @@
     "use-debounce": "^10.0.4"
   },
   "devDependencies": {
-    "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
+    "@types/file-saver": "^2.0.7",
+    "@types/node": "^22.10.7",
+    "@types/react": "^19.0.7",
+    "@types/react-dom": "^19.0.3",
     "eslint": "^8",
     "eslint-config-next": "14.2.13",
     "postcss": "^8",

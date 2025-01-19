@@ -2,8 +2,22 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import PaginationNumberComponent from "../pagination-number";
 import IndicatorToggle from "../filters/indicators-toggle";
+import { GeneralRoomData, Indicator, Measurement } from "@/app/type";
 
-export default function TableComponent({ data, count, generalRoomData, indicator }) {
+type Data = Measurement & {
+  hours: string,
+  level: string,
+  resolved: boolean
+}
+
+type TableComponentProps = {
+  data: Data[],
+  count: number,
+  generalRoomData: GeneralRoomData,
+  indicator: Indicator
+}
+
+export default function TableComponent({ data, count, generalRoomData, indicator } : TableComponentProps) {
 
   const { indicators_pollutants: indicators } = generalRoomData
 

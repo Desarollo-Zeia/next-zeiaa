@@ -3,10 +3,11 @@ import { redirect } from 'next/navigation'
 import { removeToken, setToken } from '../lib/auth'
 import { baseUrl } from '../lib/constant'
  
-export async function userValidation(prevState: string, formData: FormData) {
+export async function action(prevState: { message: string}, formData: FormData) {
 
   const email = formData.get('email') as string
   const password = formData.get('password') as string
+
   try {
     const response = await fetch(`${baseUrl}/account/api/token/`, {
       method: 'POST',
@@ -19,7 +20,7 @@ export async function userValidation(prevState: string, formData: FormData) {
       await setToken(data.token)
     } else {
       await removeToken()
-      return { message: 'Lo sentimos, valide correo o contraseña' }
+      return { message: 'Error, valide correo o constraseña'}
     }
   } catch (error) {
     console.error('Error:', error)

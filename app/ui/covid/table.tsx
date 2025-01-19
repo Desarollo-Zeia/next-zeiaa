@@ -24,14 +24,36 @@ const RISK_COLOR = {
   1: 'bg-[#38d276]',
   2: 'bg-[#00b7ca]',
   3: 'bg-[#ff39e5]',
-  4: 'bg-[#ff0000]'
+  4: 'bg-[#ff0000]',
+}
+
+type Risk = keyof typeof RISK
+
+type Data = {
+  base_line: number,
+  date: string,
+  duration: number,
+  hour: string,
+  max_value: number,
+  maximum_risk_achieved: number,
+  mean_value: number
+}
+
+type Baseline = {
+  risk: number | null,
+  time: string,
+  value: number
+}
+
+type TableComponentProps = {
+  data: Data[],
+  count: number,
+  baselines: Baseline[]
 }
 
 
-
-export default function TableComponent({ data, count, baselines }) {
+export default function TableComponent({ data, count, baselines } : TableComponentProps) {
   
-
   return (
     <div className='flex gap-4 mx-8'>
       <div className="flex flex-col">
@@ -57,8 +79,8 @@ export default function TableComponent({ data, count, baselines }) {
           <div className="flex justify-between mt-2">
             <p>Nivel de riesgo</p>
             <div className="flex gap-2 items-center">
-              <div className={`w-4 h-4 rounded-full ${RISK_COLOR[baselines[1].risk]}`}></div>
-              <p>{RISK[baselines[1].risk]}</p>
+              <div className={`w-4 h-4 rounded-full ${baselines[1].risk && RISK_COLOR[baselines[1].risk as Risk]}`}></div>
+              <p>{RISK[baselines[1].risk as Risk]}</p>
             </div>
           </div>
         </AverageCard>
@@ -74,8 +96,8 @@ export default function TableComponent({ data, count, baselines }) {
           <div className="flex justify-between mt-2">
             <p>Nivel de riesgo</p>
             <div className="flex gap-2 items-center">
-              <div className={`w-4 h-4 rounded-full ${RISK_COLOR[baselines[2].risk]}`}></div>
-              <p>{RISK[baselines[2].risk]}</p>
+              <div className={`w-4 h-4 rounded-full ${RISK_COLOR[baselines[2].risk as Risk]}`}></div>
+              <p>{RISK[baselines[2].risk as Risk]}</p>
             </div>
           </div>
         </AverageCard>

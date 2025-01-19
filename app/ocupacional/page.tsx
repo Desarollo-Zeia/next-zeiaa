@@ -2,16 +2,14 @@
 import styles from '@/app/ui/home.module.css'
 import Image from 'next/image';
 import Link from 'next/link';
-import Form from 'next/form';
 import { SendToBack , User, Lock, Eye, EyeOff  } from 'lucide-react';
-import { useState } from 'react';
-import { userValidation } from '../actions/validation';
-import { useActionState } from 'react'
+import { useState, useActionState } from 'react';
+import { action } from '../actions/validation';
 
-export default function Page() {
-    
+export default function Page() {    
+
     const [avaiblePassword, setAvaiblePassword] = useState<boolean>(false)
-    const [state, formAction] = useActionState(userValidation, '')
+    const [state, formAction] = useActionState(action, { message: '' });
 
   return (
     <section className={styles.background}>
@@ -22,7 +20,7 @@ export default function Page() {
             className='p-4 absolute'
             alt='Logo zeia initial screen'
         />
-      <Form className='w-full flex justify-end items-center gap-8 p-8' action={formAction}>
+      <form className='w-full flex justify-end items-center gap-8 p-8' action={formAction}>
         <div className='w-[350px] h-auto bg-white rounded-lg p-8 flex flex-col gap-2'>
             <div className='flex justify-between items-center'>
                 <p className='font-semibold text-lg'>Inicia sesión</p>
@@ -59,7 +57,7 @@ export default function Page() {
             </div>
             <input type="submit" className={styles.buttonservice} placeholder='Ingresar'/>
         </div>
-      </Form>
+      </form>
     </section>
   )
-}
+}   

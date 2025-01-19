@@ -13,8 +13,30 @@ import Image from "next/image";
 import ExcelIconGreen from "@/public/icons/excel.png"
 import { UNIT_INDICATOR_THRESHOLD } from "@/app/utils/threshold";
 import { UNIT_CONVERTED } from "@/app/utils/formatter";
+import { GeneralRoomData, Indicator, Measurement, Unit } from "@/app/type";
 
-export default function TableComponent( { generalRoomData, readings, count, indicator, unit, date_after, date_before, room }) {
+type ModifiedMeasurement = Omit<Measurement, 'hour'> & {
+  hours: string;
+};
+
+
+type TableComponentProps = {
+  generalRoomData: GeneralRoomData,
+  readings: {
+    count: number,
+    next: string,
+    previous: string | null,
+    results: ModifiedMeasurement[],
+  },
+  count: number,
+  indicator: Indicator,
+  unit: Unit,
+  date_after: string, 
+  date_before: string,
+  room: string
+}
+
+export default function TableComponent( { generalRoomData, readings, count, indicator, unit, date_after, date_before, room } : TableComponentProps) {
 
   const [isWhatMeasuredOpen, setIsWhatMeasuredOpen] = useState(false)
   const [isWhatCausesOpen, setIsWhatCausesOpen] = useState(false)
@@ -24,7 +46,7 @@ export default function TableComponent( { generalRoomData, readings, count, indi
   let thresholdPointer
 
   if (indicator === 'TVOC') {
-    thresholdPointer = unit
+    thresholdPointer = unit as Extract<Unit, 'PPB' | 'ICA'>
   } else {
     thresholdPointer = indicator
   }

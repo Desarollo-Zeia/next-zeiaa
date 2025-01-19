@@ -65,9 +65,12 @@ function hours (readings : Readings) {
       date: i,
       tension: 0.8,
       pointRadius: 0,
+      label: i
+      
     })
   }
 
+  console.log(dataRecopilationFromAllDays)
   return dataRecopilationFromAllDays
   }
 
@@ -98,7 +101,7 @@ return [
 
 export function ChartComponent({ readings, generalRoomData, indicator, unit } : ChartComponentProps) {
 
-  const [toggleChart, setToggleChart] = useState(true)
+  const [toggleChart, setToggleChart] = useState<boolean>(true)
 
   const { indicators_pollutants: indicators } = generalRoomData
 
@@ -141,7 +144,7 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit } : 
         </div>
       </CardHeader>
       <CardContent className="relative">
-        <Button className="absolute right-0 mt-8 mr-10" onClick={() => setToggleChart(prev => !prev)}>Cambiar formato</Button>
+        <Button className="absolute right-0 mt-8 mr-10" onClick={() => setToggleChart((prev: boolean) => !prev)}>Cambiar formato</Button>
 
         <ChartContainer config={chartConfig}>
           
@@ -264,12 +267,14 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit } : 
                         return ctx[0].label.split(',')[2]
                       },
                       label: (ctx) => {
+                        const label = ctx.dataset.label as string
                         if (toggleChart) {
                           const date = parse(ctx.label, 'MMM dd, yyyy, h:mm:ss a', new Date())
                           const formattedDate = format(date, 'EEEE, dd \'de\' MMMM \'de\' yyyy', { locale: es });
                           return capitalizeFirstLetter(formattedDate) 
                         }
-                        const date = parse(ctx.dataset.date, 'MMM dd, yyyy, h:mm:ss a', new Date())
+                        
+                        const date = parse(label, 'yyyy-MM-dd', new Date())
                         const formattedDate = format(date, 'EEEE, dd \'de\' MMMM \'de\' yyyy', { locale: es })
                         return `${capitalizeFirstLetter(formattedDate)}: ${ctx.formattedValue} ${UNIT_CONVERTED[unit]}`
                       }

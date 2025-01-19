@@ -2,7 +2,7 @@ import { alerts } from "@/app/sevices/alerts/data";
 import { detail } from "@/app/sevices/enterprise/data";
 import { getRooms } from "@/app/sevices/filters/data";
 import { roomGeneralData } from "@/app/sevices/readings/data";
-import { SearchParams } from "@/app/type";
+import { Indicator, SearchParams } from "@/app/type";
 import TableComponent from "@/app/ui/alertas/table";
 import { DatepickerRange } from "@/app/ui/filters/datepicker-range";
 import FiltersContainer from "@/app/ui/filters/filters-container";
@@ -27,7 +27,7 @@ export default async function page({ searchParams } : SearchParams) {
           <RoomSelect firstRoom={currentFirstRoom} rooms={rooms}/>
           <DatepickerRange/>
         </FiltersContainer>
-        <TableComponent data={readings.results} count={readings.count} generalRoomData={generalRoomData} indicator={indicator} />
+        <TableComponent data={readings.results} count={readings.count} generalRoomData={generalRoomData} indicator={indicator as Indicator} />
 
     </div>
   )
