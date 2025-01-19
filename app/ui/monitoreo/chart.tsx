@@ -13,9 +13,9 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-import { useSearchParams } from "next/navigation";
-import { Indicator, Unit, UNIT_CONVERTED } from "@/app/utils/formatter";
+import { UNIT_CONVERTED } from "@/app/utils/formatter";
 import { UNIT_INDICATOR_THRESHOLD } from "@/app/utils/threshold";
+import { Indicator, Unit } from "@/app/type";
 
 interface IndicatorStructure {
   indicator: string,
@@ -47,8 +47,8 @@ interface RoomDataStructure {
 interface ChartComponentProps {
   results: IndicatorStructure[]
   generalRoomData: RoomDataStructure
-  indicator: string,
-  unit: string
+  indicator: Indicator,
+  unit: Unit
 }
 
   const chartConfig = {
@@ -66,7 +66,7 @@ export default function ChartComponent({ results, generalRoomData, indicator, un
   let thresholdPointer
 
   if (indicator === 'TVOC') {
-    thresholdPointer = unit
+    thresholdPointer = unit as Extract<Unit, 'PPB' | 'ICA'>
   } else {
     thresholdPointer = indicator
   }

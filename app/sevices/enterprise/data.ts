@@ -9,7 +9,7 @@ export async function detail() {
   return res 
 }
 
-export async function roomsList({ search, status, headquarter, page, limit, offset } : RoomList) {
+export async function roomsList({ search, status, headquarter, page, limit, offset} : RoomList) {
 
   const url = new URL('enterprise/api/enterprise/room-list/', baseUrl)
 

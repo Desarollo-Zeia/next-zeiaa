@@ -2,42 +2,28 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import IndicatorToggle from "../filters/indicators-toggle";
-import { useState } from 'react';
 import PaginationNumberComponent from '../pagination-number';
-import { UnhealthyFace } from '@/components/status-faces';
-import { UNIT_INDICATOR_THRESHOLD } from "@/app/utils/threshold";
-import { UNIT_CONVERTED } from "@/app/utils/formatter";
-import { Wind, Calendar, Clock } from 'lucide-react';
+import { Wind, Calendar, Clock } from 'lucide-react'
+import { GeneralRoomData, Indicator, Readings } from "@/app/type";
 
-export default function TableComponent( { generalRoomData, readings, count, indicator, unit, date_after, date_before, room }) {
+type TableComponentProps = {
+  indicator: Indicator
+  generalRoomData: GeneralRoomData,
+  readings: Readings
+}
 
-  const [isWhatMeasuredOpen, setIsWhatMeasuredOpen] = useState(false)
-  const [isWhatCausesOpen, setIsWhatCausesOpen] = useState(false)
+export default function TableComponent( { generalRoomData, readings, indicator} : TableComponentProps) {
 
   const { indicators_pollutants: indicators } = generalRoomData
 
-  let thresholdPointer
-
-  if (indicator === 'TVOC') {
-    thresholdPointer = unit
-  } else {
-    thresholdPointer = indicator
-  }
 
   const colorByLever = {
-    HEALTHY: "bg-green-600",
+    GOOD: "bg-green-600",
     UNHEALTHY: "bg-orange-600",
     DANGEROUS: "bg-red-600",
+    CRITICAL: "bg-red-600",
     MODERATE: "bg-yellow-600"
   }
-
-  const lmpLevels = [
-    { range: `< ${UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.bottom} ${UNIT_CONVERTED[unit]}`, icon: <UnhealthyFace/>, label: "Bueno", color: "text-green-600" },
-    { range: `${UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.bottom} ${UNIT_CONVERTED[unit]} - ${UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.center} ${UNIT_CONVERTED[unit]}`, icon: <UnhealthyFace />, label: "Moderado", color: "text-yellow-600" },
-    { range: `${UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.center} ${UNIT_CONVERTED[unit]} - ${UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.top} ${UNIT_CONVERTED[unit]}`, icon: <UnhealthyFace/>, label: "Insalubre", color: "text-orange-600" },
-    { range: `> ${UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.top} ${UNIT_CONVERTED[unit]}`, icon: <UnhealthyFace/>, label: "Peligroso", color: "text-red-600" },
-  ]
-
   return (
     <div className='flex gap-4 mx-8'>
       <Card >
@@ -105,7 +91,7 @@ export default function TableComponent( { generalRoomData, readings, count, indi
                 ( 
                     <TableRow key={i}>
                     <TableCell>{indicator.date}</TableCell>
-                    <TableCell>{indicator.hours}</TableCell>
+                    <TableCell>{indicator.hour}</TableCell>
                     <TableCell>{indicator.value}</TableCell>
                     <TableCell>{indicator.unit}</TableCell>
                     <TableCell >{indicator.status}</TableCell>
@@ -117,7 +103,7 @@ export default function TableComponent( { generalRoomData, readings, count, indi
             </TableBody>
           </Table>
         </CardContent>
-        <PaginationNumberComponent count={count} itemsPerPage={10}/>
+        <PaginationNumberComponent count={readings.count} itemsPerPage={10}/>
       </Card>
       
     </div>

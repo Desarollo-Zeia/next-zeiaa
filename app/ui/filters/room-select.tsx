@@ -12,7 +12,7 @@ interface Room {
   is_activated: boolean
 }
 
-export default function RoomSelect({ rooms, firstRoom} : { rooms: Room[], firstRoom: string }) {
+export default function RoomSelect({ rooms, firstRoom } : { rooms: Room[], firstRoom: string }) {
 
   const searchParams = useSearchParams()
   const currentRoom = searchParams.get('room') as string

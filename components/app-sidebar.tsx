@@ -3,30 +3,38 @@
 import * as React from "react"
 import {
   AudioWaveform,
-  BookOpen,
-  Bot,
   Command,
   Frame,
   GalleryVerticalEnd,
   Map,
   PieChart,
-  Settings2,
   SquareLibrary ,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
 import { NavUser } from "@/components/nav-user"
-import { TeamSwitcher } from "@/components/team-switcher"
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar"
 
+type UserData = {
+  name?: string,
+  acronym?: string,
+  first_room?: number,
+  logo?: string,
+  background_color?: null
+}
+
 // This is sample data.
+
+
+interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
+  userData: UserData; // Agrega userdata aquí
+}
+
 const data = {
   user: {
     name: "Ricardo Palma",
@@ -156,14 +164,17 @@ const data = {
   ],
 }
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
-  const { name, acronym: email, logo: avatar  } = props.userdata
+
+
+export function AppSidebar({ userData, ...props }: AppSidebarProps) {
+
+  const { name, acronym: email, logo: avatar  } = userData
 
   const userinfo = {
-    name,
-    email,
-    avatar,
+    name: name || "",
+    email: email || "",
+    avatar: avatar || "",
   }
 
   return (

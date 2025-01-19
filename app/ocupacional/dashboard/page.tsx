@@ -3,10 +3,12 @@ import React from 'react'
 import styles from '/app/ui/home.module.css'
 import RoomSearchFilter from '@/app/ui/filters/search'
 import FiltersContainer from '@/app/ui/filters/filters-container'
-import HeadquarterSelectFilter from '@/app/ui/filters/headquearter'
 import NoResultFound from '@/app/ui/no-result-found'
 import PaginationComponent from '@/app/ui/pagination'
 import { roomsList } from '@/app/sevices/enterprise/data'
+import HeadquarterSelect from '@/app/ui/filters/headquarter-select'
+import { getHeadquarters } from '@/app/sevices/filters/data'
+import { SearchParams } from '@/app/type'
 
 interface Room {
   id: number
@@ -15,28 +17,18 @@ interface Room {
   is_activated: boolean
 }
 
-interface PageProps { 
-  searchParams: {
-    search?: string,
-    status?: string,
-    headquarter?: string,
-    page?: string,
-    limit?: string,
-    offset?: string
-  }
-}
+export default async function page({ searchParams } : SearchParams  ) {
 
-export default async function page({ searchParams } : PageProps ) {
+  const { search , status , headquarter, page , limit, offset } = await searchParams
 
-  const { search, status, headquarter, page, limit, offset } = await searchParams
-
+  const headquarters = await getHeadquarters()
   const rooms = await roomsList({ search, status, headquarter, page, limit, offset })
 
   return (
     <div>
       <FiltersContainer>
         <RoomSearchFilter/>
-        <HeadquarterSelectFilter/>
+        <HeadquarterSelect headquarters={headquarters}/>
       </FiltersContainer>
       {
         rooms?.results.length > 0 ? (

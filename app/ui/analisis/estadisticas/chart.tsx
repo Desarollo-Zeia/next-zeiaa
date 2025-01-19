@@ -1,22 +1,15 @@
 "use client"
-
-import { TrendingUp } from "lucide-react"
-import { CartesianGrid, LineChart, ReferenceLine, XAxis, YAxis } from "recharts"
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
 import {
   ChartConfig,
   ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
 } from "@/components/ui/chart"
-import { useMemo, useState } from "react"
+import { useState } from "react"
 import IndicatorToggle from "../../filters/indicators-toggle"
 import { UNIT_INDICATOR_THRESHOLD } from "@/app/utils/threshold"
 import 'chart.js/auto';
@@ -29,8 +22,19 @@ import { UNIT_CONVERTED } from "@/app/utils/formatter"
 import { es } from 'date-fns/locale';
 import { capitalizeFirstLetter } from "@/app/utils/func"
 import { Button } from "@/components/ui/button"
+import { GeneralRoomData, Indicator, Measurement, Unit } from "@/app/type"
 
 Chart.register(Colors, annotationPlugin)
+
+
+type Readings = Record<string, Omit<Measurement, 'date'>>[];
+
+type ChartComponentProps = {
+  readings: Readings,
+  generalRoomData: GeneralRoomData,
+  indicator: Indicator,
+  unit: Unit
+}
 
 const chartConfig = {
   desktop: {
@@ -43,103 +47,66 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-const generateColors = (numColors) => {
-  const colors = new Set(); // Usamos un Set para evitar duplicados
-
-  while (colors.size < numColors) {
-    // Generar un color aleatorio en formato hexadecimal
-    const color = `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`;
-    colors.add(color);
+function hours (readings : Readings) {
+    
+  const dataRecopilationFromAllDays = []  
+  for (const i in readings) {
+    const data = []
+    for (let e = 0; e < Object.keys(readings[i]).length; e++) {
+      const aaa = parse(readings[i][e].hour, 'HH:mm', new Date())
+      const milliseconds = getTime(aaa);
+      data.push({
+        x: milliseconds,
+        y: readings[i][e].value
+      })
+    }
+    dataRecopilationFromAllDays.push({
+      data,
+      date: i,
+      tension: 0.8,
+      pointRadius: 0,
+    })
   }
 
-  return Array.from(colors); // Convertir el Set a un Array
-};  
+  return dataRecopilationFromAllDays
+  }
 
-export function ChartComponent({ readings, generalRoomData, indicator, unit }) {
+function days (readings : Readings) {
+const dataRecopilationFromAllDays = []
+for (const i in readings) {
+  for (let e = 0; e < Object.keys(readings[i]).length; e++) {
+    const dateTemplate = `${i} ${readings[i][e].hour}`
+    const date = parse(dateTemplate, 'yyyy-MM-dd HH:mm', new Date())
+    const milliseconds = getTime(date);
+    dataRecopilationFromAllDays.push({
+      x: milliseconds,
+      y: readings[i][e].value
+    })
+  }
+}
+
+return [
+  {
+    data: dataRecopilationFromAllDays,
+    tension: 0.2,
+    pointRadius: 0,
+    label: 'Tendencia',
+     }
+    ]
+  }
+
+
+export function ChartComponent({ readings, generalRoomData, indicator, unit } : ChartComponentProps) {
 
   const [toggleChart, setToggleChart] = useState(true)
 
   const { indicators_pollutants: indicators } = generalRoomData
 
 
-
-  const chartData = useMemo(() => {
-    const allHours = Array.from(new Set(Object.values(readings).flatMap(points => points.map(p => p.hour)))).sort()
-
-    return allHours.map(hour => {
-      const point = { hour, indicator, unit }
-      Object.entries(readings).forEach(([date, points]) => {
-        const dataPoint = points.find(p => p.hour === hour)
-        point[date] = dataPoint ? dataPoint.value : null
-      })
-      return point
-    })
-  }, [readings, indicator, unit])
-
-  const chartLines = useMemo(() => {
-    const chartDataObject = Object.keys(chartData[0])
-    const dates = chartDataObject.filter(ref => ref !== 'hour' && ref !== 'indicator' && ref !== 'unit')
-
-    return dates.map(date => ({ key: date, stroke: generateColors(1)}))
-
-  }, [chartData])
-
-  function hours ({ readings }) {
-    const dataRecopilationFromAllDays = []
-    for (const i in readings) {
-      const data = []
-      for (let e = 0; e < readings[i].length; e++) {
-        const aaa = parse(readings[i][e].hour, 'HH:mm', new Date())
-        const milliseconds = getTime(aaa);
-        data.push({
-          x: milliseconds,
-          y: readings[i][e].value
-        })
-      }
-      dataRecopilationFromAllDays.push({
-        data,
-        date: i,
-        tension: 0.8,
-        pointRadius: 0,
-         // Ajusta este valor para cambiar la curvatura
-        // borderColor: 'rgba(75, 192, 192, 1)', // Color de la línea
-        // backgroundColor: 'rgba(75, 192, 192, 0.2)', // Color de fondo
-      
-  
-      })
-    }
-  
-    return dataRecopilationFromAllDays
-  }
-
-function days ({ readings }) {
-  const dataRecopilationFromAllDays = []
-  for (const i in readings) {
-    for (let e = 0; e < readings[i].length; e++) {
-      const dateTemplate = `${i} ${readings[i][e].hour}`
-      const date = parse(dateTemplate, 'yyyy-MM-dd HH:mm', new Date())
-      const milliseconds = getTime(date);
-      dataRecopilationFromAllDays.push({
-        x: milliseconds,
-        y: readings[i][e].value
-      })
-    }
-  }
-
-  return [
-    {
-      data: dataRecopilationFromAllDays,
-      tension: 0.2,
-      pointRadius: 0,
-      label: 'Tendencia'
-     }
-    ]
-  }
-
   let thresholdPointer
 
   if (indicator === 'TVOC') {
-    thresholdPointer = unit
+    thresholdPointer = unit as Extract<Unit, 'PPB' | 'ICA'>
   } else {
     thresholdPointer = indicator
   }
@@ -179,7 +146,7 @@ function days ({ readings }) {
         <ChartContainer config={chartConfig}>
           
           <Line
-            data={{ datasets: toggleChart ?  days({ readings }) : hours({ readings }) }}
+            data={{ datasets: toggleChart ?  days(readings) : hours(readings) }}
             options={{
                 animation: false,
                 parsing: false,
@@ -205,7 +172,6 @@ function days ({ readings }) {
                     },
                     ticks: {
                       callback: (ctx) => {
-                        console.log(ctx)
                         if (toggleChart) {
                           const date = new Date(ctx)
                           const formattedDate = format(date, 'PP', { locale: es })
@@ -303,7 +269,7 @@ function days ({ readings }) {
                           const formattedDate = format(date, 'EEEE, dd \'de\' MMMM \'de\' yyyy', { locale: es });
                           return capitalizeFirstLetter(formattedDate) 
                         }
-                        const date = parse(ctx.dataset.date, 'yyyy-MM-dd', new Date())
+                        const date = parse(ctx.dataset.date, 'MMM dd, yyyy, h:mm:ss a', new Date())
                         const formattedDate = format(date, 'EEEE, dd \'de\' MMMM \'de\' yyyy', { locale: es })
                         return `${capitalizeFirstLetter(formattedDate)}: ${ctx.formattedValue} ${UNIT_CONVERTED[unit]}`
                       }
