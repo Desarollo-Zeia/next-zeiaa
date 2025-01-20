@@ -16,7 +16,7 @@ import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 
 type DateRange = {
   from: Date | string;
-  to: Date | string ;
+  to: Date | string;
 };
 
 export function DatepickerRange({
@@ -32,6 +32,7 @@ export function DatepickerRange({
     from: new Date(),
     to: new Date(),
   })
+
 
   // Llama a updatePathname cuando cambie la fecha
   React.useEffect(() => {
@@ -88,7 +89,7 @@ export function DatepickerRange({
           <Calendar
             initialFocus
             mode="range"
-            defaultMonth={fecha?.from as Date | undefined}
+            defaultMonth={fecha?.from as Date}
             selected={fecha}
             onSelect={setFecha}
             numberOfMonths={2}
