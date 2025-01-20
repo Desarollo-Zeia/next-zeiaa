@@ -4,8 +4,6 @@ import * as React from "react"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
 import { CalendarIcon } from 'lucide-react'
-import { DateRange } from "react-day-picker"
-
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
@@ -16,6 +14,10 @@ import {
 } from "@/components/ui/popover"
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 
+type DateRange = {
+  from: Date | string;
+  to: Date | string ;
+};
 
 export function DatepickerRange({
   className,
@@ -26,7 +28,7 @@ export function DatepickerRange({
   const pathname = usePathname()
   const { replace } = useRouter()
 
-  const [fecha, setFecha] = React.useState<DateRange | undefined>({
+  const [fecha, setFecha] = React.useState<DateRange>({
     from: new Date(),
     to: new Date(),
   })
@@ -38,14 +40,14 @@ export function DatepickerRange({
 
     if (lastFecha.from) {
       // const from = format(fecha?.from, "yyyy-MM-dd" )
-      params.set('date_after', lastFecha.from as string)
+      params.set('date_after', lastFecha.from.toString())
     } else {
       params.delete('date_after')
     }
 
     if (lastFecha.to) {
       // const to = format(fecha?.to, "yyyy-MM-dd" )
-      params.set('date_before', lastFecha.to as string)
+      params.set('date_before', lastFecha.to.toString())
     } else {
       params.delete('date_before')
     }
