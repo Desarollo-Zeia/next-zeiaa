@@ -4,7 +4,6 @@ import { Indicator } from "@/app/type";
 import { INDICATOR_UNIT_RAW } from "@/app/utils/formatter";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
-import { useState } from "react";
 
 interface IndicatorToggleProps {
   indicators: { indicator: string, unit: string }[]
