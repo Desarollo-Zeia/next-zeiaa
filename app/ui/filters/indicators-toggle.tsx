@@ -16,7 +16,6 @@ export default function IndicatorToggle( { indicators, indicatorParam } : Indica
   const { replace } = useRouter()
 
   const handleValueChange = (indicatorObj : { indicator: string, unit: string} ) => {
-
     params.set('page', '1')
     
     const { indicator, unit } = indicatorObj
