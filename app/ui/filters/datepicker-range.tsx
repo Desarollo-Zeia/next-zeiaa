@@ -4,6 +4,8 @@ import * as React from "react"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
 import { CalendarIcon } from 'lucide-react'
+import { DateRange } from "react-day-picker"
+
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
@@ -14,10 +16,6 @@ import {
 } from "@/components/ui/popover"
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 
-type DateRange = {
-  from: Date | string;
-  to: Date | string;
-};
 
 export function DatepickerRange({
   className,
@@ -28,16 +26,14 @@ export function DatepickerRange({
   const pathname = usePathname()
   const { replace } = useRouter()
 
-  const [fecha, setFecha] = React.useState<DateRange>({
+  const [fecha, setFecha] = React.useState<DateRange | undefined>({
     from: new Date(),
     to: new Date(),
   })
 
-
   // Llama a updatePathname cuando cambie la fecha
   React.useEffect(() => {
     const lastFecha = {...fecha}
-    params.set('page', '1')
 
     if (lastFecha.from) {
       // const from = format(fecha?.from, "yyyy-MM-dd" )
@@ -89,7 +85,7 @@ export function DatepickerRange({
           <Calendar
             initialFocus
             mode="range"
-            defaultMonth={fecha?.from as Date}
+            defaultMonth={fecha?.from}
             selected={fecha}
             onSelect={setFecha}
             numberOfMonths={2}
