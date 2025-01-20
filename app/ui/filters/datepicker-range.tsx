@@ -31,27 +31,29 @@ export function DatepickerRange({
     to: new Date(),
   })
 
-  const handleSelect = (fecha) => {
+  // Llama a updatePathname cuando cambie la fecha
+  React.useEffect(() => {
+    const lastFecha = {...fecha}
+    params.set('page', '1')
 
-    if (fecha?.from) {
+    if (lastFecha.from) {
       // const from = format(fecha?.from, "yyyy-MM-dd" )
-      params.set('date_after', fecha.from)
+      params.set('date_after', lastFecha.from as string)
     } else {
       params.delete('date_after')
     }
 
-    if (fecha?.to) {
+    if (lastFecha.to) {
       // const to = format(fecha?.to, "yyyy-MM-dd" )
-      params.set('date_before', fecha.to)
+      params.set('date_before', lastFecha.to as string)
     } else {
       params.delete('date_before')
     }
 
     setFecha(fecha)
     replace(`${pathname}?${params.toString()}`)
-    
-  }
-
+   
+  }, [fecha])
 
   return (
     <div className={cn("grid gap-2", className)}>
@@ -84,9 +86,9 @@ export function DatepickerRange({
           <Calendar
             initialFocus
             mode="range"
-            defaultMonth={fecha?.from}
+            defaultMonth={fecha?.from as Date | undefined}
             selected={fecha}
-            onSelect={handleSelect}
+            onSelect={setFecha}
             numberOfMonths={2}
             locale={es}
             classNames={{

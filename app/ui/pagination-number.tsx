@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/pagination"
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 
-export default function PaginationNumberComponent({ count, itemsPerPage }) {
+export default function PaginationNumberComponent({ count, itemsPerPage } : { count: number, itemsPerPage: number}) {
 
   const searchParams = useSearchParams()
   const pathname = usePathname()
