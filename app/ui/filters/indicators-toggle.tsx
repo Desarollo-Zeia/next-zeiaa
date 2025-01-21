@@ -1,5 +1,7 @@
 "use client"
 
+import { Indicator } from "@/app/type";
+import { INDICATOR_UNIT_RAW } from "@/app/utils/formatter";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 
@@ -14,24 +16,30 @@ export default function IndicatorToggle( { indicators, indicatorParam } : Indica
   const params = new URLSearchParams(searchParams)
   const pathname = usePathname()
   const { replace } = useRouter()
+  
 
-  const handleValueChange = (indicatorObj : { indicator: string, unit: string} ) => {
-    params.set('page', '1')
+  const handleValueChange = (value: Indicator) => {
+    let unit : string
     
-    const { indicator, unit } = indicatorObj
-    if (indicator && unit) {
-      params.set('indicator', indicator)
-      params.set('unit', unit)
-    } 
+    if (value === 'TVOC') {
+      const TVOC_UNIT = indicators.find(indicator => indicator.indicator === value)
+      unit = TVOC_UNIT?.unit as string
+    } else {
+      unit = INDICATOR_UNIT_RAW[value as Indicator]
+    }
 
+    params.set('page', '1')
+    params.set('indicator', value)
+    params.set('unit', unit)
+    
     replace(`${pathname}?${params.toString()}`)
   }
 
   return (
-    <ToggleGroup type="single" onValueChange={handleValueChange}  className="justify-center">
+    <ToggleGroup type="single" onValueChange={handleValueChange} value={indicatorParam}  className="justify-center">
       {indicators.map((indicator : { indicator: string, unit: string }) => {
         return (
-          <ToggleGroupItem className={`${indicatorParam === indicator.indicator ? 'bg-[#00b0c7] text-white hover:bg-[#00b0c7] hover:text-white' : 'bg-inherit' } `} key={indicator.indicator} value={indicator} aria-label={indicator.indicator}>
+          <ToggleGroupItem key={indicator.indicator} value={indicator.indicator} aria-label={indicator.indicator}>
             {indicator.indicator}  
           </ToggleGroupItem>
         )
