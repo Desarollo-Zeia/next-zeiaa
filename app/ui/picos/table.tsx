@@ -26,17 +26,17 @@ export default function TableComponent( { generalRoomData, readings, indicator} 
   }
   return (
     <div className='flex gap-4 mx-8'>
-      <Card >
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-left">Top 3 de niveles altos</CardTitle>
-          <p className="text-[#00b0c7] text-xs">Las salas más contaminadas</p>
+      <Card className="min-w-96">
+        <CardHeader className="w-full px-16">
+          <CardTitle className="text-2xl font-bold text-center">Top 3 de niveles altos</CardTitle>
+          <p className="text-[#00b0c7] text-xs text-left">Las salas más contaminadas</p>
         </CardHeader>
-        <CardContent>
+        <CardContent className="w-full flex flex-col gap-8">
           {
             readings?.top.map(reading => (
-                <Card className="w-full max-w-sm"  key={reading.date}>
-                <CardHeader className="relative pb-0 ">
-                  <div className={`absolute left-4 -top-3 px-4 py-2 rounded-lg text-white text-sm font-medium ${colorByLever[reading.status]}`}>
+              <Card className="w-full shadow-lg"  key={reading.date}>
+                <CardHeader className="relative pb-0">
+                  <div className={`absolute left-12 -top-2 px-4 py-2 rounded-lg text-white text-sm font-medium ${colorByLever[reading.status]} shadow-lg`}>
                     Nivel más alto ({reading.status})
                   </div>
                 </CardHeader>
@@ -61,18 +61,11 @@ export default function TableComponent( { generalRoomData, readings, indicator} 
               </Card>
             ))
           }
-           
         </CardContent>
       </Card>
       <Card className="w-full flex-1">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <IndicatorToggle indicators={indicators} indicatorParam={indicator}/>
-          {/* <Button className="bg-[#00b0c7] hover:bg-[#00b0c7]" onClick={async () => {
-            const blob = await readinsgExcel({roomId: room, indicator, unit, date_before, date_after})
-            saveAs(blob, `Reporte: ${date_after} - ${date_before}`);
-          }}>
-            <Image src={ExcelIconGreen} width={16} height={16} alt="excel-image"/>
-            Descargar Excel</Button> */}
         </CardHeader>
         <CardContent>
           <Table>

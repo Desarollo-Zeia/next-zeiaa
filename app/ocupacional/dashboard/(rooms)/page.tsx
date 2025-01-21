@@ -16,7 +16,7 @@ interface Room {
   status: string
   is_activated: boolean
 }
-
+  
 export default async function page({ searchParams } : SearchParams  ) {
 
   const { search , status , headquarter, page , limit, offset } = await searchParams
@@ -49,7 +49,7 @@ export default async function page({ searchParams } : SearchParams  ) {
           <NoResultFound/>
         )
       }
-      <PaginationComponent count={rooms?.count} itemsPerPage={10}/>
+      { rooms?.count > 0 && <PaginationComponent count={rooms?.count} itemsPerPage={10}/>}
     </div>
   )
 }

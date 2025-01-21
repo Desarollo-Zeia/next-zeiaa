@@ -178,7 +178,7 @@ export function AppSidebar({ userData, ...props }: AppSidebarProps) {
   }
 
   return (
-    <Sidebar collapsible="icon" {...props} className="bg-slate-600-">
+    <Sidebar collapsible="icon" {...props} >
       <SidebarHeader>
         {/* <TeamSwitcher teams={data.teams} /> */}
         <NavUser userinfo={userinfo} />
@@ -190,7 +190,7 @@ export function AppSidebar({ userData, ...props }: AppSidebarProps) {
       {/* <SidebarFooter>
         <NavUser user={data.user} />
       </SidebarFooter> */}
-      <SidebarRail />
+      <SidebarRail/>
     </Sidebar>
   )
 }

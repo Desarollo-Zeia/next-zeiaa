@@ -59,3 +59,30 @@
     border-radius: 50%; /* Hace que sea un círculo */
     animation: pulse 1s infinite; /* Animación continua */
 }
+
+.container {
+    width: 100%;
+    padding: 1rem;
+  }
+  
+  .filtersContainer {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 2rem;
+  }
+  
+  .roomCard {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background-color: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+  }
+  
+  .paginationContainer {
+    display: flex;
+    justify-content: center;
+  }
+  
+  
+  
+  

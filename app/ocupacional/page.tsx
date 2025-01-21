@@ -4,12 +4,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { SendToBack , User, Lock, Eye, EyeOff  } from 'lucide-react';
 import { useState, useActionState } from 'react';
-import { action } from '../actions/validation';
+import { actionOccupational } from '../actions/validation';
 
 export default function Page() {    
 
     const [avaiblePassword, setAvaiblePassword] = useState<boolean>(false)
-    const [state, formAction] = useActionState(action, { message: '' });
+    const [state, formAction] = useActionState(actionOccupational, { message: '' });
 
   return (
     <section className={styles.background}>

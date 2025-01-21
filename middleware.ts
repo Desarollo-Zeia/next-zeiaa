@@ -11,9 +11,21 @@ export function middleware(request: NextRequest) {
     return response;
   }
 
+  if (pathname === '/ambiental') {
+    const response = NextResponse.next();
+    response.cookies.delete('authToken'); 
+    return response;
+  }
+
   if (pathname.startsWith('/ocupacional/dashboard')) {
     if (!authToken) {
       return NextResponse.redirect(new URL('/ocupacional', request.url));
+    }
+  }
+
+  if (pathname.startsWith('/ambiental/dashboard')) {
+    if (!authToken) {
+      return NextResponse.redirect(new URL('/ambiental', request.url));
     }
   }
 
