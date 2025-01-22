@@ -1,6 +1,6 @@
 "use client"
 
-import { ChevronRight, LayoutList, Activity, ShieldAlert  , Megaphone,  type LucideIcon } from "lucide-react"
+import { ChevronRight, LayoutList, Activity, Megaphone } from "lucide-react"
 import {
   Collapsible,
   CollapsibleContent,
