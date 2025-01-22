@@ -10,8 +10,6 @@ import { format } from "date-fns";
 
 export default async function page({ searchParams } : SearchParams) {
 
-
-
   const { first_room: firstRoom} = await detail()
 
   const { room, indicator = 'CO2', unit = 'PPM', date_after = new Date(), date_before = new Date() , page } = await searchParams

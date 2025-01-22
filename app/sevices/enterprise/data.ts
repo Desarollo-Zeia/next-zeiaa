@@ -9,6 +9,12 @@ export async function detail() {
   return res 
 }
 
+export async function detailAmbiental() {
+  const res = await fetchWithAuthAmbiental('/enterprise/api/enterprise/detail/')
+  
+  return res 
+}
+
 export async function roomsList({ search, status, headquarter, page, limit, offset} : RoomList) {
 
   const url = new URL('enterprise/api/enterprise/room-list/', baseUrl)

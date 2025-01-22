@@ -7,10 +7,10 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { useState } from 'react';
 import PaginationNumberComponent from '../pagination-number';
 import { UnhealthyFace } from '@/components/status-faces';
-import { readinsgExcel } from '@/app/sevices/readings/data';
-import { saveAs } from 'file-saver';
-import Image from "next/image";
-import ExcelIconGreen from "@/public/icons/excel.png"
+// import { readinsgExcel } from '@/app/sevices/readings/data';
+// import { saveAs } from 'file-saver';
+// import Image from "next/image";
+// import ExcelIconGreen from "@/public/icons/excel.png"
 import { UNIT_INDICATOR_THRESHOLD } from "@/app/utils/threshold";
 import { UNIT_CONVERTED } from "@/app/utils/formatter";
 import { GeneralRoomData, Indicator, Measurement, Unit } from "@/app/type";
@@ -36,7 +36,7 @@ type TableComponentProps = {
   room: string
 }
 
-export default function TableComponent( { generalRoomData, readings, count, indicator, unit, date_after, date_before, room } : TableComponentProps) {
+export default function TableComponent( { generalRoomData, readings, count, indicator, unit } : TableComponentProps) {
 
   const [isWhatMeasuredOpen, setIsWhatMeasuredOpen] = useState(false)
   const [isWhatCausesOpen, setIsWhatCausesOpen] = useState(false)
@@ -125,12 +125,12 @@ export default function TableComponent( { generalRoomData, readings, count, indi
       <Card className="w-full flex-1">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <IndicatorToggle indicators={indicators} indicatorParam={indicator}/>
-          <Button className="bg-[#00b0c7] hover:bg-[#00b0c7]" onClick={async () => {
-            const blob = await readinsgExcel({roomId: room, indicator, unit, date_before, date_after})
-            saveAs(blob, `Reporte: ${date_after} - ${date_before}`);
+          {/* <Button className="bg-[#00b0c7] hover:bg-[#00b0c7]" onClick={async () => {
+              const blob = await readinsgExcel({roomId: room, indicator, unit, date_before, date_after})
+              saveAs(blob, `Reporte: ${date_after} - ${date_before}`);
           }}>
             <Image src={ExcelIconGreen} width={16} height={16} alt="excel-image"/>
-            Descargar Excel</Button>
+            Descargar Excel</Button> */}
         </CardHeader>
         <CardContent>
           <Table>

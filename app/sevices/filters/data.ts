@@ -5,7 +5,7 @@ export async function getRooms() {
 }
 
 export async function getRoomsAmbiental() {
-  return await fetchWithAuthAmbiental('/enterprise/api/ambiental/enterprise/point-list/')
+  return await fetchWithAuthAmbiental('/enterprise/api/ambiental/enterprise/basic/point-list/')
 }
 
 
