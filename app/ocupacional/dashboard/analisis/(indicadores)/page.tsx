@@ -27,7 +27,6 @@ export default async function page({ searchParams } : SearchParams) {
         <DatepickerRange/>
       </FiltersContainer>
       <TableComponent generalRoomData={generalRoomData} readings={readings} count={readings.count} indicator={indicator as Indicator} unit={unit as Unit} date_after={date_after as string} date_before={date_before as string} room={currentFirstRoom}/>
-      
     </div>
   )
 }
