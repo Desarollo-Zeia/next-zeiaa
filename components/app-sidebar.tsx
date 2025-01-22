@@ -36,7 +36,7 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   module: {
     dashboard: string,
     monitoreo: string,
-    covid: string,
+    covid?: string,
     alertas: string,
     analisis: {
       isActive: boolean,
