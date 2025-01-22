@@ -39,11 +39,12 @@ export async function actionAmbiental(prevState: { message: string}, formData: F
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
-    })
+    })  
 
     if (response.ok) {
       
       const data = await response.json()
+      console.log(data)
       await setToken(data.token)
     } else {
       await removeToken()

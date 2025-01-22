@@ -32,7 +32,19 @@ type UserData = {
 
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
-  userData: UserData; // Agrega userdata aquí
+  userData: UserData;
+  module: {
+    dashboard: string,
+    monitoreo: string,
+    covid: string,
+    alertas: string,
+    analisis: {
+      isActive: boolean,
+      title: string,
+      url: string,
+      items: { title: string, url: string}[]
+    }
+  } // Agrega userdata aquí
 }
 
 const data = {
@@ -167,7 +179,7 @@ const data = {
 
 
 
-export function AppSidebar({ userData, ...props }: AppSidebarProps) {
+export function AppSidebar({ module, userData, ...props }: AppSidebarProps) {
 
   const { name, acronym: email, logo: avatar  } = userData
 
@@ -184,7 +196,7 @@ export function AppSidebar({ userData, ...props }: AppSidebarProps) {
         <NavUser userinfo={userinfo} />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain module={module} />
         {/* <NavProjects projects={data.projects} /> */}  
       </SidebarContent>
       {/* <SidebarFooter>
