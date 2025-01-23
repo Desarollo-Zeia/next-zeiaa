@@ -17,7 +17,7 @@ export default function PaginationNumberComponent({ count, itemsPerPage } : { co
   const { replace } = useRouter()
 
   const params = new URLSearchParams(searchParams)
-  const page = params.get('page')
+  const page = Number(params.get('page')) || 1
 
   const totalPages = Math.ceil(count / itemsPerPage)
 

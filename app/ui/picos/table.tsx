@@ -5,6 +5,8 @@ import IndicatorToggle from "../filters/indicators-toggle";
 import PaginationNumberComponent from '../pagination-number';
 import { Wind, Calendar, Clock } from 'lucide-react'
 import { GeneralRoomData, Indicator, Readings } from "@/app/type";
+import { STATUS_TO_SPANISH, UNIT_CONVERTED } from "@/app/utils/formatter";
+import { formattedDate } from "@/app/utils/func";
 
 type TableComponentProps = {
   indicator: Indicator
@@ -37,7 +39,7 @@ export default function TableComponent( { generalRoomData, readings, indicator} 
               <Card className="w-full shadow-lg"  key={reading.date}>
                 <CardHeader className="relative pb-0">
                   <div className={`absolute left-12 -top-2 px-4 py-2 rounded-lg text-white text-sm font-medium ${colorByLever[reading.status]} shadow-lg`}>
-                    Nivel más alto ({reading.status})
+                    Nivel más alto ({STATUS_TO_SPANISH[reading.status]})
                   </div>
                 </CardHeader>
                 <CardContent className="pt-8">
@@ -45,17 +47,17 @@ export default function TableComponent( { generalRoomData, readings, indicator} 
                     <ul className="space-y-4" >
                         <li className="flex items-center space-x-3">
                         <Wind className="h-5 w-5 text-muted-foreground" aria-hidden="true" /> 
-                        <span className="text-sm">{reading.indicator}: {reading.value} {reading.unit}</span>
+                        <span className="text-sm">{reading.indicator}: {reading.value} {UNIT_CONVERTED[reading.unit]}</span>
                         </li>
                         <li className="flex items-center space-x-3">
                         <Calendar className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
-                        <span className="text-sm">{reading.date}</span>
+                        <span className="text-sm">{formattedDate(reading.date)}</span>
                         </li>
                         <li className="flex items-center space-x-3">
                         <Clock className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
-                        <span className="text-sm">{reading.hour}</span>
+                        <span className="text-sm">{reading.hour.toLowerCase()}</span>
                         </li>
-                    </ul>
+                    </ul> 
                   }
                 </CardContent>
               </Card>
@@ -83,11 +85,11 @@ export default function TableComponent( { generalRoomData, readings, indicator} 
                 readings.result?.map((indicator, i) => 
                 ( 
                     <TableRow key={i}>
-                    <TableCell>{indicator.date}</TableCell>
-                    <TableCell>{indicator.hour}</TableCell>
+                    <TableCell>{formattedDate(indicator.date)}</TableCell>
+                    <TableCell>{indicator.hour.toLowerCase()}</TableCell>
                     <TableCell>{indicator.value}</TableCell>
-                    <TableCell>{indicator.unit}</TableCell>
-                    <TableCell >{indicator.status}</TableCell>
+                    <TableCell>{UNIT_CONVERTED[indicator.unit]}</TableCell>
+                    <TableCell >{STATUS_TO_SPANISH[indicator.status]}</TableCell>
                     </TableRow>
                 )
                 )

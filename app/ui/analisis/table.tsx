@@ -12,8 +12,9 @@ import { UnhealthyFace } from '@/components/status-faces';
 // import Image from "next/image";
 // import ExcelIconGreen from "@/public/icons/excel.png"
 import { UNIT_INDICATOR_THRESHOLD } from "@/app/utils/threshold";
-import { UNIT_CONVERTED } from "@/app/utils/formatter";
+import { STATUS_TO_SPANISH, UNIT_CONVERTED } from "@/app/utils/formatter";
 import { GeneralRoomData, Indicator, Measurement, Unit } from "@/app/type";
+import { formattedDate } from "@/app/utils/func";
 
 type ModifiedMeasurement = Omit<Measurement, 'hour'> & {
   hours: string;
@@ -148,11 +149,11 @@ export default function TableComponent( { generalRoomData, readings, count, indi
                 readings.results?.map((indicator, i) => 
                   ( 
                     <TableRow key={i}>
-                      <TableCell>{indicator.date}</TableCell>
-                      <TableCell>{indicator.hours}</TableCell>
+                      <TableCell>{formattedDate(indicator.date)}</TableCell>
+                      <TableCell>{indicator.hours.toLocaleLowerCase()}</TableCell>
                       <TableCell>{indicator.value}</TableCell>
-                      <TableCell>{indicator.unit}</TableCell>
-                      <TableCell >{indicator.status}</TableCell>
+                      <TableCell>{UNIT_CONVERTED[indicator.unit]}</TableCell>
+                      <TableCell>{STATUS_TO_SPANISH[indicator.status]}</TableCell>
                     </TableRow>
                   )
                 )

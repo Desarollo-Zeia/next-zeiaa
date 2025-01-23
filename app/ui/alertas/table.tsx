@@ -2,7 +2,9 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import PaginationNumberComponent from "../pagination-number";
 import IndicatorToggle from "../filters/indicators-toggle";
-import { GeneralRoomData, Indicator, Measurement } from "@/app/type";
+import { GeneralRoomData, Indicator, Measurement, Status } from "@/app/type";
+import { formattedDate } from "@/app/utils/func";
+import { STATUS_TO_SPANISH, UNIT_CONVERTED } from "@/app/utils/formatter";
 
 type Data = Measurement & {
   hours: string,
@@ -46,11 +48,11 @@ export default function TableComponent({ data, count, generalRoomData, indicator
               data?.map((indicator, i) => 
                 ( 
                   <TableRow key={i}>
-                    <TableCell >{indicator.date}</TableCell>
-                    <TableCell >{indicator.hours}</TableCell>
+                    <TableCell >{formattedDate(indicator.date)}</TableCell>
+                    <TableCell >{indicator.hours.toLowerCase()}</TableCell>
                     <TableCell>{indicator.value}</TableCell>
-                    <TableCell>{indicator.unit}</TableCell>
-                    <TableCell >{indicator.level}</TableCell>
+                    <TableCell>{UNIT_CONVERTED[indicator.unit]}</TableCell>
+                    <TableCell >{STATUS_TO_SPANISH[indicator.level as Status]}</TableCell>
                   </TableRow>
                 )
               )

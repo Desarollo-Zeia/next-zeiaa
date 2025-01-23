@@ -1,4 +1,6 @@
 'use client'
+import { Status } from "@/app/type"
+import { STATUS_COLOR, STATUS_TO_SPANISH } from "@/app/utils/formatter"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import Image from "next/image"
@@ -9,7 +11,9 @@ type Props = {
     name: string,
     status: string,
     isActivated: boolean,
-    room: number
+    room: number,
+    devEUI: string,
+    headquarter: string
 }
 
 export default function RoomStatusCard(
@@ -17,7 +21,9 @@ export default function RoomStatusCard(
     name,
     status,
     isActivated,
-    room
+    room,
+    devEUI,
+    headquarter
   } : Props
 ) {
 
@@ -33,7 +39,7 @@ export default function RoomStatusCard(
           </div>
           <div className="flex flex-col">
             <span className="font-semibold capitalize block text-balance text-right">{ name }</span>
-            <span className="text-sm text-right text-green-500 font-semibold block">{ status }</span>
+            <span className={`text-sm text-right font-semibold block ${STATUS_COLOR[status as Status]}`}>{ STATUS_TO_SPANISH[status as Status] }</span>
           </div>
         </div>
 
@@ -41,17 +47,20 @@ export default function RoomStatusCard(
         <div className="space-y-2 mb-4">
           <div className="flex justify-between">
             <span className="text-sm font-medium">Sensor:</span>
-            <span className="text-sm">24e124710c485887</span>
+            <span className="text-sm">{ devEUI ? devEUI : 'No disponible' }</span>
           </div>
           <div className="flex justify-between">
             <span className="text-sm font-medium">Estado:</span>
-            <span className="text-sm">{isActivated ? 'Conectado' : 'Desconectado'}</span>
+            <div className="flex items-center gap-2">
+              <p className="text-sm">{isActivated ? 'Conectado' : 'Desconectado'}</p>
+              {/* { isActivated ? <div className={styles.blinkingcircleGreen}/> : <div className={styles.blinkingcircleRed}/>} */}
+            </div>
           </div>
         </div>
 
         {/* Bottom Section */}
         <div className="text-sm text-muted-foreground mb-4">
-          Torre Hospitalización
+          { headquarter }
         </div>
       </CardContent>
       <CardFooter>

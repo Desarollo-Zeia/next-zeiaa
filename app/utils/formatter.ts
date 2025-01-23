@@ -6,7 +6,8 @@ export const INDICATOR_CONVERTED = {
   PM2_5: 'PM2.5',
   HUMIDITY: 'Humedad',
   TEMPERATURE: 'Temperatura',
-  TVOC: 'ica'
+  TVOC: 'TVOC',
+  PRESSURE: 'Presión'
  }
 
 
@@ -40,5 +41,22 @@ export const INDICATOR_UNIT_CONVERTED = {
   TEMPERATURE: '°C',
 }
 
+export const STATUS_TO_SPANISH = {
+  MODERATE: 'Moderado',
+  UNHEALTHY: 'Insalubre',
+  DANGEROUS: 'Peligroso',
+  GOOD: 'Bueno',
+  CRITICAL: 'Peligroso'
+}
+
+export const STATUS_COLOR = {
+  MODERATE: 'text-yellow-500',
+  UNHEALTHY: 'text-orange-500',
+  DANGEROUS: 'text-red-500',
+  GOOD: 'text-green-500',
+  CRITICAL: 'text-red-500'
+}
+
 export type Indicator = keyof typeof INDICATOR_UNIT_RAW;
 export type Unit = keyof typeof UNIT_CONVERTED
+export type Status = keyof typeof STATUS_TO_SPANISH

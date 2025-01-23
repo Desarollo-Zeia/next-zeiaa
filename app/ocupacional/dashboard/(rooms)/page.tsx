@@ -14,7 +14,9 @@ interface Room {
   id: number
   name: string
   status: string
-  is_activated: boolean
+  is_activated: boolean,
+  devices: { dev_eui: string, id: number, type_sensor: string}[],
+  headquarter: { id: number, name: string }
 }
   
 export default async function page({ searchParams } : SearchParams  ) {
@@ -41,6 +43,8 @@ export default async function page({ searchParams } : SearchParams  ) {
                   status={room.status}
                   isActivated={room.is_activated}
                   room={room.id}
+                  devEUI={room.devices[0]?.dev_eui}
+                  headquarter={room.headquarter.name}
                 />
               ))
             }

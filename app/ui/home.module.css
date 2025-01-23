@@ -43,7 +43,7 @@
 }
 
 
-@keyframes pulse {
+@keyframes pulse1 {
     0%, 100% {
         background-color: #ce1111; 
     }
@@ -52,13 +52,31 @@
     }
 }
 
-.blinkingcircle {
+@keyframes pulse2 {
+    0%, 100% {
+        background-color: #2fcc8d; 
+    }
+    50% {
+        background-color: #1bffa4; 
+    }
+}
+
+.blinkingcircleRed {
     width: 16px;
     height: 16px;
     background-color: #a60000; /* Color inicial */
     border-radius: 50%; /* Hace que sea un círculo */
-    animation: pulse 1s infinite; /* Animación continua */
+    animation: pulse1 1s infinite; /* Animación continua */
 }
+
+.blinkingcircleGreen {
+    width: 16px;
+    height: 16px;
+    background-color: #16C47F; /* Color inicial */
+    border-radius: 50%; /* Hace que sea un círculo */
+    animation: pulse2 2s infinite; /* Animación continua */
+}
+
 
 .container {
     width: 100%;
