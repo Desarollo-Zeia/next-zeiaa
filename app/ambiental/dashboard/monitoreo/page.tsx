@@ -1,6 +1,56 @@
+import { detailAmbiental } from "@/app/sevices/enterprise/data"
+import { getRoomsAmbiental } from "@/app/sevices/filters/data"
+import { readingsDataAmbiental,roomGeneralDataAmbiental,roomLastDataAmbiental } from "@/app/sevices/readings/data"
+import { Indicator, SearchParams, Unit } from "@/app/type"
+import FiltersContainer from "@/app/ui/filters/filters-container"
+import RoomSelect from "@/app/ui/filters/room-select"
+import ChartComponent from "@/app/ui/monitoreo/chart"
+import TableComponent from "@/app/ui/monitoreo/table"
 
-export default function page() {
+type Result = {
+  indicator: string,
+  value: string,
+  unit: string,
+  status: string,
+  hours: string,
+  date: string
+}
+
+export default async function page({ searchParams } : SearchParams) {
+
+  const { room, indicator = 'CO2', unit = 'PPM' } = await searchParams
+
+  const { first_room: firstRoom} = await detailAmbiental()
+
+  const currentFirstRoom = room ? room : firstRoom
+
+  const rooms = await getRoomsAmbiental()
+  const data = await roomLastDataAmbiental({ roomId: currentFirstRoom})
+  const { results } = await readingsDataAmbiental({ roomId: currentFirstRoom, indicator, unit })
+
+  const sortResults = (results: Result[]): Result[] => {
+    return results.sort((a, b) => {
+  
+      const [aHours] = a.hours ? a.hours.split(' ') : ['00:00'];
+      const [bHours] = b.hours ? b.hours.split(' ') : ['00:00'];
+  
+      const timeA = new Date(`1970-01-01T${aHours}`);
+      const timeB = new Date(`1970-01-01T${bHours}`);
+  
+      return timeA.getTime() - timeB.getTime();
+    });
+  };
+
+  const generalRoomData = await roomGeneralDataAmbiental({ roomId: currentFirstRoom})
+
   return (
-    <div>page</div>
+    <div>
+      <FiltersContainer>
+        <RoomSelect firstRoom={firstRoom} rooms={rooms}/>
+      </FiltersContainer>
+      <TableComponent data={data}/>
+      <br />
+      <ChartComponent results={sortResults(results)} generalRoomData={generalRoomData} indicator={indicator as Indicator} unit={unit as Unit}/>
+    </div>
   )
 }

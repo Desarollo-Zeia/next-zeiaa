@@ -1,7 +1,9 @@
+'use client'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import Image from "next/image"
 import Link from "next/link"
+import { usePathname } from 'next/navigation'
 
 type Props = {
     name: string,
@@ -18,6 +20,8 @@ export default function RoomStatusCard(
     room
   } : Props
 ) {
+
+  const pathname = usePathname()
 
   return (
     <Card className="max-w-xs shadow-lg">
@@ -53,9 +57,9 @@ export default function RoomStatusCard(
       <CardFooter>
         <Link 
           className="w-full"
-          href={`/ocupacional/dashboard/monitoreo?room=${room}&indicator=CO2&unit=PPM`}
+          href={`${pathname}/monitoreo?room=${room}`}
           >
-          <Button className="w-full" >
+          <Button className="w-full" >  
               Ir a detalles de la sala
           </Button>
         </Link>

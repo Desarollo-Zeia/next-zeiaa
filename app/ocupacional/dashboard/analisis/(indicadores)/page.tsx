@@ -10,8 +10,6 @@ import { format } from "date-fns";
 
 export default async function page({ searchParams } : SearchParams) {
 
-
-
   const { first_room: firstRoom} = await detail()
 
   const { room, indicator = 'CO2', unit = 'PPM', date_after = new Date(), date_before = new Date() , page } = await searchParams
@@ -29,7 +27,6 @@ export default async function page({ searchParams } : SearchParams) {
         <DatepickerRange/>
       </FiltersContainer>
       <TableComponent generalRoomData={generalRoomData} readings={readings} count={readings.count} indicator={indicator as Indicator} unit={unit as Unit} date_after={date_after as string} date_before={date_before as string} room={currentFirstRoom}/>
-      
     </div>
   )
 }

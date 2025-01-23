@@ -1,6 +1,6 @@
 "use client"
 
-import { ChevronRight, LayoutList, Activity, ShieldAlert  , Megaphone,  type LucideIcon } from "lucide-react"
+import { ChevronRight, LayoutList, Activity, Megaphone } from "lucide-react"
 import {
   Collapsible,
   CollapsibleContent,
@@ -43,7 +43,7 @@ export function NavMain({
       <SidebarMenu>
         <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <Link href={module.dashboard}>
+              <Link href={module.dashboard} prefetch>
                 <LayoutList />
                 <span>Listado de salas</span>
               </Link>
@@ -51,7 +51,7 @@ export function NavMain({
         </SidebarMenuItem>
         <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <Link href={module.monitoreo}>
+              <Link href={module.monitoreo} prefetch>
                 <Activity />
                 <span>Monitoreo de salas</span>
               </Link>
@@ -78,7 +78,7 @@ export function NavMain({
                   {module.analisis.items?.map((subItem) => (
                     <SidebarMenuSubItem key={subItem.title}>
                       <SidebarMenuSubButton asChild>
-                        <Link href={subItem.url}>
+                        <Link href={subItem.url} prefetch>
                           <span>{subItem.title}</span>
                         </Link>
                       </SidebarMenuSubButton>
@@ -101,7 +101,7 @@ export function NavMain({
         </SidebarMenuItem>
         <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <Link href={module.alertas}>
+              <Link href={module.alertas} prefetch>
                 <Megaphone />
                 <span>Alertas</span>
               </Link>

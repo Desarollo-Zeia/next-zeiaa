@@ -4,7 +4,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
-import { fetchWithAuth, fetchWithAuthAmbiental } from "@/app/lib/api"
+import { fetchWithAuth } from "@/app/lib/api"
 import { AppSidebar } from "@/components/app-sidebar"
 
 interface LayoutProps {

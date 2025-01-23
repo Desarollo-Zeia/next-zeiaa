@@ -70,7 +70,6 @@ function hours (readings : Readings) {
     })
   }
 
-  console.log(dataRecopilationFromAllDays)
   return dataRecopilationFromAllDays
   }
 
