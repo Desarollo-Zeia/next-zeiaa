@@ -16,6 +16,15 @@ type Result = {
   date: string
 }
 
+interface Room {
+  id: number
+  name: string
+  status: string
+  is_activated: boolean,
+  devices: { dev_eui: string, id: number, type_sensor: string}[],
+  headquarter: { id: number, name: string }
+}
+
 export default async function page({ searchParams } : SearchParams) {
 
   const { room, indicator = 'CO2', unit = 'PPM' } = await searchParams
@@ -27,6 +36,9 @@ export default async function page({ searchParams } : SearchParams) {
   const rooms = await getRoomsAmbiental()
   const data = await roomLastDataAmbiental({ roomId: currentFirstRoom})
   const { results } = await readingsDataAmbiental({ roomId: currentFirstRoom, indicator, unit })
+
+  const { name } = rooms.find((room: Room) => room.id === Number(currentFirstRoom))
+
 
   const sortResults = (results: Result[]): Result[] => {
     return results.sort((a, b) => {
@@ -48,7 +60,7 @@ export default async function page({ searchParams } : SearchParams) {
       <FiltersContainer>
         <RoomSelect firstRoom={firstRoom} rooms={rooms}/>
       </FiltersContainer>
-      <TableComponent data={data}/>
+      <TableComponent data={data} name={name}/>
       <br />
       <ChartComponent results={sortResults(results)} generalRoomData={generalRoomData} indicator={indicator as Indicator} unit={unit as Unit}/>
     </div>
