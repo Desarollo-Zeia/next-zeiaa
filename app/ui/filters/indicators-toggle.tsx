@@ -1,7 +1,7 @@
 "use client"
 
 import { Indicator } from "@/app/type";
-import { INDICATOR_UNIT_RAW } from "@/app/utils/formatter";
+import { INDICATOR_CONVERTED, INDICATOR_UNIT_RAW } from "@/app/utils/formatter";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 
@@ -40,7 +40,7 @@ export default function IndicatorToggle( { indicators, indicatorParam } : Indica
       {indicators.map((indicator : { indicator: string, unit: string }) => {
         return (
           <ToggleGroupItem key={indicator.indicator} value={indicator.indicator} aria-label={indicator.indicator}>
-            {indicator.indicator}  
+            {INDICATOR_CONVERTED[indicator.indicator as Indicator]}  
           </ToggleGroupItem>
         )
       })}
