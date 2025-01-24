@@ -21,6 +21,9 @@ export default async function page({ searchParams } : SearchParams) {
   const generalRoomData = await roomGeneralData({ roomId: currentFirstRoom})
   const readings = await readingsData({ roomId: currentFirstRoom, indicator, unit, date_after: format(date_after, "yyyy-MM-dd"), date_before: format(date_before, "yyyy-MM-dd"), page })
 
+  console.log(format(date_after,"yyyy-MM-dd"))
+
+
   return (
     <div>
       <FiltersContainer>

@@ -143,7 +143,7 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit } : 
         </div>
       </CardHeader>
       <CardContent className="relative">
-        <Button className="absolute right-0 mt-8 mr-10" onClick={() => setToggleChart((prev: boolean) => !prev)}>Cambiar formato</Button>
+        <Button className="absolute right-0 mt-8 mr-10" onClick={() => setToggleChart((prev: boolean) => !prev)}>{toggleChart ? 'Mostrar en horas' : 'Mostrar en días'}</Button>
 
         <ChartContainer config={chartConfig}>
           

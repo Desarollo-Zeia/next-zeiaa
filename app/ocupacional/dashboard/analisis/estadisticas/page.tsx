@@ -14,6 +14,7 @@ export default async function page({ searchParams } : SearchParams) {
 
   const { room, indicator = 'CO2', unit = 'PPM', date_after = new Date(), date_before = new Date()} = await searchParams
 
+
   const currentFirstRoom = room ? room : firstRoom
 
   const rooms = await getRooms()
