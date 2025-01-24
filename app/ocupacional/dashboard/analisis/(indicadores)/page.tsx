@@ -8,6 +8,7 @@ import FiltersContainer from "@/app/ui/filters/filters-container";
 import RoomSelect from "@/app/ui/filters/room-select";
 import { format } from "date-fns";
 
+
 export default async function page({ searchParams } : SearchParams) {
 
   const { first_room: firstRoom} = await detail()
@@ -26,7 +27,7 @@ export default async function page({ searchParams } : SearchParams) {
         <RoomSelect firstRoom={firstRoom} rooms={rooms}/>
         <DatepickerRange/>
       </FiltersContainer>
-      <TableComponent generalRoomData={generalRoomData} readings={readings} count={readings.count} indicator={indicator as Indicator} unit={unit as Unit} date_after={date_after as string} date_before={date_before as string} room={currentFirstRoom}/>
+      <TableComponent generalRoomData={generalRoomData} readings={readings} count={readings.count} indicator={indicator as Indicator} unit={unit as Unit} date_after={format(date_after, "yyyy-MM-dd")} date_before={format(date_before, "yyyy-MM-dd")} room={currentFirstRoom}/>
     </div>
-  )
+  ) 
 }

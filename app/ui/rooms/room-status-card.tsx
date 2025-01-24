@@ -3,9 +3,9 @@ import { Status } from "@/app/type"
 import { STATUS_COLOR, STATUS_TO_SPANISH } from "@/app/utils/formatter"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
-import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from 'next/navigation'
+import { STATUS_FACE } from "../faces"
 
 type Props = {
     name: string,
@@ -35,7 +35,7 @@ export default function RoomStatusCard(
         {/* Top Section */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-2">
-            <Image src='https://utfs.io/f/y8yAFIxNrCH6xltOgtMQNWRFGe0pAcYU5bZ6nSwJOCPqIh4g' alt="face" width={64} height={64} className="object-fit"/>
+            {STATUS_FACE[status as Status]}
           </div>
           <div className="flex flex-col">
             <span className="font-semibold capitalize block text-balance text-right">{ name }</span>

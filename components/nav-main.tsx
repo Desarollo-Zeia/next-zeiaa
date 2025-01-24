@@ -1,6 +1,6 @@
 "use client"
 
-import { ChevronRight, LayoutList, Activity, Megaphone } from "lucide-react"
+import { ChevronRight, LayoutList, Activity, Megaphone, FileChartColumnIncreasing  } from "lucide-react"
 import {
   Collapsible,
   CollapsibleContent,
@@ -69,6 +69,8 @@ export function NavMain({
               <CollapsibleTrigger asChild>
                 <SidebarMenuButton tooltip={module.analisis.title}>
                     {/* {module.analisis.title && <a href={module.analisis.url}><item.icon className="h-4 w-4"/></a> } */}
+                    { module.analisis.title && <Link href={module.analisis.url}><FileChartColumnIncreasing width={15} height={15}/></Link>}
+                   
                     <span>{module.analisis.title}</span>
                     <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                 </SidebarMenuButton>

@@ -5,16 +5,16 @@ import IndicatorToggle from "../filters/indicators-toggle";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { useState } from 'react';
+import { saveAs } from 'file-saver';
 import PaginationNumberComponent from '../pagination-number';
-import { UnhealthyFace } from '@/components/status-faces';
-// import { readinsgExcel } from '@/app/sevices/readings/data';
-// import { saveAs } from 'file-saver';
-// import Image from "next/image";
-// import ExcelIconGreen from "@/public/icons/excel.png"
+import { readinsgExcel, readinsgExcelAmbiental } from '@/app/sevices/readings/data';
+import Image from "next/image";
+import ExcelIconGreen from "@/public/icons/excel.png"
 import { UNIT_INDICATOR_THRESHOLD } from "@/app/utils/threshold";
 import { STATUS_TO_SPANISH, UNIT_CONVERTED } from "@/app/utils/formatter";
 import { GeneralRoomData, Indicator, Measurement, Unit } from "@/app/type";
 import { formattedDate } from "@/app/utils/func";
+import { DangerousFace, GoodFace, ModerateFace, UnhealthyFace } from "../faces";
 
 type ModifiedMeasurement = Omit<Measurement, 'hour'> & {
   hours: string;
@@ -34,10 +34,11 @@ type TableComponentProps = {
   unit: Unit,
   date_after: string, 
   date_before: string,
-  room: string
+  room: string,
+ 
 }
 
-export default function TableComponent( { generalRoomData, readings, count, indicator, unit } : TableComponentProps) {
+export default function TableComponent( { generalRoomData, readings, count, indicator, unit, room, date_before, date_after } : TableComponentProps) {
 
   const [isWhatMeasuredOpen, setIsWhatMeasuredOpen] = useState(false)
   const [isWhatCausesOpen, setIsWhatCausesOpen] = useState(false)
@@ -53,10 +54,10 @@ export default function TableComponent( { generalRoomData, readings, count, indi
   }
 
   const lmpLevels = [
-    { range: `< ${UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.bottom} ${UNIT_CONVERTED[unit]}`, icon: <UnhealthyFace/>, label: "Bueno", color: "text-green-600" },
-    { range: `${UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.bottom} ${UNIT_CONVERTED[unit]} - ${UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.center} ${UNIT_CONVERTED[unit]}`, icon: <UnhealthyFace />, label: "Moderado", color: "text-yellow-600" },
-    { range: `${UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.center} ${UNIT_CONVERTED[unit]} - ${UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.top} ${UNIT_CONVERTED[unit]}`, icon: <UnhealthyFace/>, label: "Insalubre", color: "text-orange-600" },
-    { range: `> ${UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.top} ${UNIT_CONVERTED[unit]}`, icon: <UnhealthyFace/>, label: "Peligroso", color: "text-red-600" },
+    { range: `< ${UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.bottom} ${UNIT_CONVERTED[unit]}`, icon: <GoodFace width={24} height={24}/>, label: "Bueno", color: "text-green-600" },
+    { range: `${UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.bottom} ${UNIT_CONVERTED[unit]} - ${UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.center} ${UNIT_CONVERTED[unit]}`, icon: <ModerateFace width={24} height={24}/>, label: "Moderado", color: "text-yellow-600" },
+    { range: `${UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.center} ${UNIT_CONVERTED[unit]} - ${UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.top} ${UNIT_CONVERTED[unit]}`, icon: <UnhealthyFace width={24} height={24}/>, label: "Insalubre", color: "text-orange-600" },
+    { range: `> ${UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.top} ${UNIT_CONVERTED[unit]}`, icon: <DangerousFace width={24} height={24}/>, label: "Peligroso", color: "text-red-600" },
   ]
 
   return (
@@ -126,12 +127,21 @@ export default function TableComponent( { generalRoomData, readings, count, indi
       <Card className="w-full flex-1">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <IndicatorToggle indicators={indicators} indicatorParam={indicator}/>
-          {/* <Button className="bg-[#00b0c7] hover:bg-[#00b0c7]" onClick={async () => {
-              const blob = await readinsgExcel({roomId: room, indicator, unit, date_before, date_after})
-              saveAs(blob, `Reporte: ${date_after} - ${date_before}`);
-          }}>
+          <Button className="bg-[#00b0c7] hover:bg-[#00b0c7]" onClick={async () => {
+
+            const blob = await readinsgExcelAmbiental({
+              room,
+              indicator,
+              unit,
+              date_before,
+              date_after,
+            })
+
+            saveAs(blob, `Reporte: ${date_after} - ${date_before}`)
+
+            }}>
             <Image src={ExcelIconGreen} width={16} height={16} alt="excel-image"/>
-            Descargar Excel</Button> */}
+            Descargar Excel</Button>
         </CardHeader>
         <CardContent>
           <Table>

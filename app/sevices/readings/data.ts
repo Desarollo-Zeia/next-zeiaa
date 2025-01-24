@@ -2,6 +2,7 @@
 import { fetchWithAuth, fetchWithAuthAmbiental } from "@/app/lib/api"
 import { baseUrl } from "@/app/lib/constant"
 
+
 export async function roomLastData({ roomId } : { roomId : string | number } ) {
   const res = await fetchWithAuth(`/readings/api/room/${roomId}/general/last`)
   return res 
@@ -129,19 +130,19 @@ export async function roomGeneralDataAmbiental({ roomId } : { roomId : string | 
 }
 
 export async function readinsgExcel({
-  roomId,
+  room,
   indicator = 'CO2',
   unit = 'PPM',
   date_after,
   date_before,
 }: {
-  roomId: string | number;
+  room: string | number;
   indicator: string;
   unit: string;
   date_after?: string;
   date_before?: string;
 }) {
-  const url = new URL(`/readings/api/room/${roomId}/indicator/report`, baseUrl);
+  const url = new URL(`/readings/api/room/${room}/indicator/report`, baseUrl);
 
   if (indicator) url.searchParams.set('indicator', indicator);
   if (unit) url.searchParams.set('unit', unit);
@@ -149,23 +150,24 @@ export async function readinsgExcel({
   if (date_before) url.searchParams.set('date_before', date_before);
 
   const res = await fetchWithAuth(`${url.pathname}${url.search}`)
+
   return res
 }
 
 export async function readinsgExcelAmbiental({
-  roomId,
+  room,
   indicator = 'CO2',
   unit = 'PPM',
   date_after,
   date_before,
 }: {
-  roomId: string | number;
+  room: string | number;
   indicator: string;
   unit: string;
   date_after?: string;
   date_before?: string;
 }) {
-  const url = new URL(`/readings/api/ambiental/point/${roomId}/indicator/report`, baseUrl);
+  const url = new URL(`/readings/api/ambiental/point/${room}/indicator/report`, baseUrl);
 
   if (indicator) url.searchParams.set('indicator', indicator);
   if (unit) url.searchParams.set('unit', unit);
@@ -173,7 +175,7 @@ export async function readinsgExcelAmbiental({
   if (date_before) url.searchParams.set('date_before', date_before);
 
   const res = await fetchWithAuthAmbiental(`${url.pathname}${url.search}`)
-
-  return res
+  
+   return res 
 }
 
