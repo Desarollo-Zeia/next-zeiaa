@@ -15,6 +15,7 @@ import { STATUS_TO_SPANISH, UNIT_CONVERTED } from "@/app/utils/formatter";
 import { GeneralRoomData, Indicator, Measurement, Unit } from "@/app/type";
 import { formattedDate } from "@/app/utils/func";
 import { DangerousFace, GoodFace, ModerateFace, UnhealthyFace } from "../faces";
+import { usePathname } from "next/navigation";
 
 type ModifiedMeasurement = Omit<Measurement, 'hour'> & {
   hours: string;
@@ -42,6 +43,7 @@ export default function TableComponent( { generalRoomData, readings, count, indi
 
   const [isWhatMeasuredOpen, setIsWhatMeasuredOpen] = useState(false)
   const [isWhatCausesOpen, setIsWhatCausesOpen] = useState(false)
+  const pathname = usePathname()
 
   const { indicators_pollutants: indicators } = generalRoomData
 
@@ -128,15 +130,28 @@ export default function TableComponent( { generalRoomData, readings, count, indi
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <IndicatorToggle indicators={indicators} indicatorParam={indicator}/>
           <Button className="bg-[#00b0c7] hover:bg-[#00b0c7]" onClick={async () => {
+            // eslint-disable-next-line @next/next/no-assign-module-variable
+            const module = pathname.split('/')[1]
+            let blob
+            if (module === 'ocupacional') {
+                blob = await readinsgExcel({
+                room,
+                indicator,
+                unit,
+                date_before,
+                date_after,
+              })
+            }
 
-            const blob = await readinsgExcelAmbiental({
+            if (module === 'ambiental') {
+              blob = await readinsgExcelAmbiental({
               room,
               indicator,
               unit,
               date_before,
               date_after,
             })
-
+          }
             saveAs(blob, `Reporte: ${date_after} - ${date_before}`)
 
             }}>
