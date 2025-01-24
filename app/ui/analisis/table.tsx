@@ -19,7 +19,7 @@ import { usePathname } from "next/navigation";
 
 type ModifiedMeasurement = Omit<Measurement, 'hour'> & {
   hours: string;
-};
+}
 
 
 type TableComponentProps = {
