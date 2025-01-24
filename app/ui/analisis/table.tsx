@@ -21,7 +21,6 @@ type ModifiedMeasurement = Omit<Measurement, 'hour'> & {
   hours: string;
 }
 
-
 type TableComponentProps = {
   generalRoomData: GeneralRoomData,
   readings: {
