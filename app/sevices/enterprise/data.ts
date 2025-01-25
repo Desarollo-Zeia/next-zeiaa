@@ -17,7 +17,7 @@ export async function detailAmbiental() {
 
 export async function roomsList({ search, status, headquarter, page, limit, offset} : RoomList) {
 
-  const url = new URL('enterprise/api/enterprise/room-list/', baseUrl)
+  const url = new URL('/enterprise/api/enterprise/room-list/', baseUrl)
 
   if (search) url.searchParams.set('search', search)
   if (status) url.searchParams.set('status', status)

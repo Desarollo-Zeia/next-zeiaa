@@ -20,14 +20,14 @@ export default function HeadquarterSelect({ headquarters } : { headquarters : He
   const pathname = usePathname()
   const { replace } = useRouter()
 
-  const handleRoomChange = (headquearter: string) => {
+  const handleRoomChange = (headquarter: string) => {
     const params = new URLSearchParams(searchParams);
-    if (headquearter) {
-      params.set('headquearter', headquearter);
+    if (headquarter) {
+      params.set('headquarter', headquarter);
     } 
 
-    if (headquearter === 'none') {
-      params.delete('headquearter');
+    if (headquarter === 'none') {
+      params.delete('headquarter');
     }
 
     replace(`${pathname}?${params.toString()}`);
