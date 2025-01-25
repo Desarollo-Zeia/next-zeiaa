@@ -12,13 +12,12 @@ import { format } from "date-fns";
 export default async function page({ searchParams } : SearchParams) {
   const { first_room: firstRoom} = await detail()
 
-  const { room, indicator = 'CO2', unit = 'PPM', date_after = new Date(), date_before = new Date()} = await searchParams
-
+  const { room, indicator = 'CO2', unit = 'PPM', date_after = new Date(), date_before = new Date(), start = '00:00', end = '23:00' } = await searchParams
 
   const currentFirstRoom = room ? room : firstRoom
 
   const rooms = await getRooms()
-  const readings = await readingsGraph({ roomId: currentFirstRoom, indicator, unit, date_after: format(date_after,"yyyy-MM-dd"), date_before: format(date_before, "yyyy-MM-dd")})
+  const readings = await readingsGraph({ roomId: currentFirstRoom, indicator, unit, date_after: format(date_after,"yyyy-MM-dd"), date_before: format(date_before, "yyyy-MM-dd"), hour_after: start, hour_before: end})
   const generalRoomData = await roomGeneralData({ roomId: currentFirstRoom})
 
   return (
@@ -27,7 +26,7 @@ export default async function page({ searchParams } : SearchParams) {
         <RoomSelect firstRoom={currentFirstRoom} rooms={rooms}/>
         <DatepickerRange />
       </FiltersContainer>
-      <ChartComponent readings={readings} indicator={indicator as Indicator} unit={unit as Unit} generalRoomData={generalRoomData}/>
+      <ChartComponent readings={readings} indicator={indicator as Indicator} unit={unit as Unit} generalRoomData={generalRoomData} start={start} end={end}/>
     </div>
   )
 }

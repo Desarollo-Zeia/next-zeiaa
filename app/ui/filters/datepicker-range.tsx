@@ -49,7 +49,7 @@ export function DatepickerRange({
       params.delete('date_before')
     }
     setFecha(fecha)
-    replace(`${pathname}?${params.toString()}`)
+    replace(`${pathname}?${params.toString()}`, { scroll: false})
    
   }, [fecha])
 

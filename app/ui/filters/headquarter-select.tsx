@@ -30,7 +30,7 @@ export default function HeadquarterSelect({ headquarters } : { headquarters : He
       params.delete('headquarter');
     }
 
-    replace(`${pathname}?${params.toString()}`);
+    replace(`${pathname}?${params.toString()}`, { scroll: false});
   }
   
   return (

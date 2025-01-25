@@ -7,7 +7,6 @@ import TableComponent from "@/app/ui/alertas/table";
 import { DatepickerRange } from "@/app/ui/filters/datepicker-range";
 import FiltersContainer from "@/app/ui/filters/filters-container";
 import RoomSelect from "@/app/ui/filters/room-select";
-import NoResultFound from "@/app/ui/no-result-found";
 import { format } from "date-fns";
 
 export default async function page({ searchParams } : SearchParams) {
@@ -28,14 +27,7 @@ export default async function page({ searchParams } : SearchParams) {
           <RoomSelect firstRoom={currentFirstRoom} rooms={rooms}/>
           <DatepickerRange/>
         </FiltersContainer>
-        {
-          readings?.count > 0 ? (
-            <TableComponent data={readings.results} count={readings.count} generalRoomData={generalRoomData} indicator={indicator as Indicator} />
-          ) : (
-            <NoResultFound/>
-          )
-        }
-
+        <TableComponent data={readings.results} count={readings.count} generalRoomData={generalRoomData} indicator={indicator as Indicator} />
     </div>
   )
 }

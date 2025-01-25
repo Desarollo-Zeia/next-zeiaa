@@ -23,6 +23,7 @@ import { es } from 'date-fns/locale';
 import { capitalizeFirstLetter } from "@/app/utils/func"
 import { Button } from "@/components/ui/button"
 import { GeneralRoomData, Indicator, Measurement, Unit } from "@/app/type"
+import { TimeRangeSlider } from "@/app/ui/filters/time-range-slider"
 
 Chart.register(Colors, annotationPlugin)
 
@@ -33,7 +34,9 @@ type ChartComponentProps = {
   readings: Readings,
   generalRoomData: GeneralRoomData,
   indicator: Indicator,
-  unit: Unit
+  unit: Unit,
+  start: string,
+  end: string
 }
 
 const chartConfig = {
@@ -98,7 +101,7 @@ return [
   }
 
 
-export function ChartComponent({ readings, generalRoomData, indicator, unit } : ChartComponentProps) {
+export function ChartComponent({ readings, generalRoomData, indicator, unit, start, end } : ChartComponentProps) {
 
   const [toggleChart, setToggleChart] = useState<boolean>(true)
 
@@ -139,7 +142,11 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit } : 
               </div>
             </div>
           </div>
-          <IndicatorToggle indicators={indicators} indicatorParam={indicator}/>
+          <div className="flex items-center gap-4">
+            {!toggleChart ? <TimeRangeSlider initialStart={start} initialEnd={end}/> : ''}
+            
+            <IndicatorToggle indicators={indicators} indicatorParam={indicator}/>
+          </div>
         </div>
       </CardHeader>
       <CardContent className="relative">

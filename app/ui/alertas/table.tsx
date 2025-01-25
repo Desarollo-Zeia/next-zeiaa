@@ -5,6 +5,8 @@ import IndicatorToggle from "../filters/indicators-toggle";
 import { GeneralRoomData, Indicator, Measurement, Status } from "@/app/type";
 import { formattedDate } from "@/app/utils/func";
 import { STATUS_TO_SPANISH, UNIT_CONVERTED } from "@/app/utils/formatter";
+import NoResultFound from "@/app/ui/no-result-found";
+
 
 type Data = Measurement & {
   hours: string,
@@ -32,35 +34,41 @@ export default function TableComponent({ data, count, generalRoomData, indicator
     <CardHeader className="flex flex-row items-center justify-end space-y-0 pb-2">
       <IndicatorToggle indicators={indicators} indicatorParam={indicator}/>
     </CardHeader>
-    <CardContent>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead >Fecha</TableHead>
-            <TableHead >Hora</TableHead>
-            <TableHead>Valor</TableHead>
-            <TableHead>Unidad</TableHead>
-            <TableHead>Estado</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-            {
-              data?.map((indicator, i) => 
-                ( 
-                  <TableRow key={i}>
-                    <TableCell >{formattedDate(indicator.date)}</TableCell>
-                    <TableCell >{indicator.hours.toLowerCase()}</TableCell>
-                    <TableCell>{indicator.value}</TableCell>
-                    <TableCell>{UNIT_CONVERTED[indicator.unit]}</TableCell>
-                    <TableCell >{STATUS_TO_SPANISH[indicator.level as Status]}</TableCell>
-                  </TableRow>
+    {
+      count > 0 ? (
+        <CardContent>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead >Fecha</TableHead>
+              <TableHead >Hora</TableHead>
+              <TableHead>Valor</TableHead>
+              <TableHead>Unidad</TableHead>
+              <TableHead>Estado</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+              {
+                data?.map((indicator, i) => 
+                  ( 
+                    <TableRow key={i}>
+                      <TableCell >{formattedDate(indicator.date)}</TableCell>
+                      <TableCell >{indicator.hours.toLowerCase()}</TableCell>
+                      <TableCell>{indicator.value}</TableCell>
+                      <TableCell>{UNIT_CONVERTED[indicator.unit]}</TableCell>
+                      <TableCell >{STATUS_TO_SPANISH[indicator.level as Status]}</TableCell>
+                    </TableRow>
+                  )
                 )
-              )
-            }
-        </TableBody>
-      </Table>
-    </CardContent>
-    <PaginationNumberComponent count={count} itemsPerPage={10}/>
+              }
+          </TableBody>
+        </Table>
+      </CardContent>
+      ) : (
+        <NoResultFound/>
+      )
+    }
+    { count > 0 && <PaginationNumberComponent count={count} itemsPerPage={10}/> }
     </Card>
   )
 }

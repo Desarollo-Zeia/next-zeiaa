@@ -11,11 +11,13 @@ import { readinsgExcel, readinsgExcelAmbiental } from '@/app/sevices/readings/da
 import Image from "next/image";
 import ExcelIconGreen from "@/public/icons/excel.png"
 import { UNIT_INDICATOR_THRESHOLD } from "@/app/utils/threshold";
-import { STATUS_TO_SPANISH, UNIT_CONVERTED } from "@/app/utils/formatter";
+import { INDICATOR_CONSEQUENCES_TEXT, INDICATOR_CONVERTED, INDICATOR_MEASUREMENT_TEXT, STATUS_TO_SPANISH, UNIT_CONVERTED } from "@/app/utils/formatter";
 import { GeneralRoomData, Indicator, Measurement, Unit } from "@/app/type";
 import { formattedDate } from "@/app/utils/func";
 import { DangerousFace, GoodFace, ModerateFace, UnhealthyFace } from "../faces";
 import { usePathname } from "next/navigation";
+import NoResultFound from "../no-result-found";
+import NoResultsFound from "../no-result";
 
 type ModifiedMeasurement = Omit<Measurement, 'hour'> & {
   hours: string;
@@ -64,129 +66,148 @@ export default function TableComponent( { generalRoomData, readings, count, indi
   return (
     <div className='flex gap-4 mx-8'>
       <Card >
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center">Límite Máximo Permisible (LMP)</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {lmpLevels.map((level, index) => (
-              <div key={index} className="flex items-center space-x-4 p-2 rounded-lg bg-gray-100">
-                <div className={`${level.color}`}>{level.icon}</div>
-                <div>
-                  <p className="font-semibold">{level.label}</p>
-                  <p className="text-sm text-gray-600">{level.range}</p>
+        {
+          count > 0 ? (
+            <>
+              <CardHeader>
+              <CardTitle className="text-2xl font-bold text-center">Límite Máximo Permisible (LMP)</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {lmpLevels.map((level, index) => {
+                    
+                    console.log(level.range)
+
+                    return (
+                      <div key={index} className={`flex items-center space-x-4 p-2 rounded-lg bg-gray-100`}>
+                        <div className={`${level.color}`}>{level.icon}</div>
+                        <div>
+                          <p className="font-semibold">{level.label}</p>
+                          <p className="text-sm text-gray-600">{level.range}</p>
+                        </div>
+                      </div>
+                    )
+                  })}
                 </div>
-              </div>
-            ))}
-          </div>
-          <div className="mt-6 flex justify-center space-x-4">
-            <Dialog open={isWhatMeasuredOpen} onOpenChange={setIsWhatMeasuredOpen}>
-              <DialogTrigger asChild>
-                <Button className='hover:bg-black hover:text-white' variant="outline">¿Qué se mide?</Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle >¿Qué se mide?</DialogTitle>
-                  <DialogDescription>
-                    El CO2 es el indicador de riesgo de contagio y transmisión de virus para el COVID-19, regulado por el Minsa en su anexo 10.
+                <div className="mt-6 flex justify-center space-x-4">
+                  <Dialog open={isWhatMeasuredOpen} onOpenChange={setIsWhatMeasuredOpen}>
+                    <DialogTrigger asChild>
+                      <Button className='hover:bg-black hover:text-white' variant="outline">¿Qué se mide?</Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle >¿Qué se mide?</DialogTitle>
+                        <DialogDescription>
+                          {INDICATOR_MEASUREMENT_TEXT[indicator]}
+                        </DialogDescription>
+                      </DialogHeader>
+                    </DialogContent>
+                  </Dialog>
 
-                    El CO2 indica el grado de ventilación que tiene un espacio, se estima que el 1 % del aire que se respira ya fue respirado por otra persona, las personas exhalan CO2 por lo que la acumulación de este gas es un buen indicador de la acumulación de aerosoles que podrían transmitir la COVID-19.
-                  </DialogDescription>
-                </DialogHeader>
-              </DialogContent>
-            </Dialog>
-
-            <Dialog open={isWhatCausesOpen} onOpenChange={setIsWhatCausesOpen}>
-              <DialogTrigger asChild>
-                <Button variant="outline" className='hover:bg-black hover:text-white'>¿Qué ocasiona?</Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>¿Qué ocasiona?</DialogTitle>
-                  <DialogDescription>
-                    Niveles elevados de CO2 pueden causar:
-                      <p>- Dolores de cabeza</p>
-                      <p>- Fatiga y somnolencia</p>
-                      <p>- Dificultad para concentrarse</p>
-                      <p>- Disminución del rendimiento cognitivo</p>
-                      <p>- En casos extremos, problemas respiratorios</p>
-                    {/* <ul className="list-disc list-inside mt-2">
-                      <li>Dolores de cabeza</li>
-                      <li>Fatiga y somnolencia</li>
-                      <li>Dificultad para concentrarse</li>
-                      <li>Disminución del rendimiento cognitivo</li>
-                      <li>En casos extremos, problemas respiratorios</li>
-                    </ul> */}
-                    Es importante mantener una buena ventilación para prevenir la acumulación de CO2.
-                  </DialogDescription>
-                </DialogHeader>
-              </DialogContent>
-            </Dialog>
-          </div>
-        </CardContent>
+                  <Dialog open={isWhatCausesOpen} onOpenChange={setIsWhatCausesOpen}>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" className='hover:bg-black hover:text-white'>¿Qué ocasiona?</Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>¿Qué ocasiona?</DialogTitle>
+                        <DialogDescription>
+                          Niveles elevados de {INDICATOR_CONVERTED[indicator]} pueden causar:
+                            {INDICATOR_CONSEQUENCES_TEXT[indicator].map((consequence, i) => (
+                              <p key={i} className="text-gray-600">- {consequence}</p>
+                            ) )}
+                          Es importante mantener una buena ventilación para prevenir la acumulación de {INDICATOR_CONVERTED[indicator]}.
+                        </DialogDescription>
+                      </DialogHeader>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+              </CardContent>
+            </>
+          ) : (
+            <NoResultsFound message="No se encontraron umbrales"/>
+          )
+        }
       </Card>
       <Card className="w-full flex-1">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <IndicatorToggle indicators={indicators} indicatorParam={indicator}/>
-          <Button className="bg-[#00b0c7] hover:bg-[#00b0c7]" onClick={async () => {
-            // eslint-disable-next-line @next/next/no-assign-module-variable
-            const module = pathname.split('/')[1]
-            let blob
-            if (module === 'ocupacional') {
-                blob = await readinsgExcel({
-                room,
-                indicator,
-                unit,
-                date_before,
-                date_after,
-              })
-            }
-
-            if (module === 'ambiental') {
-              blob = await readinsgExcelAmbiental({
-              room,
-              indicator,
-              unit,
-              date_before,
-              date_after,
-            })
+          {
+            count > 0 ? (
+              <Button className="bg-[#00b0c7] hover:bg-[#00b0c7]" onClick={async () => {
+                // eslint-disable-next-line @next/next/no-assign-module-variable
+                  const module = pathname.split('/')[1]
+                  let blob
+                  if (module === 'ocupacional') {
+                      blob = await readinsgExcel({
+                      room,
+                      indicator,
+                      unit,
+                      date_before,
+                      date_after,
+                    })
+                  }
+    
+                  if (module === 'ambiental') {
+                    blob = await readinsgExcelAmbiental({
+                    room,
+                    indicator,
+                    unit,
+                    date_before,
+                    date_after,
+                  })
+                }
+                  saveAs(blob, `Reporte: ${date_after} - ${date_before}`)
+    
+                  }}>
+                  <Image src={ExcelIconGreen} width={16} height={16} alt="excel-image"/>
+                  Descargar Excel
+                
+                </Button>
+            ) : 
+            (
+              <Button className="bg-[#00b0c7] hover:bg-[#00b0c7]">
+                No hay datos
+              </Button>
+            )
           }
-            saveAs(blob, `Reporte: ${date_after} - ${date_before}`)
-
-            }}>
-            <Image src={ExcelIconGreen} width={16} height={16} alt="excel-image"/>
-            Descargar Excel</Button>
+        
         </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Fecha</TableHead>
-                <TableHead>Hora</TableHead>
-                <TableHead>Cantidad</TableHead>
-                <TableHead>Unidad</TableHead>
-                <TableHead>Estado</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-            {
-                readings.results?.map((indicator, i) => 
-                  ( 
-                    <TableRow key={i}>
-                      <TableCell>{formattedDate(indicator.date)}</TableCell>
-                      <TableCell>{indicator.hours.toLocaleLowerCase()}</TableCell>
-                      <TableCell>{indicator.value}</TableCell>
-                      <TableCell>{UNIT_CONVERTED[indicator.unit]}</TableCell>
-                      <TableCell>{STATUS_TO_SPANISH[indicator.status]}</TableCell>
-                    </TableRow>
+        {
+          count > 0 ? ( 
+            <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Fecha</TableHead>
+                  <TableHead>Hora</TableHead>
+                  <TableHead>Cantidad</TableHead>
+                  <TableHead>Unidad</TableHead>
+                  <TableHead>Estado</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+              {
+                  readings.results?.map((indicator, i) => 
+                    ( 
+                      <TableRow key={i}>
+                        <TableCell>{formattedDate(indicator.date)}</TableCell>
+                        <TableCell>{indicator.hours.toLocaleLowerCase()}</TableCell>
+                        <TableCell>{indicator.value}</TableCell>
+                        <TableCell>{UNIT_CONVERTED[indicator.unit]}</TableCell>
+                        <TableCell>{STATUS_TO_SPANISH[indicator.status]}</TableCell>
+                      </TableRow>
+                    )
                   )
-                )
-              }
-            
-            </TableBody>
-          </Table>
-        </CardContent>
-        <PaginationNumberComponent count={count} itemsPerPage={10}/>
+                }
+              </TableBody>
+            </Table>
+            </CardContent>
+          ) : (
+            <NoResultFound/>
+          )
+        }
+        { count > 0 && <PaginationNumberComponent count={count} itemsPerPage={10}/> }
       </Card>
       
     </div>

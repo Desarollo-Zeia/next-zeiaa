@@ -34,7 +34,7 @@ export default function RoomSelect({ rooms, firstRoom } : { rooms: Room[], first
       params.delete('room');
     }
 
-    replace(`${pathname}?${params.toString()}`);
+    replace(`${pathname}?${params.toString()}`, { scroll: false });
   }
   
   return (

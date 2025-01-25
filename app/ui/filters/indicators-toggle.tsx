@@ -32,7 +32,7 @@ export default function IndicatorToggle( { indicators, indicatorParam } : Indica
     params.set('indicator', value)
     params.set('unit', unit)
     
-    replace(`${pathname}?${params.toString()}`)
+    replace(`${pathname}?${params.toString()}`, { scroll: false})
   }
 
   return (
