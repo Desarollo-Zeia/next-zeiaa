@@ -10,14 +10,14 @@ import PaginationNumberComponent from '../pagination-number';
 import { readinsgExcel, readinsgExcelAmbiental } from '@/app/sevices/readings/data';
 import Image from "next/image";
 import ExcelIconGreen from "@/public/icons/excel.png"
-import { UNIT_INDICATOR_THRESHOLD } from "@/app/utils/threshold";
+import { UNIT_INDICATOR_THRESHOLD, UNIT_INDICATOR_THRESHOLD_AMBIENTAL } from "@/app/utils/threshold";
 import { INDICATOR_CONSEQUENCES_TEXT, INDICATOR_CONVERTED, INDICATOR_MEASUREMENT_TEXT, STATUS_TO_SPANISH, UNIT_CONVERTED } from "@/app/utils/formatter";
 import { GeneralRoomData, Indicator, Measurement, Unit } from "@/app/type";
 import { formattedDate } from "@/app/utils/func";
-import { DangerousFace, GoodFace, ModerateFace, UnhealthyFace } from "../faces";
 import { usePathname } from "next/navigation";
 import NoResultFound from "../no-result-found";
 import NoResultsFound from "../no-result";
+import IndicatorThreshold from "../umbrales";
 
 type ModifiedMeasurement = Omit<Measurement, 'hour'> & {
   hours: string;
@@ -45,10 +45,13 @@ export default function TableComponent( { generalRoomData, readings, count, indi
   const [isWhatMeasuredOpen, setIsWhatMeasuredOpen] = useState(false)
   const [isWhatCausesOpen, setIsWhatCausesOpen] = useState(false)
   const pathname = usePathname()
+  // eslint-disable-next-line @next/next/no-assign-module-variable
+  const module = pathname.split('/')[1]
 
   const { indicators_pollutants: indicators } = generalRoomData
 
   let thresholdPointer
+  let thresholds
 
   if (indicator === 'TVOC') {
     thresholdPointer = unit as Extract<Unit, 'PPB' | 'ICA'>
@@ -56,12 +59,20 @@ export default function TableComponent( { generalRoomData, readings, count, indi
     thresholdPointer = indicator
   }
 
-  const lmpLevels = [
-    { range: `< ${UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.bottom} ${UNIT_CONVERTED[unit]}`, icon: <GoodFace width={24} height={24}/>, label: "Bueno", color: "text-green-600", obj: UNIT_INDICATOR_THRESHOLD[thresholdPointer] },
-    { range: `${UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.bottom} ${UNIT_CONVERTED[unit]} - ${UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.center} ${UNIT_CONVERTED[unit]}`, icon: <ModerateFace width={24} height={24}/>, label: "Moderado", color: "text-yellow-600", obj: UNIT_INDICATOR_THRESHOLD[thresholdPointer] },
-    { range: `${UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.center} ${UNIT_CONVERTED[unit]} - ${UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.top} ${UNIT_CONVERTED[unit]}`, icon: <UnhealthyFace width={24} height={24}/>, label: "Insalubre", color: "text-orange-600", obj: UNIT_INDICATOR_THRESHOLD[thresholdPointer] },
-    { range: `> ${UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.top} ${UNIT_CONVERTED[unit]}`, icon: <DangerousFace width={24} height={24}/>, label: "Peligroso", color: "text-red-600", obj: UNIT_INDICATOR_THRESHOLD[thresholdPointer] },
-  ]
+  // const lmpLevels = [
+  //   { range: `< ${UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.bottom} ${UNIT_CONVERTED[unit]}`, icon: <GoodFace width={24} height={24}/>, label: "Bueno", color: "text-green-600", obj: UNIT_INDICATOR_THRESHOLD[thresholdPointer] },
+  //   { range: `${UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.bottom} ${UNIT_CONVERTED[unit]} - ${UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.center} ${UNIT_CONVERTED[unit]}`, icon: <ModerateFace width={24} height={24}/>, label: "Moderado", color: "text-yellow-600", obj: UNIT_INDICATOR_THRESHOLD[thresholdPointer] },
+  //   { range: `${UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.center} ${UNIT_CONVERTED[unit]} - ${UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.top} ${UNIT_CONVERTED[unit]}`, icon: <UnhealthyFace width={24} height={24}/>, label: "Insalubre", color: "text-orange-600", obj: UNIT_INDICATOR_THRESHOLD[thresholdPointer] },
+  //   { range: `> ${UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.top} ${UNIT_CONVERTED[unit]}`, icon: <DangerousFace width={24} height={24}/>, label: "Peligroso", color: "text-red-600", obj: UNIT_INDICATOR_THRESHOLD[thresholdPointer] },
+  // ]
+
+  if (module === 'ocupacional') {
+    thresholds = Object.values(UNIT_INDICATOR_THRESHOLD[thresholdPointer])
+  } 
+
+  if (module === 'ambiental') {
+    thresholds = Object.values(UNIT_INDICATOR_THRESHOLD_AMBIENTAL[thresholdPointer])
+  }
 
   return (
     <div className='flex gap-4 mx-8'>
@@ -73,7 +84,7 @@ export default function TableComponent( { generalRoomData, readings, count, indi
               <CardTitle className="text-2xl font-bold text-center">Límite Máximo Permisible (LMP)</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
+                {/* <div className="space-y-4">
                   {lmpLevels.map((level, index) => {
                     
                     return (
@@ -86,7 +97,8 @@ export default function TableComponent( { generalRoomData, readings, count, indi
                       </div>
                     )
                   })}
-                </div>
+                </div> */}
+                <IndicatorThreshold thresholds={thresholds} unit={unit}/>
                 <div className="mt-6 flex justify-center space-x-4">
                   <Dialog open={isWhatMeasuredOpen} onOpenChange={setIsWhatMeasuredOpen}>
                     <DialogTrigger asChild>
@@ -133,8 +145,8 @@ export default function TableComponent( { generalRoomData, readings, count, indi
           {
             count > 0 ? (
               <Button className="bg-[#00b0c7] hover:bg-[#00b0c7]" onClick={async () => {
-                // eslint-disable-next-line @next/next/no-assign-module-variable
-                  const module = pathname.split('/')[1]
+                
+                  
                   let blob
                   if (module === 'ocupacional') {
                       blob = await readinsgExcel({
@@ -161,7 +173,7 @@ export default function TableComponent( { generalRoomData, readings, count, indi
                   <Image src={ExcelIconGreen} width={16} height={16} alt="excel-image"/>
                   Descargar Excel
                 
-                </Button>
+              </Button>
             ) : 
             (
               <Button className="bg-[#00b0c7] hover:bg-[#00b0c7]">

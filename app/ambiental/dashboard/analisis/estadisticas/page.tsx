@@ -17,7 +17,7 @@ export default async function page({ searchParams } : SearchParams) {
   const currentFirstRoom = room ? room : firstRoom
 
   const rooms = await getRoomsAmbiental()
-  const readings = await readingsGraphAmbiental({ roomId: currentFirstRoom, indicator, unit, date_after: format(date_after,"yyyy-MM-dd"), date_before: format(date_before, "yyyy-MM-dd")})
+  const readings = await readingsGraphAmbiental({ roomId: currentFirstRoom, indicator, unit, date_after: format(date_after,"yyyy-MM-dd"), date_before: format(date_before, "yyyy-MM-dd"), hour_after: start, hour_before: end})
   const generalRoomData = await roomGeneralDataAmbiental({ roomId: currentFirstRoom})
 
   return (
