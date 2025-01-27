@@ -22,7 +22,6 @@ interface Room {
 export default async function page({ searchParams } : SearchParams  ) {
 
   const { search , status , headquarter, page , limit, offset } = await searchParams
-
   const headquarters = await getHeadquarters()
   const rooms = await roomsList({ search, status, headquarter, page, limit, offset })
 
