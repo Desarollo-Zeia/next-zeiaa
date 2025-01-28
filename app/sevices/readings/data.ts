@@ -75,7 +75,7 @@ export async function readingsGraph({ roomId, indicator, unit, date_after, date_
   return res 
 }
 
-export async function readingsGraphAmbiental({ roomId, indicator, unit, date_after, date_before  } : { roomId : string | number, indicator: string, unit: string, date_after?: string,  date_before?: string}) {
+export async function readingsGraphAmbiental({ roomId, indicator, unit, date_after, date_before, hour_before, hour_after  } : { roomId : string | number, indicator: string, unit: string, date_after?: string,  date_before?: string, hour_after: string, hour_before: string}) {
 
   const url = new URL(`/readings/api/ambiental/point/${roomId}/indicator/graph`, baseUrl)
 
@@ -83,6 +83,8 @@ export async function readingsGraphAmbiental({ roomId, indicator, unit, date_aft
   if (unit) url.searchParams.set('unit', unit)
   if (date_after) url.searchParams.set('date_after', date_after)
   if (date_before) url.searchParams.set('date_before', date_before)
+    if (hour_before) url.searchParams.set('hour_before', hour_before)
+      if (hour_after) url.searchParams.set('hour_after', hour_after)
 
   const res = await fetchWithAuthAmbiental(`${url.pathname}${url.search}`)
 

@@ -29,8 +29,6 @@ interface TableComponentProps {
   
 export default function TableComponent({ data, name } : TableComponentProps) {
 
-  console.log(data)
-
   return (
     <Card className="w-full max-w-4xl mx-auto">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
