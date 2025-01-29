@@ -110,7 +110,6 @@ export default function PaginationComponent({ count, itemsPerPage }: PaginationP
           </PaginationItem>
         </PaginationContent>
       </Pagination>
-      
       <p className="text-sm text-gray-600 text-nowrap">
         Mostrando del {startItem} al {endItem} de {count} resultados
       </p>
