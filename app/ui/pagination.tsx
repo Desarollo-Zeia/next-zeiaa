@@ -10,6 +10,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination"
 import { useSearchParams, usePathname, useRouter } from 'next/navigation'
+import { useTransition } from "react"
 
 interface PaginationProps {
   count: number
@@ -20,20 +21,25 @@ export default function PaginationComponent({ count, itemsPerPage }: PaginationP
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const { replace } = useRouter()
+  const [isPending, startTransition] = useTransition();
 
   const currentOffset = Number(searchParams.get('offset') || '0')
   const currentPage = Math.floor(currentOffset / itemsPerPage) + 1
   const totalPages = Math.ceil(count / itemsPerPage)
 
   const handlePageChange = (page: number) => {
-    const newOffset = (page - 1) * itemsPerPage
-    const params = new URLSearchParams(searchParams)
-    if (newOffset === 0) {
-      params.delete('offset')
-    } else {
-      params.set('offset', newOffset.toString())
-    }
-    replace(`${pathname}?${params.toString()}`)
+
+    startTransition(() => {
+
+      const newOffset = (page - 1) * itemsPerPage
+      const params = new URLSearchParams(searchParams)
+      if (newOffset === 0) {
+        params.delete('offset')
+      } else {
+        params.set('offset', newOffset.toString())
+      }
+      replace(`${pathname}?${params.toString()}`, { scroll: false})
+    })
   }
 
   const pageNumbers = []
@@ -53,7 +59,7 @@ export default function PaginationComponent({ count, itemsPerPage }: PaginationP
   const endItem = Math.min(currentOffset + itemsPerPage, count)
 
   return (
-    <div className="flex flex-col items-center space-y-2 md:flex-row md:justify-between md:space-y-0 p-4">
+    <div className="flex flex-col items-center space-y-2 md:flex-row md:justify-between md:space-y-0 p-4 relative">
       <Pagination>
         <PaginationContent>
           <PaginationItem>
@@ -71,7 +77,13 @@ export default function PaginationComponent({ count, itemsPerPage }: PaginationP
               {pageNumber === '...' ? (
                 <PaginationEllipsis />
               ) : (
-                <PaginationLink 
+
+                isPending ? (
+                  <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-50">
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#00b0c7]"></div>
+                  </div>
+                ) : (
+                  <PaginationLink 
                   href="#" 
                   isActive={currentPage === pageNumber}
                   onClick={(e) => {
@@ -81,6 +93,8 @@ export default function PaginationComponent({ count, itemsPerPage }: PaginationP
                 >
                   {pageNumber}
                 </PaginationLink>
+                )
+              
               )}
             </PaginationItem>
           ))}
