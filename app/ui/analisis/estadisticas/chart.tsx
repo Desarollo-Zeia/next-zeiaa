@@ -151,7 +151,6 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
               <div className="text-xs font-medium mb-2">Umbrales:</div>
               <div className="flex flex-wrap gap-4">
               {thresholds?.map((thresholdValue, index) => {
-    // Determinar color según posición y cantidad de umbrales
               const color = (() => {
                 const total = thresholds.length;
                 
