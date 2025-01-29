@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/chart"
 import { useState } from "react"
 import IndicatorToggle from "../../filters/indicators-toggle"
-import { UNIT_INDICATOR_THRESHOLD } from "@/app/utils/threshold"
+import { UNIT_INDICATOR_THRESHOLD, UNIT_INDICATOR_THRESHOLD_AMBIENTAL } from "@/app/utils/threshold"
 import 'chart.js/auto';
 import { Line } from 'react-chartjs-2'
 import { Chart, Colors } from 'chart.js/auto'
@@ -24,6 +24,7 @@ import { capitalizeFirstLetter } from "@/app/utils/func"
 import { Button } from "@/components/ui/button"
 import { GeneralRoomData, Indicator, Measurement, Unit } from "@/app/type"
 import { TimeRangeSlider } from "@/app/ui/filters/time-range-slider"
+import { usePathname } from "next/navigation"
 
 Chart.register(Colors, annotationPlugin)
 
@@ -106,15 +107,37 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
   const [toggleChart, setToggleChart] = useState<boolean>(true)
 
   const { indicators_pollutants: indicators } = generalRoomData
-
+  const pathname = usePathname()
+  // eslint-disable-next-line @next/next/no-assign-module-variable
+  const module = pathname.split('/')[1]
 
   let thresholdPointer
+  let thresholds: number[] = []
 
   if (indicator === 'TVOC') {
     thresholdPointer = unit as Extract<Unit, 'PPB' | 'ICA'>
   } else {
     thresholdPointer = indicator
   }
+
+  if (module === 'ocupacional') {
+    thresholds = Object.values(UNIT_INDICATOR_THRESHOLD[thresholdPointer] || {}).filter(Boolean);
+  } 
+  
+  if (module === 'ambiental') {
+    thresholds = Object.values(UNIT_INDICATOR_THRESHOLD_AMBIENTAL[thresholdPointer] || {}).filter(Boolean);
+  }
+
+  // const getStrokeColor = (index: number) => {
+  //   const thresholdCount = thresholds?.length || 0;
+    
+  //   if (thresholdCount === 1) return '#ff0000'; // Único umbral
+  //   if (thresholdCount === 2) return index === 0 ? '#ffd700' : '#ff0000'; // Moderado/Peligroso
+  //   if (thresholdCount === 3) { // Moderado/Insalubre/Peligroso
+  //     return ['#ffd700', '#ffa500', '#ff0000'][index];
+  //   }
+  //   return '#000'; // Caso por defecto
+  // };
 
   return (
     <Card>
@@ -127,18 +150,33 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
             <div className="w-full">
               <div className="text-xs font-medium mb-2">Umbrales:</div>
               <div className="flex flex-wrap gap-4">
-                <div className="flex items-center gap-2">
-                  <div className="text-yellow-500 font-bold">---</div>
-                  <span className="font-normal">{UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.bottom} {UNIT_CONVERTED[unit]}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="text-orange-500 font-bold">---</div>
-                  <span className="font-normal">{UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.center} {UNIT_CONVERTED[unit]}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="text-red-500 font-bold">---</div>
-                  <span className="font-normal">{UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.top} {UNIT_CONVERTED[unit]}</span>
-                </div>
+              {thresholds?.map((thresholdValue, index) => {
+    // Determinar color según posición y cantidad de umbrales
+              const color = (() => {
+                const total = thresholds.length;
+                
+                    if (total === 1) return '#ff0000'; // Único umbral rojo
+                    if (total === 2) return index === 0 ? '#ffd700' : '#ff0000'; // Amarillo/Rojo
+                    return ['#ffd700', '#ffa500', '#ff0000'][index]; // Amarillo/Naranja/Rojo para 3
+                  })();
+
+                  return (
+                    <div key={index} className="flex items-center gap-2">
+                      <div 
+                        className="font-bold" 
+                        style={{ 
+                          color,
+                          width: '24px' 
+                        }}
+                      >
+                        ---
+                      </div>
+                      <span className="font-normal">
+                        {thresholdValue} {UNIT_CONVERTED[unit]}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -153,7 +191,6 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
         <Button className="absolute right-0 mt-8 mr-10" onClick={() => setToggleChart((prev: boolean) => !prev)}>{toggleChart ? 'Mostrar en horas' : 'Mostrar en días'}</Button>
 
         <ChartContainer config={chartConfig}>
-          
           <Line
             data={{ datasets: toggleChart ?  days(readings) : hours(readings) }}
             options={{
@@ -216,11 +253,12 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
                     annotations: {
                       line1: {
                         type: 'line',
-                        yMin: UNIT_INDICATOR_THRESHOLD[thresholdPointer].bottom,
-                        yMax: UNIT_INDICATOR_THRESHOLD[thresholdPointer].bottom,
+                        yMin: UNIT_INDICATOR_THRESHOLD_AMBIENTAL[thresholdPointer]?.bottom,
+                        yMax: UNIT_INDICATOR_THRESHOLD_AMBIENTAL[thresholdPointer]?.bottom,
                         borderColor: '#d9c308',
                         borderWidth: 2,
                         borderDash: [5, 5],
+                        display: UNIT_INDICATOR_THRESHOLD_AMBIENTAL[thresholdPointer]?.bottom !== 0,
                         // label: {
                         //   display: true,
                         //   content: [`${UNIT_INDICATOR_THRESHOLD[thresholdPointer].bottom} ${UNIT_CONVERTED[thresholdPointer]}`],
@@ -230,11 +268,12 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
                       },
                       line2: {
                         type: 'line',
-                        yMin: UNIT_INDICATOR_THRESHOLD[thresholdPointer].center,
-                        yMax: UNIT_INDICATOR_THRESHOLD[thresholdPointer].center,
+                        yMin: UNIT_INDICATOR_THRESHOLD_AMBIENTAL[thresholdPointer]?.center,
+                        yMax: UNIT_INDICATOR_THRESHOLD_AMBIENTAL[thresholdPointer]?.center,
                         borderColor: 'orange',
                         borderWidth: 2,
                         borderDash: [5, 5],
+                        display: UNIT_INDICATOR_THRESHOLD_AMBIENTAL[thresholdPointer]?.center !== 0,
                         // label: {
                         //   display: true,
                         //   content: [`${UNIT_INDICATOR_THRESHOLD[thresholdPointer].center} ${UNIT_CONVERTED[thresholdPointer]}`],
@@ -244,8 +283,8 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
                       },
                       line3: {
                         type: 'line',
-                        yMin: UNIT_INDICATOR_THRESHOLD[thresholdPointer].top * 1.05,
-                        yMax: UNIT_INDICATOR_THRESHOLD[thresholdPointer].top * 1.05,
+                        yMin: UNIT_INDICATOR_THRESHOLD_AMBIENTAL[thresholdPointer]?.top * 1.05,
+                        yMax: UNIT_INDICATOR_THRESHOLD_AMBIENTAL[thresholdPointer]?.top * 1.05,
                         borderColor: 'red',
                         borderWidth: 2,
                         borderDash: [5, 5],
