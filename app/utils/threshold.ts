@@ -38,12 +38,42 @@ export const UNIT_INDICATOR_THRESHOLD_AMBIENTAL = {
         top: 1500
       } ,
     PM10: {
+        top: 50,
+    },
+    PM2_5: {
+        top: 100,
+    },
+    PPB: {
+        bottom: 65,
+        center: 220,
+        top: 660,
+    },
+    ICA: {
+        bottom: 199,
+        center: 299,
+        top: 399,
+    },
+    HCHO: {
+        bottom: 0.08,
+        center: 0.1,
+        top: 1.2
+    }
+}
+
+
+export const UNIT_INDICATOR_THRESHOLD_AMBIENTAL_CHARTJS_EXLUSIVE_DICTIONARY_IM_SORRY_FOR_THE_NEXT_DEVELOPER = {
+    CO2: {
+        bottom: 800,
+        center: 1000,
+        top: 1500
+      } ,
+    PM10: {
         bottom: 0,
         center: 0,
         top: 50,
     },
     PM2_5: {
-        bottom: 0,
+         bottom: 0,
         center: 0,
         top: 100,
     },

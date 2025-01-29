@@ -107,31 +107,31 @@ export default function ChartComponent({ results, generalRoomData, indicator, un
               <div className="flex flex-wrap gap-4">
               {thresholds?.map((thresholdValue, index) => {
     // Determinar color según posición y cantidad de umbrales
-    const color = (() => {
-      const total = thresholds.length;
-      
-          if (total === 1) return '#ff0000'; // Único umbral rojo
-          if (total === 2) return index === 0 ? '#ffd700' : '#ff0000'; // Amarillo/Rojo
-          return ['#ffd700', '#ffa500', '#ff0000'][index]; // Amarillo/Naranja/Rojo para 3
-        })();
+              const color = (() => {
+                const total = thresholds.length;
+                
+                    if (total === 1) return '#ff0000'; // Único umbral rojo
+                    if (total === 2) return index === 0 ? '#ffd700' : '#ff0000'; // Amarillo/Rojo
+                    return ['#ffd700', '#ffa500', '#ff0000'][index]; // Amarillo/Naranja/Rojo para 3
+                  })();
 
-        return (
-          <div key={index} className="flex items-center gap-2">
-            <div 
-              className="font-bold" 
-              style={{ 
-                color,
-                width: '24px' 
-              }}
-            >
-              ---
-            </div>
-            <span className="font-normal">
-              {thresholdValue} {UNIT_CONVERTED[unit]}
-            </span>
-          </div>
-        );
-      })}
+                  return (
+                    <div key={index} className="flex items-center gap-2">
+                      <div 
+                        className="font-bold" 
+                        style={{ 
+                          color,
+                          width: '24px' 
+                        }}
+                      >
+                        ---
+                      </div>
+                      <span className="font-normal">
+                        {thresholdValue} {UNIT_CONVERTED[unit]}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
         </CardHeader>

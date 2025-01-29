@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/chart"
 import { useState } from "react"
 import IndicatorToggle from "../../filters/indicators-toggle"
-import { UNIT_INDICATOR_THRESHOLD, UNIT_INDICATOR_THRESHOLD_AMBIENTAL } from "@/app/utils/threshold"
+import { UNIT_INDICATOR_THRESHOLD, UNIT_INDICATOR_THRESHOLD_AMBIENTAL_CHARTJS_EXLUSIVE_DICTIONARY_IM_SORRY_FOR_THE_NEXT_DEVELOPER } from "@/app/utils/threshold"
 import 'chart.js/auto';
 import { Line } from 'react-chartjs-2'
 import { Chart, Colors } from 'chart.js/auto'
@@ -125,7 +125,7 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
   } 
   
   if (module === 'ambiental') {
-    thresholds = Object.values(UNIT_INDICATOR_THRESHOLD_AMBIENTAL[thresholdPointer] || {}).filter(Boolean);
+    thresholds = Object.values(UNIT_INDICATOR_THRESHOLD_AMBIENTAL_CHARTJS_EXLUSIVE_DICTIONARY_IM_SORRY_FOR_THE_NEXT_DEVELOPER[thresholdPointer] || {}).filter(Boolean);
   }
 
   // const getStrokeColor = (index: number) => {
@@ -252,12 +252,12 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
                     annotations: {
                       line1: {
                         type: 'line',
-                        yMin: UNIT_INDICATOR_THRESHOLD_AMBIENTAL[thresholdPointer]?.bottom,
-                        yMax: UNIT_INDICATOR_THRESHOLD_AMBIENTAL[thresholdPointer]?.bottom,
+                        yMin: UNIT_INDICATOR_THRESHOLD_AMBIENTAL_CHARTJS_EXLUSIVE_DICTIONARY_IM_SORRY_FOR_THE_NEXT_DEVELOPER[thresholdPointer]?.bottom,
+                        yMax: UNIT_INDICATOR_THRESHOLD_AMBIENTAL_CHARTJS_EXLUSIVE_DICTIONARY_IM_SORRY_FOR_THE_NEXT_DEVELOPER[thresholdPointer]?.bottom,
                         borderColor: '#d9c308',
                         borderWidth: 2,
                         borderDash: [5, 5],
-                        display: UNIT_INDICATOR_THRESHOLD_AMBIENTAL[thresholdPointer]?.bottom !== 0,
+                        display: UNIT_INDICATOR_THRESHOLD_AMBIENTAL_CHARTJS_EXLUSIVE_DICTIONARY_IM_SORRY_FOR_THE_NEXT_DEVELOPER[thresholdPointer]?.bottom !== 0,
                         // label: {
                         //   display: true,
                         //   content: [`${UNIT_INDICATOR_THRESHOLD[thresholdPointer].bottom} ${UNIT_CONVERTED[thresholdPointer]}`],
@@ -267,12 +267,12 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
                       },
                       line2: {
                         type: 'line',
-                        yMin: UNIT_INDICATOR_THRESHOLD_AMBIENTAL[thresholdPointer]?.center,
-                        yMax: UNIT_INDICATOR_THRESHOLD_AMBIENTAL[thresholdPointer]?.center,
+                        yMin: UNIT_INDICATOR_THRESHOLD_AMBIENTAL_CHARTJS_EXLUSIVE_DICTIONARY_IM_SORRY_FOR_THE_NEXT_DEVELOPER[thresholdPointer]?.center,
+                        yMax: UNIT_INDICATOR_THRESHOLD_AMBIENTAL_CHARTJS_EXLUSIVE_DICTIONARY_IM_SORRY_FOR_THE_NEXT_DEVELOPER[thresholdPointer]?.center,
                         borderColor: 'orange',
                         borderWidth: 2,
                         borderDash: [5, 5],
-                        display: UNIT_INDICATOR_THRESHOLD_AMBIENTAL[thresholdPointer]?.center !== 0,
+                        display: UNIT_INDICATOR_THRESHOLD_AMBIENTAL_CHARTJS_EXLUSIVE_DICTIONARY_IM_SORRY_FOR_THE_NEXT_DEVELOPER[thresholdPointer]?.center !== 0,
                         // label: {
                         //   display: true,
                         //   content: [`${UNIT_INDICATOR_THRESHOLD[thresholdPointer].center} ${UNIT_CONVERTED[thresholdPointer]}`],
@@ -282,8 +282,8 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
                       },
                       line3: {
                         type: 'line',
-                        yMin: UNIT_INDICATOR_THRESHOLD_AMBIENTAL[thresholdPointer]?.top * 1.05,
-                        yMax: UNIT_INDICATOR_THRESHOLD_AMBIENTAL[thresholdPointer]?.top * 1.05,
+                        yMin: UNIT_INDICATOR_THRESHOLD_AMBIENTAL_CHARTJS_EXLUSIVE_DICTIONARY_IM_SORRY_FOR_THE_NEXT_DEVELOPER[thresholdPointer]?.top * 1.05,
+                        yMax: UNIT_INDICATOR_THRESHOLD_AMBIENTAL_CHARTJS_EXLUSIVE_DICTIONARY_IM_SORRY_FOR_THE_NEXT_DEVELOPER[thresholdPointer]?.top * 1.05,
                         borderColor: 'red',
                         borderWidth: 2,
                         borderDash: [5, 5],
