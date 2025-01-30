@@ -18,6 +18,7 @@ import { usePathname } from "next/navigation";
 import NoResultFound from "../no-result-found";
 import NoResultsFound from "../no-result";
 import IndicatorThreshold from "../umbrales";
+import { useTransition } from 'react';
 
 type ModifiedMeasurement = Omit<Measurement, 'hour'> & {
   hours: string;
@@ -44,6 +45,7 @@ export default function TableComponent( { generalRoomData, readings, count, indi
 
   const [isWhatMeasuredOpen, setIsWhatMeasuredOpen] = useState(false)
   const [isWhatCausesOpen, setIsWhatCausesOpen] = useState(false)
+  const [isPending, startTransition] = useTransition()
   const pathname = usePathname()
   // eslint-disable-next-line @next/next/no-assign-module-variable
   const module = pathname.split('/')[1]
@@ -73,6 +75,39 @@ export default function TableComponent( { generalRoomData, readings, count, indi
   if (module === 'ambiental') {
     thresholds = Object.values(UNIT_INDICATOR_THRESHOLD_AMBIENTAL[thresholdPointer])
   }
+
+  const handleExcelDownload = async () => {
+    startTransition(async () => {
+      try {
+        let blob;
+        if (module === 'ocupacional') {
+          blob = await readinsgExcel({
+            room,
+            indicator,
+            unit,
+            date_before,
+            date_after,
+          });
+        }
+
+        if (module === 'ambiental') {
+          blob = await readinsgExcelAmbiental({
+            room,
+            indicator,
+            unit,
+            date_before,
+            date_after,
+          });
+        }
+        
+        if (blob) {
+          saveAs(blob, `Reporte: ${date_after} - ${date_before}`);
+        }
+      } catch (error) {
+        console.error('Error al descargar el reporte:', error);
+      }
+    });
+  };
 
   return (
     <div className='flex gap-4 mx-8'>
@@ -142,45 +177,32 @@ export default function TableComponent( { generalRoomData, readings, count, indi
       <Card className="w-full flex-1">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <IndicatorToggle indicators={indicators} indicatorParam={indicator}/>
-          {
-            count > 0 ? (
-              <Button className="bg-[#00b0c7] hover:bg-[#00b0c7]" onClick={async () => {
-                
-                  
-                  let blob
-                  if (module === 'ocupacional') {
-                      blob = await readinsgExcel({
-                      room,
-                      indicator,
-                      unit,
-                      date_before,
-                      date_after,
-                    })
-                  }
-    
-                  if (module === 'ambiental') {
-                    blob = await readinsgExcelAmbiental({
-                    room,
-                    indicator,
-                    unit,
-                    date_before,
-                    date_after,
-                  })
-                }
-                  saveAs(blob, `Reporte: ${date_after} - ${date_before}`)
-    
-                  }}>
+          {count > 0 ? (
+            <Button 
+              className="bg-[#00b0c7] hover:bg-[#00b0c7] relative"
+              onClick={handleExcelDownload}
+              disabled={isPending}
+            >
+              {isPending ? (
+                <>
                   <Image src={ExcelIconGreen} width={16} height={16} alt="excel-image"/>
                   Descargar Excel
-                
-              </Button>
-            ) : 
-            (
-              <Button className="bg-[#00b0c7] hover:bg-[#00b0c7]">
-                No hay datos
-              </Button>
-            )
-          }
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <Image src={ExcelIconGreen} width={16} height={16} alt="excel-image"/>
+                  Descargar Excel
+                </>
+              )}
+            </Button>
+          ) : (
+            <Button className="bg-[#00b0c7] hover:bg-[#00b0c7]">
+              No hay datos
+            </Button>
+          )}
         
         </CardHeader>
         {
