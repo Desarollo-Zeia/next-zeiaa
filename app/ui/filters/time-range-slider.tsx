@@ -34,7 +34,7 @@ export function TimeRangeSlider({ initialStart = "00:00", initialEnd = "23:00" }
 
   return (
     <SliderPrimitive.Root
-      className="relative flex  touch-none select-none items-center w-96"
+      className="relative flex  touch-none select-none items-center min-w-[280px]"
       min={0}
       max={23}
       step={1}
