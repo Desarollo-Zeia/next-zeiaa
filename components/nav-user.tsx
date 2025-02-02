@@ -22,7 +22,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import Link from "next/link"
-import { Skeleton } from "./ui/skeleton"
+// import { Skeleton } from "./ui/skeleton"
 
 export function NavUser({
   userinfo,
@@ -45,7 +45,7 @@ export function NavUser({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <Skeleton className="w-12 h-8"/>
+                {/* <Skeleton className="w-12 h-8"/> */}
                 <AvatarFallback className="rounded-lg text-black">RP</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
