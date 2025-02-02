@@ -25,7 +25,7 @@ export const UNIT_INDICATOR_THRESHOLD = {
         top: 399,
     },
     HCHO: {
-        bottom: 0.08,
+        bottom: 0.05,
         center: 0.1,
         top: 1.2
     }

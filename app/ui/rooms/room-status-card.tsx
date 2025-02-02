@@ -66,7 +66,13 @@ export default function RoomStatusCard(
       <CardFooter>
         <Link 
           className="w-full"
-          href={`${pathname}/monitoreo?room=${room}`}
+          href={{
+            pathname: `${pathname}/monitoreo`,
+            query: {
+              room,
+              devEUI
+            }
+          }}
           >
           <Button className="w-full" >  
               Ir a detalles de la sala

@@ -12,6 +12,7 @@ import {
 import { INDICATOR_CONVERTED, UNIT_CONVERTED } from "@/app/utils/formatter"
 import { Indicator, Unit } from "@/app/type"
 import { formattedDate } from "@/app/utils/func"
+import { usePathname, useRouter } from "next/navigation"
 
 interface IndicatorStructure {
   indicator: string,
@@ -28,6 +29,10 @@ interface TableComponentProps {
 }
   
 export default function TableComponent({ data, name } : TableComponentProps) {
+
+  const router = useRouter();
+  const pathname = usePathname()
+  const newPath = pathname.split('/').slice(0, 3).join('/')
 
   return (
     <Card className="w-full max-w-4xl mx-auto">
@@ -50,7 +55,7 @@ export default function TableComponent({ data, name } : TableComponentProps) {
               {
                 data?.map((indicator, i) => 
                   ( 
-                    <TableRow key={i}>
+                    <TableRow key={i} onClick={() => router.replace(`${newPath}/analisis?indicator=${indicator.indicator}&unit=${indicator.unit}`)} className="cursor-pointer">
                       <TableCell className="font-normal"><div className="w-4 h-4 rounded-full bg-yellow-400"></div></TableCell>
                       <TableCell className="font-normal">{INDICATOR_CONVERTED[indicator.indicator as Indicator] }</TableCell>
                       <TableCell className="font-normal">{formattedDate(indicator.date)}</TableCell>
