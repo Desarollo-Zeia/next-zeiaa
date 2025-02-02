@@ -1,6 +1,6 @@
 "use client"
 
-import { ChevronRight, LayoutList, Activity, Megaphone, FileChartColumnIncreasing  } from "lucide-react"
+import { ChevronRight, LayoutList, Activity, Megaphone, FileChartColumnIncreasing, ShieldAlert  } from "lucide-react"
 import {
   Collapsible,
   CollapsibleContent,
@@ -93,14 +93,18 @@ export function NavMain({
           </Collapsible>
       </SidebarMenu>
       <SidebarMenu>
-        <SidebarMenuItem>
-            {/* <SidebarMenuButton asChild>
-              <Link href={module?.covid}>
-                <ShieldAlert   />
-                <span>Normativa covid</span>
-              </Link>
-            </SidebarMenuButton> */}
-        </SidebarMenuItem>
+        {
+         module.covid && (
+          <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <Link href={module.covid ?? "#"} prefetch>
+                  <ShieldAlert   />
+                  <span>Normativa covid</span>
+                </Link>
+              </SidebarMenuButton>
+          </SidebarMenuItem>
+         )
+        }
         <SidebarMenuItem>
             <SidebarMenuButton asChild>
               <Link href={module.alertas} prefetch>

@@ -10,6 +10,8 @@ import {
 import { Card, CardContent } from "@/components/ui/card"
 import AverageCard from "./average"
 import PaginationNumberComponent from "../pagination-number"
+import NoResultsFound from "../no-result"
+import NoResultFound from "../no-result-found"
 
 const RISK = {
   0: 'Riesgo muy bajo',
@@ -56,129 +58,143 @@ export default function TableComponent({ data, count, baselines } : TableCompone
   
   return (
     <div className='flex gap-4 mx-8'>
-      <div className="flex flex-col">
-        <AverageCard title={'Line base (promedio)'}>
-          <div className="flex justify-between mt-2">
-            <p>Valor</p>
-            <p>{baselines[0].value}</p>
-          </div>
-          <div className="flex justify-between mt-2">
-            <p>Hora de línea base</p>
-            <p>{baselines[0].time}</p>
-          </div>
-        </AverageCard>
-        <AverageCard title={'Durante la jornada (promedio)'}>
-          <div className="flex justify-between mt-2">
-            <p>Valor</p>
-            <p>{baselines[1].value}</p>
-          </div>
-          <div className="flex justify-between mt-2">
-            <p>Hora de la muestra</p>
-            <p>{baselines[1].time}</p>
-          </div>
-          <div className="flex justify-between mt-2">
-            <p>Nivel de riesgo</p>
-            <div className="flex gap-2 items-center">
-              <div className={`w-4 h-4 rounded-full ${baselines[1].risk && RISK_COLOR[baselines[1].risk as Risk]}`}></div>
-              <p>{RISK[baselines[1].risk as Risk]}</p>
+      {
+        count > 0 ? (
+          <div className="flex flex-col">
+          <AverageCard title={'Line base (promedio)'}>
+            <div className="flex justify-between mt-2">
+              <p>Valor</p>
+              <p>{baselines[0].value}</p>
             </div>
-          </div>
-        </AverageCard>
-        <AverageCard title={'Fin de la jornada (promedio)'}>
-          <div className="flex justify-between mt-2">
-            <p>Valor</p>
-            <p>{baselines[2].value}</p>
-          </div>
-          <div className="flex justify-between mt-2">
-            <p>Hora de la muestra</p>
-            <p>{baselines[2].time}</p>
-          </div>
-          <div className="flex justify-between mt-2">
-            <p>Nivel de riesgo</p>
-            <div className="flex gap-2 items-center">
-              <div className={`w-4 h-4 rounded-full ${RISK_COLOR[baselines[2].risk as Risk]}`}></div>
-              <p>{RISK[baselines[2].risk as Risk]}</p>
+            <div className="flex justify-between mt-2">
+              <p>Hora de línea base</p>
+              <p>{baselines[0].time}</p>
             </div>
-          </div>
-        </AverageCard>
-        {/* <AverageCard title={'Tiempo de monitoreo'}>
-          <div className="flex justify-between mt-2">
-            <p>Días</p>
-            <p>dynamic</p>
-          </div>
-        </AverageCard> */}
-        <AverageCard title={'Umbrales'}>
-          <div className="flex justify-between mt-2">
-            <div className="flex gap-2">
-              <div className="w-4 h-4 rounded-full bg-[#707070]"></div>
-              <p>Riesgo muy bajo</p>
+          </AverageCard>
+          <AverageCard title={'Durante la jornada (promedio)'}>
+            <div className="flex justify-between mt-2">
+              <p>Valor</p>
+              <p>{baselines[1].value}</p>
             </div>
-            <p>+100 ppm</p>
-          </div>
-          <div className="flex justify-between mt-2">
-            <div className="flex gap-2">
-              <div className="w-4 h-4 rounded-full bg-[#38d276]"></div>
-              <p>Riesgo bajo</p>
+            <div className="flex justify-between mt-2">
+              <p>Hora de la muestra</p>
+              <p>{baselines[1].time}</p>
             </div>
-            <p>+300 ppm</p>
-          </div>
-          <div className="flex justify-between mt-2">
-            <div className="flex gap-2">
-              <div className="w-4 h-4 rounded-full bg-[#00b7ca]"></div>
-              <p>Riesgo medio bajo</p>
+            <div className="flex justify-between mt-2">
+              <p>Nivel de riesgo</p>
+              <div className="flex gap-2 items-center">
+                <div className={`w-4 h-4 rounded-full ${baselines[1].risk && RISK_COLOR[baselines[1].risk as Risk]}`}></div>
+                <p>{RISK[baselines[1].risk as Risk]}</p>
+              </div>
             </div>
-            <p>+375 ppm</p>
-          </div>
-          <div className="flex justify-between mt-2">
-            <div className="flex gap-2">
-              <div className="w-4 h-4 rounded-full bg-[#ff39e5]"></div>
-              <p>Riesgo medio alto</p>
+          </AverageCard>
+          <AverageCard title={'Fin de la jornada (promedio)'}>
+            <div className="flex justify-between mt-2">
+              <p>Valor</p>
+              <p>{baselines[2].value}</p>
             </div>
-            <p>+400 ppm</p>
-          </div>
-          <div className="flex justify-between mt-2">
-            <div className="flex gap-2">
-              <div className="w-4 h-4 rounded-full bg-[#ff0000]"></div>
-              <p>Riesgo muy alto</p>
+            <div className="flex justify-between mt-2">
+              <p>Hora de la muestra</p>
+              <p>{baselines[2].time}</p>
             </div>
-            <p>+800 ppm</p>
-          </div>
-        </AverageCard>
-      </div>
+            <div className="flex justify-between mt-2">
+              <p>Nivel de riesgo</p>
+              <div className="flex gap-2 items-center">
+                <div className={`w-4 h-4 rounded-full ${RISK_COLOR[baselines[2].risk as Risk]}`}></div>
+                <p>{RISK[baselines[2].risk as Risk]}</p>
+              </div>
+            </div>
+          </AverageCard>
+          {/* <AverageCard title={'Tiempo de monitoreo'}>
+            <div className="flex justify-between mt-2">
+              <p>Días</p>
+              <p>dynamic</p>
+            </div>
+          </AverageCard> */}
+          <AverageCard title={'Umbrales'}>
+            <div className="flex justify-between mt-2">
+              <div className="flex gap-2">
+                <div className="w-4 h-4 rounded-full bg-[#707070]"></div>
+                <p>Riesgo muy bajo</p>
+              </div>
+              <p>+100 ppm</p>
+            </div>
+            <div className="flex justify-between mt-2">
+              <div className="flex gap-2">
+                <div className="w-4 h-4 rounded-full bg-[#38d276]"></div>
+                <p>Riesgo bajo</p>
+              </div>
+              <p>+300 ppm</p>
+            </div>
+            <div className="flex justify-between mt-2">
+              <div className="flex gap-2">
+                <div className="w-4 h-4 rounded-full bg-[#00b7ca]"></div>
+                <p>Riesgo medio bajo</p>
+              </div>
+              <p>+375 ppm</p>
+            </div>
+            <div className="flex justify-between mt-2">
+              <div className="flex gap-2">
+                <div className="w-4 h-4 rounded-full bg-[#ff39e5]"></div>
+                <p>Riesgo medio alto</p>
+              </div>
+              <p>+400 ppm</p>
+            </div>
+            <div className="flex justify-between mt-2">
+              <div className="flex gap-2">
+                <div className="w-4 h-4 rounded-full bg-[#ff0000]"></div>
+                <p>Riesgo muy alto</p>
+              </div>
+              <p>+800 ppm</p>
+            </div>
+          </AverageCard>
+        </div>
+        ) : (
+          <NoResultFound/>
+        ) 
+      }
+    
       <Card className="w-full max-w-4xl mx-auto">
       {/* <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-2xl font-bold">Sala de Conferencias A <br /> <span className="text-sm font-normal text-gray-500">Último datos recibidos</span></CardTitle>
         <Image src='https://utfs.io/f/y8yAFIxNrCH6xltOgtMQNWRFGe0pAcYU5bZ6nSwJOCPqIh4g' alt="face" width={64} height={64} className="object-fit"/>
       </CardHeader> */}
       <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead >Fecha</TableHead>
-              <TableHead >Línea base</TableHead>
-              <TableHead>Max. Riesgo</TableHead>
-              <TableHead>Duración</TableHead>
-              <TableHead>Valor promedio</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-              {
-                data?.map((indicator, i) => 
-                  ( 
-                    <TableRow key={i}>
-                      <TableCell >{indicator.date}</TableCell>
-                      <TableCell >{indicator.base_line}</TableCell>
-                      <TableCell>{indicator.maximum_risk_achieved}</TableCell>
-                      <TableCell>{indicator.duration}</TableCell>
-                      <TableCell >{indicator.max_value}</TableCell>
-                    </TableRow>
+        {
+          count > 0 ? (
+            <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead >Fecha</TableHead>
+                <TableHead >Línea base</TableHead>
+                <TableHead>Max. Riesgo</TableHead>
+                <TableHead>Duración</TableHead>
+                <TableHead>Valor promedio</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+                {
+                  data?.map((indicator, i) => 
+                    ( 
+                      <TableRow key={i}>
+                        <TableCell >{indicator.date}</TableCell>
+                        <TableCell >{indicator.base_line}</TableCell>
+                        <TableCell>{indicator.maximum_risk_achieved}</TableCell>
+                        <TableCell>{indicator.duration}</TableCell>
+                        <TableCell >{indicator.max_value}</TableCell>
+                      </TableRow>
+                    )
                   )
-                )
-              }
-          </TableBody>
-        </Table>
+                }
+            </TableBody>
+            </Table>
+          ) : (
+            <NoResultsFound/>
+          )
+        }
+      
       </CardContent>
-      <PaginationNumberComponent count={count} itemsPerPage={10} />
+      { count > 0 && <PaginationNumberComponent count={count} itemsPerPage={10} />}
       </Card>
     </div>
   )

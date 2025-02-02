@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import Link from "next/link"
 import { usePathname } from 'next/navigation'
-import { STATUS_FACE } from "../faces"
+import { STATUS_FACE, STATUS_FACE_DISABLED } from "../faces"
 
 type Props = {
     name: string,
@@ -35,11 +35,11 @@ export default function RoomStatusCard(
         {/* Top Section */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-2">
-            {STATUS_FACE[status as Status]}
+            {isActivated ?  STATUS_FACE[status as Status] : STATUS_FACE_DISABLED[status as Status]}
           </div>
           <div className="flex flex-col">
             <span className="font-semibold capitalize block text-balance text-right">{ name }</span>
-            <span className={`text-sm text-right font-semibold block ${STATUS_COLOR[status as Status]}`}>{ STATUS_TO_SPANISH[status as Status] }</span>
+            <span className={`text-sm text-right font-semibold block ${isActivated ? STATUS_COLOR[status as Status] : 'text-gray-400'}`}>{ STATUS_TO_SPANISH[status as Status] }</span>
           </div>
         </div>
 

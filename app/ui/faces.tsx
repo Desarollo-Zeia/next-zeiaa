@@ -11,6 +11,11 @@ import DangerousFaceFrameImage from '@/public/faces/dangerousface-frame.png'
 import ModerateFaceImage from '@/public/faces/moderateface.png'
 import ModerateFaceFrameImage from '@/public/faces/moderateface-frame.png'
 
+import GoodFaceDisabledFrame from '@/public/faces/disabled-faces/goodface-frame-disabled.png'
+import UnhealthyFaceDisabledFrame from '@/public/faces/disabled-faces/unhealthyface-frame-disabled.png'
+import DangerousFaceDisabledFrame from '@/public/faces/disabled-faces/dangerousface-frame-disabled.png'
+import ModerateFaceDisabledFrame from '@/public/faces/disabled-faces/moderateface-frame-disabled.png'
+
 
 export function GoodFace({ width, height } : { width: number, height: number}) {
   return (
@@ -61,12 +66,51 @@ export function ModerateFaceFrame({ width, height } : { width: number, height: n
   )
 } 
 
+export function GoodFaceDisabled({ width, height } : { width: number, height: number}) {
+  return (
+    <Image src={GoodFaceDisabledFrame} alt="good-face-disabled" width={width} height={height} className="object-fit"/>
+  )
+}
+
+export function ModerateFaceDisabled({ width, height } : { width: number, height: number}) {
+  return (
+    <Image src={ModerateFaceDisabledFrame} alt="moderate-face-disabled" width={width} height={height} className="object-fit"/>
+  )
+}
+
+export function UnhealthyFaceDisabled({ width, height } : { width: number, height: number}) {
+  return (
+    <Image src={UnhealthyFaceDisabledFrame} alt="unhealthy-face-disabled" width={width} height={height} className="object-fit"/>
+  )
+ }
+
+ export function DangerousFaceDisabled({ width, height } : { width: number, height: number}) {
+  return (
+    <Image src={DangerousFaceDisabledFrame} alt="dangerous-face-disabled" width={width} height={height} className="object-fit"/>
+  )
+ }
+
+
+
+
+
+
+
+
 export const STATUS_FACE = {
   'GOOD': <GoodFaceFrame width={72} height={72} />,
   'MODERATE': <ModerateFaceFrame width={72} height={72} />,
   'UNHEALTHY': <UnhealthyFaceFrame width={72} height={72} />,
   'DANGEROUS': <DangerousFaceFrame width={72} height={72} />,
   'CRITICAL': <DangerousFaceFrame width={72} height={72} />
+} 
+
+export const STATUS_FACE_DISABLED = {
+  'GOOD': <GoodFaceDisabled width={72} height={72} />,
+  'MODERATE': <ModerateFaceDisabled width={72} height={72} />,
+  'UNHEALTHY': <UnhealthyFaceDisabled width={72} height={72} />,
+  'DANGEROUS': <DangerousFaceDisabled width={72} height={72} />,
+  'CRITICAL': <DangerousFaceDisabled width={72} height={72} />
 } 
 
 

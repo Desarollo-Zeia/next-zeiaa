@@ -6,9 +6,12 @@ import { NavUser } from "@/components/nav-user"
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar"
+import Image from "next/image"
+import ZeiaLogo from '@/public/logozeia.png'
 
 type UserData = {
   name?: string,
@@ -56,9 +59,9 @@ export function AppSidebar({ module, userData, ...props }: AppSidebarProps) {
         <NavMain module={module} />
         {/* <NavProjects projects={data.projects} /> */}  
       </SidebarContent>
-      {/* <SidebarFooter>
-        <NavUser user={data.user} />
-      </SidebarFooter> */}
+      <SidebarFooter>
+        <Image src={ZeiaLogo} alt="logo" className="object-contain w-36 h-12 mx-auto mb-4"/>
+      </SidebarFooter>
       <SidebarRail/>
     </Sidebar>
   )
