@@ -46,7 +46,7 @@ export function NavUser({
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 {/* <Skeleton className="w-12 h-8"/> */}
-                <AvatarFallback className="rounded-lg text-black">RP</AvatarFallback>
+                <AvatarFallback className="rounded-lg text-black">{ userinfo.name.slice(0, 2).toUpperCase()}</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">{userinfo.name}</span>

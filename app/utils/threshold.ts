@@ -38,10 +38,10 @@ export const UNIT_INDICATOR_THRESHOLD_AMBIENTAL = {
         top: 1500
       } ,
     PM10: {
-        top: 50,
+        top: 100,
     },
     PM2_5: {
-        top: 100,
+        top: 50,
     },
     PPB: {
         bottom: 65,
@@ -70,12 +70,12 @@ export const UNIT_INDICATOR_THRESHOLD_AMBIENTAL_CHARTJS_EXLUSIVE_DICTIONARY_IM_S
     PM10: {
         bottom: 0,
         center: 0,
-        top: 50,
+        top: 100,
     },
     PM2_5: {
          bottom: 0,
         center: 0,
-        top: 100,
+        top: 50,
     },
     PPB: {
         bottom: 65,
