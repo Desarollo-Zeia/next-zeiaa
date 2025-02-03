@@ -6,25 +6,27 @@ import TableComponent from "@/app/ui/analisis/table";
 import { DatepickerRange } from "@/app/ui/filters/datepicker-range";
 import FiltersContainer from "@/app/ui/filters/filters-container";
 import RoomSelect from "@/app/ui/filters/room-select";
+import StatusSelect from "@/app/ui/filters/status-select";
 import { format } from "date-fns";
 
 export default async function page({ searchParams } : SearchParams) {
 
   const { first_room: firstRoom} = await detailAmbiental()
 
-  const { room, indicator = 'CO2', unit = 'PPM', date_after = new Date(), date_before = new Date() , page } = await searchParams
+  const { room, indicator = 'CO2', unit = 'PPM', date_after = new Date(), date_before = new Date() , page, status } = await searchParams
 
   const currentFirstRoom = room ? room : firstRoom
 
   const rooms = await getRoomsAmbiental()
   const generalRoomData = await roomGeneralDataAmbiental({ roomId: currentFirstRoom})
-  const readings = await readingsDataAmbiental({ roomId: currentFirstRoom, indicator, unit, date_after: format(date_after, "yyyy-MM-dd"), date_before: format(date_before, "yyyy-MM-dd"), page })
+  const readings = await readingsDataAmbiental({ roomId: currentFirstRoom, indicator, unit, date_after: format(date_after, "yyyy-MM-dd"), date_before: format(date_before, "yyyy-MM-dd"), page, status })
 
   
   return (
     <div>
       <FiltersContainer>
         <RoomSelect firstRoom={firstRoom} rooms={rooms}/>
+        <StatusSelect/>
         <DatepickerRange/>
       </FiltersContainer>
       <TableComponent generalRoomData={generalRoomData} readings={readings} count={readings.count} indicator={indicator as Indicator} unit={unit as Unit} date_after={format(date_after, "yyyy-MM-dd")} date_before={format(date_before, "yyyy-MM-dd")} room={currentFirstRoom} />
