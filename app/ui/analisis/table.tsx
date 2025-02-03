@@ -51,7 +51,7 @@ export default function TableComponent( { generalRoomData, readings, count, indi
   // eslint-disable-next-line @next/next/no-assign-module-variable
   const module = pathname.split('/')[1]
 
-  const { indicators_pollutants: indicators } = generalRoomData
+  const { indicators_activated: indicators } = generalRoomData
 
   let thresholdPointer
   let thresholds
