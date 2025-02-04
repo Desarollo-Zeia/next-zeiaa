@@ -34,7 +34,6 @@ export default async function page({ searchParams } : SearchParams) {
 
   const currentFirstRoom = room ? room : firstRoom
 
-
   const rooms = await getRooms()
   const data = await roomLastData({ roomId: currentFirstRoom})
   const { results } = await readingsData({ roomId: currentFirstRoom, indicator, unit })

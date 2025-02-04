@@ -55,7 +55,9 @@ export default function Page() {
             <div className="h-4 text-sm text-center text-[#ED4337] font-thin">
                 {state.message && <p>{state.message}</p>}
             </div>
-            <input type="submit" className={styles.buttonservice} placeholder='Ingresar'/>
+            <button className={styles.buttonservice}>
+                <input type="submit"  placeholder='Ingresar' className='w-full h-full'/>
+            </button>
         </div>
       </form>
     </section>

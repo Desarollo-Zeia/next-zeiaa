@@ -18,7 +18,7 @@ export async function alerts({ roomId, indicator, unit, date_after, date_before,
   return res 
 }
 
-export async function alertsAmbiental({ roomId, indicator, unit, date_after, date_before, page } : { roomId : string | number, indicator: string, unit: string, date_after?: string,  date_before?: string, page: string}) {
+export async function alertsAmbiental({ roomId, indicator, unit, date_after, date_before, page, status } : { roomId : string | number, indicator: string, unit: string, date_after?: string,  date_before?: string, page: string, status?: string}) {
 
   const url = new URL(`/alerts/api/ambiental/point/${roomId}/alerts/`, baseUrl)
 
@@ -27,6 +27,7 @@ export async function alertsAmbiental({ roomId, indicator, unit, date_after, dat
   if (date_after) url.searchParams.set('date_after', date_after)
   if (date_before) url.searchParams.set('date_before', date_before)
   if (page) url.searchParams.set('page', page)
+    if (status) url.searchParams.set('status', status)
 
   const res = await fetchWithAuthAmbiental(`${url.pathname}${url.search}`)
 

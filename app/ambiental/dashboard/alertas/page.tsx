@@ -14,12 +14,12 @@ export default async function page({ searchParams } : SearchParams) {
 
     const { first_room: firstRoom} = await detailAmbiental()
   
-    const { room, indicator = 'CO2', unit = 'PPM', date_after = new Date(), date_before = new Date(), page = '1' } = await searchParams
+    const { room, indicator = 'CO2', unit = 'PPM', date_after = new Date(), date_before = new Date(), page = '1', status } = await searchParams
   
     const currentFirstRoom = room ? room : firstRoom
     
     const rooms = await getRoomsAmbiental()
-    const readings = await alertsAmbiental({ roomId: currentFirstRoom, indicator, unit, date_after: format(date_after,"yyyy-MM-dd"), date_before: format(date_before, "yyyy-MM-dd"), page})
+    const readings = await alertsAmbiental({ roomId: currentFirstRoom, indicator, unit, date_after: format(date_after,"yyyy-MM-dd"), date_before: format(date_before, "yyyy-MM-dd"), page, status})
     const generalRoomData = await roomGeneralDataAmbiental({ roomId: currentFirstRoom})
 
   return (

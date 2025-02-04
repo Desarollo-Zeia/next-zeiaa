@@ -51,7 +51,8 @@ export default function IndicatorToggle({ indicators, indicatorParam }: Indicato
             key={indicator.indicator}
             value={indicator.indicator}
             aria-label={indicator.indicator}
-            disabled={isPending}
+            disabled={indicator.indicator === indicatorParam}
+
           >
             {INDICATOR_CONVERTED[indicator.indicator as Indicator]}
           </ToggleGroupItem>

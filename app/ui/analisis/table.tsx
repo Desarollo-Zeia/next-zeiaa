@@ -19,7 +19,7 @@ import NoResultFound from "../no-result-found";
 import NoResultsFound from "../no-result";
 import IndicatorThreshold from "../umbrales";
 import { useTransition } from 'react';
-import { TimeRangeSlider } from "../filters/time-range-slider";
+// import { TimeRangeSlider } from "../filters/time-range-slider";
 
 type ModifiedMeasurement = Omit<Measurement, 'hour'> & {
   hours: string;
@@ -51,7 +51,7 @@ export default function TableComponent( { generalRoomData, readings, count, indi
   // eslint-disable-next-line @next/next/no-assign-module-variable
   const module = pathname.split('/')[1]
 
-  const { indicators_pollutants: indicators } = generalRoomData
+  const { indicators_activated: indicators } = generalRoomData
 
   let thresholdPointer
   let thresholds
@@ -178,7 +178,7 @@ export default function TableComponent( { generalRoomData, readings, count, indi
       <Card className="w-full flex-1">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <IndicatorToggle indicators={indicators} indicatorParam={indicator}/>
-          <TimeRangeSlider/>
+          {/* <TimeRangeSlider/> */}
           {count > 0 ? (
             <Button 
               className="bg-[#00b0c7] hover:bg-[#00b0c7] relative"
