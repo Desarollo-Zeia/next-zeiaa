@@ -7,6 +7,7 @@ import { DatepickerRange } from "@/app/ui/filters/datepicker-range";
 import FiltersContainer from "@/app/ui/filters/filters-container";
 import RoomSelect from "@/app/ui/filters/room-select";
 import StatusSelect from "@/app/ui/filters/status-select";
+import { TimeRangeSlider } from "@/app/ui/filters/time-range-slider";
 import { format } from "date-fns";
 
 
@@ -26,7 +27,8 @@ export default async function page({ searchParams } : SearchParams) {
     <div>
       <FiltersContainer>
         <RoomSelect firstRoom={firstRoom} rooms={rooms}/>
-        <StatusSelect/>
+        <StatusSelect/> 
+        <TimeRangeSlider/>
         <DatepickerRange/>
       </FiltersContainer>
       <TableComponent generalRoomData={generalRoomData} readings={readings} count={readings.count} indicator={indicator as Indicator} unit={unit as Unit} date_after={format(date_after, "yyyy-MM-dd")} date_before={format(date_before, "yyyy-MM-dd")} room={currentFirstRoom}/>

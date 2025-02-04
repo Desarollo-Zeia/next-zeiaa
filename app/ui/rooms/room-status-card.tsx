@@ -46,8 +46,8 @@ export default function RoomStatusCard(
         {/* Middle Section */}
         <div className="space-y-2 mb-4">
           <div className="flex justify-between">
-            <span className="text-sm font-medium">Sensor:</span>
-            <span className="text-sm">{ devEUI ? devEUI : 'No disponible' }</span>
+            {/* <span className="text-sm font-medium">Sensor:</span> */}
+            {/* <span className="text-sm">{ devEUI ? devEUI : 'No disponible' }</span> */}
           </div>
           <div className="flex justify-between">
             <span className="text-sm font-medium">Estado:</span>

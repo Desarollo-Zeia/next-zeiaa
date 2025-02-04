@@ -24,10 +24,11 @@ interface IndicatorStructure {
 
 interface TableComponentProps {
   data: IndicatorStructure[],
-  name: string
+  name: string,
+  devUI: string
 }
   
-export default function TableComponent({ data, name } : TableComponentProps) {
+export default function TableComponent({ data, name, devUI } : TableComponentProps) {
 
   // const router = useRouter();
   // const pathname = usePathname()
@@ -36,7 +37,7 @@ export default function TableComponent({ data, name } : TableComponentProps) {
   return (
     <Card className="w-full max-w-4xl mx-auto">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-2xl font-bold">{ name }<br /><span className="text-sm font-normal text-gray-500">Último datos recibidos</span></CardTitle>
+        <CardTitle className="text-2xl font-bold">{ name }<br /><span className="text-sm font-normal text-gray-500">Sensor: {'    '}{ devUI }</span></CardTitle>
         {/* <Image src='https://utfs.io/f/y8yAFIxNrCH6xltOgtMQNWRFGe0pAcYU5bZ6nSwJOCPqIh4g' alt="face" width={64} height={64} className="object-fit"/> */}
       </CardHeader>
       <CardContent>

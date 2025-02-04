@@ -55,12 +55,14 @@ export default async function page({ searchParams } : SearchParams) {
 
   const generalRoomData = await roomGeneralDataAmbiental({ roomId: currentFirstRoom})
 
+  const devUI = generalRoomData?.devices[0]?.dev_eui
+
   return (
     <div>
       <FiltersContainer>
         <RoomSelect firstRoom={firstRoom} rooms={rooms}/>
       </FiltersContainer>
-      <TableComponent data={data} name={name}/>
+      <TableComponent data={data} name={name} devUI={devUI}/>
       <br />
       <ChartComponent results={sortResults(results)} generalRoomData={generalRoomData} indicator={indicator as Indicator} unit={unit as Unit}/>
     </div>
