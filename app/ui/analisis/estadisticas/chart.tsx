@@ -104,7 +104,7 @@ return [
 
 export function ChartComponent({ readings, generalRoomData, indicator, unit, start, end } : ChartComponentProps) {
 
-  const [toggleChart, setToggleChart] = useState<boolean>(true)
+  const [toggleChart, setToggleChart] = useState<boolean>(false)
 
   const { indicators_pollutants: indicators } = generalRoomData
   const pathname = usePathname()
@@ -201,12 +201,6 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
                   axis: 'x',
                   intersect: false
                 },
-                layout: {
-                  padding: {
-                    top: 20,    // Margen superior
-                    bottom: 40  // Margen inferior (para leyenda en posición "bottom")
-                  }
-                },
                 scales: {
                   x: {
                     type: 'time',
@@ -252,7 +246,7 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
                     forceOverride: true
                   },
                   legend: {
-                    display: toggleChart ? false : true,
+                    display: !toggleChart ? true : false,
                     position: "bottom",
                     fullSize: false,       // Si quieres que no ocupe todo el ancho
                     rtl: false ,
@@ -270,7 +264,7 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
                       
                           return {
                             // @ts-expect-error - Ignorar errores de tipo para esta función
-                            text: formattedDate(dataset.label), 
+                            text: toggleChart ? dataset.label : formattedDate(dataset.label), 
                             fillStyle: backgroundColor,
                             strokeStyle: borderColor,
                             color: backgroundColor, 
