@@ -252,7 +252,7 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
                     forceOverride: true
                   },
                   legend: {
-                    display: !toggleChart,
+                    display: toggleChart ? false : true,
                     position: "bottom",
                     fullSize: false,       // Si quieres que no ocupe todo el ancho
                     rtl: false ,
