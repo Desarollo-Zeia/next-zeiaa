@@ -36,7 +36,7 @@ export default async function page({ searchParams } : SearchParams  ) {
         rooms?.results.length > 0 ? (
           <section className={styles.roomCardsContainer}>
             {
-              rooms?.results.map((room: Room) => (
+              rooms?.results?.map((room: Room) => (
                 <RoomStatusCard
                   key={room.id}
                   name={room.name}
