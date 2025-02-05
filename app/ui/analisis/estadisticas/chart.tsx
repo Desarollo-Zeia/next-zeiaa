@@ -104,7 +104,7 @@ return [
 
 export function ChartComponent({ readings, generalRoomData, indicator, unit, start, end } : ChartComponentProps) {
 
-  const [toggleChart, setToggleChart] = useState<boolean>(false)
+  const [toggleChart, setToggleChart] = useState<boolean>(true)
 
   const { indicators_pollutants: indicators } = generalRoomData
   const pathname = usePathname()
@@ -252,7 +252,7 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
                     forceOverride: true
                   },
                   legend: {
-                    display: true,
+                    display: !toggleChart,
                     position: "bottom",
                     fullSize: false,       // Si quieres que no ocupe todo el ancho
                     rtl: false ,
