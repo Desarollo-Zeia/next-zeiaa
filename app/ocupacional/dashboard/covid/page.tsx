@@ -26,7 +26,7 @@ export default async function page({ searchParams } : SearchParams) {
         <RoomSelect firstRoom={currentFirstRoom} rooms={rooms}/>
         <DatepickerRange/>
       </FiltersContainer>
-     <TableComponent data={readings.results} count={readings.count} baselines={covidBaselines}/>
+     <TableComponent data={readings.results} count={readings.count} baselines={covidBaselines} currentRoom={currentFirstRoom}/>
     </div>
   )
 }

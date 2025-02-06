@@ -45,7 +45,7 @@ export default function StatusSelect() {
             </SelectTrigger>
             <SelectContent>
                 <SelectGroup>
-                    <SelectItem value="none">Sin estado</SelectItem>
+                  <SelectItem value="none">Sin estado</SelectItem>
                 <SelectItem value="GOOD">Bueno</SelectItem>
                 <SelectItem value="MODERATE">Moderado</SelectItem>
                 <SelectItem value="UNHEALTHY">Insalubre</SelectItem>

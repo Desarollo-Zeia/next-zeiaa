@@ -101,7 +101,7 @@ export async function readingsGraphAmbiental({ roomId, indicator, unit, date_aft
 
 
 
-export async function readingsCovid({ roomId, indicator, unit, date_after, date_before, page } : { roomId : string | number, indicator: string, unit: string, date_after?: string,  date_before?: string, page: string}) {
+export async function readingsCovid({ roomId, indicator, unit, date_after, date_before, page } : { roomId?: string | number, indicator: string, unit: string, date_after?: string,  date_before?: string, page: string}) {
 
   const url = new URL(`/readings/api/room/${roomId}/covid/metrics/new-history/`, baseUrl)
 
@@ -117,12 +117,28 @@ export async function readingsCovid({ roomId, indicator, unit, date_after, date_
   return res 
 }
 
-export async function readingsCovidBaselines({ roomId, date_after, date_before } : { roomId : string | number, date_after?: string,  date_before?: string}) {
+export async function readingsCovidBaselines({ roomId, date_after, date_before } : { roomId?: string | number, date_after?: string,  date_before?: string}) {
 
   const url = new URL(`/readings/api/room/${roomId}/covid/baselines/`, baseUrl)
 
   if (date_after) url.searchParams.set('date_after', date_after)
   if (date_before) url.searchParams.set('date_before', date_before)
+
+  const res = await fetchWithAuth(`${url.pathname}${url.search}`)
+
+  return res 
+}
+
+export async function readingsCovidDetail({ date, page, roomId, hour_before, hour_after, risk } : { date?: string, page?: string, roomId?: string | number, hour_before?: string, hour_after?: string, risk?: string}) {
+
+  const url = new URL(`/readings/api/room/${roomId}/covid/metrics/new-detail/`, baseUrl)
+
+  if (date) url.searchParams.set('date', date)
+  if (page) url.searchParams.set('page', page)
+  if (hour_before) url.searchParams.set('hour_before', hour_before)
+  if (hour_after) url.searchParams.set('hour_after', hour_after)
+  if (risk) url.searchParams.set('risk', risk)
+    
 
   const res = await fetchWithAuth(`${url.pathname}${url.search}`)
 

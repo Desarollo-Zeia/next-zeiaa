@@ -8,12 +8,11 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Card, CardContent } from "@/components/ui/card"
-import AverageCard from "./average"
-import PaginationNumberComponent from "../pagination-number"
-import NoResultsFound from "../no-result"
-import NoResultFound from "../no-result-found"
+import AverageCard from "../average"
+import PaginationNumberComponent from "../../pagination-number"
+import NoResultsFound from "../../no-result"
+import NoResultFound from "../../no-result-found"
 import { formattedDate, formattedSecond } from "@/app/utils/func"
-import { usePathname, useRouter } from "next/navigation"
 
 const RISK = {
   0: 'Riesgo muy bajo',
@@ -39,8 +38,8 @@ type Data = {
   duration: number,
   hour: string,
   max_value: number,
-  maximum_risk_achieved: number,
-  mean_value: number
+  risk: number,
+  value: number
 }
 
 type Baseline = {
@@ -53,15 +52,10 @@ type TableComponentProps = {
   data?: Data[],
   count: number,
   baselines: Baseline[],
-  currentRoom?: string
 }
 
 
-export default function TableComponent({ data, count, baselines, currentRoom } : TableComponentProps) {
-
-   const router = useRouter();
-    const pathname = usePathname()
-    const newPath = pathname.split('/').slice(0, 3).join('/')
+export default function TableComponent({ data, count, baselines } : TableComponentProps) {
   
   return (
     <div className='flex gap-4 mx-8'>
@@ -173,30 +167,27 @@ export default function TableComponent({ data, count, baselines, currentRoom } :
             <TableHeader>
               <TableRow>
                 <TableHead >Fecha</TableHead>
-                <TableHead >Línea base</TableHead>
-                <TableHead>Max. Riesgo</TableHead>
+                <TableHead >Hora</TableHead>
+                <TableHead>Riesgo alcanzado	</TableHead>
+                <TableHead>	Valor promedio</TableHead>
                 <TableHead>Duración</TableHead>
-                <TableHead>Valor promedio</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
                 {
                   data?.map((indicator, i) => 
                     ( 
-                      <TableRow key={i} onClick={() => 
-                        router.replace(`${newPath}/covid/detail?date=${indicator.date}&room=${currentRoom}`)
-                        // router.replace(`${newPath}/analisis?indicator=${indicator.indicator}&unit=${indicator.unit}`)
-                      } className="cursor-pointer">
+                      <TableRow key={i}>
                         <TableCell >{formattedDate(indicator.date)}</TableCell>
-                        <TableCell >{indicator.base_line} ppm</TableCell>
+                        <TableCell >{indicator.hour}</TableCell>
                         <TableCell>
                            <div className="flex gap-2 items-center">
-                            <div className={`w-4 h-4 rounded-full ${RISK_COLOR[indicator.maximum_risk_achieved as Risk]}`}></div>
-                            <p className={`text-[${RISK_COLOR[indicator.maximum_risk_achieved as Risk]}]`}>{RISK[indicator.maximum_risk_achieved as Risk]}</p>
+                            <div className={`w-4 h-4 rounded-full ${RISK_COLOR[indicator.risk as Risk]}`}></div>
+                            <p className={`text-[${RISK_COLOR[indicator.risk as Risk]}]`}>{RISK[indicator.risk as Risk]}</p>
                           </div>
                         </TableCell>
+                        <TableCell >{Math.round(indicator.value)} ppm</TableCell>
                         <TableCell>{formattedSecond(indicator.duration)}</TableCell>
-                        <TableCell >{indicator.max_value} ppm</TableCell>
                       </TableRow>
                     )
                   )
