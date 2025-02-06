@@ -12,6 +12,7 @@ import AverageCard from "./average"
 import PaginationNumberComponent from "../pagination-number"
 import NoResultsFound from "../no-result"
 import NoResultFound from "../no-result-found"
+import { formattedDate, formattedSecond } from "@/app/utils/func"
 
 const RISK = {
   0: 'Riesgo muy bajo',
@@ -177,11 +178,16 @@ export default function TableComponent({ data, count, baselines } : TableCompone
                   data?.map((indicator, i) => 
                     ( 
                       <TableRow key={i}>
-                        <TableCell >{indicator.date}</TableCell>
-                        <TableCell >{indicator.base_line}</TableCell>
-                        <TableCell>{indicator.maximum_risk_achieved}</TableCell>
-                        <TableCell>{indicator.duration}</TableCell>
-                        <TableCell >{indicator.max_value}</TableCell>
+                        <TableCell >{formattedDate(indicator.date)}</TableCell>
+                        <TableCell >{indicator.base_line} ppm</TableCell>
+                        <TableCell>
+                           <div className="flex gap-2 items-center">
+                            <div className={`w-4 h-4 rounded-full ${RISK_COLOR[indicator.maximum_risk_achieved as Risk]}`}></div>
+                            <p className={`text-[${RISK_COLOR[indicator.maximum_risk_achieved as Risk]}]`}>{RISK[indicator.maximum_risk_achieved as Risk]}</p>
+                          </div>
+                        </TableCell>
+                        <TableCell>{formattedSecond(indicator.duration)}</TableCell>
+                        <TableCell >{indicator.max_value} ppm</TableCell>
                       </TableRow>
                     )
                   )

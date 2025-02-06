@@ -25,10 +25,11 @@ interface IndicatorStructure {
 interface TableComponentProps {
   data: IndicatorStructure[],
   name: string,
-  devUI: string
+  devUI: string,
+  room: string
 }
   
-export default function TableComponent({ data, name, devUI } : TableComponentProps) {
+export default function TableComponent({ data, name, devUI, room } : TableComponentProps) {
 
   const router = useRouter();
   const pathname = usePathname()
@@ -56,7 +57,7 @@ export default function TableComponent({ data, name, devUI } : TableComponentPro
                 data?.map((indicator, i) => 
                   ( 
                     <TableRow key={i} onClick={() => 
-                      router.replace(`${newPath}/analisis?indicator=${indicator.indicator}&unit=${indicator.unit}`)
+                      router.replace(`${newPath}/analisis?indicator=${indicator.indicator}&unit=${indicator.unit}&room=${room}`)
                       // router.replace(`${newPath}/analisis?indicator=${indicator.indicator}&unit=${indicator.unit}`)
                     } className="cursor-pointer"
                     >

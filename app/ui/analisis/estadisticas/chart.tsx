@@ -128,17 +128,6 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
     thresholds = Object.values(UNIT_INDICATOR_THRESHOLD_AMBIENTAL_CHARTJS_EXLUSIVE_DICTIONARY_IM_SORRY_FOR_THE_NEXT_DEVELOPER[thresholdPointer] || {}).filter(Boolean);
   }
 
-  // const getStrokeColor = (index: number) => {
-  //   const thresholdCount = thresholds?.length || 0;
-    
-  //   if (thresholdCount === 1) return '#ff0000'; // Único umbral
-  //   if (thresholdCount === 2) return index === 0 ? '#ffd700' : '#ff0000'; // Moderado/Peligroso
-  //   if (thresholdCount === 3) { // Moderado/Insalubre/Peligroso
-  //     return ['#ffd700', '#ffa500', '#ff0000'][index];
-  //   }
-  //   return '#000'; // Caso por defecto
-  // };
-
   return (
     <Card>
       <CardHeader>
@@ -189,7 +178,7 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
       <CardContent className="relative">
         <Button className="absolute right-0 mt-8 mr-10" onClick={() => setToggleChart((prev: boolean) => !prev)}>{toggleChart ? 'Mostrar en horas' : 'Mostrar en días'}</Button>
 
-        <ChartContainer config={chartConfig} className="min-h-[420px] max-h-[680px] w-full">
+        <ChartContainer config={chartConfig} className="min-h-[420px] max-h-[480px] w-full">
           <Line
             data={{ datasets: toggleChart ?  days(readings) : hours(readings) }}
             options={{
@@ -250,8 +239,8 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
                     position: "bottom",
                     fullSize: false,       // Si quieres que no ocupe todo el ancho
                     rtl: false ,
+                 
                     labels: {
-                      fontColorStrikethrough: '#FF0000',
                       // @ts-expect-error - Ignorar errores de tipo para esta función
                       generateLabels: (chart: Chart) => {
                         const datasets = chart.data.datasets;
@@ -268,10 +257,10 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
                             fillStyle: backgroundColor,
                             strokeStyle: borderColor,
                             color: backgroundColor, 
-                            hidden: !chart.isDatasetVisible(index),
+                            // hidden: chart.isDatasetVisible(index),
                             lineWidth: borderWidth,
                             datasetIndex: index,
-                            fontColor: chart.isDatasetVisible(index) ? '#666' : '#7E84A3'
+                            fontColor: !chart.isDatasetVisible(index) ? '#cccfcc' : '#616161'
                           };
                         });
                       }

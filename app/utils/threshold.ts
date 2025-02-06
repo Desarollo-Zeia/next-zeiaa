@@ -27,7 +27,7 @@ export const UNIT_INDICATOR_THRESHOLD = {
     HCHO: {
         bottom: 0.05,
         center: 0.1,
-        top: 1.2
+        top: 0.37
     },
     TEMPERATURE: {
         bottom: 0,

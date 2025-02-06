@@ -21,3 +21,36 @@ export const formattedDate = (date: string) => {
   // Formatear la fecha
   return capitalizeFirstLetter(format(nextDay, "EEEE d 'de' MMMM", { locale: es }));
 };
+
+export function formattedSecond(second: number) {
+  // Redondear los segundos a un número entero
+  const segundosRedondeados = Math.round(second);
+
+  // Calcular días, horas, minutos y segundos restantes
+  const dias = Math.floor(segundosRedondeados / 86400);
+  let segundosRestantes = segundosRedondeados % 86400;
+
+  const horas = Math.floor(segundosRestantes / 3600);
+  segundosRestantes %= 3600;
+
+  const minutos = Math.floor(segundosRestantes / 60);
+  const segundosFinales = segundosRestantes % 60;
+
+  // Construir el resultado
+  const partes = [];
+  if (dias > 0) {
+      partes.push(`${dias}d`);
+  }
+  if (horas > 0) {
+      partes.push(`${horas}h`);
+  }
+  if (minutos > 0) {
+      partes.push(`${minutos}m`);
+  }
+  if (segundosFinales > 0) {
+      partes.push(`${segundosFinales}s`);
+  }
+
+  // Devolver el resultado o "0s" si no hay partes
+  return partes.length > 0 ? partes.join('') : '0s';
+}

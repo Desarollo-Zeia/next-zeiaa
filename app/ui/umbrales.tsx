@@ -3,12 +3,10 @@ import { UNIT_CONVERTED } from '../utils/formatter';
 import { DangerousFace, GoodFace, ModerateFace, UnhealthyFace } from './faces';
 
 const IndicatorThreshold = ({ thresholds, unit  } : { thresholds: number[] | undefined, unit: string}) => {
-  // Validar que el array tenga entre 1-3 elementos
   if (!thresholds || thresholds.length < 1 || thresholds.length > 3) {
     return <div>Configuración de thresholds inválida</div>
   }
 
-  // Determinar etiquetas y emojis según la cantidad de thresholds
   const getEtiquetasYEmojis = () => {
     const cantidad = thresholds.length;
     const emojis = {
