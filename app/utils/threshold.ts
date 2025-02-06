@@ -28,6 +28,16 @@ export const UNIT_INDICATOR_THRESHOLD = {
         bottom: 0.05,
         center: 0.1,
         top: 1.2
+    },
+    TEMPERATURE: {
+        bottom: 0,
+        center: 0,
+        top: 0
+    },
+    HUMIDITY: {
+        bottom: 0,
+        center: 0,
+        top: 0
     }
 }
 
@@ -57,6 +67,16 @@ export const UNIT_INDICATOR_THRESHOLD_AMBIENTAL = {
         bottom: 0.08,
         center: 0.1,
         top: 1.2
+    },
+    TEMPERATURE: {
+        bottom: 0,
+        center: 0,
+        top: 0
+    },
+    HUMIDITY: {
+        bottom: 0,
+        center: 0,
+        top: 0
     }
 }
 
@@ -91,5 +111,15 @@ export const UNIT_INDICATOR_THRESHOLD_AMBIENTAL_CHARTJS_EXLUSIVE_DICTIONARY_IM_S
         bottom: 0.08,
         center: 0.1,
         top: 1.2
+    },
+    TEMPERATURE: {
+        bottom: 0,
+        center: 0,
+        top: 0
+    },
+    HUMIDITY: {
+        bottom: 0,
+        center: 0,
+        top: 0
     }
 }

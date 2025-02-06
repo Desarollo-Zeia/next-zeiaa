@@ -20,7 +20,7 @@ import 'chartjs-adapter-date-fns';
 import annotationPlugin from 'chartjs-plugin-annotation';
 import { UNIT_CONVERTED } from "@/app/utils/formatter"
 import { es } from 'date-fns/locale';
-import { capitalizeFirstLetter } from "@/app/utils/func"
+import { capitalizeFirstLetter, formattedDate } from "@/app/utils/func"
 import { Button } from "@/components/ui/button"
 import { GeneralRoomData, Indicator, Measurement, Unit } from "@/app/type"
 import { TimeRangeSlider } from "@/app/ui/filters/time-range-slider"
@@ -104,7 +104,7 @@ return [
 
 export function ChartComponent({ readings, generalRoomData, indicator, unit, start, end } : ChartComponentProps) {
 
-  const [toggleChart, setToggleChart] = useState<boolean>(true)
+  const [toggleChart, setToggleChart] = useState<boolean>(false)
 
   const { indicators_pollutants: indicators } = generalRoomData
   const pathname = usePathname()
@@ -189,7 +189,7 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
       <CardContent className="relative">
         <Button className="absolute right-0 mt-8 mr-10" onClick={() => setToggleChart((prev: boolean) => !prev)}>{toggleChart ? 'Mostrar en horas' : 'Mostrar en días'}</Button>
 
-        <ChartContainer config={chartConfig}>
+        <ChartContainer config={chartConfig} className="min-h-[420px] max-h-[680px] w-full">
           <Line
             data={{ datasets: toggleChart ?  days(readings) : hours(readings) }}
             options={{
@@ -246,7 +246,68 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
                     forceOverride: true
                   },
                   legend: {
-                    display: false
+                    display: !toggleChart ? true : false,
+                    position: "bottom",
+                    fullSize: false,       // Si quieres que no ocupe todo el ancho
+                    rtl: false ,
+                    labels: {
+                      fontColorStrikethrough: '#FF0000',
+                      // @ts-expect-error - Ignorar errores de tipo para esta función
+                      generateLabels: (chart: Chart) => {
+                        const datasets = chart.data.datasets;
+                        
+                        return datasets.map((dataset, index) => {
+                          // Asegurar valores con defaults
+                          const borderColor = dataset.borderColor?.toString() || '#000000';
+                          const backgroundColor = dataset.backgroundColor?.toString() || '#CCCCCC';
+                          const borderWidth = dataset.borderWidth || 1;
+                      
+                          return {
+                            // @ts-expect-error - Ignorar errores de tipo para esta función
+                            text: toggleChart ? dataset.label : formattedDate(dataset.label), 
+                            fillStyle: backgroundColor,
+                            strokeStyle: borderColor,
+                            color: backgroundColor, 
+                            hidden: !chart.isDatasetVisible(index),
+                            lineWidth: borderWidth,
+                            datasetIndex: index,
+                            fontColor: chart.isDatasetVisible(index) ? '#666' : '#7E84A3'
+                          };
+                        });
+                      }
+                    },
+                    onClick: (e, legendItem, legend) => {
+                      const chart = legend.chart;
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      const clickedIndex = legendItem.datasetIndex as number | undefined | any
+                      const allVisible = chart.data.datasets.every(
+                        (_, index) => chart.isDatasetVisible(index)
+                      );
+                    
+                      if (allVisible) {
+                        // Si todos están visibles, ocultar todos excepto el clickeado
+                        chart.data.datasets.forEach((_, index) => {
+                          chart.setDatasetVisibility(index, index === clickedIndex);
+                        });
+                      } else {
+                        // Si no, alternar solo el elemento clickeado
+                        const isVisible = chart.isDatasetVisible(clickedIndex);
+                        chart.setDatasetVisibility(clickedIndex, !isVisible);
+                        
+                        // Si se está mostrando el último elemento visible, volver a mostrar todos
+                        const visibleCount = chart.data.datasets.filter(
+                          (_, index) => chart.isDatasetVisible(index)
+                        ).length;
+                    
+                        if (visibleCount === 0) {
+                          chart.data.datasets.forEach((_, index) => {
+                            chart.setDatasetVisibility(index, true);
+                          });
+                        }
+                      }
+                    
+                      chart.update();
+                    }
                   },
                   annotation: {
                     annotations: {

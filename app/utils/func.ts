@@ -11,9 +11,9 @@ export const formattedDate = (date: string) => {
   const parsedDate = new Date(date);
 
   // Verificar si la fecha es válida
-  if (isNaN(parsedDate.getTime())) {
-    throw new Error("Invalid date format");
-  }
+  // if (isNaN(parsedDate.getTime())) {
+  //   throw new Error("Invalid date format");
+  // }
 
   // Sumar un día a la fecha analizada
   const nextDay = addDays(parsedDate, 1);
