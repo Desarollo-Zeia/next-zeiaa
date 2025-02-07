@@ -48,21 +48,27 @@ type Baseline = {
   value: number
 }
 
+type RiskReached = {
+  risk: number,
+  count: number
+}
+
 type TableComponentProps = {
   data?: Data[],
   count: number,
   baselines: Baseline[],
+  riskReached: RiskReached[]
 }
 
 
-export default function TableComponent({ data, count, baselines } : TableComponentProps) {
-  
+export default function TableComponent({ data, count, baselines, riskReached } : TableComponentProps) {
+
   return (
     <div className='flex gap-4 mx-8'>
       {
         count > 0 ? (
           <div className="flex flex-col">
-          <AverageCard title={'Line base (promedio)'}>
+          <AverageCard title={'Line base'}>
             <div className="flex justify-between mt-2">
               <p>Valor</p>
               <p>{baselines[0].value}</p>
@@ -72,7 +78,7 @@ export default function TableComponent({ data, count, baselines } : TableCompone
               <p>{baselines[0].time}</p>
             </div>
           </AverageCard>
-          <AverageCard title={'Durante la jornada (promedio)'}>
+          <AverageCard title={'Durante la jornada'}>
             <div className="flex justify-between mt-2">
               <p>Valor</p>
               <p>{baselines[1].value}</p>
@@ -89,7 +95,7 @@ export default function TableComponent({ data, count, baselines } : TableCompone
               </div>
             </div>
           </AverageCard>
-          <AverageCard title={'Fin de la jornada (promedio)'}>
+          <AverageCard title={'Fin de la jornada'}>
             <div className="flex justify-between mt-2">
               <p>Valor</p>
               <p>{baselines[2].value}</p>
@@ -106,12 +112,20 @@ export default function TableComponent({ data, count, baselines } : TableCompone
               </div>
             </div>
           </AverageCard>
-          {/* <AverageCard title={'Tiempo de monitoreo'}>
-            <div className="flex justify-between mt-2">
-              <p>Días</p>
-              <p>dynamic</p>
-            </div>
-          </AverageCard> */}
+          <AverageCard title={'Riesgos alcanzados'}>
+            {
+              riskReached?.map((risk, i) => (
+                <div className="flex justify-between mt-2" key={i}>
+                  <div className="flex gap-2 items-center">
+                    <div className={`w-4 h-4 rounded-full ${RISK_COLOR[risk.risk as Risk]}`}></div>
+                    <p className={`text-[${RISK_COLOR[risk.risk as Risk]}]`}>{RISK[risk.risk as Risk]}</p>
+                  </div>
+                  <p>{risk.count}</p>
+                </div>
+              ))
+            }
+          
+          </AverageCard>
           <AverageCard title={'Umbrales'}>
             <div className="flex justify-between mt-2">
               <div className="flex gap-2">

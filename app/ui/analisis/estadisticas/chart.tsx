@@ -26,6 +26,7 @@ import { GeneralRoomData, Indicator, Measurement, Unit } from "@/app/type"
 import { TimeRangeSlider } from "@/app/ui/filters/time-range-slider"
 import { usePathname } from "next/navigation"
 
+
 Chart.register(Colors, annotationPlugin)
 
 
@@ -110,6 +111,9 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
   const pathname = usePathname()
   // eslint-disable-next-line @next/next/no-assign-module-variable
   const module = pathname.split('/')[1]
+
+
+  // Restaurar el scroll después del re-renderizado
 
   let thresholdPointer
   let thresholds: number[] = []
@@ -376,11 +380,11 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
                   }
                 }
             }}
-          />
+          />  
         </ChartContainer>
       </CardContent>
       {/* <CardFooter>
-        <div className="flex w-full items-start gap-2 text-sm">
+        <div className="flex w-full items-start gap-2 text-sm"> 
           <div className="grid gap-2">
             <div className="flex items-center gap-2 font-medium leading-none">
               Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />

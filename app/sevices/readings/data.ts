@@ -145,6 +145,18 @@ export async function readingsCovidDetail({ date, page, roomId, hour_before, hou
   return res 
 }
 
+export async function riskReached({ roomId, date } : { roomId?: string | number, date?: string}) {
+
+  const url = new URL(`/readings/api/room/${roomId}/covid/metrics/new-detail/risks/`, baseUrl)
+
+  if (date) url.searchParams.set('date', date)
+
+  const res = await fetchWithAuth(`${url.pathname}${url.search}`)
+
+  return res 
+}
+
+
 
 
 
