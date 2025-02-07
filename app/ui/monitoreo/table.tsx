@@ -10,7 +10,7 @@ import {
   import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { INDICATOR_CONVERTED, UNIT_CONVERTED } from "@/app/utils/formatter"
 import { Indicator, Unit } from "@/app/type"
-import { formattedDate } from "@/app/utils/func"
+import { formattedDate, formattedDatePlusDay } from "@/app/utils/func"
 import { usePathname, useRouter } from "next/navigation"
 
 interface IndicatorStructure {
@@ -54,10 +54,10 @@ export default function TableComponent({ data, name, devUI, room } : TableCompon
           </TableHeader>
           <TableBody>
               {
-                data?.map((indicator, i) => 
-                  ( 
+                data?.map((indicator, i) => {
+                  return (
                     <TableRow key={i} onClick={() => 
-                      router.replace(`${newPath}/analisis?indicator=${indicator.indicator}&unit=${indicator.unit}&room=${room}`)
+                      router.replace(`${newPath}/analisis?indicator=${indicator.indicator}&unit=${indicator.unit}&room=${room}&date_after=${new Date(formattedDatePlusDay(indicator.date))}&date_before=${new Date(formattedDatePlusDay(indicator.date))}`)
                       // router.replace(`${newPath}/analisis?indicator=${indicator.indicator}&unit=${indicator.unit}`)
                     } className="cursor-pointer"
                     >
@@ -68,6 +68,8 @@ export default function TableComponent({ data, name, devUI, room } : TableCompon
                       <TableCell  className="font-normal text-right">{indicator.value} {UNIT_CONVERTED[indicator.unit as Unit]}</TableCell>
                     </TableRow>
                   )
+                }
+                
                 )
               }
           </TableBody>
