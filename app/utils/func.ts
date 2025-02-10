@@ -22,6 +22,22 @@ export const formattedDate = (date: string) => {
   return capitalizeFirstLetter(format(nextDay, "EEEE d 'de' MMMM", { locale: es }));
 };
 
+export const formattedDatePlusDay = (date: string) => {
+  // Parsear la cadena de fecha en un objeto Date
+  const parsedDate = new Date(date);
+
+  // Verificar si la fecha es válida
+  // if (isNaN(parsedDate.getTime())) {
+  //   throw new Error("Invalid date format");
+  // }
+
+  // Sumar un día a la fecha analizada
+  const nextDay = addDays(parsedDate, 1)
+
+  return nextDay
+}
+
+
 export function formattedSecond(second: number) {
   // Redondear los segundos a un número entero
   const segundosRedondeados = Math.round(second);
