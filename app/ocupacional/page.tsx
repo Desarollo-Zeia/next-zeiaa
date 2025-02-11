@@ -7,9 +7,8 @@ import { useState, useActionState } from 'react';
 import { actionOccupational } from '../actions/validation';
 
 export default function Page() {    
-
     const [avaiblePassword, setAvaiblePassword] = useState<boolean>(false)
-    const [state, formAction] = useActionState(actionOccupational, { message: '' });
+    const [state, formAction, isPending] = useActionState(actionOccupational, { message: '' });
 
   return (
     <section className={styles.background}>
@@ -38,6 +37,7 @@ export default function Page() {
                         className="flex-1 bg-transparent outline-none p-2 box-border text-xs"
                         placeholder="example@zeia.com.pe"
                         required
+                        disabled={isPending}
                     />
                 </div>
                 <div className="flex items-center bg-gray-100 border-[1px] border-gray-300 transition-all duration-400 focus-within:border-green-100 focus-within:border-[1px] focus-within:shadow-[1px_2px_4px_rgba(0,0,0,0.9)] focus-within:border-solid rounded-md overflow-hidden box-border c focus-within:shadow-slate-400">
@@ -48,16 +48,26 @@ export default function Page() {
                         placeholder="****"
                         name='password'
                         required
+                        disabled={isPending}
                     />
-                    { avaiblePassword ? <Eye className='h-4 w-4 mr-2 cursor-pointer' onClick={() => setAvaiblePassword(false)}/> : <EyeOff className='w-4 h-4 mr-2 cursor-pointer' onClick={()=> setAvaiblePassword(true)}/>}
+                    { avaiblePassword ? 
+                        <Eye className='h-4 w-4 mr-2 cursor-pointer' onClick={() => setAvaiblePassword(false)}/> 
+                        : 
+                        <EyeOff className='w-4 h-4 mr-2 cursor-pointer' onClick={()=> setAvaiblePassword(true)}/>
+                    }
                 </div>
             </div>
             <div className="h-4 text-sm text-center text-[#ED4337] font-thin">
                 {state.message && <p>{state.message}</p>}
             </div>
-            <input type="submit"  placeholder='Ingresar' className={styles.buttonservice}/>
+            <input 
+                type="submit" 
+                value={isPending ? 'Cargando...' : 'Ingresar'} 
+                className={styles.buttonservice}
+                disabled={isPending}
+            />
         </div>
       </form>
     </section>
   )
-}   
+}
