@@ -37,33 +37,33 @@ export default function TableComponent({ data, count, generalRoomData, indicator
     {
       count > 0 ? (
         <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead >Fecha</TableHead>
-              <TableHead >Hora</TableHead>
-              <TableHead>Valor</TableHead>
-              <TableHead>Unidad</TableHead>
-              <TableHead>Estado</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-              {
-                data?.map((indicator, i) => 
-                  ( 
-                    <TableRow key={i}>
-                      <TableCell >{formattedDate(indicator.date)}</TableCell>
-                      <TableCell >{indicator.hours.toLowerCase()}</TableCell>
-                      <TableCell>{indicator.value}</TableCell>
-                      <TableCell>{UNIT_CONVERTED[indicator.unit]}</TableCell>
-                      <TableCell >{STATUS_TO_SPANISH[indicator.level as Status]}</TableCell>
-                    </TableRow>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead >Fecha</TableHead>
+                <TableHead >Hora</TableHead>
+                <TableHead>Valor</TableHead>
+                <TableHead>Unidad</TableHead>
+                <TableHead>Estado</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+                {
+                  data?.map((indicator, i) => 
+                    ( 
+                      <TableRow key={i}>
+                        <TableCell >{formattedDate(indicator.date)}</TableCell>
+                        <TableCell >{indicator.hours.toLowerCase()}</TableCell>
+                        <TableCell>{indicator.value}</TableCell>
+                        <TableCell>{UNIT_CONVERTED[indicator.unit]}</TableCell>
+                        <TableCell >{STATUS_TO_SPANISH[indicator.level as Status]}</TableCell>
+                      </TableRow>
+                    )
                   )
-                )
-              }
-          </TableBody>
-        </Table>
-      </CardContent>
+                }
+            </TableBody>
+          </Table>
+        </CardContent>
       ) : (
         <NoResultFound/>
       )

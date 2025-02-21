@@ -52,6 +52,7 @@ export default function Home() {
       <div className='w-full flex justify-end items-center gap-4 p-8'>
         <ModuleCard image='/co2service.png' name='MONITOREO DE AGENTES CONTAMINANTES' description='Asegura un ambiente saludable controlando CO2, TVOC, HCHO, PM y luz en espacios interiores.' route='/ocupacional'/>
         <ModuleCard image='/monitoreoservice.png' name='MONITOREO AMBIENTAL' description='Control avanzado de gases y agentes ambientales como PM, Cloro, Amoniaco entre otros, contribuyendo a disminuir la contaminación ambiental.' route='/ambiental'/>
+        <ModuleCard image='' name='MONITOREO ENERGÉTICO' description='Controla tu consumo de energía para ahorrar costos, mejorar la eficiencia y reducir el impacto ambiental.' route='/energia'/>
       </div>
     </main>
   );

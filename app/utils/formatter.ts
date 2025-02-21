@@ -77,6 +77,141 @@ export const INDICATOR_CONSEQUENCES_TEXT = {
   HCHO: ["Irritación de ojos, nariz y garganta", "Dolor de cabeza", "Fatiga", "Mareos", "Problemas respiratorios", "Problemas de memoria"]
 }
 
+export const ELECTRIC_PARAMETERS = {
+  Ua: { parameter: "Voltaje de fase A", unit: "V" },
+  Ub: { parameter: "Voltaje de fase B", unit: "V" },
+  Uc: { parameter: "Voltaje de fase C", unit: "V" },
+  Uab: { parameter: "Voltaje entre AB", unit: "V" },
+  Ubc: { parameter: "Voltaje entre BC", unit: "V" },
+  Uac: { parameter: "Voltaje entre AC", unit: "V" },
+  Ia: { parameter: "Corriente de la fase A", unit: "A" },
+  Ib: { parameter: "Corriente de la fase B", unit: "A" },
+  Ic: { parameter: "Corriente de la fase C", unit: "A" },
+  In: { parameter: "Vector suma de las  fases", unit: "A" },
+  Pa: { parameter: "Potencia activa de la fase A", unit: "KW" },
+  Pb: { parameter: "Potencia activa de la fase B", unit: "KW" },
+  Pc: { parameter: "Potencia activa de la fase C", unit: "KW" },
+  P: { parameter: "Potencia activa total", unit: "KW" },
+  Qa: { parameter: "Potencia reactiva de la fase A", unit: "KVar" },
+  Qb: { parameter: "Potencia reactiva de la fase B", unit: "KVar" },
+  Qc: { parameter: "Potencia reactiva de la fase C", unit: "KVar" },
+  Q: { parameter: "Potencia reactiva total", unit: "KVar" },
+  Sa: { parameter: "Potencia aparente de la fase A", unit: "KVA" },
+  Sb: { parameter: "Potencia aparente de la fase B", unit: "KVA" },
+  Sc: { parameter: "Potencia aparente de la fase C", unit: "KVA" },
+  S: { parameter: "Potencia aparente total", unit: "KVA" },
+  PFa: { parameter: "Factor de potencia de la fase A", unit: "-" },
+  PFb: { parameter: "Factor de potencia de la fase B", unit: "-" },
+  PFc: { parameter: "Factor de potencia de la fase C", unit: "-" },
+  PF: { parameter: "Factor de potencia total", unit: "-" },
+  F: { parameter: "Frecuencia", unit: "Hz" },
+  Et: { parameter: "Consumo total de energía", unit: "KWh" },
+  EPtA: { parameter: "Consumo total de energía en la fase A", unit: "KWh" },
+  EPtB: { parameter: "Consumo total de energía en la fase B", unit: "KWh" },
+  EPtC: { parameter: "Consumo total de energía en la fase C", unit: "KWh" },
+  THDUa: {
+    parameter: "Distorsión armónica total en voltaje de la fase A",
+    unit: "%",
+  },
+  THDUb: {
+    parameter: "Distorsión armónica total en voltaje de la fase B",
+    unit: "%",
+  },
+  THDUc: {
+    parameter: "Distorsión armónica total en voltaje de la fase C",
+    unit: "%",
+  },
+  THDIa: {
+    parameter: "Distorsión armónica total en corriente de la fase A",
+    unit: "%",
+  },
+  THDIb: {
+    parameter: "Distorsión armónica total en corriente de la fase B",
+    unit: "%",
+  },
+  THDIc: {
+    parameter: "Distorsión armónica total en corriente de la fase C",
+    unit: "%",
+  },
+  EPpos: { parameter: "Consumo de energía activa hacia adelante", unit: "KWh" },
+  EPneg: { parameter: "Consumo de energía activa hacia atras", unit: "KWh" },
+  EQpos: {
+    parameter: "Consumo de energía reactiva hacia adelante",
+    unit: "KVarh",
+  },
+  EQneg: { parameter: "Consumo de energía reactiva hacia atras", unit: "KVarh" },
+  EPposA: {
+    parameter: "Consumo de energía activa hacia adelante en la fase A",
+    unit: "KWh",
+  },
+  EPnegA: {
+    parameter: "Consumo de energía activa hacia atras en la fase A",
+    unit: "KWh",
+  },
+  EQposA: {
+    parameter: "Consumo de energía reactiva hacia adelante en la fase A",
+    unit: "KVarh",
+  },
+  EQnegA: {
+    parameter: "Consumo de energía reactiva hacia atras en la fase A",
+    unit: "KVarh",
+  },
+  EPposB: {
+    parameter: "Consumo de energía activa hacia adelante en la fase B",
+    unit: "KWh",
+  },
+  EPnegB: {
+    parameter: "Consumo de energía activa hacia atras en la fase B",
+    unit: "KWh",
+  },
+  EQposB: {
+    parameter: "Consumo de energía reactiva hacia adelante en la fase B",
+    unit: "KVarh",
+  },
+  EQnegB: {
+    parameter: "Consumo de energía reactiva hacia atras en la fase B",
+    unit: "KVarh",
+  },
+  EPposC: {
+    parameter: "Consumo de energía activa hacia adelante en la fase C",
+    unit: "KWh",
+  },
+  EPnegC: {
+    parameter: "Consumo de energía activa hacia atras en la fase C",
+    unit: "KWh",
+  },
+  EQposC: {
+    parameter: "Consumo de energía reactiva hacia adelante en la fase C",
+    unit: "KVarh",
+  },
+  EQnegC: {
+    parameter: "Consumo de energía reactiva hacia atras en la fase C",
+    unit: "KVarh",
+  },
+  VfunA: { parameter: "Voltaje fundamental en la fase A", unit: "V" },
+  VfunB: { parameter: "Voltaje fundamental en la fase B", unit: "V" },
+  VfunC: { parameter: "Voltaje fundamental en la fase C", unit: "V" },
+  IfunA: { parameter: "Corriente fundamental en la fase A", unit: "A" },
+  IfunB: { parameter: "Corriente fundamental en la fase B", unit: "A" },
+  IfunC: { parameter: "Corriente fundamental en la fase C", unit: "A" },
+  V3A: { parameter: "Tercer armonico en voltaje de la fase A", unit: "%" },
+  V5A: { parameter: "Quinto armonico en voltaje de la fase A", unit: "%" },
+  V7A: { parameter: "Septimo armonico en voltaje de la fase A", unit: "%" },
+  V9A: { parameter: "Noveno armonico en voltaje de la fase A", unit: "%" },
+  V11A: { parameter: "Undecimo armonico en voltaje de la fase A", unit: "%" },
+  V3B: { parameter: "Tercer armonico en voltaje de la fase B", unit: "%" },
+  V5B: { parameter: "Quinto armonico en voltaje de la fase B", unit: "%" },
+  V7B: { parameter: "Septimo armonico en voltaje de la fase B", unit: "%" },
+  V9B: { parameter: "Noveno armonico en voltaje de la fase B", unit: "%" },
+  V11B: { parameter: "Undecimo armonico en voltaje de la fase B", unit: "%" },
+  V3C: { parameter: "Tercer armonico en voltaje de la fase C", unit: "%" },
+  V5C: { parameter: "Quinto armonico en voltaje de la fase C", unit: "%" },
+  V7C: { parameter: "Septimo armonico en voltaje de la fase C", unit: "%" },
+  V9C: { parameter: "Noveno armonico en voltaje de la fase C", unit: "%" },
+  V11C: { parameter: "Undecimo armonico en voltaje de la fase C", unit: "%" },
+};
+
+
 export type Indicator = keyof typeof INDICATOR_UNIT_RAW;
 export type Unit = keyof typeof UNIT_CONVERTED
 export type Status = keyof typeof STATUS_TO_SPANISH
