@@ -24,7 +24,7 @@ import Link from "next/link"
 const energyItems = [
   {
     title: "Consumo energético",
-    url: "/energia/dashboard/consumo",
+    url: "/energia/dashboard",
     icon: Zap,
   },
   {
