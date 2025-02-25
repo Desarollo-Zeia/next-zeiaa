@@ -1,10 +1,18 @@
-'use client'
-import Link from "next/link";
+import { consume } from "@/app/sevices/energy/data";
+import TableComponent from "@/app/ui/energia/consumo/table";
+import FiltersContainer from "@/app/ui/filters/filters-container";
+import RoomSearchFilter from "@/app/ui/filters/search";
 
-export default function Page() {
+export default async function page() {
+
+  const readings = await consume({ date_after: '2025-02-18', date_before: '2025-02-21' })
+
   return (
-    <Link href={'/energia/dashboard/tarifario'}>
-      Tarifario asdkaosdoaskdokaskodakosdokaskokasdoaskodasd
-    </Link>
+    <div className="w-full">
+      <FiltersContainer>
+        <RoomSearchFilter/>
+      </FiltersContainer>
+      <TableComponent readings={readings.results} count={readings.count}/>
+    </div>
   )
 }
