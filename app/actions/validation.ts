@@ -1,6 +1,6 @@
 'use server'
 import { redirect } from 'next/navigation'
-import { removeToken, setToken } from '../lib/auth'
+import { removeToken, setCompanyData, setToken } from '../lib/auth'
 import { baseUrl, baseUrlAmbiental, baseUrlEnergy } from '../lib/constant'
  
 export async function actionOccupational(prevState: { message: string}, formData: FormData) {
@@ -72,6 +72,7 @@ export async function actionEnergy(prevState: { message: string}, formData: Form
     if (response.ok) {
       const data = await response.json()
       await setToken(data.token)
+      await setCompanyData(data.user)
     } else {
       await removeToken()
       return { message: 'Error, valide correo o constraseña'}

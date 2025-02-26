@@ -30,7 +30,7 @@ type TableComponentProps = {
   readings: {
     count: number,
     next: string,
-    previous: string | null,
+    previous: string | null,  
     results: ModifiedMeasurement[],
   },
   count: number,
