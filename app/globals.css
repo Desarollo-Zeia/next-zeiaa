@@ -12,6 +12,54 @@ body {
   }
 }
 
+@keyframes blob {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(20px, 20px) scale(1.1);
+  }
+  50% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+  75% {
+    transform: translate(-20px, -20px) scale(1.1);
+  }
+}
+
+@keyframes gradient-text {
+  0% {
+    background-size: 200% 200%;
+    background-position: 0% center;
+  }
+  50% {
+    background-size: 200% 200%;
+    background-position: 100% center;
+  }
+  100% {
+    background-size: 200% 200%;
+    background-position: 0% center;
+  }
+}
+
+.animate-blob {
+  animation: blob 10s infinite;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+
+.animate-gradient-text {
+  animation: gradient-text 3s ease infinite;
+}
+
+
 @layer base {
   :root {
     --background: 0 0% 100%;

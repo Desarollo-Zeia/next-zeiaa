@@ -6,6 +6,7 @@ import { getEnergyCompanyDetails } from "@/app/sevices/energy/enterprise/data"
 import HeadquarterEnergyFilter from "@/app/ui/energia/filters/headquarter-energy-filter"
 import PanelsFilterEnergy from "@/app/ui/energia/filters/panels-energy-filter"
 import { DateRangePicker } from "@/app/ui/energia/filters/datepicker-energy-filter"
+import ElectricDashboard from "@/app/ui/energia/consumo/electric-dashboard"
 
 interface PageProps {
   searchParams: {
@@ -16,21 +17,22 @@ interface PageProps {
   }
 }
 
+
 export default async function Page({ searchParams }: PageProps) {
   const { companies } = await getCompanyData()
 
   // Obtener los parámetros de la URL
-  const headquarterId = searchParams.headquarter
-  const panelId = searchParams.panel
-  const dateAfter = searchParams.date_after
-  const dateBefore = searchParams.date_before
+  // const headquarterId = searchParams.headquarter
+  // const panelId = searchParams.panel
+  // const dateAfter = searchParams.date_after
+  // const dateBefore = searchParams.date_before
 
-  const readings = await consume({
-    date_after: dateAfter,
-    date_before: dateBefore,
-    headquarterId: headquarterId, // Añadir headquarter_id si existe
-    panelId: panelId, // Añadir panel_id si existe
-  })
+  // const readings = await consume({
+  //   date_after: dateAfter,
+  //   date_before: dateBefore,
+  //   headquarterId: headquarterId, // Añadir headquarter_id si existe
+  //   panelId: panelId, // Añadir panel_id si existe
+  // })
 
   const energyDetails = await getEnergyCompanyDetails({ headquarterId: companies[0].id })
 
@@ -41,7 +43,9 @@ export default async function Page({ searchParams }: PageProps) {
         <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters[0].electrical_panels} />
         <DateRangePicker/>
       </FiltersContainer>
-      <TableComponent readings={readings.results} count={readings.count} />
+      {/* <TableComponent readings={readings.results} count={readings.count} />
+       */}
+       <ElectricDashboard />
     </div>
   )
 }

@@ -17,7 +17,6 @@ interface PanelsFilterProps {
 export default function PanelsFilterEnergy({ energyPanels }: PanelsFilterProps) {
 
 
-  console.log(energyPanels)
   const searchParams = useSearchParams()
   const router = useRouter()
   const currentPanel = searchParams.get("panel")
