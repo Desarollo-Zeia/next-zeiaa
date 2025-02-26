@@ -7,10 +7,9 @@ import { useState } from "react"
 import { useActionState } from "react"
 import { actionOccupational } from "../actions/validation"
 
-export default function Page() {    
-
-    const [avaiblePassword, setAvaiblePassword] = useState<boolean>(false)
-    const [state, formAction] = useActionState(actionOccupational, { message: '' });
+export default function Page() {
+  const [showPassword, setShowPassword] = useState<boolean>(false)
+  const [state, formAction] = useActionState(actionOccupational, { message: "" })
 
   return (
     <main className="relative min-h-screen bg-[#ebeef1]">
@@ -59,11 +58,11 @@ export default function Page() {
                   <div className="flex items-center rounded-lg border border-gray-200 bg-gray-50 transition-all duration-300 focus-within:border-[rgb(0,183,202)] focus-within:ring-4 focus-within:ring-[rgb(0,183,202)]/10">
                     <User className="ml-3 h-5 w-5 text-gray-400" />
                     <input
-                        type="email"
-                        name="email"
-                        className="flex-1 bg-transparent outline-none p-2 box-border text-xs"
-                        placeholder="example@zeia.com.pe"
-                        required
+                      type="email"
+                      name="email"
+                      className="w-full bg-transparent px-3 py-3 text-sm outline-none placeholder:text-gray-400"
+                      placeholder="example@zeia.com.pe"
+                      required
                     />
                   </div>
                 </div>
@@ -72,21 +71,36 @@ export default function Page() {
                   <div className="flex items-center rounded-lg border border-gray-200 bg-gray-50 transition-all duration-300 focus-within:border-[rgb(0,183,202)] focus-within:ring-4 focus-within:ring-[rgb(0,183,202)]/10">
                     <Lock className="ml-3 h-5 w-5 text-gray-400" />
                     <input
-                        type={avaiblePassword ? 'text' : 'password'}
-                        className="flex-1 bg-transparent outline-none p-2 box-border text-xs"
-                        placeholder="****"
-                        name='password'
-                        required
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      className="w-full bg-transparent px-3 py-3 text-sm outline-none placeholder:text-gray-400"
+                      placeholder="****"
+                      required
                     />
-                    { avaiblePassword ? <Eye className='h-4 w-4 mr-2 cursor-pointer' onClick={() => setAvaiblePassword(false)}/> : <EyeOff className='w-4 h-4 mr-2 cursor-pointer' onClick={()=> setAvaiblePassword(true)}/>}
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="px-3 text-gray-400 hover:text-gray-600"
+                    >
+                      {showPassword ? <Eye className="h-5 w-5" /> : <EyeOff className="h-5 w-5" />}
+                    </button>
+                  </div>
                 </div>
-            </div>
-            <div className="h-4 text-sm text-center text-[#ED4337] font-thin">
-                {state.message && <p>{state.message}</p>}
-            </div>
-            <input type="submit"  placeholder='Ingresar' className={styles.buttonservice}/>
+              </div>
+
+              {state.message && <p className="text-center text-sm text-red-500">{state.message}</p>}
+
+              <button
+                type="submit"
+                className="relative w-full overflow-hidden rounded-lg bg-gradient-to-r from-[rgb(0,183,202)] to-[rgb(0,186,167)] p-3 text-sm font-medium text-white shadow-lg transition-all hover:scale-[1.02] hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[rgb(0,183,202)] focus:ring-offset-2"
+              >
+                Ingresar
+              </button>
+            </form>
+          </div>
         </div>
       </div>
     </main>
   )
-}   
+}
+
