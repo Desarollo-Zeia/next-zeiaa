@@ -35,10 +35,10 @@ export default function ExcessPower() {
             <h2 className="text-lg font-medium">Potencia excedente</h2>
             <p className="text-sm text-muted-foreground">Durante el período seleccionado en el filtro de fecha</p>
           </div>
-          <Link href={'/energia/dashboard/monitoreo/potencia-excedente'}>
+          <Link href={"/energia/dashboard/monitoreo/potencia-excedente"}>
             <Button variant="secondary" size="sm" className="gap-2">
-                <Eye className="w-4 h-4" />
-                Ver detalles
+              <Eye className="w-4 h-4" />
+              Ver detalles
             </Button>
           </Link>
         </div>

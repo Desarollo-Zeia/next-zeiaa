@@ -158,7 +158,6 @@ export default function TableComponent({ readings, count }: TableComponentProps)
     }
   })
 
-  // Configuración del gráfico basada en el parámetro seleccionado
   const config = {
     [selectedParameter]: {
       label: ELECTRIC_PARAMETERS[selectedParameter].parameter,
@@ -167,7 +166,6 @@ export default function TableComponent({ readings, count }: TableComponentProps)
     },
   }
 
-  // Datos para el gráfico, ordenados por timestamp
   const chartData = [...formattedData]
     .sort((a, b) => a.timestamp - b.timestamp)
     .map((data) => ({
