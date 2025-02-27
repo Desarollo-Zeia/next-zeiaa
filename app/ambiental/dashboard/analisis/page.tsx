@@ -13,7 +13,7 @@ export default async function page({ searchParams } : SearchParams) {
 
   const { first_room: firstRoom} = await detailAmbiental()
 
-  const { room, indicator = 'CO2', unit = 'PPM', date_after = new Date(), date_before = new Date() , page, status } = await searchParams
+  const { room, indicator = 'CO2', unit = 'PPM', date_after = '', date_before = '' , page, status } = await searchParams
 
   const currentFirstRoom = room ? room : firstRoom
 

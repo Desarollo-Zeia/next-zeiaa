@@ -25,10 +25,12 @@ export function DatepickerRange({
   const params = new URLSearchParams(searchParams)
   const pathname = usePathname()
   const { replace } = useRouter()
-
-  const [fecha, setFecha] = React.useState<DateRange | undefined>({
-    from: new Date(),
-    to: new Date(),
+  const start = params.get('date_after')
+  const end = params.get('date_before')
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [fecha, setFecha] = React.useState<DateRange | undefined | any>({
+    from: start ?? new Date(),
+    to: end ?? new Date(),
   })
 
   // Llama a updatePathname cuando cambie la fecha
