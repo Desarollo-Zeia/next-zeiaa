@@ -81,66 +81,37 @@ const HeaderWithTooltip = ({ shortName, parameter, unit }: { shortName: string; 
 )
 
 // Mock data basada en el JSON proporcionado
-// const mockReadings: Reading[] = [
-//   {
-//     created_at: "2025-02-21T16:59:15.329353-05:00",
-//     indicators: [
-//       {
-//         values_per_channel: [
-//           {
-//             values: {
-//               P: 257.95,
-//               Q: 0,
-//               Ia: 1.73,
-//               Ib: 1.73,
-//               Ic: 0,
-//               In: 0,
-//               Ua: 223.56,
-//               Ub: 0,
-//               Uc: 228.54,
-//               Uab: 223.56,
-//               Uac: 226.04,
-//               Ubc: 228.54,
-//               EPneg: 1.85,
-//               EPpos: 4.3,
-//               EQneg: 3.53,
-//               EQpos: 7.15,
-//             },
-//           },
-//         ],
-//       },
-//     ],
-//   },
-//   {
-//     created_at: "2025-02-21T16:58:15.215850-05:00",
-//     indicators: [
-//       {
-//         values_per_channel: [
-//           {
-//             values: {
-//               P: 247.12,
-//               Q: 0,
-//               Ia: 1.67,
-//               Ib: 1.67,
-//               Ic: 0,
-//               In: 0,
-//               Ua: 222.25,
-//               Ub: 0,
-//               Uc: 227.46,
-//               Uab: 222.12,
-//               Uac: 224.73,
-//               Ubc: 227.26,
-//               EPneg: 1.85,
-//               EPpos: 4.3,
-//               EQneg: 3.53,
-//               EQpos: 7.15,
-//             },
-//           },
-//         ],
-//       },
-//     ],
-//   },
-// ]
+const mockReadings: Reading[] = [
+  {
+    created_at: "2025-02-21T16:58:15.215850-05:00",
+    indicators: [
+      {
+        values_per_channel: [
+          {
+            values: {
+              P: 247.12,
+              Q: 0,
+              Ia: 1.67,
+              Ib: 1.67,
+              Ic: 0,
+              In: 0,
+              Ua: 222.25,
+              Ub: 0,
+              Uc: 227.46,
+              Uab: 222.12,
+              Uac: 224.73,
+              Ubc: 227.26,
+              EPneg: 1.85,
+              EPpos: 4.3,
+              EQneg: 3.53,
+              EQpos: 7.15,
+            },
+          },
+        ],
+      },
+    ],
+  },
+]
 
 export default function TableComponent({ readings, count }: TableComponentProps) {
   const [selectedParameter, setSelectedParameter] = useState<ParameterKey>("P")
