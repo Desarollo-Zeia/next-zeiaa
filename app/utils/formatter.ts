@@ -215,6 +215,21 @@ export const ELECTRIC_PARAMETERS = {
   V11C: { parameter: "Undecimo armonico en voltaje de la fase C", unit: "%" },
 };
 
+export const UNIT_NAMES = {
+  V: "Voltaje",
+  A: "Corriente",
+  KW: "Potencia Activa",
+  KVar: "Potencia Reactiva",
+  KVA: "Potencia Aparente",
+  KWh: "Energía Activa",
+  KVarh: "Energía Reactiva",
+  "%": "Distorsión Armónica",
+  Hz: "Frecuencia",
+  "-": "Factor de Potencia",
+} as const
+
+export const UNIT_ORDER = ["V", "A", "KW", "KVar", "KVA", "KWh", "KVarh", "%", "Hz", "-"] as const
+
 
 export type Indicator = keyof typeof INDICATOR_UNIT_RAW;
 export type Unit = keyof typeof UNIT_CONVERTED
