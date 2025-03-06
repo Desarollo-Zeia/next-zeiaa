@@ -39,7 +39,7 @@ export function DateRangePicker() {
       const params = new URLSearchParams(searchParams.toString())
       params.set("date_after", format(date.from, "yyyy-MM-dd"))
       params.set("date_before", format(date.to, "yyyy-MM-dd"))
-      router.push(`?${params.toString()}`)
+      router.push(`?${params.toString()}`, { scroll: false })
     }
   }, [date, router, searchParams])
 

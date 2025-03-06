@@ -46,7 +46,7 @@ export default function HeadquarterEnergyFilter({ energyHeadquarter = [] }: Prop
       const defaultHqId = energyHeadquarter[0].id.toString()
       const params = new URLSearchParams(searchParams.toString())
       params.set("headquarter", defaultHqId)
-      router.push(`?${params.toString()}`)
+      router.push(`?${params.toString()}`, { scroll: false})
     }
   }, [currentHq, energyHeadquarter, router, searchParams])
 
