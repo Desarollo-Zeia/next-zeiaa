@@ -1,7 +1,11 @@
+'use client'
+
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { CalendarIcon, ClockIcon } from "lucide-react";
 import ElectricUnitFilter from "../filters/unit-energy-filter";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useCallback } from "react";
 
 
 interface Readings {
@@ -38,6 +42,26 @@ interface Readings {
 
 
   export default function MeasurementTable({ readings }: { readings: Readings }) {
+
+    const router = useRouter()
+    const pathname = usePathname()
+    const searchParams = useSearchParams()
+
+    const createQueryString = useCallback(
+      (name: string, value: string) => {
+        const params = new URLSearchParams(searchParams.toString())
+        params.set(name, value)
+        return params.toString()
+      },
+      [searchParams],
+    )
+  
+    // Handle indicator selection
+    const handleIndicatorSelect = (indicator: string) => {
+      // Update URL with the selected indicator
+      router.push(pathname + "?" + createQueryString("indicator", indicator))
+      console.log(`Selected indicator: ${indicator}`)
+    }
 
     // const indicatorsHeaders = Object.keys(readings.results[0].indicators.values_per_channel[0].values)
     const indicatorsObject = readings.results[0].indicators.values_per_channel[0].values
@@ -96,7 +120,7 @@ interface Readings {
                     </div>
                   </TableHead>
                   {avaibleIndicators.map((indicator, index) => (
-                    <TableHead key={index}>{indicator}</TableHead>
+                    <TableHead key={index} onClick={() => handleIndicatorSelect(indicator)}>{indicator}</TableHead>
                   ))}
                 </TableRow>
               </TableHeader>

@@ -15,7 +15,7 @@ interface PageProps {
     date_after?: string
     date_before?: string,
     unit?: string,
-    indicador?: string
+    indicator?: string
   }
 }
 
@@ -28,7 +28,7 @@ export default async function Page({ searchParams }: PageProps) {
   const dateAfter = searchParams.date_after
   const dateBefore = searchParams.date_before
   const unitSolid = searchParams.unit
-  const indicadorSolid = searchParams.indicador ?? 'Uab'
+  const indicadorSolid = searchParams.indicator
 
   const readings = await consume({
     // date_after: dateAfter,
@@ -44,10 +44,11 @@ export default async function Page({ searchParams }: PageProps) {
     // date_before: dateBefore,
     headquarterId: headquarterId,
     panelId: panelId,
-    unit: unitSolid,
     indicador: indicadorSolid,
 
   })
+
+  console.log(readingsGraph)
 
 
   const energyDetails = await getEnergyCompanyDetails({ headquarterId: companies[0].id })
@@ -61,7 +62,7 @@ export default async function Page({ searchParams }: PageProps) {
       </FiltersContainer>
       <div className="flex">
         <MeasurementTable readings={readings}/>
-        <MeasurementGraph data={readingsGraph}/>
+        <MeasurementGraph data={readingsGraph} unit={unitSolid}/>
       </div>
 
     </div>
