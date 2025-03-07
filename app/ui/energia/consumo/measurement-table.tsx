@@ -59,8 +59,7 @@ interface Readings {
     // Handle indicator selection
     const handleIndicatorSelect = (indicator: string) => {
       // Update URL with the selected indicator
-      router.push(pathname + "?" + createQueryString("indicator", indicator))
-      console.log(`Selected indicator: ${indicator}`)
+      router.push(pathname + "?" + createQueryString("indicator", indicator), { scroll: false })
     }
 
     // const indicatorsHeaders = Object.keys(readings.results[0].indicators.values_per_channel[0].values)

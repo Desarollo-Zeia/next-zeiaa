@@ -23,33 +23,25 @@ interface PageProps {
 export default async function Page({ searchParams }: PageProps) {
   const { companies } = await getCompanyData()
 
-  const headquarterId = searchParams.headquarter
-  const panelId = searchParams.panel
-  const dateAfter = searchParams.date_after
-  const dateBefore = searchParams.date_before
-  const unitSolid = searchParams.unit
-  const indicadorSolid = searchParams.indicator
+  const { headquarter, panel, date_after, date_before, unit, indicator } = await searchParams
 
   const readings = await consume({
-    // date_after: dateAfter,
-    // date_before: dateBefore,
-    headquarterId: headquarterId,
-    panelId: panelId,
-    unit: unitSolid,
+    date_after,
+    date_before,
+    headquarterId: headquarter,
+    panelId: panel,
+    unit: unit,
     
   })
 
   const readingsGraph = await consumeGraph({
     // date_after: dateAfter,
     // date_before: dateBefore,
-    headquarterId: headquarterId,
-    panelId: panelId,
-    indicador: indicadorSolid,
+    headquarterId: headquarter,
+    panelId: panel,
+    indicador: indicator,
 
   })
-
-  console.log(readingsGraph)
-
 
   const energyDetails = await getEnergyCompanyDetails({ headquarterId: companies[0].id })
 
@@ -62,7 +54,7 @@ export default async function Page({ searchParams }: PageProps) {
       </FiltersContainer>
       <div className="flex">
         <MeasurementTable readings={readings}/>
-        <MeasurementGraph data={readingsGraph} unit={unitSolid}/>
+        <MeasurementGraph data={readingsGraph} unit={unit}/>
       </div>
 
     </div>

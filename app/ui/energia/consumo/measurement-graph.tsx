@@ -61,22 +61,18 @@ export interface ElectricParameter {
   
   // Tipos para las props del tooltip
   export interface CustomTooltipProps {
-    active?: boolean
+    active?: boolean;
     payload?: Array<{
-      payload: FormattedEnergyReading
-      value: number
-      dataKey: string
-      name?: string
-    }>
-    label?: string
+      payload?: FormattedEnergyReading;
+      value?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+      dataKey?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+      name?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+    }>;
+    label?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
   }
+
   
   
-
-// Diccionario de parámetros eléctricos
-// Datos de ejemplo
-
-
 export default function MeasurementGraph({
   data,
   electricParameters = ELECTRIC_PARAMETERS,
@@ -86,8 +82,7 @@ export default function MeasurementGraph({
 }: EnergyDifferenceChartProps) {
   // Formatear los datos para la gráfica
 
-  console.log(unit)
-  const chartData: FormattedEnergyReading[] = data.map((item) => {
+  const chartData: FormattedEnergyReading[] = data?.map((item) => {
     // Obtener el parámetro completo del diccionario
     const paramInfo = electricParameters[item.indicator] || {
       parameter: item.indicator,
@@ -113,11 +108,11 @@ export default function MeasurementGraph({
             ? "var(--color-negative)"
             : "var(--color-neutral)",
     }
-  })
+  }) ?? []
 
   // Obtener el parámetro del primer elemento para el título
-  const parameterInfo = electricParameters[data[0].indicator] || {
-    parameter: data[0].indicator,
+  const parameterInfo = electricParameters[data?.[0].indicator as string] || {
+    parameter: data?.[0].indicator,
     unit: "KWh",
   }
 
@@ -197,14 +192,18 @@ export default function MeasurementGraph({
 
 // Componente personalizado para el tooltip
 function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
-  if (!active || !payload || !payload.length) {
-    return null
+  if (!active || !payload || !payload.length || !payload[0].payload) {
+    return null;
   }
 
-  const data = payload[0].payload
-  const diffValue = data.difference
+  const data = payload[0].payload;
+  const diffValue = data.difference;
   const diffClass =
-    diffValue > 0 ? "text-[hsl(142,76%,36%)]" : diffValue < 0 ? "text-[hsl(0,84%,60%)]" : "text-[hsl(220,14%,80%)]"
+    diffValue > 0
+      ? "text-[hsl(142,76%,36%)]"
+      : diffValue < 0
+      ? "text-[hsl(0,84%,60%)]"
+      : "text-[hsl(220,14%,80%)]";
 
   return (
     <div className="bg-white p-3 border border-gray-200 shadow-md rounded-md max-w-xs">
@@ -234,6 +233,6 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
         </span>
       </div>
     </div>
-  )
+  );
 }
 
