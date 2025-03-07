@@ -23,6 +23,7 @@ export default function PanelsFilterEnergy({ energyPanels = [] }: PanelsFilterPr
     (panelId: string) => {
       const params = new URLSearchParams(searchParams.toString())
       params.set("panel", panelId)
+      params.set("page", '1')
       router.push(`?${params.toString()}`, { scroll: false})
     },
     [router, searchParams],

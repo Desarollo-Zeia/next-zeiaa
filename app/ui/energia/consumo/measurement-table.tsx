@@ -5,7 +5,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { CalendarIcon, ClockIcon } from "lucide-react";
 import ElectricUnitFilter from "../filters/unit-energy-filter";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
+import PaginationNumberComponent from "../../pagination-number";
+import NoResultsFound from "../../no-result";
 
 
 interface Readings {
@@ -47,6 +49,8 @@ interface Readings {
     const pathname = usePathname()
     const searchParams = useSearchParams()
 
+    const [selectedIndicator, setSelectedIndicator] = useState('')
+
     const createQueryString = useCallback(
       (name: string, value: string) => {
         const params = new URLSearchParams(searchParams.toString())
@@ -59,11 +63,12 @@ interface Readings {
     // Handle indicator selection
     const handleIndicatorSelect = (indicator: string) => {
       // Update URL with the selected indicator
+      setSelectedIndicator(indicator)
       router.push(pathname + "?" + createQueryString("indicator", indicator), { scroll: false })
     }
 
     // const indicatorsHeaders = Object.keys(readings.results[0].indicators.values_per_channel[0].values)
-    const indicatorsObject = readings.results[0].indicators.values_per_channel[0].values
+    const indicatorsObject = readings.results?.[0]?.indicators?.values_per_channel[0].values
 
     const avaibleIndicators = [] as Array<string>
 
@@ -102,48 +107,59 @@ interface Readings {
             <ElectricUnitFilter/>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>
-                    <div className="flex items-center gap-2">
-                      <CalendarIcon className="h-4 w-4" />
-                      Fecha
-                    </div>
-                  </TableHead>
-                  <TableHead>
-                    <div className="flex items-center gap-2">
-                      <ClockIcon className="h-4 w-4" />
-                      Hora
-                    </div>
-                  </TableHead>
-                  {avaibleIndicators.map((indicator, index) => (
-                    <TableHead key={index} onClick={() => handleIndicatorSelect(indicator)}>{indicator}</TableHead>
-                  ))}
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {readings.results.map((reading, readingIndex) => {
-                  const { date, time } = formatDateTime(reading.created_at)
-  
-                  // Obtenemos los valores de los indicadores para este reading
-                  const indicatorValues = reading.indicators.values_per_channel[0].values
-  
-                  return (
-                    <TableRow key={readingIndex}>
-                      <TableCell className="text-nowrap">{date}</TableCell>
-                      <TableCell>{time}</TableCell>
-                      {avaibleIndicators.map((header, headerIndex) => (
-                        <TableCell key={headerIndex}>{indicatorValues[header]}</TableCell>
+          {
+             readings.count > 0 ? 
+             (
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>
+                        <div className="flex items-center gap-2">
+                          <CalendarIcon className="h-4 w-4" />
+                          Fecha
+                        </div>
+                      </TableHead>
+                      <TableHead>
+                        <div className="flex items-center gap-2">
+                          <ClockIcon className="h-4 w-4" />
+                          Hora
+                        </div>
+                      </TableHead>
+                      {avaibleIndicators.map((indicator, index) => (
+                        <TableHead className={`cursor-pointer ${selectedIndicator === indicator ? 'bg-[#00b0c7] opacity-70 text-white font-medium' : ''}`} key={index} onClick={() => handleIndicatorSelect(indicator)}>{indicator}</TableHead>
                       ))}
                     </TableRow>
-                  )
-                })}
-              </TableBody>
-            </Table>
-          </div>
+                  </TableHeader>
+                  <TableBody>
+                    {readings?.results?.map((reading, readingIndex) => {
+                      const { date, time } = formatDateTime(reading.created_at)
+      
+                      // Obtenemos los valores de los indicadores para este reading
+                      const indicatorValues = reading.indicators.values_per_channel[0].values
+      
+                      return (
+                        <TableRow key={readingIndex}>
+                          <TableCell className="text-nowrap">{date}</TableCell>
+                          <TableCell>{time}</TableCell>
+                          {avaibleIndicators.map((header, headerIndex) => (
+                            <TableCell className={`cursor-pointer ${selectedIndicator === header ? 'bg-[#00b0c7] opacity-70 text-white font-medium' : ''}`} key={headerIndex}>{indicatorValues[header]}</TableCell>
+                          ))}
+                        </TableRow>
+                      )
+                    })}
+                  </TableBody>
+                </Table>
+              </div>
+             ) : 
+             (
+              <NoResultsFound/>
+             )
+          }
+          
         </CardContent>
+        { readings.count > 0 && <PaginationNumberComponent count={readings.count} itemsPerPage={10}/>}
+        
       </Card>
     )
   }

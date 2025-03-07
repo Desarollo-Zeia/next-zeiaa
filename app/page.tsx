@@ -63,7 +63,7 @@ export default function Home() {
           {/* Hero Section */}
           <div className="py-12 sm:py-16 lg:py-20">
             <div className="relative max-w-2xl">
-              <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
+              <h1 className="text-4xl font-bold tracking-tight text-[#4d5a64] sm:text-6xl">
                 Soluciones de{" "}
                 <span className="bg-gradient-to-r from-[rgb(0,183,202)] via-[rgb(0,186,167)] to-[rgb(0,193,83)] bg-clip-text text-transparent">
                   monitoreo

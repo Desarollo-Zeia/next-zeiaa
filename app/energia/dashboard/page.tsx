@@ -15,7 +15,8 @@ interface PageProps {
     date_after?: string
     date_before?: string,
     unit?: string,
-    indicator?: string
+    indicator?: string,
+    page?: string
   }
 }
 
@@ -23,7 +24,7 @@ interface PageProps {
 export default async function Page({ searchParams }: PageProps) {
   const { companies } = await getCompanyData()
 
-  const { headquarter, panel, date_after, date_before, unit, indicator } = await searchParams
+  const { headquarter = '1', panel = '1', date_after, date_before, unit, indicator, page = '1' } = await searchParams
 
   const readings = await consume({
     date_after,
@@ -31,15 +32,17 @@ export default async function Page({ searchParams }: PageProps) {
     headquarterId: headquarter,
     panelId: panel,
     unit: unit,
+    page
     
   })
 
   const readingsGraph = await consumeGraph({
-    // date_after: dateAfter,
-    // date_before: dateBefore,
+    date_after,
+    date_before,
     headquarterId: headquarter,
     panelId: panel,
     indicador: indicator,
+    unit
 
   })
 
@@ -54,9 +57,8 @@ export default async function Page({ searchParams }: PageProps) {
       </FiltersContainer>
       <div className="flex">
         <MeasurementTable readings={readings}/>
-        <MeasurementGraph data={readingsGraph} unit={unit}/>
+        <MeasurementGraph data={readingsGraph} unit={unit} count={readings.count}/>
       </div>
-
     </div>
   )
 }
