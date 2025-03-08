@@ -7,6 +7,7 @@ import { es } from "date-fns/locale"
 import { ChartContainer, ChartTooltip } from "@/components/ui/chart"
 import { ELECTRIC_PARAMETERS } from "@/app/utils/formatter"
 import NoResultsFound from "../../no-result"
+import FrequencyEnergyFilter from "../filters/frecuency-filter-energy"
 // Tipos para los parámetros eléctricos
 export interface ElectricParameter {
     parameter: string
@@ -97,8 +98,8 @@ export default function MeasurementGraph({
     const lastReadingDate = new Date(item.last_reading)
 
     return {
-      ...item,
-      formattedDate: format(new Date(item.period), "dd MMM", { locale: es }),
+      ...item,  
+      formattedDate: format(new Date(item?.period), "dd MMM", { locale: es }) ?? '',
       parameterName: paramInfo.parameter,
       unit: paramInfo.unit,
       firstReadingFormatted: format(firstReadingDate, "dd/MM/yyyy HH:mm", { locale: es }),
@@ -127,73 +128,74 @@ export default function MeasurementGraph({
     {
       count > 0 ? 
       (
-        <div className={`flex-1 flex flex-col justify-center  bg-white ${className}`}>
-        <h2 className="text-xl font-bold mb-2 text-center">{chartTitle}</h2>
-        <p className="text-sm text-muted-foreground mb-6 text-center">
-          Punto de medición: {chartData[0]?.measurement_point.name} | Dispositivo: {chartData[0]?.device.name} | Unidad:{" "}
-          {unit}
-        </p>
+        <div className={`flex-1 flex flex-col justify-center items-center gap-6 bg-white ${className}`}>
+          <FrequencyEnergyFilter/>
+          <h2 className="text-xl font-bold mb-2 text-center">{chartTitle}</h2>
+          <p className="text-sm text-muted-foreground mb-6 text-center">
+            Punto de medición: {chartData[0]?.measurement_point.name} | Dispositivo: {chartData[0]?.device.name} | Unidad:{" "}
+            {unit}
+          </p>
 
-        <ChartContainer
-          config={{
-            difference: {
-              label: "Diferencia",
-              color: "hsl(190, 100%, 39%)",
-            },
-            positive: {
-              label: "Positivo",
-              color: "hsl(142, 76%, 36%)",
-            },
-            negative: {
-              label: "Negativo",
-              color: "hsl(0, 84%, 60%)",
-            },
-            neutral: {
-              label: "Sin cambio",
-              color: "hsl(220, 14%, 80%)",
-            },
-          }}
-          className="min-h-[350px]"
-        >
-          <BarChart
-            data={chartData}
-            margin={{
-              top: 20,
-              right: 30,
-              left: 30,
-              bottom: 30,
+          <ChartContainer
+            config={{
+              difference: {
+                label: "Diferencia",
+                color: "hsl(190, 100%, 39%)",
+              },
+              positive: {
+                label: "Positivo",
+                color: "hsl(142, 76%, 36%)",
+              },
+              negative: {
+                label: "Negativo",
+                color: "hsl(0, 84%, 60%)",
+              },
+              neutral: {
+                label: "Sin cambio",
+                color: "hsl(220, 14%, 80%)",
+              },
             }}
+            className="min-h-[350px]"
           >
-            <CartesianGrid strokeDasharray="3 3" vertical={false} />
-            <XAxis dataKey="formattedDate" tickLine={false} axisLine={true} tick={{ fill: "hsl(var(--foreground))" }} />
-            <YAxis
-              tickLine={false}
-              axisLine={true}
-              tick={{ fill: "hsl(var(--foreground))" }}
-              // label={{
-              //   value: `Diferencia (${parameterInfo.unit})`,
-              //   angle: -90,
-              //   position: "insideLeft",
-              //   style: { textAnchor: "middle", fill: "hsl(var(--foreground))" },
-              // }}
-            />
-            <ReferenceLine y={0} stroke="hsl(var(--foreground))" strokeWidth={1} />
-            <ChartTooltip content={(props) => <CustomTooltip {...props} />} />
-            <Bar
-              dataKey="difference"
-              radius={[4, 4, 0, 0]}
-              fill="var(--color-difference)"
-              fillOpacity={0.9}
-              name="Diferencia"
-              isAnimationActive={true}
+            <BarChart
+              data={chartData}
+              margin={{
+                top: 20,
+                right: 30,
+                left: 30,
+                bottom: 30,
+              }}
             >
-              {chartData.map((entry, index) => (
-                <rect key={`rect-${index}`} fill={entry.color} />
-              ))}
-            </Bar>
-          </BarChart>
-        </ChartContainer>
-      </div>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} />
+              <XAxis dataKey="formattedDate" tickLine={false} axisLine={true} tick={{ fill: "hsl(var(--foreground))" }} />
+              <YAxis
+                tickLine={false}
+                axisLine={true}
+                tick={{ fill: "hsl(var(--foreground))" }}
+                // label={{
+                //   value: `Diferencia (${parameterInfo.unit})`,
+                //   angle: -90,
+                //   position: "insideLeft",
+                //   style: { textAnchor: "middle", fill: "hsl(var(--foreground))" },
+                // }}
+              />
+              <ReferenceLine y={0} stroke="hsl(var(--foreground))" strokeWidth={1} />
+              <ChartTooltip content={(props) => <CustomTooltip {...props} />} />
+              <Bar
+                dataKey="difference"
+                radius={[4, 4, 0, 0]}
+                fill="var(--color-difference)"
+                fillOpacity={0.9}
+                name="Diferencia"
+                isAnimationActive={true}
+              >
+                {chartData.map((entry, index) => (
+                  <rect key={`rect-${index}`} fill={entry.color} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ChartContainer>
+        </div>
       ) : 
       (
         <NoResultsFound/>

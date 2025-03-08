@@ -22,7 +22,6 @@ const UNIT_NAMES: Record<string, string> = {
 export default function ElectricUnitFilter({ defaultUnit = "V" }: { defaultUnit?: string }) {
   const [isPending, startTransition] = useTransition()
   const searchParams = useSearchParams()
-  const currentUnit = searchParams.get("unit") as string
   const pathname = usePathname()
   const { replace } = useRouter()
 
@@ -53,14 +52,13 @@ export default function ElectricUnitFilter({ defaultUnit = "V" }: { defaultUnit?
 
   return (
     <div className="relative">
-      <Select onValueChange={handleUnitChange} value={currentUnit ? currentUnit : defaultUnit} disabled={isPending}>
+      <Select onValueChange={handleUnitChange} value={defaultUnit} disabled={isPending}>
         <SelectTrigger className="w-[240px] bg-[#00b0c7]">
-          <SelectValue placeholder={isPending ? "Cargando..." : "Seleccionar unidad"} className="text-white font-bold">
-            {currentUnit && formatUnitDisplay(currentUnit)}
-          </SelectValue>
+          <SelectValue placeholder={"Seleccionar unidad"} className="text-white font-bold"/>
+            {/* {currentUnit && formatUnitDisplay(currentUnit)} */}
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="none">Sin unidad</SelectItem>
+          {/* <SelectItem value="none">Sin unidad</SelectItem> */}
           {ELECTRIC_UNITS.map((unit) => (
             <SelectItem key={unit} value={unit}>
               {formatUnitDisplay(unit)}

@@ -43,7 +43,7 @@ interface Readings {
   type Values = Record<string, number>
 
 
-  export default function MeasurementTable({ readings }: { readings: Readings }) {
+  export default function MeasurementTable({ readings, unit }: { readings: Readings, unit?: string }) {
 
     const router = useRouter()
     const pathname = usePathname()
@@ -104,7 +104,7 @@ interface Readings {
     return (
       <Card className="max-w-[450px]">
         <CardHeader>
-            <ElectricUnitFilter/>
+            <ElectricUnitFilter defaultUnit={unit}/>
         </CardHeader>
         <CardContent>
           {

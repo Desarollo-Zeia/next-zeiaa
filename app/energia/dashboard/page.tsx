@@ -16,7 +16,8 @@ interface PageProps {
     date_before?: string,
     unit?: string,
     indicator?: string,
-    page?: string
+    page?: string,
+    last_by?: string
   }
 }
 
@@ -24,7 +25,7 @@ interface PageProps {
 export default async function Page({ searchParams }: PageProps) {
   const { companies } = await getCompanyData()
 
-  const { headquarter = '1', panel = '1', date_after, date_before, unit, indicator, page = '1' } = await searchParams
+  const { headquarter = '1', panel = '1', date_after, date_before, unit = 'V', indicator = 'P', page = '1', last_by = 'day' } = await searchParams
 
   const readings = await consume({
     date_after,
@@ -42,7 +43,8 @@ export default async function Page({ searchParams }: PageProps) {
     headquarterId: headquarter,
     panelId: panel,
     indicador: indicator,
-    unit
+    unit,
+    last_by
 
   })
 
@@ -56,7 +58,7 @@ export default async function Page({ searchParams }: PageProps) {
         <DateRangePicker/>
       </FiltersContainer>
       <div className="flex">
-        <MeasurementTable readings={readings}/>
+        <MeasurementTable readings={readings} unit={unit}/>
         <MeasurementGraph data={readingsGraph} unit={unit} count={readings.count}/>
       </div>
     </div>
