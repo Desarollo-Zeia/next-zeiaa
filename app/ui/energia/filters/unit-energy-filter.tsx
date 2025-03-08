@@ -32,6 +32,7 @@ export default function ElectricUnitFilter({ defaultUnit = "V" }: { defaultUnit?
 
       if (unit && unit !== "none") {
         newParams.set("unit", unit)
+        newParams.set("page", '1')
       }
 
       if (unit === "none") {
