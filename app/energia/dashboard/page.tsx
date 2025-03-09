@@ -59,7 +59,7 @@ export default async function Page({ searchParams }: PageProps) {
       </FiltersContainer>
       <div className="flex">
         <MeasurementTable readings={readings} unit={unit}/>
-        <MeasurementGraph data={readingsGraph} unit={unit} count={readings.count}/>
+        <MeasurementGraph data={readingsGraph} unit={unit} count={readings.count} frequency={last_by}/>
       </div>
     </div>
   )

@@ -7,7 +7,7 @@ import { es } from "date-fns/locale"
 import { ChartContainer, ChartTooltip } from "@/components/ui/chart"
 import { ELECTRIC_PARAMETERS } from "@/app/utils/formatter"
 import NoResultsFound from "../../no-result"
-import FrequencyEnergyFilter from "../filters/frecuency-filter-energy"
+import FrequencyEnergyFilter from "../filters/frequency-energy-filter"
 // Tipos para los parámetros eléctricos
 export interface ElectricParameter {
     parameter: string
@@ -49,7 +49,8 @@ export interface ElectricParameter {
     unit: string
     firstReadingFormatted: string
     lastReadingFormatted: string
-    color: string
+    color: string,
+    registeredAt: string
   }
   
   // Tipos para las props del componente principal
@@ -59,7 +60,8 @@ export interface ElectricParameter {
     title?: string
     className?: string,
     unit?: string,
-    count?: number
+    count?: number,
+    frequency?: string
   }
   
   // Tipos para las props del tooltip
@@ -72,7 +74,11 @@ export interface ElectricParameter {
       name?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
     }>;
     label?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+    frequency: any // eslint-disable-line @typescript-eslint/no-explicit-any
+    
   }
+
+  type Frequency = 'hour' | 'day' | 'week' | 'month'
 
   
   
@@ -82,9 +88,20 @@ export default function MeasurementGraph({
   title,
   unit,
   count = 0,
+  frequency,
   className = "",
 }: EnergyDifferenceChartProps) {
   // Formatear los datos para la gráfica
+
+  const frequencyFormattedDate = frequency === 'hour' ? 'HH:mm' : 'dd MMM'
+
+  const frequencyFormatter = {
+    hour: 'dd MMM HH:mm',
+    day: 'dd MMM HH:mm',
+    week: 'dd MMM',
+    month: 'dd MMM',
+  }
+
 
   const chartData: FormattedEnergyReading[] = data?.map((item) => {
     // Obtener el parámetro completo del diccionario
@@ -99,11 +116,12 @@ export default function MeasurementGraph({
 
     return {
       ...item,  
-      formattedDate: format(new Date(item?.period), "dd MMM", { locale: es }) ?? '',
+      formattedDate: format(new Date(item?.period), frequencyFormattedDate, { locale: es }) ?? '',
+      registeredAt: format(new Date(item?.period), 'dd MMM', { locale: es }) ?? '',
       parameterName: paramInfo.parameter,
       unit: paramInfo.unit,
-      firstReadingFormatted: format(firstReadingDate, "dd/MM/yyyy HH:mm", { locale: es }),
-      lastReadingFormatted: format(lastReadingDate, "dd/MM/yyyy HH:mm", { locale: es }),
+      firstReadingFormatted: format(firstReadingDate, frequencyFormatter[frequency as Frequency], { locale: es }),
+      lastReadingFormatted: format(lastReadingDate, frequencyFormatter[frequency as Frequency], { locale: es }),
       // Determinar el color de la barra según el valor
       color:
         item.difference > 0
@@ -159,12 +177,7 @@ export default function MeasurementGraph({
           >
             <BarChart
               data={chartData}
-              margin={{
-                top: 20,
-                right: 30,
-                left: 30,
-                bottom: 30,
-              }}
+             
             >
               <CartesianGrid strokeDasharray="3 3" vertical={false} />
               <XAxis dataKey="formattedDate" tickLine={false} axisLine={true} tick={{ fill: "hsl(var(--foreground))" }} />
@@ -180,7 +193,7 @@ export default function MeasurementGraph({
                 // }}
               />
               <ReferenceLine y={0} stroke="hsl(var(--foreground))" strokeWidth={1} />
-              <ChartTooltip content={(props) => <CustomTooltip {...props} />} />
+              <ChartTooltip content={(props) => <CustomTooltip frequency={frequency} {...props} />} />
               <Bar
                 dataKey="difference"
                 radius={[4, 4, 0, 0]}
@@ -207,7 +220,8 @@ export default function MeasurementGraph({
 }
 
 // Componente personalizado para el tooltip
-function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
+function CustomTooltip({ active, payload }: CustomTooltipProps) {
+
   if (!active || !payload || !payload.length || !payload[0].payload) {
     return null;
   }
@@ -224,7 +238,7 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
   return (
     <div className="bg-white p-3 border border-gray-200 shadow-md rounded-md max-w-xs">
       <h3 className="font-bold text-sm mb-1">{data.parameterName}</h3>
-      <p className="text-xs mb-2">Fecha: {label}</p>
+      {/* <p className="text-xs mb-2">Fecha: {label}</p> */}
 
       <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
         <span className="text-gray-500">Primera lectura:</span>
