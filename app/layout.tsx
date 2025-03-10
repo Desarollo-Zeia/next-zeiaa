@@ -1,6 +1,6 @@
 'use client'
 import "./globals.css";
-import { montserrat } from '@/app/ui/fonts'
+import { poppins } from '@/app/ui/fonts'
 
 export default function RootLayout({
   children,
@@ -12,7 +12,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${montserrat.className} ${montserrat.className} antialiased`}
+        className={`${poppins.className} ${poppins.className} antialiased`}
       >
           {children}
       </body>

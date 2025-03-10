@@ -56,7 +56,7 @@ export default function PaginationNumberComponent({ count, itemsPerPage } : { co
   const endIndex = Math.min(startIndex + itemsPerPage - 1, count)
 
   return (
-    <div className="flex flex-col items-center space-y-2 md:flex-row md:justify-between md:space-y-0 p-4 relative">
+    <div className="flex flex-col items-center space-y-2 md:flex-col md:justify-start md:items-start md:space-y-0 p-4 relative">
         <Pagination>
           <PaginationContent>
             <PaginationItem>
@@ -106,9 +106,8 @@ export default function PaginationNumberComponent({ count, itemsPerPage } : { co
             </PaginationItem>
           </PaginationContent>
         </Pagination>
-          <br />
-        <p className="text-sm text-gray-600 text-nowrap">
-          Mostrando del {startIndex} al {endIndex} de {count} resultados
+        <p className="text-sm text-gray-600 text-nowrap text-left ml-4">
+          Mostrando del {startIndex} al {endIndex} de {count}
         </p>
     </div>
   )

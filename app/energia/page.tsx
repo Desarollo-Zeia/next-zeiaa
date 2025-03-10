@@ -5,11 +5,11 @@ import Image from "next/image"
 import Link from "next/link"
 import { useState } from "react"
 import { useActionState } from "react"
-import { actionOccupational } from "../actions/validation"
+import { actionEnergy } from "../actions/validation"
 
 export default function Page() {
   const [showPassword, setShowPassword] = useState<boolean>(false)
-  const [state, formAction] = useActionState(actionOccupational, { message: "" })
+  const [state, formAction] = useActionState(actionEnergy, { message: "" })
 
   return (
     <main className="relative min-h-screen bg-[#ebeef1]">

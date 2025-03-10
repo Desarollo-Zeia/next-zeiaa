@@ -1,6 +1,6 @@
 'use server'
 import { fetchWithAuth, fetchWithAuthAmbiental } from "@/app/lib/api"
-import { baseUrl } from "@/app/lib/constant"
+import { baseUrl, baseUrlAmbiental } from "@/app/lib/constant"
 
 export async function alerts({ roomId, indicator, unit, date_after, date_before, page, status } : { roomId : string | number, indicator: string, unit: string, date_after?: string,  date_before?: string, page: string, status?: string}) {
 
@@ -20,7 +20,7 @@ export async function alerts({ roomId, indicator, unit, date_after, date_before,
 
 export async function alertsAmbiental({ roomId, indicator, unit, date_after, date_before, page, status } : { roomId : string | number, indicator: string, unit: string, date_after?: string,  date_before?: string, page: string, status?: string}) {
 
-  const url = new URL(`/alerts/api/ambiental/point/${roomId}/alerts/`, baseUrl)
+  const url = new URL(`/alerts/api/ambiental/point/${roomId}/alerts/`, baseUrlAmbiental)
 
   if (indicator) url.searchParams.set('indicator', indicator)
   if (unit) url.searchParams.set('unit', unit)
