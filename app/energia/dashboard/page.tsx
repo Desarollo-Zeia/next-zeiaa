@@ -45,7 +45,6 @@ export default async function Page({ searchParams }: PageProps) {
     indicador: indicator,
     unit,
     last_by
-
   })
 
   const energyDetails = await getEnergyCompanyDetails({ headquarterId: companies[0].id })
