@@ -25,7 +25,7 @@ interface PageProps {
 export default async function Page({ searchParams }: PageProps) {
   const { companies } = await getCompanyData()
 
-  const { headquarter = '1', panel = '1', date_after, date_before, unit = 'V', indicator = 'P', page = '1', last_by = 'day' } = await searchParams
+  const { headquarter = '1', panel = '1', date_after, date_before, unit = 'V', indicator = 'P', page = '1', last_by = 'day' } =  searchParams
 
   const readings = await consume({
     date_after,
