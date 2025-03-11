@@ -34,6 +34,7 @@ export function DateRangePicker() {
   })
 
   // Update URL when dates change
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (date?.from && date?.to) {
       const params = new URLSearchParams(searchParams.toString())

@@ -55,7 +55,7 @@ const chartData = [
   },
 ].reverse() // Revertimos el array para mostrar los datos en orden cronológico
 
-const CustomTooltip = ({ active, payload, label }: any) => {
+const CustomTooltip = ({ active, payload, label }: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
   if (active && payload && payload.length) {
     return (
       <div className="bg-white p-3 border rounded-lg shadow-sm">
