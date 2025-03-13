@@ -8,6 +8,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useState } from "react";
 import PaginationNumberComponent from "../../pagination-number";
 import NoResultsFound from "../../no-result";
+import { ELECTRIC_PARAMETERS } from "@/app/utils/formatter";
 
 
 interface Readings {
@@ -102,7 +103,7 @@ interface Readings {
       }
   
     return (
-      <Card className="max-w-[450px]">
+      <Card className="min-w-[580px]">
         <CardHeader>
             <ElectricUnitFilter defaultUnit={unit}/>
         </CardHeader>
@@ -127,7 +128,7 @@ interface Readings {
                         </div>
                       </TableHead>
                       {avaibleIndicators.map((indicator, index) => (
-                        <TableHead className={`cursor-pointer ${selectedIndicator === indicator ? 'bg-[#00b0c7] opacity-70 text-white font-medium' : ''}`} key={index} onClick={() => handleIndicatorSelect(indicator)}>{indicator}</TableHead>
+                        <TableHead className={`cursor-pointer text-center ${selectedIndicator === indicator ? 'bg-[#00b0c7] opacity-70 text-white font-medium' : ''}`} key={index} onClick={() => handleIndicatorSelect(indicator)}>{ELECTRIC_PARAMETERS[indicator as keyof typeof ELECTRIC_PARAMETERS].parameter}</TableHead>
                       ))}
                     </TableRow>
                   </TableHeader>
@@ -137,14 +138,18 @@ interface Readings {
       
                       // Obtenemos los valores de los indicadores para este reading
                       const indicatorValues = reading.indicators.values_per_channel[0].values
+
+                      console.log('indicatorValues', indicatorValues)
       
                       return (
                         <TableRow key={readingIndex}>
                           <TableCell className="text-nowrap">{date}</TableCell>
                           <TableCell>{time}</TableCell>
-                          {avaibleIndicators.map((header, headerIndex) => (
-                            <TableCell className={`cursor-pointer ${selectedIndicator === header ? 'bg-[#00b0c7] opacity-70 text-white font-medium' : ''}`} key={headerIndex}>{indicatorValues[header]}</TableCell>
-                          ))}
+                          {avaibleIndicators.map((header, headerIndex) => {
+                            return indicatorValues[header] === null ? <TableCell key={headerIndex}>-</TableCell> : (
+                              <TableCell className={`cursor-pointer text-center ${selectedIndicator === header ? 'bg-[#00b0c7] opacity-70 text-white font-medium' : ''}`} key={headerIndex}>{indicatorValues[header]}</TableCell>
+                            )
+                          })}
                         </TableRow>
                       )
                     })}

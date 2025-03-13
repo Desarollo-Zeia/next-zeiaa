@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { es } from "date-fns/locale"
 
 export function DateRangePicker() {
   const router = useRouter()
@@ -57,13 +58,13 @@ export function DateRangePicker() {
             {date?.from ? (
               date.to ? (
                 <>
-                  {format(date.from, "LLL dd, y")} - {format(date.to, "LLL dd, y")}
+                  {format(date.from, "LLL dd, y", { locale: es } )} - {format(date.to, "LLL dd, y", { locale: es })}
                 </>
               ) : (
-                format(date.from, "LLL dd, y")
+                format(date.from, "LLL dd, y", { locale: es })
               )
             ) : (
-              <span>Pick a date range</span>
+              <span>Selecciona un rango de fechas</span>
             )}
           </Button>
         </PopoverTrigger>
@@ -75,6 +76,7 @@ export function DateRangePicker() {
             selected={date}
             onSelect={setDate}
             numberOfMonths={2}
+            locale={es}
           />
         </PopoverContent>
       </Popover>

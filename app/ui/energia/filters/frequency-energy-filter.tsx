@@ -51,7 +51,7 @@ export default function FrequencyEnergyFilter() {
   }, [searchParams, selectedFrequency])
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex justify-center flex-wrap gap-2">
       {frequencyOptions.map((option) => (
         <Button
         
@@ -60,7 +60,7 @@ export default function FrequencyEnergyFilter() {
           variant={selectedFrequency === option.value ? "default" : "outline"}
           className={cn(
             "transition-all",
-            selectedFrequency === option.value ? "text-primary-foreground bg-[#00b0c7]" : "bg-background hover:bg-muted",
+            selectedFrequency === option.value ? "text-primary-foreground bg-[#00b0c7] hover:bg-none" : "bg-background hover:bg-muted",
             isPending && "opacity-70",
           )}
           disabled={isPending && selectedFrequency === option.value}

@@ -153,7 +153,7 @@ export default function MeasurementGraph({
   return (
     <>
       {count > 0 ? (
-        <div className={`flex-1 flex flex-col justify-center items-center gap-6 bg-white ${className}`}>
+        <div className={`flex-1 flex flex-col justify-center gap-6 bg-white ${className}`}>
           <FrequencyEnergyFilter />
           <h2 className="text-xl font-bold mb-2 text-center">{chartTitle}</h2>
           <ChartContainer
@@ -179,7 +179,7 @@ export default function MeasurementGraph({
           >
             {frequency === "hour" || frequency === "day" ? (
               // Gráfico lineal para hora o día
-              <LineChart data={chartData}>
+              <LineChart data={chartData} margin={{ left: 50, right: 50 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                 <XAxis
                   dataKey="formattedDate"
@@ -187,7 +187,7 @@ export default function MeasurementGraph({
                   axisLine={true}
                   tick={{ fill: "hsl(var(--foreground))" }}
                 />
-                <YAxis tickLine={false} axisLine={true} tick={{ fill: "hsl(var(--foreground))" }} />
+                <YAxis tickLine={false} axisLine={true} tick={{ fill: "hsl(var(--foreground))" }} hide={true}/>
                 <ReferenceLine y={0} stroke="hsl(var(--foreground))" strokeWidth={1} />
                 <ChartTooltip content={(props) => <CustomTooltip frequency={frequency} {...props} />} />
                 <Line
@@ -210,7 +210,7 @@ export default function MeasurementGraph({
                   axisLine={true}
                   tick={{ fill: "hsl(var(--foreground))" }}
                 />
-                <YAxis tickLine={false} axisLine={true} tick={{ fill: "hsl(var(--foreground))" }} />
+                <YAxis tickLine={false} axisLine={true} tick={{ fill: "hsl(var(--foreground))" }} hide={true}/>
                 <ReferenceLine y={0} stroke="hsl(var(--foreground))" strokeWidth={1} />
                 <ChartTooltip content={(props) => <CustomTooltip frequency={frequency} {...props} />} />
                 <Bar
