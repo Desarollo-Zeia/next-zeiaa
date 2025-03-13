@@ -103,7 +103,7 @@ interface Readings {
       }
   
     return (
-      <Card className="min-w-[580px]">
+      <Card className="flex-1">
         <CardHeader>
             <ElectricUnitFilter defaultUnit={unit}/>
         </CardHeader>
