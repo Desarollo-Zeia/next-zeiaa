@@ -156,11 +156,6 @@ export default function MeasurementGraph({
         <div className={`flex-1 flex flex-col justify-center items-center gap-6 bg-white ${className}`}>
           <FrequencyEnergyFilter />
           <h2 className="text-xl font-bold mb-2 text-center">{chartTitle}</h2>
-          <p className="text-sm text-muted-foreground mb-6 text-center">
-            Punto de medición: {chartData[0]?.measurement_point.name} | Dispositivo: {chartData[0]?.device.name} |
-            Unidad: {unit}
-          </p>
-
           <ChartContainer
             config={{
               difference: {
