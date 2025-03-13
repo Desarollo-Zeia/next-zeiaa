@@ -4,7 +4,7 @@ import { baseUrlEnergy } from "@/app/lib/constant"
 
 export async function consume({ headquarterId, panelId, date_after, date_before, unit, page} : { date_after?: string,  date_before?: string, panelId?: string, headquarterId?: string, unit?: string, page?:string}) {
 
-  const url = new URL(`/api/v1/enterprises/${headquarterId}/measurement_points/${panelId}/readings`, baseUrlEnergy)
+  const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/measurement_points/1/readings`, baseUrlEnergy)
 
   if (date_after) url.searchParams.set('date_after', date_after)
   if (date_before) url.searchParams.set('date_before', date_before)
@@ -18,7 +18,7 @@ export async function consume({ headquarterId, panelId, date_after, date_before,
 
 export async function consumeGraph({ headquarterId, panelId, date_after, date_before, indicador, unit, last_by} : { date_after?: string,  date_before?: string, panelId?: string, headquarterId?: string, indicador?: string, unit?: string, last_by?:string}) {
 
-  const url = new URL(`/api/v1/enterprises/${headquarterId}/measurement_points/${panelId}/readings/graph`, baseUrlEnergy)
+  const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/measurement_points/1/readings/graph`, baseUrlEnergy)
 
   if (date_after) url.searchParams.set('date_after', date_after)
   if (date_before) url.searchParams.set('date_before', date_before)

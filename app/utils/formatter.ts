@@ -108,10 +108,12 @@ export const ELECTRIC_PARAMETERS = {
   PFc: { parameter: "Factor de potencia de la fase C", unit: "-" },
   PF: { parameter: "Factor de potencia total", unit: "-" },
   F: { parameter: "Frecuencia", unit: "Hz" },
+
   Et: { parameter: "Consumo total de energía", unit: "KWh" },
   EPtA: { parameter: "Consumo total de energía en la fase A", unit: "KWh" },
   EPtB: { parameter: "Consumo total de energía en la fase B", unit: "KWh" },
   EPtC: { parameter: "Consumo total de energía en la fase C", unit: "KWh" },
+
   THDUa: {
     parameter: "Distorsión armónica total en voltaje de la fase A",
     unit: "%",
@@ -124,6 +126,7 @@ export const ELECTRIC_PARAMETERS = {
     parameter: "Distorsión armónica total en voltaje de la fase C",
     unit: "%",
   },
+  
   THDIa: {
     parameter: "Distorsión armónica total en corriente de la fase A",
     unit: "%",
@@ -217,10 +220,12 @@ export const ELECTRIC_PARAMETERS = {
 
 export const UNIT_NAMES = {
   V: "Voltaje",
+
   A: "Corriente",
-  KW: "Potencia Activa",
+  KW: "Potencia Activa",  
   KVar: "Potencia Reactiva",
   KVA: "Potencia Aparente",
+
   KWh: "Energía Activa",
   KVarh: "Energía Reactiva",
   "%": "Distorsión Armónica",
