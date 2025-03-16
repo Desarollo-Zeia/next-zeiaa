@@ -8,13 +8,13 @@ import { DateRangePicker } from "@/app/ui/energia/filters/datepicker-energy-filt
 import MeasurementTable from "@/app/ui/energia/consumo/measurement-table"
 import MeasurementGraph from "@/app/ui/energia/consumo/measurement-graph"
 import { SearchParams } from "@/app/type"
-
+import { addDays, format } from "date-fns"
 
 
 export default async function Page({ searchParams }: SearchParams) {
   const { companies } = await getCompanyData()
 
-  const { headquarter = '1', panel = '1', date_after, date_before, unit = 'V', indicator = 'P', page = '1', last_by = 'day' } = await searchParams
+  const { headquarter = '1', panel = '1', date_after = format(addDays(new Date(), -3), 'yyyy-MM-dd'), date_before = format(new Date(), 'yyyy-MM-dd'), unit = 'V', indicator = 'P', page = '1', last_by = 'day' } = await searchParams
 
   const readings = await consume({
     date_after,

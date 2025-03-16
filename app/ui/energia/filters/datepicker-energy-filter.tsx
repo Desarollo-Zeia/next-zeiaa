@@ -13,8 +13,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { es } from "date-fns/locale"
 
 export function DateRangePicker() {
-  const router = useRouter()
   const searchParams = useSearchParams()
+  const router = useRouter()
 
   // Initialize date range from URL params or default to last 3 days
   const [date, setDate] = useState<DateRange | undefined>(() => {
@@ -34,8 +34,7 @@ export function DateRangePicker() {
     }
   })
 
-  // Update URL when dates change
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+
   useEffect(() => {
     if (date?.from && date?.to) {
       const params = new URLSearchParams(searchParams.toString())

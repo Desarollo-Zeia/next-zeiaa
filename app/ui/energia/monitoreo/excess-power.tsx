@@ -1,34 +1,77 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
 import { Eye } from "lucide-react"
 import Link from "next/link"
 
-const excessPowerEvents = [
-  {
-    date: "Miércoles 12 de julio",
-    time: "8:00am",
-    power: "150kw",
-    status: "Consumo excedente",
-  },
-  {
-    date: "Miércoles 12 de julio",
-    time: "10:00am",
-    power: "150kw",
-    status: "Consumo excedente",
-  },
-  {
-    date: "Miércoles 12 de julio",
-    time: "11:00am",
-    power: "150kw",
-    status: "Consumo excedente",
-  },
-]
+interface DeviceInfo {
+  id: number
+  dev_eui: string
+  name: string
+}
 
-export default function ExcessPower() {
+interface Indicator {
+  id: number
+  measurement_point_name: string
+  power: number
+  exceeded_thresholds: string[]
+}
+
+interface PowerExceedingEvent {
+  created_at: string
+  device: DeviceInfo
+  indicators: Indicator[]
+}
+
+interface ExcessPowerData {
+  count: number
+  next: string | null
+  previous: string | null
+  results: PowerExceedingEvent[]
+}
+
+// Función para formatear la fecha y hora
+const formatDateTime = (dateString: string) => {
+  const date = new Date(dateString)
+
+  // Formatear la fecha (ej: "Lunes 10 de marzo")
+  const options: Intl.DateTimeFormatOptions = {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  }
+  const formattedDate = date.toLocaleDateString("es-ES", options)
+
+  // Formatear la hora (ej: "11:58am")
+  const hours = date.getHours()
+  const minutes = date.getMinutes()
+  const ampm = hours >= 12 ? "pm" : "am"
+  const formattedHours = hours % 12 || 12
+  const formattedMinutes = minutes.toString().padStart(2, "0")
+  const formattedTime = `${formattedHours}:${formattedMinutes}${ampm}`
+
+  return { date: formattedDate, time: formattedTime }
+}
+
+export default function ExcessPower({ excessPowerData }: { excessPowerData: ExcessPowerData }) {
+
+  const excessPowerEvents = excessPowerData.results.map((item) => {
+    const { date, time } = formatDateTime(item.created_at)
+    const power = item.indicators[0]?.power || 0
+    const exceededThresholds = item.indicators[0]?.exceeded_thresholds || []
+  
+    return {
+      date,
+      time,
+      power: `${power.toFixed(2)}kW`,
+      status: exceededThresholds.length > 0 ? "Consumo excedente" : "Normal",
+      thresholds: exceededThresholds.join(", "),
+    }
+  })
+
+
   return (
-    <Card className="w-full">
+    <div className="w-full">
       <div className="p-4 space-y-4">
         <div className="flex items-center justify-between">
           <div className="space-y-1">
@@ -45,7 +88,7 @@ export default function ExcessPower() {
 
         <div className="space-y-1">
           {excessPowerEvents.map((event, index) => (
-            <div key={index} className="p-3 rounded-lg text-sm flex items-center gap-1 bg-sky-50/50">
+            <div key={index} className="p-3 rounded-lg text-sm flex flex-wrap items-center gap-1 bg-sky-50/50">
               <span>
                 El {event.date} a las {event.time} con{" "}
               </span>
@@ -53,11 +96,12 @@ export default function ExcessPower() {
               <span>(</span>
               <span className="text-red-500">{event.status}</span>
               <span>)</span>
+              
             </div>
           ))}
         </div>
       </div>
-    </Card>
+    </div>
   )
 }
 

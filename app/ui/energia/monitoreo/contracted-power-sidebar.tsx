@@ -1,7 +1,6 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
 import { HelpCircle } from "lucide-react"
 
 export default function ContractedPowerSidebar() {
@@ -53,22 +52,24 @@ export default function ContractedPowerSidebar() {
   const maxPower = currentPower - maxPowerExceeded
 
   return (
-    <Card className="p-4 shadow-md">
+    <div className="p-4">
       <div className="p-4 space-y-5">
-        <div className="space-y-1">
-          <h2 className="text-sm text-muted-foreground">Potencia contratada</h2>
-          <p className="text-2xl font-bold">{contractedPower.toFixed(0)}kW</p>
-        </div>
+        <div className="flex gap-2">
+          <div className="flex-1 bg-gray-100 flex flex-col items-center gap-2 p-2 rounded-lg">
+            <p className="text-nowrap text-xs">Potencia contratada</p>
+            <p className="font-semibold font-sm">200 kW</p>
+          </div>
 
-        <div className="space-y-1">
-          <h3 className="text-sm text-muted-foreground">Modelo</h3>
-          <p className="text-base font-medium">Trifásico</p>
+          <div className="flex-1 bg-gray-100 flex flex-col items-center gap-2 p-2 rounded-lg">
+            <p className="text-nowrap text-xs">Tipo</p>
+            <p className="font-semibold font-sm">Trifásica</p>
+          </div>
         </div>
 
         <div className="space-y-2.5">
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 rounded-full bg-orange-500"></span>
-            <span className="text-sm">Potencia máxima</span>
+            <span className="text-sm">Máxima demanda de potencia</span>
             <span className="text-sm font-medium ml-auto text-nowrap">{maxPower.toFixed(0)} kW</span>
           </div>
           <div className="flex items-center gap-2">
@@ -88,7 +89,7 @@ export default function ContractedPowerSidebar() {
           ¿Qué se mide?
         </Button>
       </div>
-    </Card>
+    </div>
   )
 }
 

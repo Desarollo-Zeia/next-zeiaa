@@ -2,8 +2,25 @@
 
 import { Button } from "@/components/ui/button"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
-import ExcessPower from "./excess-power"
 import { Card } from "@/components/ui/card"
+
+interface DeviceInfo {
+  id: number
+  name: string
+  dev_eui: string
+}
+
+interface MeasurementPoint {
+  id: number
+  measurement_point_name: string
+  power: number
+}
+
+interface PowerReading {
+  created_at: string
+  device: DeviceInfo
+  values_per_channel: MeasurementPoint[]
+}
 
 // Función para formatear la fecha a solo hora y minutos
 const formatTime = (dateString: string) => {
@@ -11,51 +28,12 @@ const formatTime = (dateString: string) => {
   return date.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" })
 }
 
-// Datos modificados con picos de potencia y valores en 0
-const chartData = [
-  {
-    time: "2025-02-19T17:03:11.677283-05:00",
-    power: 0,
-  },
-  {
-    time: "2025-02-19T17:02:11.611909-05:00",
-    power: 820,
-  },
-  {
-    time: "2025-02-19T17:01:11.723821-05:00",
-    power: 680,
-  },
-  {
-    time: "2025-02-19T17:00:11.701413-05:00",
-    power: 0,
-  },
-  {
-    time: "2025-02-19T16:59:11.381985-05:00",
-    power: 0,
-  },
-  {
-    time: "2025-02-19T16:58:11.511805-05:00",
-    power: 920,
-  },
-  {
-    time: "2025-02-19T16:57:11.566406-05:00",
-    power: 750,
-  },
-  {
-    time: "2025-02-19T16:56:11.837776-05:00",
-    power: 0,
-  },
-  {
-    time: "2025-02-19T16:55:11.139006-05:00",
-    power: 480,
-  },
-  {
-    time: "2025-02-19T16:54:11.233592-05:00",
-    power: 0,
-  },
-].reverse() // Revertimos el array para mostrar los datos en orden cronológico
+// Transformar los datos del JSON al formato esperado por el gráfico
 
-const CustomTooltip = ({ active, payload, label }: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+// Convertir los datos al formato esperado por el gráfico
+
+const CustomTooltip = ({ active, payload, label }: any) => {  // eslint-disable-line @typescript-eslint/no-explicit-any
+  // eslint-disable-line @typescript-eslint/no-explicit-any
   if (active && payload && payload.length) {
     return (
       <div className="bg-white p-3 border rounded-lg shadow-sm">
@@ -71,13 +49,19 @@ const CustomTooltip = ({ active, payload, label }: any) => { // eslint-disable-l
   return null
 }
 
-export default function PowerUsageChart() {
+export default function PowerUsageChart({ readings } : { readings: PowerReading[] }) {
+
+  const chartData = readings?.map((item) => ({
+    time: item.created_at,
+    power: item.values_per_channel[0]?.power || 0,
+  }))
+  .reverse() // Revertimos el array para mostrar los datos en orden cronológico
   // Encontrar el valor máximo para el dominio del eje Y
   const maxValue = Math.max(...chartData.map((d) => d.power))
-  const yDomain = [0, Math.ceil(maxValue / 100) * 100]
+  const yDomain = [0, Math.max(100, Math.ceil(maxValue / 100) * 100)] // Asegurar un mínimo de 100 para el dominio
 
   return (
-    <Card className="flex-1 p-6 shadow-md">
+    <div className="flex-1 p-6">
       <div className="flex justify-end gap-2 mb-6">
         <Button variant="outline" size="sm" className="text-sm">
           Por día
@@ -87,7 +71,7 @@ export default function PowerUsageChart() {
         </Button>
       </div>
 
-      <div className="h-[400px]">
+      <div className="h-[400px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} />
@@ -113,9 +97,7 @@ export default function PowerUsageChart() {
           </LineChart>
         </ResponsiveContainer>
       </div>
-
-      <ExcessPower />
-    </Card>
+    </div>
   )
 }
 
