@@ -17,7 +17,7 @@ export async function current({ headquarterId, panelId, date_after, date_before,
 
 export async function currentGraph({ headquarterId, panelId, date_after, date_before, status} : { date_after?: string,  date_before?: string, panelId?: string, headquarterId?: string, status?: string}) {
 
-    const url = new URL(`/api/v1/headquarter/${headquarterId}}/electrical_panel/${panelId}/current-imbalanced/graph`, baseUrlEnergy)
+    const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/current-imbalanced/graph`, baseUrlEnergy)
   
     if (date_after) url.searchParams.set('date_after', date_after)
     if (date_before) url.searchParams.set('date_before', date_before)

@@ -36,7 +36,7 @@ export function MetricSelector({
           onClick={() => handleMetricChange("current")}
           className={cn(
             "px-3 py-1.5 text-sm font-medium transition-all relative",
-            selectedMetric === "current" ? "bg-primary text-primary-foreground" : "hover:bg-muted/80",
+            selectedMetric === "current" ? "bg-[#00b0c7] text-primary-foreground" : "hover:bg-muted/80",
           )}
           aria-pressed={selectedMetric === "current"}
         >
@@ -46,7 +46,7 @@ export function MetricSelector({
           onClick={() => handleMetricChange("voltage")}
           className={cn(
             "px-3 py-1.5 text-sm font-medium transition-all relative",
-            selectedMetric === "voltage" ? "bg-primary text-primary-foreground" : "hover:bg-muted/80",
+            selectedMetric === "voltage" ? "bg-[#00b0c7] text-primary-foreground" : "hover:bg-muted/80",
           )}
           aria-pressed={selectedMetric === "voltage"}
         >
