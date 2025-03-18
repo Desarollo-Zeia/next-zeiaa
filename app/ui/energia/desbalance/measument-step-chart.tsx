@@ -91,7 +91,6 @@ export function MeasurementStepChart({
               [selectedMetric]: {
                 label: `Corriente Fase ${selectedMetric.charAt(1)}`,
                 color: "hsl(var(--chart-1))",
-                area: true,
               },
             }}
           >
