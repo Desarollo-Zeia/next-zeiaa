@@ -1,6 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
+import { format } from "date-fns"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
 
 interface DeviceInfo {
@@ -24,7 +25,7 @@ interface PowerReading {
 // Función para formatear la fecha a solo hora y minutos
 const formatTime = (dateString: string) => {
   const date = new Date(dateString)
-  return date.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" })
+  return date.toLocaleTimeString("es-ES", { day: "2-digit", month: "long", hour: "2-digit", minute: "2-digit" })
 }
 
 // Transformar los datos del JSON al formato esperado por el gráfico
@@ -33,7 +34,9 @@ const formatTime = (dateString: string) => {
 
 const CustomTooltip = ({ active, payload, label }: any) => {  // eslint-disable-line @typescript-eslint/no-explicit-any
   // eslint-disable-line @typescript-eslint/no-explicit-any
-  if (active && payload && payload.length) {
+  
+  if (active && payload && payload.length) {  
+
     return (
       <div className="bg-white p-3 border rounded-lg shadow-sm">
         <p className="text-sm font-medium mb-2">{formatTime(label)}</p>
@@ -56,9 +59,6 @@ export default function PowerUsageChart({ readings } : { readings: PowerReading[
   }))
   .reverse() // Revertimos el array para mostrar los datos en orden cronológico
   // Encontrar el valor máximo para el dominio del eje Y
-  const maxValue = Math.max(...chartData.map((d) => d.power))
-  const yDomain = [0, Math.max(100, Math.ceil(maxValue / 100) * 100)] // Asegurar un mínimo de 100 para el dominio
-
   return (
     <div className="flex-1 p-6">
       <div className="flex justify-end gap-2 mb-6">
@@ -79,10 +79,10 @@ export default function PowerUsageChart({ readings } : { readings: PowerReading[
               axisLine={false}
               tickLine={false}
               tick={{ fontSize: 12 }}
-              tickFormatter={formatTime}
+              tickFormatter={(date) => format(new Date(date), 'HH:mm')}
               interval="preserveStartEnd"
             />
-            <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12 }} domain={yDomain} tickCount={8} />
+            <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12 }} />
             <Tooltip content={<CustomTooltip />} />
             <Line
               type="step"

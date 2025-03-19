@@ -9,15 +9,18 @@ import ContractedPowerSidebar from "@/app/ui/energia/monitoreo/contracted-power-
 import ExcessPower from "@/app/ui/energia/monitoreo/excess-power";
 import PowerUsageChart from "@/app/ui/energia/monitoreo/power-dashboard";
 import FiltersContainer from "@/app/ui/filters/filters-container";
-import { addDays, format } from "date-fns";
+import { format } from "date-fns";
 
 export default async function page({ searchParams } : SearchParams) {
 
   const { companies } = await getCompanyData()
 
-  const { headquarter = '1' , panel = '1',  date_after = format(addDays(new Date(), -3), 'yyyy-MM-dd'), date_before = format(new Date(), 'yyyy-MM-dd'), last_by = 'day'} = await searchParams
+  const { headquarter = '1' , panel = '1',  date_after = format(new Date(), 'yyyy-MM-dd'), date_before = format(new Date(), 'yyyy-MM-dd'), last_by = 'day'} = await searchParams
 
   const energyDetails = await getEnergyCompanyDetails({ headquarterId: companies[0].id })
+
+  const currentPanel = energyDetails.energy_headquarters[0].electrical_panels?.filter((item) => item.id ===  Number(panel))
+  const currentPowers = energyDetails.energy_headquarters[0].powers
 
   const monitoringGraphReadings = await monitoringGraph({ headquarterId: headquarter, panelId: panel, date_after, date_before, last_by })
   const monitoringLastThreeReadings = await monitoringLastThree({ headquarterId: headquarter, panelId: panel })
@@ -30,7 +33,7 @@ export default async function page({ searchParams } : SearchParams) {
         <DateRangePicker/>
       </FiltersContainer>
       <div className="flex gap-4 mx-6">
-        <ContractedPowerSidebar />
+        <ContractedPowerSidebar panel={currentPanel} powers={currentPowers}/>
         <div className="flex-1">
           <PowerUsageChart readings={monitoringGraphReadings}/>
           <ExcessPower excessPowerData={monitoringLastThreeReadings}/>
