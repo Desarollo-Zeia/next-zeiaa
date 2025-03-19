@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { addDays, format } from "date-fns"
+import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
 import type { DateRange } from "react-day-picker"
 
@@ -29,7 +29,7 @@ export function DateRangePicker() {
     }
 
     return {
-      from: addDays(new Date(), -3),
+      from: new Date(),
       to: new Date(),
     }
   })

@@ -12,6 +12,7 @@ import HeadquarterEnergyFilter from "@/app/ui/energia/filters/headquarter-energy
 import PanelsFilterEnergy from "@/app/ui/energia/filters/panels-energy-filter";
 import FiltersContainer from "@/app/ui/filters/filters-container";
 import NoResultFound from "@/app/ui/no-result-found";
+import { format } from "date-fns";
 // import { addDays, format } from "date-fns";
 
 export default async function page({ searchParams } : SearchParams) {
@@ -19,7 +20,7 @@ export default async function page({ searchParams } : SearchParams) {
 
   const { companies } = await getCompanyData()
 
-   const { headquarter = '1' , panel = '1',  date_after = '2025-02-28', date_before = '2025-02-27', metric = 'current'} = await searchParams
+   const { headquarter = '1' , panel = '1',  date_after = format(new Date(), "yyyy-MM-dd"), date_before = format(new Date(), "yyyy-MM-dd"), metric = 'current'} = await searchParams
   
   const energyDetails = await getEnergyCompanyDetails({ headquarterId: companies[0].id })
 
