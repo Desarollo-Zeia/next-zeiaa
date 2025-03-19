@@ -47,7 +47,6 @@ export function CurrentMeter({
   unit = "A",
   warningThreshold = 300,
   criticalThreshold = 400,
-  animate = true,
   ...props
 }: CurrentMeterProps) {
   const [determinedStatus, setDeterminedStatus] = useState(status)
@@ -65,7 +64,7 @@ export function CurrentMeter({
   }, [currentValue, warningThreshold, criticalThreshold, status])
 
   // Calculate percentage for the progress indicator
-  const percentage = Math.min(100, (currentValue / criticalThreshold) * 100)
+  // const percentage = Math.min(100, (currentValue / criticalThreshold) * 100)
 
   return (
     <div className={cn(meterVariants({ status: determinedStatus, size, className }))} {...props}>
@@ -94,10 +93,10 @@ export function CurrentMeter({
             "text-3xl": size === "lg",
           })}
         >
-          {currentValue.toFixed(2)} {unit}
+          {currentValue?.toFixed(2)} {unit}
         </p>
 
-        <div className="w-24 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mt-2 overflow-hidden">
+        {/* <div className="w-24 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mt-2 overflow-hidden">
           <div
             className={cn("h-full rounded-full transition-all", {
               "bg-blue-500": determinedStatus === "normal",
@@ -107,7 +106,7 @@ export function CurrentMeter({
             })}
             style={{ width: `${percentage}%` }}
           />
-        </div>
+        </div> */}
       </div>
     </div>
   )
