@@ -1,26 +1,29 @@
 "use client"
 
-import { capitalizeFirstLetter } from "@/app/utils/func";
+import { useState } from "react"
+import { capitalizeFirstLetter } from "@/app/utils/func"
 import { Button } from "@/components/ui/button"
-import { HelpCircle } from "lucide-react"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog"
+import { HelpCircle, X } from "lucide-react"
 
 interface Panel {
-  id: number;
-  name: string;
-  is_active: boolean;
-  type: "monofasico"; // O bien: string, en caso de admitir otros tipos.
-  threads: any[] | null; // Se puede refinar el tipo en función de los datos esperados.
+  id: number
+  name: string
+  is_active: boolean
+  type: "monofasico" // O bien: string, en caso de admitir otros tipos.
+  threads: any[] | null // Se puede refinar el tipo en función de los datos esperados.
 }
 
 interface Powers {
-  id: number;
-  power_installed: number;
-  power_contracted: number;
-  power_max: number;
+  id: number
+  power_installed: number
+  power_contracted: number
+  power_max: number
 }
 
+export default function ContractedPowerSidebar({ panel, powers }: { panel: Panel[]; powers: Powers[] }) {
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
-export default function ContractedPowerSidebar({ panel, powers } : { panel: Panel[], powers: Powers[]}) {
   // Usando el primer elemento del array de resultados
   return (
     <div className="p-4">
@@ -55,11 +58,55 @@ export default function ContractedPowerSidebar({ panel, powers } : { panel: Pane
           </div>
         </div>
 
-        <Button variant="secondary" className="w-full gap-2 text-sm h-8">
+        <Button variant="secondary" className="w-full gap-2 text-sm h-8" onClick={() => setIsModalOpen(true)}>
           <HelpCircle className="w-3.5 h-3.5" />
           ¿Qué se mide?
         </Button>
       </div>
+
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>¿Qué se mide?</DialogTitle>
+            {/* <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+              <X className="h-4 w-4" />
+              <span className="sr-only">Cerrar</span>
+            </DialogClose> */}
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <h3 className="font-medium text-sm flex items-center gap-2">
+                <span className="w-3 h-3 rounded-full bg-orange-500"></span>
+                Máxima demanda de potencia
+              </h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                Es el valor máximo de potencia que se ha demandado en un período determinado.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="font-medium text-sm flex items-center gap-2">
+                <span className="w-3 h-3 rounded-full bg-yellow-500"></span>
+                Potencia contratada
+              </h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                Es la potencia que se ha acordado con la compañía eléctrica y por la que se paga en la factura.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="font-medium text-sm flex items-center gap-2">
+                <span className="w-3 h-3 rounded-full bg-rose-500"></span>
+                Potencia instalada
+              </h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                La potencia instalada es la sumatoría de las potencias activas nominales de todos los artefactos y
+                equipos que se alimentan de un suministro de electricidad.
+              </p>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

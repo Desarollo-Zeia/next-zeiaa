@@ -57,7 +57,7 @@ export default function PowerUsageChart({ readings } : { readings: PowerReading[
     time: item.created_at,
     power: item.values_per_channel[0]?.power || 0,
   }))
-  .reverse() // Revertimos el array para mostrar los datos en orden cronológico
+ // Revertimos el array para mostrar los datos en orden cronológico
   // Encontrar el valor máximo para el dominio del eje Y
   return (
     <div className="flex-1 p-6">
@@ -87,7 +87,7 @@ export default function PowerUsageChart({ readings } : { readings: PowerReading[
             <Line
               type="step"
               dataKey="power"
-              stroke="#0ea5e9"
+              stroke="#00b0c7"
               strokeWidth={2}
               dot={false}
               activeDot={{ r: 8 }}

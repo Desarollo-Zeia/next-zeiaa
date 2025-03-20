@@ -1,3 +1,4 @@
+import NoResultFound from "@/app/ui/no-result-found"
 import { Card } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
@@ -66,24 +67,47 @@ const getStatusType = (threshold: string): "warning" | "error" | "default" => {
   return "default"
 }
 
-export default function PowerConsumptionTable({ exceeded } : { exceeded: ExceededPowers}) {
+// Function to get the highest priority threshold
+const getPriorityThreshold = (thresholds: ExceededThreshold[]): ExceededThreshold | null => {
+  // Priority order: "Potencia instalada" > "Potencia contratada" > "Potencia máxima"
+  const instalada = thresholds.find((t) => t.threshold === "Potencia instalada")
+  if (instalada) return instalada
+
+  const contratada = thresholds.find((t) => t.threshold === "Potencia contratada")
+  if (contratada) return contratada
+
+  const maxima = thresholds.find((t) => t.threshold === "Potencia máxima")
+  if (maxima) return maxima
+
+  return null
+}
+
+export default function PowerConsumptionTable({ exceeded }: { exceeded: ExceededPowers }) {
   // Transform the API data into table rows
   const tableRows = exceeded?.results?.flatMap((result) => {
     const { date, time } = formatDateTime(result.created_at)
 
     return result?.indicators?.flatMap((indicator) => {
-      return indicator.exceeded_thresholds.map((threshold) => ({
-        date,
-        time,
-        deviceName: result.device.name,
-        measurementPoint: indicator.measurement_point_name,
-        totalConsumption: `${indicator.power.toFixed(2)} kW`,
-        excessConsumption: `${threshold.power_exceeded.toFixed(2)} kW`,
-        status: {
-          type: getStatusType(threshold.threshold),
-          label: threshold.threshold,
+      // Get only the highest priority threshold
+      const priorityThreshold = getPriorityThreshold(indicator.exceeded_thresholds)
+
+      // If no threshold found, skip this indicator
+      if (!priorityThreshold) return []
+
+      return [
+        {
+          date,
+          time,
+          deviceName: result.device.name,
+          measurementPoint: indicator.measurement_point_name,
+          totalConsumption: `${indicator.power.toFixed(2)} kW`,
+          excessConsumption: `${priorityThreshold.power_exceeded.toFixed(2)} kW`,
+          status: {
+            type: getStatusType(priorityThreshold.threshold),
+            label: priorityThreshold.threshold,
+          },
         },
-      }))
+      ]
     })
   })
 
@@ -93,47 +117,54 @@ export default function PowerConsumptionTable({ exceeded } : { exceeded: Exceede
         <p className="text-sm">Tabla general</p>
       </div>
       <div className="overflow-x-auto">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="text-sm font-medium text-muted-foreground">Fecha</TableHead>
-              <TableHead className="text-sm font-medium text-muted-foreground">Hora</TableHead>
-              <TableHead className="text-sm font-medium text-muted-foreground">Dispositivo</TableHead>
-              <TableHead className="text-sm font-medium text-muted-foreground">Punto de medición</TableHead>
-              <TableHead className="text-sm font-medium text-muted-foreground">Consumo total</TableHead>
-              <TableHead className="text-sm font-medium text-muted-foreground">Consumo excedente</TableHead>
-              <TableHead className="text-sm font-medium text-muted-foreground">Umbral excedido</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {tableRows?.map((row) => (
-              <TableRow
-                key={`${row.date}-${row.time}-${row.status.label}`}
-              >
-                <TableCell className="text-sm">{row.date}</TableCell>
-                <TableCell className="text-sm">{row.time}</TableCell>
-                <TableCell className="text-sm">{row.deviceName}</TableCell>
-                <TableCell className="text-sm">{row.measurementPoint}</TableCell>
-                <TableCell className="text-sm">{row.totalConsumption}</TableCell>
-                <TableCell className="text-sm">{row.excessConsumption}</TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-2">
-                    <span
-                      className={`w-2 h-2 rounded-full ${
-                        row.status.type === "warning"
-                          ? "bg-yellow-500"
-                          : row.status.type === "error"
-                            ? "bg-destructive"
-                            : "bg-gray-500"
-                      }`}
-                    />
-                    <span className="text-sm">{row.status.label}</span>
-                  </div>
-                </TableCell>
+        {
+          exceeded?.count > 0 ? 
+          (
+            <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="text-sm font-medium text-muted-foreground">Fecha</TableHead>
+                <TableHead className="text-sm font-medium text-muted-foreground">Hora</TableHead>
+                {/* <TableHead className="text-sm font-medium text-muted-foreground">Dispositivo</TableHead> */}
+                {/* <TableHead className="text-sm font-medium text-muted-foreground">Punto de medición</TableHead> */}
+                <TableHead className="text-sm font-medium text-muted-foreground">Consumo total</TableHead>
+                <TableHead className="text-sm font-medium text-muted-foreground">Consumo excedente</TableHead>
+                <TableHead className="text-sm font-medium text-muted-foreground">Umbral excedido</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {tableRows?.map((row, index) => (
+                <TableRow key={`${row.date}-${row.time}-${row.status.label}-${index}`}>
+                  <TableCell className="text-sm">{row.date}</TableCell>
+                  <TableCell className="text-sm">{row.time}</TableCell>
+                  {/* <TableCell className="text-sm">{row.deviceName}</TableCell> */}
+                  {/* <TableCell className="text-sm">{row.measurementPoint}</TableCell> */}
+                  <TableCell className="text-sm">{row.totalConsumption}</TableCell>
+                  <TableCell className="text-sm">{row.excessConsumption}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`w-2 h-2 rounded-full ${
+                          row.status.type === "warning"
+                            ? "bg-yellow-500"
+                            : row.status.type === "error"
+                              ? "bg-destructive"
+                              : "bg-gray-500"
+                        }`}
+                      />
+                      <span className="text-sm">{row.status.label}</span>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+            </Table>
+          ) : 
+          (
+            <NoResultFound/>
+          )
+        }
+      
       </div>
     </Card>
   )

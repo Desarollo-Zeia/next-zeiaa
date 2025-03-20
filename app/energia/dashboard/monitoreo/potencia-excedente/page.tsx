@@ -21,8 +21,6 @@ export default async function page({ searchParams } : SearchParams) {
 
   const exceededPowers = await exceeded({ headquarterId: headquarter, panelId: panel, date_after, date_before, page})
 
-  console.log(exceededPowers)
-
   return (
     <div className="w-full">
       <FiltersContainer>
