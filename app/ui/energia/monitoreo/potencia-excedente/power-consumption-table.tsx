@@ -25,77 +25,11 @@ interface PowerData {
   indicators: Indicator[]
 }
 
-interface ApiResponse {
+interface ExceededPowers {
   count: number
   next: string | null
   previous: string | null
   results: PowerData[]
-}
-
-const apiData: ApiResponse = {
-  count: 2,
-  next: null,
-  previous: null,
-  results: [
-    {
-      created_at: "2025-03-10T11:57:09.175445-05:00",
-      device: {
-        id: 1,
-        dev_eui: "24e124468d440660",
-        name: "Device 1",
-      },
-      indicators: [
-        {
-          id: 19093,
-          measurement_point_name: "Unidad 2",
-          power: 95.885,
-          exceeded_thresholds: [
-            {
-              threshold: "Potencia instalada",
-              power_exceeded: 37.385000000000005,
-            },
-            {
-              threshold: "Potencia contratada",
-              power_exceeded: 44.785000000000004,
-            },
-            {
-              threshold: "Potencia máxima",
-              power_exceeded: 7.885000000000005,
-            },
-          ],
-        },
-      ],
-    },
-    {
-      created_at: "2025-03-10T11:58:15.994193-05:00",
-      device: {
-        id: 1,
-        dev_eui: "24e124468d440660",
-        name: "Device 1",
-      },
-      indicators: [
-        {
-          id: 19097,
-          measurement_point_name: "Unidad 2",
-          power: 95.885,
-          exceeded_thresholds: [
-            {
-              threshold: "Potencia instalada",
-              power_exceeded: 37.385000000000005,
-            },
-            {
-              threshold: "Potencia contratada",
-              power_exceeded: 44.785000000000004,
-            },
-            {
-              threshold: "Potencia máxima",
-              power_exceeded: 7.885000000000005,
-            },
-          ],
-        },
-      ],
-    },
-  ],
 }
 
 // Helper function to format date and time from ISO string
@@ -132,12 +66,12 @@ const getStatusType = (threshold: string): "warning" | "error" | "default" => {
   return "default"
 }
 
-export default function PowerConsumptionTable() {
+export default function PowerConsumptionTable({ exceeded } : { exceeded: ExceededPowers}) {
   // Transform the API data into table rows
-  const tableRows = apiData.results.flatMap((result) => {
+  const tableRows = exceeded?.results?.flatMap((result) => {
     const { date, time } = formatDateTime(result.created_at)
 
-    return result.indicators.flatMap((indicator) => {
+    return result?.indicators?.flatMap((indicator) => {
       return indicator.exceeded_thresholds.map((threshold) => ({
         date,
         time,
@@ -172,10 +106,9 @@ export default function PowerConsumptionTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {tableRows.map((row, index) => (
+            {tableRows?.map((row) => (
               <TableRow
                 key={`${row.date}-${row.time}-${row.status.label}`}
-                className={index % 2 === 0 ? "bg-muted/50" : ""}
               >
                 <TableCell className="text-sm">{row.date}</TableCell>
                 <TableCell className="text-sm">{row.time}</TableCell>

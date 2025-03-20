@@ -22,3 +22,19 @@ export async function monitoringLastThree({ headquarterId, panelId} : { panelId?
 
   return res 
 }
+
+
+export async function exceeded({ headquarterId, panelId, date_after, date_before, page} : { date_after?: string,  date_before?: string, panelId?: string, headquarterId?: string, page?: string}) {
+
+  const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/powers/all-exceeded`, baseUrlEnergy)
+
+  if (date_after) url.searchParams.set('date_after', date_after)
+  if (date_before) url.searchParams.set('date_before', date_before)
+  if (page) url.searchParams.set('page', page)
+
+  const res = await fetchWithAuthEnergy(`${url.pathname}${url.search}`)
+
+  return res 
+}
+
+
