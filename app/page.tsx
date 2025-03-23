@@ -90,7 +90,7 @@ export default function Home() {
                 route="/ambiental"
               />
               <ModuleCard
-                image=""
+                image="/monitoreoservice.png"
                 name="Monitoreo Energético"
                 description="Controla tu consumo de energía para ahorrar costos, mejorar la eficiencia y reducir el impacto ambiental."
                 route="/energia"

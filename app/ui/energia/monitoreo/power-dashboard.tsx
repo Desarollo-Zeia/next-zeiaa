@@ -1,8 +1,14 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
+import { useTransition } from "react";
 import { format } from "date-fns"
+import {
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@/components/ui/toggle-group"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
+import { useSearchParams, usePathname, useRouter } from 'next/navigation';
+
 
 interface DeviceInfo {
   id: number
@@ -51,7 +57,34 @@ const CustomTooltip = ({ active, payload, label }: any) => {  // eslint-disable-
   return null
 }
 
-export default function PowerUsageChart({ readings } : { readings: PowerReading[] }) {
+export default function PowerUsageChart({ readings, group } : { readings: PowerReading[], group?: string }) {
+
+  const [isPending, startTransition] = useTransition()
+  const searchParams = useSearchParams()
+  const pathname = usePathname()
+  const { replace } = useRouter()
+
+  
+  const handleGroupChange = (group: string) => {
+    startTransition(() => {
+      const newParams = new URLSearchParams(searchParams);
+      
+      newParams.set('group_by', 'day');
+
+      if (group) {
+        newParams.set('group_by', group);
+      }
+
+      if (group === 'none') {
+        newParams.delete('group_by');
+      }
+
+      replace(`${pathname}?${newParams.toString()}`, { scroll: false });
+    });
+  };
+
+
+
 
   const chartData = readings?.map((item) => ({
     time: item.created_at,
@@ -61,15 +94,22 @@ export default function PowerUsageChart({ readings } : { readings: PowerReading[
   // Encontrar el valor máximo para el dominio del eje Y
   return (
     <div className="flex-1 p-6">
-      <div className="flex justify-end gap-2 mb-6">
-        <Button variant="outline" size="sm" className="text-sm">
-          Por día
-        </Button>
-        <Button variant="outline" size="sm" className="text-sm">
-          Por hora
-        </Button>
-      </div>
+      <div className="flex justify-end">
 
+      <ToggleGroup type="single" className="relative" onValueChange={handleGroupChange} defaultValue="day">
+        {isPending && (
+          <div className="absolute inset-0 flex items-center justify-center bg-background/50 rounded-md z-10">
+            <span className="animate-spin h-4 w-4 border-2 border-primary border-t-transparent rounded-full"></span>
+          </div>
+        )}
+        <ToggleGroupItem value="day" aria-label="day">
+          <p>Día</p>
+        </ToggleGroupItem>
+        <ToggleGroupItem value="hour" aria-label="hour">
+          <p>Hora</p>
+        </ToggleGroupItem>
+      </ToggleGroup>
+      </div>
       <div className="h-[400px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
@@ -79,9 +119,10 @@ export default function PowerUsageChart({ readings } : { readings: PowerReading[
               axisLine={false}
               tickLine={false}
               tick={{ fontSize: 12 }}
-              tickFormatter={(date) => format(new Date(date), 'HH:mm')}
+              tickFormatter={(date) => group === 'hour' ?  format(new Date(date), 'HH:mm') : format(new Date(date), 'dd/MMM')}
               interval="preserveStartEnd"
             />
+          
             <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12 }} />
             <Tooltip content={<CustomTooltip />} />
             <Line

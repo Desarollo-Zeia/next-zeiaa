@@ -3,15 +3,15 @@
 import { useState } from "react"
 import { capitalizeFirstLetter } from "@/app/utils/func"
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog"
-import { HelpCircle, X } from "lucide-react"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { HelpCircle } from "lucide-react"
 
 interface Panel {
   id: number
   name: string
   is_active: boolean
   type: "monofasico" // O bien: string, en caso de admitir otros tipos.
-  threads: any[] | null // Se puede refinar el tipo en función de los datos esperados.
+  threads: any[] | null  // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 interface Powers {

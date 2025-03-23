@@ -15,14 +15,14 @@ export default async function page({ searchParams } : SearchParams) {
 
   const { companies } = await getCompanyData()
 
-  const { headquarter = '1' , panel = '1',  date_after = format(new Date(), 'yyyy-MM-dd'), date_before = format(new Date(), 'yyyy-MM-dd'), last_by = 'day'} = await searchParams
+  const { headquarter = '1' , panel = '1',  date_after = format(new Date(), 'yyyy-MM-dd'), date_before = format(new Date(), 'yyyy-MM-dd'), group_by = 'day'} = await searchParams
 
   const energyDetails = await getEnergyCompanyDetails({ headquarterId: companies[0].id })
 
-  const currentPanel = energyDetails.energy_headquarters[0].electrical_panels?.filter((item) => item.id ===  Number(panel))
+  const currentPanel = energyDetails.energy_headquarters[0].electrical_panels?.filter((item : any) => item.id ===  Number(panel)) // eslint-disable-line @typescript-eslint/no-explicit-any
   const currentPowers = energyDetails.energy_headquarters[0].powers
 
-  const monitoringGraphReadings = await monitoringGraph({ headquarterId: headquarter, panelId: panel, date_after, date_before, last_by })
+  const monitoringGraphReadings = await monitoringGraph({ headquarterId: headquarter, panelId: panel, date_after, date_before, group_by })
   const monitoringLastThreeReadings = await monitoringLastThree({ headquarterId: headquarter, panelId: panel })
 
   return (
@@ -35,7 +35,7 @@ export default async function page({ searchParams } : SearchParams) {
       <div className="flex gap-4 mx-6">
         <ContractedPowerSidebar panel={currentPanel} powers={currentPowers}/>
         <div className="flex-1">
-          <PowerUsageChart readings={monitoringGraphReadings}/>
+          <PowerUsageChart readings={monitoringGraphReadings} group={group_by}/>
           <ExcessPower excessPowerData={monitoringLastThreeReadings}/>
         </div>
       </div>
