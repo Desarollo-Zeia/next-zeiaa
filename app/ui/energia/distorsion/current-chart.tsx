@@ -26,7 +26,7 @@ interface FormattedTHDIDataPoint {
 
 interface CustomTooltipProps {
   active?: boolean
-  payload?: any[]
+  payload?: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
   label?: string
 }
 
