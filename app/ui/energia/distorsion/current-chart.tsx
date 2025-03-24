@@ -57,7 +57,7 @@ function CustomTooltip({ active, payload }: CustomTooltipProps) {
                   : entry.dataKey}
             :
           </span>
-          <span className="font-medium">{entry.value} A</span>
+          <span className="font-medium">{entry.value} %</span>
         </div>
       ))}
     </div>

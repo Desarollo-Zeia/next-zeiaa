@@ -3,7 +3,7 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import React, { useTransition } from 'react'
 
-export default function CurrentVoltageToggle({ type } : { type: string}) {
+export default function CurrentVoltageToggle({ type, children } : { type: string, children?: React.ReactNode}) {
 
     const [isPending, startTransition] = useTransition()
     const searchParams = useSearchParams()
@@ -31,7 +31,7 @@ export default function CurrentVoltageToggle({ type } : { type: string}) {
   return (
     <div className="flex justify-between items-center">
         <div>
-            <h2>Historial tasa de distorsión armónica</h2>
+            <h2 className='text-xl'>Historial tasa de distorsión armónica</h2>
         </div>
         <ToggleGroup type="single" className="relative" defaultValue={type} onValueChange={handleTypeChange}>
             {isPending && (
@@ -46,6 +46,9 @@ export default function CurrentVoltageToggle({ type } : { type: string}) {
                 <p>Votaje</p>
             </ToggleGroupItem>
         </ToggleGroup>
+        <div>
+          { children }
+        </div>
     </div>
   )
 }
