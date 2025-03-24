@@ -22,6 +22,8 @@ export default async function page({ searchParams } : SearchParams) {
     const armonicsReadings = await armonics({ headquarterId: headquarter, panelId: panel, date_after, date_before, data_type })
     const armonicsGraphReadings = await armonicsGraph({ headquarterId: headquarter, panelId: panel, date_after, date_before, data_type })
 
+    console.log(armonicsReadings)
+
   return (
     <div className='w-full'>
       <FiltersContainer>
