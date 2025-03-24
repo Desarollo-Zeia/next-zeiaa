@@ -44,7 +44,7 @@ const energyItems = [
   },
   {
     title: "Tasa de distorsión",
-    url: "/energia/dashboard/tasa",
+    url: "/energia/dashboard/distorsion",
     icon: WaveformIcon,
   },
 ]
