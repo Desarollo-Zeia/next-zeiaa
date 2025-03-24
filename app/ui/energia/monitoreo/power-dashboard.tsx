@@ -95,20 +95,19 @@ export default function PowerUsageChart({ readings, group } : { readings: PowerR
   return (
     <div className="flex-1 p-6">
       <div className="flex justify-end">
-
-      <ToggleGroup type="single" className="relative" onValueChange={handleGroupChange} defaultValue="day">
-        {isPending && (
-          <div className="absolute inset-0 flex items-center justify-center bg-background/50 rounded-md z-10">
-            <span className="animate-spin h-4 w-4 border-2 border-primary border-t-transparent rounded-full"></span>
-          </div>
-        )}
-        <ToggleGroupItem value="day" aria-label="day">
-          <p>Día</p>
-        </ToggleGroupItem>
-        <ToggleGroupItem value="hour" aria-label="hour">
-          <p>Hora</p>
-        </ToggleGroupItem>
-      </ToggleGroup>
+        <ToggleGroup type="single" className="relative" onValueChange={handleGroupChange} defaultValue="day">
+          {isPending && (
+            <div className="absolute inset-0 flex items-center justify-center bg-background/50 rounded-md z-10">
+              <span className="animate-spin h-4 w-4 border-2 border-primary border-t-transparent rounded-full"></span>
+            </div>
+          )}
+          <ToggleGroupItem value="day" aria-label="day">
+            <p>Día</p>
+          </ToggleGroupItem>
+          <ToggleGroupItem value="hour" aria-label="hour">
+            <p>Hora</p>
+          </ToggleGroupItem>
+        </ToggleGroup>
       </div>
       <div className="h-[400px] w-full">
         <ResponsiveContainer width="100%" height="100%">

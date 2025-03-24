@@ -1,7 +1,7 @@
 "use client"
 
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts"
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import { ChartContainer, ChartTooltip } from "@/components/ui/chart"
 
 // Definición de tipos para los datos THDU
 interface THDUVoltage {
@@ -18,13 +18,59 @@ interface THDUDataPoint {
 
 interface FormattedTHDUDataPoint {
   timestamp: string
+  date: string
   THDUa: number
   THDUb: number
   THDUc: number
 }
 
+interface CustomTooltipProps {
+  active?: boolean
+  payload?: any[]
+  label?: string
+}
+
+function CustomTooltip({ active, payload }: CustomTooltipProps) {
+  if (!active || !payload || payload.length === 0) {
+    return null
+  }
+
+  // Extract data from the first payload item
+  const data = payload[0].payload
+
+  const date = new Date(data.date);
+
+  const formattedDate = date.toLocaleDateString("es-ES", { day: 'numeric', month: 'short'});
+
+  return (
+    <div className="bg-white dark:bg-gray-800 p-3 border rounded-lg shadow-sm">
+      <p className="text-sm font-medium mb-2">
+        {formattedDate} - {data.timestamp}
+      </p>
+
+      {payload.map((entry, index) => (
+        <div key={index} className="flex items-center gap-2 text-xs mb-1">
+          <span className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }} />
+          <span>
+            {entry.dataKey === "THDUa"
+              ? "THDU Fase A"
+              : entry.dataKey === "THDUb"
+                ? "THDU Fase B"
+                : entry.dataKey === "THDUc"
+                  ? "THDU Fase C"
+                  : entry.dataKey}
+            :
+          </span>
+          <span className="font-medium">{entry.value} V</span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 export default function VoltageChart({ voltageReadings }: { voltageReadings: THDUDataPoint[] }) {
   const formattedData: FormattedTHDUDataPoint[] = voltageReadings.map((item) => ({
+    date: `${item.date}`,
     timestamp: `${item.time}`,
     THDUa: item.voltage.THDUa,
     THDUb: item.voltage.THDUb,
@@ -33,7 +79,6 @@ export default function VoltageChart({ voltageReadings }: { voltageReadings: THD
 
   return (
     <div className="w-full p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-4 text-center dark:text-white">Valores THDU por Tiempo</h2>
       <ChartContainer
         config={{
           THDUa: {
@@ -64,40 +109,30 @@ export default function VoltageChart({ voltageReadings }: { voltageReadings: THD
           <CartesianGrid strokeDasharray="3 3" vertical={false} />
           <XAxis dataKey="timestamp" tickLine={false} axisLine={false} tickMargin={10} angle={-45} textAnchor="end" />
           <YAxis tickLine={false} axisLine={false} tickMargin={10} />
-          <ChartTooltip
-            content={
-              <ChartTooltipContent
-                indicator="line"
-                formatValue={(value) => `${value} V`}
-                formatLabel={(label) => {
-                  return label === "timestamp" ? "Hora" : label
-                }}
-              />
-            }
-          />
+          <ChartTooltip content={<CustomTooltip />} />
           <Line
             type="step"
             dataKey="THDUa"
             stroke="var(--color-THDUa)"
-            strokeWidth={2}
-            dot={{ r: 4 }}
-            activeDot={{ r: 6 }}
+            strokeWidth={1}
+            dot={false}
+            activeDot={{ r: 4 }}
           />
           <Line
             type="step"
             dataKey="THDUb"
             stroke="var(--color-THDUb)"
-            strokeWidth={2}
-            dot={{ r: 4 }}
-            activeDot={{ r: 6 }}
+            strokeWidth={1}
+            dot={false}
+            activeDot={{ r: 4 }}
           />
           <Line
             type="step"
             dataKey="THDUc"
             stroke="var(--color-THDUc)"
-            strokeWidth={2}
-            dot={{ r: 4 }}
-            activeDot={{ r: 6 }}
+            strokeWidth={1}
+            dot={false}
+            activeDot={{ r: 4 }}
           />
         </LineChart>
       </ChartContainer>

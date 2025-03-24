@@ -1,7 +1,7 @@
 "use client"
 
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts"
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import { ChartContainer, ChartTooltip } from "@/components/ui/chart"
 
 // Definición de tipos para los datos THDI
 interface THDICurrent {
@@ -18,14 +18,56 @@ interface THDIDataPoint {
 
 interface FormattedTHDIDataPoint {
   timestamp: string
+  date: string
   THDIa: number
   THDIb: number
   THDIc: number
 }
 
+interface CustomTooltipProps {
+  active?: boolean
+  payload?: any[]
+  label?: string
+}
+
+function CustomTooltip({ active, payload }: CustomTooltipProps) {
+  if (!active || !payload || payload.length === 0) {
+    return null
+  }
+
+  // Extract data from the first payload item
+  const data = payload[0].payload
+
+  return (
+    <div className="bg-white dark:bg-gray-800 p-3 border rounded-lg shadow-sm">
+      <p className="text-sm font-medium mb-2">
+        {data.date} - {data.timestamp}
+      </p>
+
+      {payload.map((entry, index) => (
+        <div key={index} className="flex items-center gap-2 text-xs mb-1">
+          <span className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }} />
+          <span>
+            {entry.dataKey === "THDIa"
+              ? "THDI Fase A"
+              : entry.dataKey === "THDIb"
+                ? "THDI Fase B"
+                : entry.dataKey === "THDIc"
+                  ? "THDI Fase C"
+                  : entry.dataKey}
+            :
+          </span>
+          <span className="font-medium">{entry.value} A</span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 export default function CurrentChart({ currentReadings }: { currentReadings: THDIDataPoint[] }) {
   const formattedData: FormattedTHDIDataPoint[] = currentReadings.map((item) => ({
     timestamp: `${item.time}`,
+    date: `${item.date}`,
     THDIa: item.current.THDIa,
     THDIb: item.current.THDIb,
     THDIc: item.current.THDIc,
@@ -62,41 +104,31 @@ export default function CurrentChart({ currentReadings }: { currentReadings: THD
         >
           <CartesianGrid strokeDasharray="3 3" vertical={false} />
           <XAxis dataKey="timestamp" tickLine={false} axisLine={false} tickMargin={10} angle={-45} textAnchor="end" />
-          <YAxis tickLine={false} axisLine={false} tickMargin={10} domain={[0, "dataMax + 1"]} />
-          <ChartTooltip
-            content={
-              <ChartTooltipContent
-                indicator="line"
-                formatValue={(value) => `${value}%`}
-                formatLabel={(label) => {
-                  return label === "timestamp" ? "Hora" : label
-                }}
-              />
-            }
-          />
+          <YAxis tickLine={false} axisLine={false} tickMargin={10} />
+          <ChartTooltip content={<CustomTooltip />} />
           <Line
             type="step"
             dataKey="THDIa"
             stroke="var(--color-THDIa)"
-            strokeWidth={2}
-            dot={{ r: 4 }}
-            activeDot={{ r: 6 }}
+            strokeWidth={1}
+            dot={false}
+            activeDot={{ r: 4 }}
           />
           <Line
             type="step"
             dataKey="THDIb"
             stroke="var(--color-THDIb)"
-            strokeWidth={2}
-            dot={{ r: 4 }}
-            activeDot={{ r: 6 }}
+            strokeWidth={1}
+            dot={false}
+            activeDot={{ r: 4 }}
           />
           <Line
             type="step"
             dataKey="THDIc"
             stroke="var(--color-THDIc)"
-            strokeWidth={2}
-            dot={{ r: 4 }}
-            activeDot={{ r: 6 }}
+            strokeWidth={1}
+            dot={false}
+            activeDot={{ r: 4 }}
           />
         </LineChart>
       </ChartContainer>
