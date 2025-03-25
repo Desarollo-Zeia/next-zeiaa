@@ -30,6 +30,25 @@ interface CustomTooltipProps {
   label?: string
 }
 
+const dateFormat = (date: string) => {
+  const dateObject = new Date(date)
+
+    const options: Intl.DateTimeFormatOptions = {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+    }
+
+    const formattedDate = new Intl.DateTimeFormat("es-ES", options).format(
+      dateObject
+    );
+
+    const finalDate = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1)
+
+    return finalDate
+    
+}
+
 function CustomTooltip({ active, payload }: CustomTooltipProps) {
   if (!active || !payload || payload.length === 0) {
     return null
@@ -66,15 +85,15 @@ function CustomTooltip({ active, payload }: CustomTooltipProps) {
 
 export default function CurrentChart({ currentReadings }: { currentReadings: THDIDataPoint[] }) {
   const formattedData: FormattedTHDIDataPoint[] = currentReadings.map((item) => ({
-    timestamp: `${item.time}`,
-    date: `${item.date}`,
+    timestamp: `${ item.time}`,
+    date: `${dateFormat(item.date)}`,
     THDIa: item.current.THDIa,
     THDIb: item.current.THDIb,
     THDIc: item.current.THDIc,
   }))
 
   return (
-    <div className="w-full p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+    <div className="w-full p-6 bg-white dark:bg-gray-800 rounded-lg">
       <ChartContainer
         config={{
           THDIa: {

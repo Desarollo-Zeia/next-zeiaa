@@ -78,7 +78,7 @@ export default function VoltageChart({ voltageReadings }: { voltageReadings: THD
   }))
 
   return (
-    <div className="w-full p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+    <div className="w-full p-6 bg-white dark:bg-gray-800 rounded-lg">
       <ChartContainer
         config={{
           THDUa: {

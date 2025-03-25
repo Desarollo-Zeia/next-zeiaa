@@ -31,7 +31,7 @@ export default function CurrentVoltageToggle({ type, children } : { type: string
   return (
     <div className="flex justify-between items-center">
         <div>
-            <h2 className='text-xl'>Historial tasa de distorsión armónica</h2>
+            <h2 className='text-lg'>Historial tasa de distorsión armónica</h2>
         </div>
         <ToggleGroup type="single" className="relative" defaultValue={type} onValueChange={handleTypeChange}>
             {isPending && (
@@ -45,10 +45,11 @@ export default function CurrentVoltageToggle({ type, children } : { type: string
             <ToggleGroupItem value="voltage" aria-label="voltage">
                 <p>Votaje</p>
             </ToggleGroupItem>
+            <div className='ml-4'>
+              { children }
+            </div>
         </ToggleGroup>
-        <div>
-          { children }
-        </div>
+      
     </div>
   )
 }

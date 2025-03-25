@@ -9,7 +9,11 @@ import { DateRangePicker } from '@/app/ui/energia/filters/datepicker-energy-filt
 import HeadquarterEnergyFilter from '@/app/ui/energia/filters/headquarter-energy-filter'
 import PanelsFilterEnergy from '@/app/ui/energia/filters/panels-energy-filter'
 import FiltersContainer from '@/app/ui/filters/filters-container'
+import { Button } from '@/components/ui/button'
 import { format } from 'date-fns'
+import { Eye } from 'lucide-react'
+import Link from 'next/link'
+
 
 export default async function page({ searchParams } : SearchParams) {
 
@@ -28,11 +32,18 @@ export default async function page({ searchParams } : SearchParams) {
     <div className='w-full'>
       <FiltersContainer>
         <HeadquarterEnergyFilter energyHeadquarter={energyDetails.energy_headquarters} />
-        <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters[0].electrical_panels} />
+        <PanelsFilterEnergy energyPanels={  energyDetails.energy_headquarters[0].electrical_panels} />
         <DateRangePicker/>
       </FiltersContainer>
       <div className="mx-6">
-        <CurrentVoltageToggle type={data_type}/>
+        <CurrentVoltageToggle type={data_type}>
+          <Link href={"/energia/dashboard/distorsion/detail"}>
+            <Button variant="secondary" size="sm" className="gap-2">
+              <Eye className="w-4 h-4" />
+              Ver detalles
+            </Button>
+          </Link>
+        </CurrentVoltageToggle>
         <div>
           {
             data_type === 'current' ? 
@@ -64,9 +75,9 @@ export default async function page({ searchParams } : SearchParams) {
               <p className='text-white'>¿Qué se mide?</p>
             </div>
           </div>
-          <div className='bg-purple-300 h-4 w-10'>
+          {/* <div className='bg-purple-300 h-4 w-10'>
             
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

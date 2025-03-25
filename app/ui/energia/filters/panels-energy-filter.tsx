@@ -1,7 +1,7 @@
 "use client"
 
-import { useSearchParams, useRouter } from "next/navigation"
-import { useCallback, useEffect } from "react"
+import { useSearchParams, useRouter, usePathname } from "next/navigation"
+import { useTransition } from "react"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 interface ElectricalPanel {
@@ -15,36 +15,26 @@ interface PanelsFilterProps {
 }
 
 export default function PanelsFilterEnergy({ energyPanels = [] }: PanelsFilterProps) {
+
+  const [isPending, startTransition] = useTransition()
   const searchParams = useSearchParams()
-  const router = useRouter()
-  const currentPanel = searchParams.get("panel")
+  const { replace } = useRouter()
+  const pathname = usePathname()
 
-  const handlePanelChange = useCallback(
-    (panelId: string) => {
-      const params = new URLSearchParams(searchParams.toString())
-      params.set("panel", panelId)
-      params.set("page", '1')
-      router.push(`?${params.toString()}`, { scroll: false})
-    },
-    [router, searchParams],
-  )
-
-  // Set default panel on initial render if not already set
-  useEffect(() => {
-    if (!currentPanel && energyPanels.length > 0) {
-      const defaultPanelId = energyPanels[0].id.toString()
-      const params = new URLSearchParams(searchParams.toString())
-      params.set("panel", defaultPanelId)
-      router.push(`?${params.toString()}`)
+  const handlePanelChange = (panelId: string) => {
+      startTransition(() => {
+        const params = new URLSearchParams(searchParams)
+  
+        params.set("panel", panelId)
+        params.set("page", '1')
+  
+         replace(`${pathname}?${params.toString()}`, { scroll: false });
+      })
     }
-  }, [currentPanel, energyPanels, router, searchParams])
-
-  // Determine the current value for the select
-  const selectValue = currentPanel || (energyPanels.length > 0 ? energyPanels[0].id.toString() : "")
-
+  
   return (
-    <div>
-      <Select value={selectValue} onValueChange={handlePanelChange}>
+    <div className="relative">
+      <Select defaultValue={'1'} onValueChange={handlePanelChange}>
         <SelectTrigger className="w-[240px] bg-[#00b0c7]">
           <SelectValue placeholder="Seleccionar panel" />
         </SelectTrigger>
@@ -57,6 +47,11 @@ export default function PanelsFilterEnergy({ energyPanels = [] }: PanelsFilterPr
             ))}
           </SelectGroup>
         </SelectContent>
+        {isPending && (
+                <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+                </div>
+            )}
       </Select>
     </div>
   )
