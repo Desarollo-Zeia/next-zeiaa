@@ -81,10 +81,7 @@ export default function PowerUsageChart({ readings, group } : { readings: PowerR
 
       replace(`${pathname}?${newParams.toString()}`, { scroll: false });
     });
-  };
-
-
-
+  }
 
   const chartData = readings?.map((item) => ({
     time: item.created_at,

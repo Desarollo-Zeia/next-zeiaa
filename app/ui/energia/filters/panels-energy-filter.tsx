@@ -48,10 +48,10 @@ export default function PanelsFilterEnergy({ energyPanels = [] }: PanelsFilterPr
           </SelectGroup>
         </SelectContent>
         {isPending && (
-                <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
-                </div>
-            )}
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50">
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+            </div>
+        )}
       </Select>
     </div>
   )

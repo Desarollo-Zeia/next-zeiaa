@@ -1,7 +1,7 @@
 "use client"
 
-import { useSearchParams, useRouter } from "next/navigation"
-import { useCallback, useEffect } from "react"
+import { useSearchParams, useRouter, usePathname } from "next/navigation"
+import { useTransition } from "react"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 type EnergyHeadquarter = {
@@ -27,36 +27,25 @@ type Props = {
 }
 
 export default function HeadquarterEnergyFilter({ energyHeadquarter = [] }: Props) {
-  const searchParams = useSearchParams()
-  const router = useRouter()
-  const currentHq = searchParams.get("headquarter")
 
-  const handleHeadquarterChange = useCallback(
-    (headquarterId: string) => {
-      const params = new URLSearchParams(searchParams.toString())
-      params.set("headquarter", headquarterId)
-      params.set("page", '1')
-      router.push(`?${params.toString()}`)
-    },
-    [router, searchParams],
-  )
+   const [isPending, startTransition] = useTransition()
+   const searchParams = useSearchParams()
+   const { replace } = useRouter()
+   const pathname = usePathname()
 
-  // Set default headquarter on initial render if not already set
-  useEffect(() => {
-    if (!currentHq && energyHeadquarter.length > 0) {
-      const defaultHqId = energyHeadquarter[0].id.toString()
-      const params = new URLSearchParams(searchParams.toString())
-      params.set("headquarter", defaultHqId)
-      router.push(`?${params.toString()}`, { scroll: false})
+
+  const handleHeadquarterChange = (headquarterId: string) => {
+    startTransition(() => {
+        const params = new URLSearchParams(searchParams)
+        params.set("headquarter", headquarterId)
+        params.set("page", '1')
+        replace(`${pathname}?${params.toString()}`)
+    })
     }
-  }, [currentHq, energyHeadquarter, router, searchParams])
-
-  // Determine the current value for the select
-  const selectValue = currentHq || (energyHeadquarter.length > 0 ? energyHeadquarter[0].id.toString() : "")
-
+  
   return (
     <div>
-      <Select value={selectValue} onValueChange={handleHeadquarterChange}>
+      <Select defaultValue="1" onValueChange={handleHeadquarterChange}>
         <SelectTrigger className="w-[240px] bg-[#00b0c7]">
           <SelectValue placeholder="Seleccionar sede" />
         </SelectTrigger>
@@ -69,6 +58,11 @@ export default function HeadquarterEnergyFilter({ energyHeadquarter = [] }: Prop
             ))}
           </SelectGroup>
         </SelectContent>
+        {isPending && (
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50">
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+            </div>
+        )}
       </Select>
     </div>
   )

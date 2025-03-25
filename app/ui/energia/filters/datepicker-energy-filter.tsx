@@ -15,6 +15,7 @@ import { es } from "date-fns/locale"
 export function DateRangePicker() {
   const searchParams = useSearchParams()
   const router = useRouter()
+  // const [isPending, startTransition] = useTransition()
 
   // Initialize date range from URL params or default to last 3 days
   const [date, setDate] = useState<DateRange | undefined>(() => {
@@ -36,16 +37,16 @@ export function DateRangePicker() {
 
 
   useEffect(() => {
-    if (date?.from && date?.to) {
-      const params = new URLSearchParams(searchParams.toString())
-      params.set("date_after", format(date.from, "yyyy-MM-dd"))
-      params.set("date_before", format(date.to, "yyyy-MM-dd"))
-      router.push(`?${params.toString()}`, { scroll: false })
-    }
+      if (date?.from && date?.to) {
+        const params = new URLSearchParams(searchParams.toString())
+        params.set("date_after", format(date.from, "yyyy-MM-dd"))
+        params.set("date_before", format(date.to, "yyyy-MM-dd"))
+        router.push(`?${params.toString()}`, { scroll: false })
+      }
   }, [date, router, searchParams])
 
   return (
-    <div className="grid gap-2">
+    <div className="grid gap-2 relative">
       <Popover>
         <PopoverTrigger asChild>
           <Button
@@ -79,6 +80,11 @@ export function DateRangePicker() {
           />
         </PopoverContent>
       </Popover>
+      {/* {isPending && (
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50">
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-black"></div>
+            </div>
+        )} */}
     </div>
   )
 }
