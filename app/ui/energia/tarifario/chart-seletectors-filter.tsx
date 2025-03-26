@@ -22,6 +22,8 @@ const searchParams = useSearchParams();
 const pathname = usePathname();
 const { replace } = useRouter();
 
+console.log(isPending)
+
   const handleConsumptionChange = (type: string) => {
     startTransition(() => {
       const newParams = new URLSearchParams(searchParams);
