@@ -1,25 +1,27 @@
 import { getCompanyData } from "@/app/lib/auth"
 import { getEnergyCompanyDetails } from "@/app/sevices/energy/enterprise/data"
-// import { consumptionGraph } from "@/app/sevices/energy/tarifario/data"
-// import { SearchParams } from "@/app/type"
+import { consumptionGraph } from "@/app/sevices/energy/tarifario/data"
+import { SearchParams } from "@/app/type"
 import { DateRangePicker } from "@/app/ui/energia/filters/datepicker-energy-filter"
 import HeadquarterEnergyFilter from "@/app/ui/energia/filters/headquarter-energy-filter"
 import PanelsFilterEnergy from "@/app/ui/energia/filters/panels-energy-filter"
+import ChartFilters from "@/app/ui/energia/tarifario/chart-seletectors-filter"
+import ConsumoChart from "@/app/ui/energia/tarifario/consumption-chart"
 import OptionBar from "@/app/ui/energia/tarifario/option-bar"
 import TarifarioChart from "@/app/ui/energia/tarifario/tarifario-chart"
 import FiltersContainer from "@/app/ui/filters/filters-container"
 import { Card } from "@/components/ui/card"
-// import { format } from "date-fns"
+import { format } from "date-fns"
 
-export default async function Page() {
+export default async function Page({ searchParams }: SearchParams) {
 
   const { companies } = await getCompanyData()
   
-    // const { headquarter = '1' , panel = '1',  date_after = format(new Date(), 'yyyy-MM-dd'), date_before = format(new Date(), 'yyyy-MM-dd'), data_type = 'current'} = await searchParams
+    const { headquarter = '1' , panel = '1',  date_after = format(new Date(), 'yyyy-MM-dd'), date_before = format(new Date(), 'yyyy-MM-dd'), group_by = 'day', type = 'consumption'} = await searchParams
   
     const energyDetails = await getEnergyCompanyDetails({ headquarterId: companies[0].id })
 
-    // const consumptionGraphReadings = await consumptionGraph({ panelId: panel, headquarterId: headquarter, date_after, date_before})
+    const consumptionGraphReadings = await consumptionGraph({ panelId: panel, headquarterId: headquarter, date_after, date_before, group_by})
 
   return (
     <div className="w-full">
@@ -84,24 +86,22 @@ export default async function Page() {
         </div>
         <div className="w-full relative">
           <div className="p-4 w-full">
-            <div className="flex justify-between">
+            <div className="flex justify-between items-center">
               <div>
                 <h4>Consumo energético (kWH)</h4>
                 <p className="text-xs">Durante el periodo seleccionado</p>
               </div>
-              <div className="flex gap-4">
-                <div>
-                  <p>Por día</p>
-                </div>
-                <div>
-                  <p>Por mes</p>
-                </div>
-                <div>
-                  <p>Consumo en S/</p>
-                </div>
-              </div>
+              <ChartFilters type={type}/>
             </div>  
-            <TarifarioChart/>
+            {
+              type === 'consumption' ? 
+              (
+                <ConsumoChart data={consumptionGraphReadings}/>
+              ) : 
+              (
+                <TarifarioChart data={consumptionGraphReadings}/>
+              )
+            }
           </div>
           <div className="absolute bg-slate-100 -top-[56px] flex">
             <OptionBar/>

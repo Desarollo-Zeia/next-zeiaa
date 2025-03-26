@@ -1,15 +1,10 @@
 "use client"
 
 import { Bar, BarChart, CartesianGrid, Tooltip, XAxis } from "recharts"
-import type { TooltipProps } from "recharts"
 import { ChartContainer } from "@/components/ui/chart"
+import type { TooltipProps } from "recharts"
 
-export interface CustomTooltipProps extends TooltipProps<any, any> { // eslint-disable-line @typescript-eslint/no-explicit-any
-    active?: boolean
-    payload?: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
-  }
-
-  interface DataPoint {
+interface DataPoint {
     date: string;
     consumption: number;
     cost: number;
@@ -20,7 +15,14 @@ export interface CustomTooltipProps extends TooltipProps<any, any> { // eslint-d
     timestamp: string;
   }
   
-  export function CustomTooltip({ active, payload }: CustomTooltipProps) {
+
+export interface ConsumoTooltipProps extends TooltipProps<any, any> { // eslint-disable-line @typescript-eslint/no-explicit-any
+    active?: boolean
+    payload?: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
+  }
+
+
+  export function ConsumoTooltip({ active, payload }: ConsumoTooltipProps) {
     if (!active || !payload || payload.length === 0) {
       return null
     }
@@ -37,25 +39,29 @@ export interface CustomTooltipProps extends TooltipProps<any, any> { // eslint-d
         {payload.map((entry, index) => (
           <div key={index} className="flex items-center gap-2 text-xs mb-1">
             <span className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }} />
-            <span>
-              {entry.dataKey === "THDIa"
-                ? "THDI Fase A"
-                : entry.dataKey === "THDIb"
-                  ? "THDI Fase B"
-                  : entry.dataKey === "THDIc"
-                    ? "THDI Fase C"
-                    : entry.dataKey}
-              :
-            </span>
-            <span className="font-medium">{entry.value} %</span>
+            <span>{entry.dataKey === "consumption" ? "Consumo" : entry.dataKey}:</span>
+            <span className="font-medium">{entry.value}</span>
           </div>
         ))}
+  
+        {/* <div className="mt-2 pt-2 border-t text-xs">
+          <div className="flex justify-between">
+            <span>Valor inicial:</span>
+            <span className="font-medium">{data.first_value}</span>
+          </div>
+          <div className="flex justify-between">
+            <span>Valor final:</span>
+            <span className="font-medium">{data.last_value}</span>
+          </div>
+        </div> */}
       </div>
     )
   }
+  
 
-export default function TarifarioChart({ data } : { data: DataPoint[]}) {
-
+export default function ConsumoChart({ data } : { data: DataPoint[]}) {
+  // Datos proporcionados en el JSON con fechas traducidas a español
+ 
   // Formatear las fechas para mostrar solo el día y mes
   const formattedData = data?.map((item) => {
     const dateParts = item.date.split(" ")
@@ -67,12 +73,12 @@ export default function TarifarioChart({ data } : { data: DataPoint[]}) {
   })
 
   return (
-    <div className="w-full p-6 bg-white rounded-lg">
+    <div className="w-full p-6 bg-white rounded-lg shadow">
       <ChartContainer
         config={{
-          cost: {
-            label: "Costo",
-            color: "hsl(var(--chart-1))",
+          consumption: {
+            label: "Consumo",
+            color: "hsl(var(--chart-2))",
           },
         }}
         className="min-h-[350px]"
@@ -89,15 +95,8 @@ export default function TarifarioChart({ data } : { data: DataPoint[]}) {
         >
           <CartesianGrid vertical={false} strokeDasharray="3 3" />
           <XAxis dataKey="shortDate" tickLine={false} axisLine={false} tickMargin={10} />
-          {/* <YAxis
-            tickLine={false}
-            axisLine={false}
-            tickMargin={10}
-            label={{ value: "Costo ($)", angle: -90, position: "insideLeft", offset: 0 }}
-          /> */}
-          {/* Usando el componente CustomTooltip externo */}
-          <Tooltip content={<CustomTooltip />} />
-          <Bar dataKey="cost" fill="var(--color-cost)" radius={[4, 4, 0, 0]} name="Costo" />
+          <Tooltip content={<ConsumoTooltip />} />
+          <Bar dataKey="consumption" fill="var(--color-consumption)" radius={[4, 4, 0, 0]} name="Consumo" />
         </BarChart>
       </ChartContainer>
     </div>

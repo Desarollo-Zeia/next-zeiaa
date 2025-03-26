@@ -32,11 +32,16 @@ export async function consumptionTable({ headquarterId, panelId } : { date_after
   return res 
 }
 
-export async function consumptionGraph({ headquarterId, panelId } : { date_after?: string,  date_before?: string, panelId?: string, headquarterId?: string}) {
+export async function consumptionGraph({ headquarterId, panelId, group_by, date_after, date_before,  } : { date_after?: string,  date_before?: string, panelId?: string, headquarterId?: string, group_by?: string}) {
 
-  const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/rate-consumption/historical?group_by=day`, baseUrlEnergy)
+  
+  const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/rate-consumption/historical`, baseUrlEnergy)
 
-  const res = await fetchWithAuthEnergy(`${url.pathname}`)
+  if (date_after) url.searchParams.set('date_after', date_after)
+  if (date_before) url.searchParams.set('date_before', date_before)
+  if (group_by) url.searchParams.set('group_by', group_by)
+
+  const res = await fetchWithAuthEnergy(`${url.pathname}${url.search}`)
 
   return res 
 }
