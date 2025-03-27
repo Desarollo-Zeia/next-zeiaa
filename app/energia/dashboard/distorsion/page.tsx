@@ -1,5 +1,5 @@
 import { getCompanyData } from '@/app/lib/auth'
-import { armonics, armonicsGraph } from '@/app/sevices/energy/distorsion/data'
+import { armonicsGraph } from '@/app/sevices/energy/distorsion/data'
 import { getEnergyCompanyDetails } from '@/app/sevices/energy/enterprise/data'
 import { SearchParams } from '@/app/type'
 import CurrentChart from '@/app/ui/energia/distorsion/current-chart'
@@ -23,10 +23,7 @@ export default async function page({ searchParams } : SearchParams) {
   
     const energyDetails = await getEnergyCompanyDetails({ headquarterId: companies[0].id })
 
-    const armonicsReadings = await armonics({ headquarterId: headquarter, panelId: panel, date_after, date_before, data_type })
     const armonicsGraphReadings = await armonicsGraph({ headquarterId: headquarter, panelId: panel, date_after, date_before, data_type })
-
-    console.log(armonicsReadings)
 
   return (
     <div className='w-full'>
