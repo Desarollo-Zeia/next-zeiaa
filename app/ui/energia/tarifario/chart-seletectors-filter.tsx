@@ -16,7 +16,7 @@ import { useTransition } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 
-export default function ChartFilters({ type } : { type: string}) {
+export default function ChartFilters({ type, group_by } : { type: string, group_by: string}) {
     const [isPending, startTransition] = useTransition();
 const searchParams = useSearchParams();
 const pathname = usePathname();
@@ -58,7 +58,7 @@ console.log(isPending)
 
   return (
     <div className="flex items-center gap-2">
-        <ToggleGroup type="single" onValueChange={handleGroupChange}>
+        <ToggleGroup type="single" onValueChange={handleGroupChange} defaultValue={group_by}>
             <ToggleGroupItem value="day" aria-label="day">
                 <p>Día</p>
             </ToggleGroupItem>

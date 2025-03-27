@@ -10,7 +10,7 @@ export default function OptionBar() {
     <>
         {
             barOptions.map(option => (
-                <div key={option} onClick={() => setOptionSelected(option)} className={`${optionSelected === option ? 'bg-gray-200' : 'bg-gray-100'} p-4 cursor-pointer `}>
+                <div key={option} onClick={() => setOptionSelected(option)} className={`${optionSelected === option ? 'bg-gray-200' : 'bg-gray-100'} p-4 cursor-pointer`}>
                     <p>{option}</p>
                 </div>
             ))

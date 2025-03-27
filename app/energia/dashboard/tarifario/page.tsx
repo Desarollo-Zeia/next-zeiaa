@@ -91,7 +91,7 @@ export default async function Page({ searchParams }: SearchParams) {
                 <h4>Consumo energético (kWH)</h4>
                 <p className="text-xs">Durante el periodo seleccionado</p>
               </div>
-              <ChartFilters type={type}/>
+              <ChartFilters type={type} group_by={group_by}/>
             </div>  
             {
               type === 'consumption' ? 
@@ -103,7 +103,7 @@ export default async function Page({ searchParams }: SearchParams) {
               )
             }
           </div>
-          <div className="absolute bg-slate-100 -top-[56px] flex">
+          <div className="absolute rounded-t-lg overflow-hidden bg-slate-100 -top-[56px] flex">
             <OptionBar/>
           </div>
         </div>
