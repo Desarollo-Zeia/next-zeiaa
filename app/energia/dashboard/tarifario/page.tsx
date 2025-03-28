@@ -48,7 +48,7 @@ export default async function Page({ searchParams }: SearchParams) {
     <div className="w-full">
       <FiltersContainer>
           <HeadquarterEnergyFilter energyHeadquarter={energyDetails.energy_headquarters} />
-          <PanelsFilterEnergy energyPanels={  energyDetails.energy_headquarters[0].electrical_panels} />
+          <PanelsFilterEnergy energyPanels={  energyDetails.energy_headquarters?.[0].electrical_panels} />
           <DateRangePicker/>
       </FiltersContainer>
       <div className="w-full flex flex-col gap-24 px-6">
