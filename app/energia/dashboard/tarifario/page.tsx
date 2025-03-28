@@ -95,7 +95,7 @@ export default async function Page({ searchParams }: SearchParams) {
               </div>
               <div className="shadow-sm rounded-lg p-2">
                 <h4 className='text-sm font-medium'>Días facturados</h4>
-                <p className='text-xs'>14 de 30 días</p>
+                <p className='text-xs'>{consumptionInvoiceReadings.billing_cycle_start} de {consumptionInvoiceReadings.billing_cycle_end} días</p>
               </div>
               <div className="col-span-2 shadow-sm rounded-lg p-2">
                 <h4 className='text-sm font-medium'>Ciclo de facturación</h4>
