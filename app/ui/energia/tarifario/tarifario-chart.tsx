@@ -3,6 +3,7 @@
 import { Bar, BarChart, CartesianGrid, Tooltip, XAxis } from "recharts"
 import type { TooltipProps } from "recharts"
 import { ChartContainer } from "@/components/ui/chart"
+import NoResultFound from "../../no-result-found"
 
 export interface CustomTooltipProps extends TooltipProps<any, any> { // eslint-disable-line @typescript-eslint/no-explicit-any
     active?: boolean
@@ -68,38 +69,47 @@ export default function TarifarioChart({ data } : { data: DataPoint[]}) {
 
   return (
     <div className="w-full p-6 bg-white rounded-lg">
-      <ChartContainer
-        config={{
-          cost: {
-            label: "Costo",
-            color: "hsl(var(--chart-1))",
-          },
-        }}
-        className="min-h-[350px]"
-      >
-        <BarChart
-          accessibilityLayer
-          data={formattedData}
-          margin={{
-            top: 20,
-            right: 20,
-            left: 20,
-            bottom: 20,
+      {
+        data.length > 0 ? 
+        (
+          <ChartContainer
+          config={{
+            cost: {
+              label: "Costo",
+              color: "hsl(var(--chart-1))",
+            },
           }}
+          className="min-h-[350px]"
         >
-          <CartesianGrid vertical={false} strokeDasharray="3 3" />
-          <XAxis dataKey="shortDate" tickLine={false} axisLine={false} tickMargin={10} />
-          {/* <YAxis
-            tickLine={false}
-            axisLine={false}
-            tickMargin={10}
-            label={{ value: "Costo ($)", angle: -90, position: "insideLeft", offset: 0 }}
-          /> */}
-          {/* Usando el componente CustomTooltip externo */}
-          <Tooltip content={<CustomTooltip />} />
-          <Bar dataKey="cost" fill="var(--color-cost)" radius={[4, 4, 0, 0]} name="Costo" />
-        </BarChart>
-      </ChartContainer>
+          <BarChart
+            accessibilityLayer
+            data={formattedData}
+            margin={{
+              top: 20,
+              right: 20,
+              left: 20,
+              bottom: 20,
+            }}
+          >
+            <CartesianGrid vertical={false} strokeDasharray="3 3" />
+            <XAxis dataKey="shortDate" tickLine={false} axisLine={false} tickMargin={10} />
+            {/* <YAxis
+              tickLine={false}
+              axisLine={false}
+              tickMargin={10}
+              label={{ value: "Costo ($)", angle: -90, position: "insideLeft", offset: 0 }}
+            /> */}
+            {/* Usando el componente CustomTooltip externo */}
+            <Tooltip content={<CustomTooltip />} />
+            <Bar dataKey="cost" fill="var(--color-cost)" radius={[4, 4, 0, 0]} name="Costo" />
+          </BarChart>
+          </ChartContainer>
+        ) : 
+        (
+          <NoResultFound/>
+        )
+      }
+  
     </div>
   )
 }

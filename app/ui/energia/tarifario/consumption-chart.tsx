@@ -3,6 +3,7 @@
 import { Bar, BarChart, CartesianGrid, Tooltip, XAxis } from "recharts"
 import { ChartContainer } from "@/components/ui/chart"
 import type { TooltipProps } from "recharts"
+import NoResultFound from "../../no-result-found";
 
 interface DataPoint {
     date: string;
@@ -61,6 +62,7 @@ export interface ConsumoTooltipProps extends TooltipProps<any, any> { // eslint-
 
 export default function ConsumoChart({ data } : { data: DataPoint[]}) {
   // Datos proporcionados en el JSON con fechas traducidas a español
+
  
   // Formatear las fechas para mostrar solo el día y mes
   const formattedData = data?.map((item) => {
@@ -74,31 +76,38 @@ export default function ConsumoChart({ data } : { data: DataPoint[]}) {
 
   return (
     <div className="w-full p-6 bg-white rounded-lg shadow">
-      <ChartContainer
-        config={{
-          consumption: {
-            label: "Consumo",
-            color: "hsl(var(--chart-2))",
-          },
-        }}
-        className="min-h-[350px]"
-      >
-        <BarChart
-          accessibilityLayer
-          data={formattedData}
-          margin={{
-            top: 20,
-            right: 20,
-            left: 20,
-            bottom: 20,
+      {
+        data.length > 0 ? (
+          <ChartContainer
+          config={{
+            consumption: {
+              label: "Consumo",
+              color: "hsl(var(--chart-2))",
+            },
           }}
+          className="min-h-[350px]"
         >
-          <CartesianGrid vertical={false} strokeDasharray="3 3" />
-          <XAxis dataKey="shortDate" tickLine={false} axisLine={false} tickMargin={10} />
-          <Tooltip content={<ConsumoTooltip />} />
-          <Bar dataKey="consumption" fill="var(--color-consumption)" radius={[4, 4, 0, 0]} name="Consumo" />
-        </BarChart>
-      </ChartContainer>
+          <BarChart
+            accessibilityLayer
+            data={formattedData}
+            margin={{
+              top: 20,
+              right: 20,
+              left: 20,
+              bottom: 20,
+            }}
+          >
+            <CartesianGrid vertical={false} strokeDasharray="3 3" />
+            <XAxis dataKey="shortDate" tickLine={false} axisLine={false} tickMargin={10} />
+            <Tooltip content={<ConsumoTooltip />} />
+            <Bar dataKey="consumption" fill="var(--color-consumption)" radius={[4, 4, 0, 0]} name="Consumo" />
+          </BarChart>
+        </ChartContainer>
+        ) : (
+          <NoResultFound/>
+        )
+      }
+  
     </div>
   )
 }

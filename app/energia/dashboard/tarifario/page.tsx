@@ -1,27 +1,47 @@
 import { getCompanyData } from "@/app/lib/auth"
 import { getEnergyCompanyDetails } from "@/app/sevices/energy/enterprise/data"
-import { consumptionGraph } from "@/app/sevices/energy/tarifario/data"
+import { consumptionCalculator, consumptionGraph, consumptionInvoice, consumptionTable } from "@/app/sevices/energy/tarifario/data"
 import { SearchParams } from "@/app/type"
 import { DateRangePicker } from "@/app/ui/energia/filters/datepicker-energy-filter"
 import HeadquarterEnergyFilter from "@/app/ui/energia/filters/headquarter-energy-filter"
 import PanelsFilterEnergy from "@/app/ui/energia/filters/panels-energy-filter"
-import ChartFilters from "@/app/ui/energia/tarifario/chart-seletectors-filter"
-import ConsumoChart from "@/app/ui/energia/tarifario/consumption-chart"
+import ConsumptionTable from "@/app/ui/energia/tarifario/consumption-table"
+import HistoricalCosumption from "@/app/ui/energia/tarifario/historical-consumption"
 import OptionBar from "@/app/ui/energia/tarifario/option-bar"
-import TarifarioChart from "@/app/ui/energia/tarifario/tarifario-chart"
 import FiltersContainer from "@/app/ui/filters/filters-container"
 import { Card } from "@/components/ui/card"
 import { format } from "date-fns"
+
+function formatDate(dateString: string) {
+  const originalDate = new Date(dateString);
+
+  // Subtract 7 months
+  originalDate.setMonth(originalDate.getMonth() - 7);
+
+  // Subtract 1 year
+  originalDate.setFullYear(originalDate.getFullYear() - 1);
+
+  const day = originalDate.getDate().toString().padStart(2, '0');
+  const month = originalDate.toLocaleString('default', { month: 'short' });
+  const year = originalDate.getFullYear();
+
+  return `${day} ${month} ${year}`;
+}
 
 export default async function Page({ searchParams }: SearchParams) {
 
   const { companies } = await getCompanyData()
   
-    const { headquarter = '1' , panel = '1',  date_after = format(new Date(), 'yyyy-MM-dd'), date_before = format(new Date(), 'yyyy-MM-dd'), group_by = 'day', type = 'consumption'} = await searchParams
-  
+    const { headquarter = '1' , panel = '1',  date_after = format(new Date(), 'yyyy-MM-dd'), date_before = format(new Date(), 'yyyy-MM-dd'), group_by = 'day', type = 'consumption', page = '1', selected} = await searchParams
+
     const energyDetails = await getEnergyCompanyDetails({ headquarterId: companies[0].id })
 
     const consumptionGraphReadings = await consumptionGraph({ panelId: panel, headquarterId: headquarter, date_after, date_before, group_by})
+    const consumptionTableReadings = await consumptionTable({ panelId: panel, headquarterId: headquarter, date_after, date_before, page})
+
+    const cosumptionCalculatorReadings = await consumptionCalculator({ panelId: panel, headquarterId: headquarter, date_after, date_before})
+    const consumptionInvoiceReadings = await consumptionInvoice({ panelId: panel, headquarterId: headquarter})
+
 
   return (
     <div className="w-full">
@@ -32,76 +52,76 @@ export default async function Page({ searchParams }: SearchParams) {
       </FiltersContainer>
       <div className="w-full flex flex-col gap-24 px-6">
         <div className="flex gap-2">
-          <Card className="p-4">
-            <h3>Calculadora de consumos</h3>
+          <Card className="p-4  flex flex-col gap-2 shadow-md">
+            <h3 className="font-semibold">Calculadora de consumos</h3>
             <div className="flex gap-4">
               <div>
-                <p className='text-sm'>Consumo total de energía</p>
-                <p className="text-2xl font-semibold">10,024.21 kWH</p>
+                <p className='text-sm font-medium'>Consumo total de energía</p>
+                <p className="text-4xl font-semibold">{cosumptionCalculatorReadings.consumption.toFixed(2)} kWH</p>
               </div>
               <div>
-                <p className='text-sm'>Consumo total soles</p>
-                <p className="text-2xl font-semibold">S/ 100</p>
+                <p className='text-sm font-medium'>Consumo total soles</p>
+                <p className="text-4xl font-semibold">S/ {cosumptionCalculatorReadings.cost}</p>
               </div>
             </div>
           </Card>
-          <Card className="flex-1 p-4">
-            <h3>Consumo del ciclo de facturación actual</h3>
+          <Card className="flex-1 p-4 flex flex-col gap-2 shadow-md">
+            <h3 className="font-semibold">Consumo del ciclo de facturación actual</h3>
             <div className="grid grid-cols-5 grid-rows-2 gap-2">
-              <div className="col-span-2">
-                <h4 className='text-sm'>Consumo total energía</h4>
-                <p className='text-xs'>20,624.21 kWH</p>
+              <div className="col-span-2 shadow-sm rounded-lg p-2">
+                <h4 className='text-sm font-medium'>Consumo total energía</h4>
+                <p className='text-xs'>{consumptionInvoiceReadings.total_consumption} kWH</p>
               </div>
-              <div>
-                <h4 className='text-sm'>Consumo total soles</h4>
-                <p className='text-xs'>S/ 700</p>
+              <div className="shadow-sm rounded-lg p-2">
+                <h4 className='text-sm font-medium text-nowrap'>Consumo total soles</h4>
+                <p className='text-xs'>S/ {consumptionInvoiceReadings.cost}</p>
               </div>
-              <div>
-                <h4 className='text-sm'>N° de Suministro</h4>
-                <p className='text-xs'>059323532</p>
+              <div className="shadow-sm rounded-lg p-2">
+                <h4 className='text-sm font-medium'>N° de Suministro</h4>
+                <p className='text-xs'>{consumptionInvoiceReadings.supply_number}</p>
               </div>
-              <div>
-                <h4 className='text-sm'>Empresa concesionario</h4>
-                <p className='text-xs'>Luz del Sur</p>
+              <div className="shadow-sm rounded-lg p-2">
+                <h4 className='text-sm font-medium text-nowrap'>Empresa concesionario</h4>
+                <p className='text-xs'>{consumptionInvoiceReadings.energy_provider}</p>
               </div>
 
-              <div>
-                <h4 className='text-sm'>Potencia contratado</h4>
-                <p className='text-xs'>200kW</p>
+              <div className="shadow-sm rounded-lg p-2">
+                <h4 className='text-sm font-medium text-nowrap'>Potencia contratado</h4>
+                <p className='text-xs'>{consumptionInvoiceReadings.power_contracted} kWh</p>
               </div>
-              <div>
-                <h4 className='text-sm'>Tipo</h4>
-                <p className='text-xs'>Trífasica</p>
+              <div className="shadow-sm rounded-lg p-2">
+                <h4 className='text-sm font-medium'>Tipo</h4>
+                <p className='text-xs'>{consumptionInvoiceReadings.electrical_panel_type}</p>
               </div>
-              <div>
-                <h4 className='text-sm'>Días facturados</h4>
+              <div className="shadow-sm rounded-lg p-2">
+                <h4 className='text-sm font-medium'>Días facturados</h4>
                 <p className='text-xs'>14 de 30 días</p>
               </div>
-              <div className="col-span-2">
-                <h4 className='text-sm'>Ciclo de facturación</h4>
-                <p className='text-xs'>01 Jul 2024 - 01 - Ago - 2024</p>
+              <div className="col-span-2 shadow-sm rounded-lg p-2">
+                <h4 className='text-sm font-medium'>Ciclo de facturación</h4>
+                <p className='text-xs'>{formatDate(consumptionInvoiceReadings.billing_cycle_start)} - {formatDate(consumptionInvoiceReadings.billing_cycle_end)}</p>
               </div>
             </div>
           </Card>
         </div>
         <div className="w-full relative">
           <div className="p-4 w-full">
-            <div className="flex justify-between items-center">
-              <div>
-                <h4>Consumo energético (kWH)</h4>
-                <p className="text-xs">Durante el periodo seleccionado</p>
-              </div>
-              <ChartFilters type={type} group_by={group_by}/>
-            </div>  
             {
-              type === 'consumption' ? 
-              (
-                <ConsumoChart data={consumptionGraphReadings}/>
-              ) : 
-              (
-                <TarifarioChart data={consumptionGraphReadings}/>
+              selected === 'Resumen de consumos' && (
+                <ConsumptionTable consumptionTableReadings={consumptionTableReadings}/> 
+              )
+            } 
+            {
+              selected === 'Historial de consumo' && (
+                <HistoricalCosumption type={type} group_by={group_by} consumptionGraphReadings={consumptionGraphReadings}/>
               )
             }
+            {
+              selected === 'Tarifario' && (
+                <h1>tarifario</h1>
+              )
+            }
+            
           </div>
           <div className="absolute rounded-t-lg overflow-hidden bg-slate-100 -top-[56px] flex">
             <OptionBar/>
