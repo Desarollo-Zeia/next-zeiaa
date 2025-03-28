@@ -32,7 +32,7 @@ export default async function Page({ searchParams }: SearchParams) {
 
   const { companies } = await getCompanyData()
   
-    const { headquarter = '1' , panel = '1',  date_after = format(new Date(), 'yyyy-MM-dd'), date_before = format(new Date(), 'yyyy-MM-dd'), group_by = 'day', type = 'consumption', page = '1', selected} = await searchParams
+    const { headquarter = '1' , panel = '1',  date_after = format(new Date(), 'yyyy-MM-dd'), date_before = format(new Date(), 'yyyy-MM-dd'), group_by = 'day', type = 'consumption', page = '1', selected = 'Resumen de consumos'} = await searchParams
 
     const energyDetails = await getEnergyCompanyDetails({ headquarterId: companies[0].id })
 
