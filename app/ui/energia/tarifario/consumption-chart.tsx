@@ -6,6 +6,22 @@ import type { TooltipProps } from "recharts"
 import NoResultFound from "../../no-result-found";
 import { formattedDate } from "@/app/utils/func";
 
+const dateFormatWithHour = (dateStr: string) => {
+  const date = new Date(dateStr);
+  const formattedDate = date.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' }).replace('.', '');
+  const finalOutput = `${formattedDate}`
+
+  return finalOutput
+}
+
+const dateFormatWithDay = (dateStr: string) => {
+  const date = new Date(dateStr);
+// Opciones para formatear la fecha
+const formattedDate = date.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' }).replace('.', '')
+
+return formattedDate
+}
+
 interface DataPoint {
     date: string;
     consumption: number;
@@ -60,14 +76,17 @@ interface DataPoint {
   }
   
 
-export default function ConsumoChart({ data } : { data: DataPoint[]}) {
+export default function ConsumoChart({ data, group_by } : { data: DataPoint[], group_by: string}) {
 
   const formattedData = data?.map((item) => {
-    const dateParts = formattedDate(item.date)
-    const shortDate = `${dateParts[0].substring(0, 3)} ${dateParts[1]}`
+
+    const dateHours = `${dateFormatWithHour(item.date_first_value)}`
+    const dateMonth = `${dateFormatWithDay(item.date_first_value)} - ${dateFormatWithDay(item.date_last_value)}`
+
+    const formattedTooltip = group_by === 'day' ? dateHours : dateMonth
     return {
       ...item,
-      shortDate,
+      formattedTooltip,
     }
   })
 
@@ -95,7 +114,7 @@ export default function ConsumoChart({ data } : { data: DataPoint[]}) {
             }}
           >
             <CartesianGrid vertical={false} strokeDasharray="3 3" />
-            <XAxis dataKey="shortDate" tickLine={false} axisLine={false} tickMargin={10} />
+            <XAxis dataKey="formattedTooltip" tickLine={false} axisLine={false} tickMargin={10} />
             <Tooltip content={<ConsumoTooltip />} />
             <Bar dataKey="consumption" fill="var(--color-consumption)" radius={[4, 4, 0, 0]} name="Consumo" />
           </BarChart>
