@@ -22,8 +22,6 @@ const searchParams = useSearchParams();
 const pathname = usePathname();
 const { replace } = useRouter();
 
-console.log(isPending)
-
   const handleConsumptionChange = (type: string) => {
     startTransition(() => {
       const newParams = new URLSearchParams(searchParams);
@@ -57,7 +55,7 @@ console.log(isPending)
   }
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 relative">
         <ToggleGroup type="single" onValueChange={handleGroupChange} defaultValue={group_by}>
             <ToggleGroupItem value="day" aria-label="day">
                 <p>Día</p>
@@ -70,12 +68,17 @@ console.log(isPending)
             <SelectTrigger className="w-[280px] bg-[#00b0c7]">
                 <SelectValue placeholder="Selecciona un tipo de consumo" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="relative">
                 <SelectGroup>
                     <SelectItem value="consumption">Consumo kWH</SelectItem>
                     <SelectItem value="cost">Consumo en S/</SelectItem>
                 </SelectGroup>
             </SelectContent>
+              {isPending && (
+                <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+                </div>
+              )}
         </Select>
 
     </div>

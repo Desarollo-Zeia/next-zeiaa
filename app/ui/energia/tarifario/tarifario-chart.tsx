@@ -48,7 +48,7 @@ export interface CustomTooltipProps extends TooltipProps<any, any> { // eslint-d
                     : entry.dataKey}
               :
             </span>
-            <span className="font-medium">{entry.value} %</span>
+            <span className="font-medium">S/ {entry.value}</span>
           </div>
         ))}
       </div>

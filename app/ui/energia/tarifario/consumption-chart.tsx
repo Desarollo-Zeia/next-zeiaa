@@ -41,7 +41,7 @@ export interface ConsumoTooltipProps extends TooltipProps<any, any> { // eslint-
           <div key={index} className="flex items-center gap-2 text-xs mb-1">
             <span className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }} />
             <span>{entry.dataKey === "consumption" ? "Consumo" : entry.dataKey}:</span>
-            <span className="font-medium">{entry.value}</span>
+            <span className="font-medium">{entry.value.toFixed(2)} kWh</span>
           </div>
         ))}
   
