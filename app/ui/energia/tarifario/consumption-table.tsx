@@ -1,6 +1,7 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import PaginationNumberComponent from "@/app/ui/pagination-number"
 import NoResultFound from "../../no-result-found";
+import { formattedDate } from "@/app/utils/func";
 
 interface RateConsumptionResume {
   date: string;
@@ -38,7 +39,7 @@ export default function ConsumptionTable({ consumptionTableReadings } : { consum
               {
                 consumptionTableReadings.results.map((reading) => (
                   <TableRow key={reading.date}>
-                    <TableCell className="text-sm">{reading.date}</TableCell>
+                    <TableCell className="text-sm">{formattedDate(reading.date)}</TableCell>
                     <TableCell className="text-sm">{reading.consumption.toFixed(2)} kWh</TableCell>
                     <TableCell className="text-sm">S/ {reading.cost}</TableCell>
                   </TableRow>

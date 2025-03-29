@@ -27,10 +27,10 @@ export default function HistoricalCosumption({ type, group_by, consumptionGraphR
       {
         type === 'consumption' ? 
         (
-          <ConsumoChart data={consumptionGraphReadings}/>
+          <ConsumoChart data={consumptionGraphReadings} group_by={group_by}/>
         ) : 
         (
-          <TarifarioChart data={consumptionGraphReadings}/>
+          <TarifarioChart data={consumptionGraphReadings} group_by={group_by}/>
         )
       }
     

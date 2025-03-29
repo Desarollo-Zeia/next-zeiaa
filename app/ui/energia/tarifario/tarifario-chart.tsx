@@ -5,6 +5,24 @@ import type { TooltipProps } from "recharts"
 import { ChartContainer } from "@/components/ui/chart"
 import NoResultFound from "../../no-result-found"
 
+const dateFormatWithHour = (dateStr: string) => {
+  const date = new Date(dateStr);
+  const formattedDate = date.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' }).replace('.', '');
+  // Formatear la hora
+  const finalOutput = `${formattedDate}`
+
+  return finalOutput
+}
+
+const dateFormatWithDay = (dateStr: string) => {
+  const date = new Date(dateStr);
+
+// Opciones para formatear la fecha
+const formattedDate = date.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' }).replace('.', '')
+
+return formattedDate
+}
+
 export interface CustomTooltipProps extends TooltipProps<any, any> { // eslint-disable-line @typescript-eslint/no-explicit-any
     active?: boolean
     payload?: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -28,11 +46,11 @@ export interface CustomTooltipProps extends TooltipProps<any, any> { // eslint-d
   
     // Extract data from the first payload item
     const data = payload[0].payload
-  
+
     return (
       <div className="bg-white dark:bg-gray-800 p-3 border rounded-lg shadow-sm">
         <p className="text-sm font-medium mb-2">
-          {data.date} - {data.timestamp}
+          {data.formattedTooltip}
         </p>
   
         {payload.map((entry, index) => (
@@ -55,15 +73,18 @@ export interface CustomTooltipProps extends TooltipProps<any, any> { // eslint-d
     )
   }
 
-export default function TarifarioChart({ data } : { data: DataPoint[]}) {
+export default function TarifarioChart({ data, group_by } : { data: DataPoint[], group_by: string}) {
 
   // Formatear las fechas para mostrar solo el día y mes
   const formattedData = data?.map((item) => {
-    const dateParts = item.date.split(" ")
-    const shortDate = `${dateParts[0].substring(0, 3)} ${dateParts[1]}`
+
+    const dateHours = `${dateFormatWithHour(item.date_first_value)}`
+    const dateMonth = `${dateFormatWithDay(item.date_first_value)} - ${dateFormatWithDay(item.date_last_value)}`
+
+    const formattedTooltip = group_by === 'day' ? dateHours : dateMonth
     return {
       ...item,
-      shortDate,
+      formattedTooltip,
     }
   })
 
@@ -92,7 +113,7 @@ export default function TarifarioChart({ data } : { data: DataPoint[]}) {
             }}
           >
             <CartesianGrid vertical={false} strokeDasharray="3 3" />
-            <XAxis dataKey="shortDate" tickLine={false} axisLine={false} tickMargin={10} />
+            <XAxis dataKey="formattedTooltip" tickLine={false} axisLine={false} tickMargin={10} />
             {/* <YAxis
               tickLine={false}
               axisLine={false}

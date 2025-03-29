@@ -4,6 +4,23 @@ import { Bar, BarChart, CartesianGrid, Tooltip, XAxis } from "recharts"
 import { ChartContainer } from "@/components/ui/chart"
 import type { TooltipProps } from "recharts"
 import NoResultFound from "../../no-result-found";
+import { formattedDate } from "@/app/utils/func";
+
+const dateFormatWithHour = (dateStr: string) => {
+  const date = new Date(dateStr);
+  const formattedDate = date.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' }).replace('.', '');
+  const finalOutput = `${formattedDate}`
+
+  return finalOutput
+}
+
+const dateFormatWithDay = (dateStr: string) => {
+  const date = new Date(dateStr);
+// Opciones para formatear la fecha
+const formattedDate = date.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' }).replace('.', '')
+
+return formattedDate
+}
 
 interface DataPoint {
     date: string;
@@ -15,12 +32,11 @@ interface DataPoint {
     date_last_value: string;
     timestamp: string;
   }
-  
 
-export interface ConsumoTooltipProps extends TooltipProps<any, any> { // eslint-disable-line @typescript-eslint/no-explicit-any
-    active?: boolean
-    payload?: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
-  }
+  export interface ConsumoTooltipProps extends TooltipProps<any, any> { // eslint-disable-line @typescript-eslint/no-explicit-any
+      active?: boolean
+      payload?: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
+    }
 
 
   export function ConsumoTooltip({ active, payload }: ConsumoTooltipProps) {
@@ -34,7 +50,7 @@ export interface ConsumoTooltipProps extends TooltipProps<any, any> { // eslint-
     return (
       <div className="bg-white dark:bg-gray-800 p-3 border rounded-lg shadow-sm">
         <p className="text-sm font-medium mb-2">
-          {data.date} - {data.timestamp}
+          {formattedDate(data.date)}
         </p>
   
         {payload.map((entry, index) => (
@@ -60,17 +76,17 @@ export interface ConsumoTooltipProps extends TooltipProps<any, any> { // eslint-
   }
   
 
-export default function ConsumoChart({ data } : { data: DataPoint[]}) {
-  // Datos proporcionados en el JSON con fechas traducidas a español
+export default function ConsumoChart({ data, group_by } : { data: DataPoint[], group_by: string}) {
 
- 
-  // Formatear las fechas para mostrar solo el día y mes
   const formattedData = data?.map((item) => {
-    const dateParts = item.date.split(" ")
-    const shortDate = `${dateParts[0].substring(0, 3)} ${dateParts[1]}`
+
+    const dateHours = `${dateFormatWithHour(item.date_first_value)}`
+    const dateMonth = `${dateFormatWithDay(item.date_first_value)} - ${dateFormatWithDay(item.date_last_value)}`
+
+    const formattedTooltip = group_by === 'day' ? dateHours : dateMonth
     return {
       ...item,
-      shortDate,
+      formattedTooltip,
     }
   })
 
@@ -98,7 +114,7 @@ export default function ConsumoChart({ data } : { data: DataPoint[]}) {
             }}
           >
             <CartesianGrid vertical={false} strokeDasharray="3 3" />
-            <XAxis dataKey="shortDate" tickLine={false} axisLine={false} tickMargin={10} />
+            <XAxis dataKey="formattedTooltip" tickLine={false} axisLine={false} tickMargin={10} />
             <Tooltip content={<ConsumoTooltip />} />
             <Bar dataKey="consumption" fill="var(--color-consumption)" radius={[4, 4, 0, 0]} name="Consumo" />
           </BarChart>
