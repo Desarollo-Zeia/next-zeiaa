@@ -19,10 +19,10 @@ export default function loading() {
         <Card className="flex-1 p-4 flex flex-col gap-4">
           <div className="flex gap-4 justify-end">
             <div className="flex gap-2">
-              <Skeleton className="h-10 w-24 bg-gray-200" />
-              <Skeleton className="h-10 w-24 bg-gray-200" />
+              <Skeleton className="h-10  w-24 bg-gray-200" />
+              <Skeleton className="h-10  w-24 bg-gray-200" />
             </div>
-            <Skeleton className="h-10 w-24 bg-gray-200" />
+            <Skeleton className="h-10  w-24 bg-gray-200" />
           </div>
           <div className="w-full bg-gray-100 h-32"/>
           <div className="w-full bg-gray-100 h-32"/>

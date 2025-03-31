@@ -3,65 +3,48 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useSearchParams, usePathname, useRouter } from "next/navigation"
 import { useTransition } from "react"
 
-const ELECTRIC_UNITS = ["V", "A", "KW", "KVar", "KVA", "-", "Hz", "KWh", "%", "KVarh"]
-
+const ELECTRIC_CATEGORYS = ["power", "energy", "current", "voltage"]
 // Mapeo de abreviaturas a nombres completos en español
-const UNIT_NAMES: Record<string, string> = {
-  V: "Voltios",
-  A: "Amperios",
-  KW: "Kilowatts",
-  KVar: "Kilovoltio-Amperio Reactivo",
-  KVA: "Kilovoltio-Amperio",
-  "-": "Sin unidad",
-  Hz: "Hertz",
-  KWh: "Kilowatt-hora",
-  "%": "Porcentaje",
-  KVarh: "Kilovoltio-Amperio Reactivo hora",
+const ELECTRIC_NAMES: Record<string, string> = {
+  power: "Potencia",
+  energy: "Energía",
+  current: "Corriente",
+  voltage: "Voltaje",
 }
 
-export default function ElectricUnitFilter({ defaultUnit = "V" }: { defaultUnit?: string }) {
+export default function ElectricUnitFilter({ category = "power" }: { category?: string }) {
   const [isPending, startTransition] = useTransition()
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const { replace } = useRouter()
 
-  const handleUnitChange = (unit: string) => {
+  const handleUnitChange = (category: string) => {
     startTransition(() => {
       const newParams = new URLSearchParams(searchParams)
 
-      if (unit && unit !== "none") {
-        newParams.set("unit", unit)
+      if (category && category !== "none") {
+        newParams.set("category", category)
         newParams.set("page", '1')
       }
 
-      if (unit === "none") {
-        newParams.delete("unit")
+      if (category === "none") {
+        newParams.delete("category")
       }
 
       replace(`${pathname}?${newParams.toString()}`, { scroll: false })
     })
   }
 
-  // Formatear la unidad para mostrar tanto la abreviatura como el nombre completo
-  const formatUnitDisplay = (unit: string) => {
-    if (unit && UNIT_NAMES[unit]) {
-      return `${unit} (${UNIT_NAMES[unit]})`
-    }
-    return unit
-  }
-
   return (
     <div className="relative">
-      <Select onValueChange={handleUnitChange} value={defaultUnit} disabled={isPending}>
+      <Select onValueChange={handleUnitChange} defaultValue={category} disabled={isPending}>
         <SelectTrigger className="w-[240px] bg-[#00b0c7]">
           <SelectValue placeholder={"Seleccionar unidad"} className="text-white font-bold"/>
-            {/* {currentUnit && formatUnitDisplay(currentUnit)} */}
         </SelectTrigger>
         <SelectContent>
-          {/* <SelectItem value="none">Sin unidad</SelectItem> */}
-          {ELECTRIC_UNITS.map((unit) => (
-            <SelectItem key={unit} value={unit}>
-              {formatUnitDisplay(unit)}
+          {ELECTRIC_CATEGORYS.map((category) => (
+            <SelectItem key={category} value={category}>
+              {ELECTRIC_NAMES[category]}
             </SelectItem>
           ))}
         </SelectContent>

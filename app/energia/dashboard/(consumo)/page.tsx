@@ -14,16 +14,16 @@ import { format } from "date-fns"
 export default async function Page({ searchParams }: SearchParams) {
   const { companies } = await getCompanyData()
 
-  const { headquarter = '1', panel = '1', date_after = format(new Date(), 'yyyy-MM-dd'), date_before = format(new Date(), 'yyyy-MM-dd'), unit = 'V', indicator = 'P', page = '1', last_by = 'day' } = await searchParams
+  const { headquarter = '1', panel = '1', date_after = format(new Date(), 'yyyy-MM-dd'), date_before = format(new Date(), 'yyyy-MM-dd'), unit = 'V', indicator = 'P', page = '1', last_by = 'day', category = 'power' } = await searchParams
 
   const readings = await consume({
     date_after,
     date_before,
     headquarterId: headquarter,
     panelId: panel,
-    unit: unit,
-    page
-    
+    page,
+    category
+
   })
 
   const readingsGraph = await consumeGraph({
@@ -32,6 +32,7 @@ export default async function Page({ searchParams }: SearchParams) {
     headquarterId: headquarter,
     panelId: panel,
     indicador: indicator,
+    category,
     unit,
     last_by
   })
@@ -46,7 +47,7 @@ export default async function Page({ searchParams }: SearchParams) {
         <DateRangePicker/>
       </FiltersContainer>
       <div className="flex">
-        <MeasurementTable readings={readings} unit={unit}/>
+        <MeasurementTable readings={readings} category={category}/>
         <MeasurementGraph data={readingsGraph} unit={unit} count={readings.count} frequency={last_by}/>
       </div>
     </div>
