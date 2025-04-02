@@ -42,20 +42,20 @@ export default function ContractedPowerSidebar({ panel, powers }: { panel: Panel
 
         <div className="space-y-2.5">
           <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-orange-500"></span>
+            <span className="w-3 h-3 rounded-full bg-yellow-500"></span>
             <span className="text-sm">Máxima demanda de potencia</span>
             <span className="text-sm font-medium ml-auto text-nowrap">{powers?.[0].power_max} kW</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-yellow-500"></span>
+            <span className="w-3 h-3 rounded-full bg-orange-500"></span>
             <span className="text-sm">Potencia contratada</span>
             <span className="text-sm font-medium ml-auto text-nowrap">{powers?.[0].power_contracted} kW</span>
           </div>
-          <div className="flex items-center gap-2">
+          {/* <div className="flex items-center gap-2">
             <span className="w-3 h-3 rounded-full bg-rose-500"></span>
             <span className="text-sm">Potencia instalada</span>
             <span className="text-sm font-medium ml-auto text-nowrap">{powers?.[0].power_installed} kW</span>
-          </div>
+          </div> */}
         </div>
 
         <Button variant="secondary" className="w-full gap-2 text-sm h-8" onClick={() => setIsModalOpen(true)}>

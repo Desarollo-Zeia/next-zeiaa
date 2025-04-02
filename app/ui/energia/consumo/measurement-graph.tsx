@@ -61,7 +61,8 @@ export interface EnergyDifferenceChartProps {
   className?: string
   unit?: string
   count?: number
-  frequency?: string
+  frequency?: string,
+  category?: string
 }
 
 // Tipos para las props del tooltip
@@ -87,6 +88,7 @@ export default function MeasurementGraph({
   count = 0,
   frequency,
   className = "",
+  category
 }: EnergyDifferenceChartProps) {
   // Formatear los datos para la gráfica
 
@@ -154,7 +156,7 @@ export default function MeasurementGraph({
     <>
       {count > 0 ? (
         <div className={`flex-1 flex flex-col justify-center gap-6 bg-white ${className}`}>
-          <FrequencyEnergyFilter />
+          <FrequencyEnergyFilter category={category as string}/>
           <h2 className="text-xl font-bold mb-2 text-center">{chartTitle}</h2>
           <ChartContainer
             config={{
@@ -271,7 +273,7 @@ function CustomTooltip({ active, payload }: CustomTooltipProps) {
 
         <span className="text-gray-500 font-medium">Diferencia:</span>
         <span className={`font-medium ${diffClass}`}>
-          {diffValue} {data.unit}
+          {diffValue.toFixed(2)} {data.unit}
         </span>
       </div>
     </div>

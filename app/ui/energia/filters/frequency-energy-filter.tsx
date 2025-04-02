@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState, useTransition } from "react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
-export default function FrequencyEnergyFilter() {
+export default function FrequencyEnergyFilter({ category } : { category: string }) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [isPending, startTransition] = useTransition()
@@ -20,6 +20,25 @@ export default function FrequencyEnergyFilter() {
     { label: "Por semana", value: "week" },
     { label: "Por mes", value: "month" },
   ]
+
+
+  const frequencyDicc = {
+    power: [
+      { label: "Por hora", value: "hour" }
+    ] ,
+    current: [
+      { label: "Por hora", value: "hour" },
+    ],
+    energy: [
+      { label: "Por hora", value: "hour" },
+      { label: "Por día", value: "day" },
+      { label: "Por semana", value: "week" },
+      { label: "Por mes", value: "month" },
+    ],
+    voltage: [
+      { label: "Por hora", value: "hour" },
+    ]
+  }
 
   // Update URL with the selected frequency
   const updateFrequency = useCallback(
@@ -52,7 +71,7 @@ export default function FrequencyEnergyFilter() {
 
   return (
     <div className="flex justify-center flex-wrap gap-2">
-      {frequencyOptions.map((option) => (
+      {frequencyDicc[category as keyof typeof frequencyDicc].map((option) => (
         <Button
         
           key={option.value}

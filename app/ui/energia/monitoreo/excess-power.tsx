@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { Eye } from "lucide-react"
 import Link from "next/link"
+import ContractedPowerSidebar from "./contracted-power-sidebar"
 
 interface DeviceInfo {
   id: number
@@ -30,6 +31,21 @@ interface ExcessPowerData {
   results: PowerExceedingEvent[]
 }
 
+interface Panel {
+  id: number
+  name: string
+  is_active: boolean
+  type: "monofasico" // O bien: string, en caso de admitir otros tipos.
+  threads: any[] | null  // eslint-disable-line @typescript-eslint/no-explicit-any
+}
+
+interface Powers {
+  id: number
+  power_installed: number
+  power_contracted: number
+  power_max: number
+}
+
 // Función para formatear la fecha y hora
 const formatDateTime = (dateString: string) => {
   const date = new Date(dateString)
@@ -53,7 +69,7 @@ const formatDateTime = (dateString: string) => {
   return { date: formattedDate, time: formattedTime }
 }
 
-export default function ExcessPower({ excessPowerData }: { excessPowerData: ExcessPowerData }) {
+export default function ExcessPower({ excessPowerData, panel, powers }: { excessPowerData: ExcessPowerData, panel: Panel[]; powers: Powers[] }) {
 
   const excessPowerEvents = excessPowerData.results.map((item) => {
     const { date, time } = formatDateTime(item.created_at)
@@ -71,8 +87,11 @@ export default function ExcessPower({ excessPowerData }: { excessPowerData: Exce
 
 
   return (
-    <div className="w-full">
-      <div className="p-4 space-y-4">
+    <div className="w-full flex">
+      <div>
+        <ContractedPowerSidebar panel={panel} powers={powers}/>
+      </div>
+      <div className="p-4 space-y-4 flex-1">
         <div className="flex items-center justify-between">
           <div className="space-y-1">
             <h2 className="text-lg font-medium">Potencia excedente</h2>
@@ -81,11 +100,10 @@ export default function ExcessPower({ excessPowerData }: { excessPowerData: Exce
           <Link href={"/energia/dashboard/monitoreo/potencia-excedente"}>
             <Button variant="secondary" size="sm" className="gap-2">
               <Eye className="w-4 h-4" />
-              Ver detalles
+              Ver Alerta
             </Button>
           </Link>
         </div>
-
         <div className="space-y-1">
           {excessPowerEvents.map((event, index) => (
             <div key={index} className="p-3 rounded-lg text-sm flex flex-wrap items-center gap-1 bg-sky-50/50">

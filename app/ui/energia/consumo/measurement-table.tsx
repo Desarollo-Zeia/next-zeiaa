@@ -139,8 +139,6 @@ interface Readings {
                       // Obtenemos los valores de los indicadores para este reading
                       const indicatorValues = reading.indicators.values_per_channel[0].values
 
-                      console.log('indicatorValues', indicatorValues)
-      
                       return (
                         <TableRow key={readingIndex}>
                           <TableCell className="text-nowrap">{date}</TableCell>

@@ -48,7 +48,7 @@ export default async function Page({ searchParams }: SearchParams) {
       </FiltersContainer>
       <div className="flex">
         <MeasurementTable readings={readings} category={category}/>
-        <MeasurementGraph data={readingsGraph} unit={unit} count={readings.count} frequency={last_by}/>
+        <MeasurementGraph data={readingsGraph} unit={unit} count={readings.count} frequency={last_by} category={category}/>
       </div>
     </div>
   )

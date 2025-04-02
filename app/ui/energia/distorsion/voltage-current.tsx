@@ -61,7 +61,7 @@ function CustomTooltip({ active, payload }: CustomTooltipProps) {
                   : entry.dataKey}
             :
           </span>
-          <span className="font-medium">{entry.value} V</span>
+          <span className="font-medium">{entry.value} %</span>
         </div>
       ))}
     </div>
@@ -107,7 +107,7 @@ export default function VoltageChart({ voltageReadings }: { voltageReadings: THD
           }}
         >
           <CartesianGrid strokeDasharray="3 3" vertical={false} />
-          <XAxis dataKey="timestamp" tickLine={false} axisLine={false} tickMargin={10} angle={-45} textAnchor="end" />
+          <XAxis dataKey="timestamp" tickLine={false} axisLine={false} tickMargin={10} textAnchor="end" />
           <YAxis tickLine={false} axisLine={false} tickMargin={10} />
           <ChartTooltip content={<CustomTooltip />} />
           <Line
