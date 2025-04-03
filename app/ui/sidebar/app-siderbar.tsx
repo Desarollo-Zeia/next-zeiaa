@@ -1,3 +1,5 @@
+'use client'
+
 import {
   Zap,
   Battery,
@@ -20,6 +22,8 @@ import {
 } from "@/components/ui/sidebar"
 import { NavUser } from "@/components/nav-user"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
+import Image from "next/image"
 
 const energyItems = [
   {
@@ -50,6 +54,9 @@ const energyItems = [
 ]
 
 export function AppSidebar() {
+
+  const pathname = usePathname()
+
   const userinfo = {
     name: "",
     email: "",
@@ -61,14 +68,14 @@ export function AppSidebar() {
       <SidebarHeader>
         <NavUser userinfo={userinfo} />
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="relative">
         <SidebarGroup>
           <SidebarGroupLabel>Gestión energética</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {energyItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+                <SidebarMenuItem key={item.title} >
+                  <SidebarMenuButton asChild data-active={pathname === item.url && 'true'}>
                     <Link href={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
@@ -79,8 +86,10 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+        <div className="w-full absolute bottom-0 p-8 flex items-center justify-center">
+          <Image src="/logozeia.png" width={120} height={80} className="h-12 w-auto" alt="Logo zeia" priority />
+        </div>
       </SidebarContent>
-      <SidebarFooter>{/* Footer content can be added here later */}</SidebarFooter>
     </Sidebar>
   )
 }

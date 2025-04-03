@@ -33,10 +33,9 @@ export default async function page({ searchParams } : SearchParams) {
         <DateRangePicker/>
       </FiltersContainer>
       <div className="flex gap-4 mx-6">
-        <ContractedPowerSidebar panel={currentPanel} powers={currentPowers}/>
         <div className="flex-1">
           <PowerUsageChart readings={monitoringGraphReadings} group={group_by}/>
-          <ExcessPower excessPowerData={monitoringLastThreeReadings}/>
+          <ExcessPower excessPowerData={monitoringLastThreeReadings} panel={currentPanel} powers={currentPowers}/>
         </div>
       </div>
     </div>
