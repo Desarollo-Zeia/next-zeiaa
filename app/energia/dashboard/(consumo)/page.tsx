@@ -14,7 +14,7 @@ import { format } from "date-fns"
 export default async function Page({ searchParams }: SearchParams) {
   const { companies } = await getCompanyData()
 
-  const { headquarter = '1', panel = '1', date_after = format(new Date(), 'yyyy-MM-dd'), date_before = format(new Date(), 'yyyy-MM-dd'), unit = 'V', indicator = 'P', page = '1', last_by = 'day', category = 'power' } = await searchParams
+  const { headquarter = '1', panel = '1', date_after = format(new Date(), 'yyyy-MM-dd'), date_before = format(new Date(), 'yyyy-MM-dd'), unit = 'V', indicator = 'P', page = '1', last_by = 'hour', category = 'power' } = await searchParams
 
   const readings = await consume({
     date_after,
@@ -47,7 +47,7 @@ export default async function Page({ searchParams }: SearchParams) {
         <DateRangePicker/>
       </FiltersContainer>
       <div className="flex">
-        <MeasurementTable readings={readings} category={category}/>
+        <MeasurementTable readings={readings} category={category} indicator={indicator}/>
         <MeasurementGraph data={readingsGraph} unit={unit} count={readings.count} frequency={last_by} category={category}/>
       </div>
     </div>

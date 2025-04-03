@@ -7,7 +7,6 @@ import CurrentCharts from "@/app/ui/energia/desbalance/current-chart";
 import { CurrentMeter } from "@/app/ui/energia/desbalance/current-meter";
 import { MetricSelector } from "@/app/ui/energia/desbalance/metric-selector";
 import VoltageCharts from "@/app/ui/energia/desbalance/voltage-chart";
-import { DateRangePicker } from "@/app/ui/energia/filters/datepicker-energy-filter";
 import HeadquarterEnergyFilter from "@/app/ui/energia/filters/headquarter-energy-filter";
 import PanelsFilterEnergy from "@/app/ui/energia/filters/panels-energy-filter";
 import FiltersContainer from "@/app/ui/filters/filters-container";

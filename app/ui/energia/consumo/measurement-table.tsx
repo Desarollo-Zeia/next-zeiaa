@@ -5,7 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { CalendarIcon, ClockIcon } from "lucide-react";
 import ElectricUnitFilter from "../filters/unit-energy-filter";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import PaginationNumberComponent from "../../pagination-number";
 import NoResultsFound from "../../no-result";
 import { ELECTRIC_PARAMETERS } from "@/app/utils/formatter";
@@ -44,31 +44,13 @@ interface Readings {
   type Values = Record<string, number>
 
 
-  export default function MeasurementTable({ readings, category }: { readings: Readings, category?: string }) {
+  export default function MeasurementTable({ readings, category, indicator }: { readings: Readings, category?: string, indicator?: string }) {
 
     const router = useRouter()
     const pathname = usePathname()
     const searchParams = useSearchParams()
+    console.log(indicator)
 
-    const [selectedIndicator, setSelectedIndicator] = useState('')
-
-    const createQueryString = useCallback(
-      (name: string, value: string) => {
-        const params = new URLSearchParams(searchParams.toString())
-        params.set(name, value)
-        return params.toString()
-      },
-      [searchParams],
-    )
-  
-    // Handle indicator selection
-    const handleIndicatorSelect = (indicator: string) => {
-      // Update URL with the selected indicator
-      setSelectedIndicator(indicator)
-      router.push(pathname + "?" + createQueryString("indicator", indicator), { scroll: false })
-    }
-
-    // const indicatorsHeaders = Object.keys(readings.results[0].indicators.values_per_channel[0].values)
     const indicatorsObject = readings.results?.[0]?.indicators?.values_per_channel[0].values
 
     const avaibleIndicators = [] as Array<string>
@@ -78,6 +60,36 @@ interface Readings {
         avaibleIndicators.push(key)
        } 
       }
+
+  
+    // Handle indicator selection
+    const handleIndicatorSelect = (indicator: string) => {
+      // Update URL with the selected indicator
+      setSelectedIndicator(indicator)
+      router.push(pathname + "?" + createQueryString("indicator", indicator), { scroll: false })
+    }
+
+    // const indicatorsHeaders = Object.keys(readings.results[0].indicators.values_per_channel[0].values)
+    
+
+    const algo = avaibleIndicators[0]
+      
+    const [selectedIndicator, setSelectedIndicator] = useState(algo)
+
+    useEffect(() => {
+      if (avaibleIndicators.length > 0) {
+        setSelectedIndicator(avaibleIndicators[0]);
+      }
+    }, [category, readings]);
+
+    const createQueryString = useCallback(
+      (name: string, value: string) => {
+        const params = new URLSearchParams(searchParams.toString())
+        params.set(name, value)
+        return params.toString()
+      },
+      [searchParams],
+    )
 
     const formatDateTime = (dateTimeString: string) => {
         const date = new Date(dateTimeString)
@@ -127,9 +139,11 @@ interface Readings {
                           Hora
                         </div>
                       </TableHead>
-                      {avaibleIndicators.map((indicator, index) => (
-                        <TableHead className={`cursor-pointer text-center ${selectedIndicator === indicator ? 'bg-[#00b0c7] opacity-70 text-white font-medium' : ''}`} key={index} onClick={() => handleIndicatorSelect(indicator)}>{ELECTRIC_PARAMETERS[indicator as keyof typeof ELECTRIC_PARAMETERS].parameter}</TableHead>
-                      ))}
+                      {avaibleIndicators.map((indicator, index) => {
+                        return (
+                          <TableHead className={`cursor-pointer text-center ${selectedIndicator === indicator ? 'bg-[#00b0c7] opacity-70 text-white font-medium' : ''}`} key={index} onClick={() => handleIndicatorSelect(indicator)}>{ELECTRIC_PARAMETERS[indicator as keyof typeof ELECTRIC_PARAMETERS].parameter}</TableHead>
+                        )
+                      } )}
                     </TableRow>
                   </TableHeader>
                   <TableBody>

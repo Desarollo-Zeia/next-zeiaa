@@ -1,93 +1,71 @@
 "use client"
 
-import { useRouter, useSearchParams } from "next/navigation"
-import { useCallback, useEffect, useState, useTransition } from "react"
-import { Button } from "@/components/ui/button"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { cn } from "@/lib/utils"
+import {
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@/components/ui/toggle-group"
+import { useTransition } from "react"
 
-export default function FrequencyEnergyFilter({ category } : { category: string }) {
-  const router = useRouter()
-  const searchParams = useSearchParams()
+export default function FrequencyEnergyFilter({ category, frequencyP } : { category: string, frequencyP: string }) {
   const [isPending, startTransition] = useTransition()
-
+  const searchParams = useSearchParams()
+  const { replace } = useRouter()
+  const pathname = usePathname()
   // Get the current value from URL or default to 'day'
-  const [selectedFrequency, setSelectedFrequency] = useState<string>(searchParams.get("last_by") || "day")
-
-  // Options for the filter
-  const frequencyOptions = [
-    { label: "Por hora", value: "hour" },
-    { label: "Por día", value: "day" },
-    { label: "Por semana", value: "week" },
-    { label: "Por mes", value: "month" },
-  ]
-
 
   const frequencyDicc = {
     power: [
-      { label: "Por hora", value: "hour" }
+      { label: "Hora", value: "hour" }
     ] ,
     current: [
-      { label: "Por hora", value: "hour" },
+      { label: "Hora", value: "hour" },
     ],
     energy: [
-      { label: "Por hora", value: "hour" },
-      { label: "Por día", value: "day" },
-      { label: "Por semana", value: "week" },
-      { label: "Por mes", value: "month" },
+      { label: "Hora", value: "hour" },
+      { label: "Día", value: "day" },
+      { label: "Semana", value: "week" },
+      { label: "Mes", value: "month" },
     ],
     voltage: [
-      { label: "Por hora", value: "hour" },
+      { label: "Hora", value: "hour" },
     ]
   }
 
-  // Update URL with the selected frequency
-  const updateFrequency = useCallback(
-    (value: string) => {
-      // Create a new URLSearchParams object with the current params
-      const params = new URLSearchParams(searchParams.toString())
-
-      // Update the last_by parameter
+  const handleFrequencyChange = (value: string) => { 
+    startTransition(() => {
+      const params = new URLSearchParams(searchParams)
       params.set("last_by", value)
-
-      // Update local state immediately
-      setSelectedFrequency(value)
-
-      // Wrap the router navigation in startTransition
-      startTransition(() => {
-        // Update the URL without refreshing the page
-        router.push(`?${params.toString()}`, { scroll: false })
-      })
-    },
-    [searchParams, router],
-  )
-
-  // Update state if URL changes externally
-  useEffect(() => {
-    const currentValue = searchParams.get("last_by")
-    if (currentValue && currentValue !== selectedFrequency) {
-      setSelectedFrequency(currentValue)
-    }
-  }, [searchParams, selectedFrequency])
+      params.set("page", '1')
+      replace(`${pathname}?${params.toString()}`)
+  })
+  }
 
   return (
     <div className="flex justify-center flex-wrap gap-2">
-      {frequencyDicc[category as keyof typeof frequencyDicc].map((option) => (
-        <Button
-        
-          key={option.value}
-          onClick={() => updateFrequency(option.value)}
-          variant={selectedFrequency === option.value ? "default" : "outline"}
-          className={cn(
-            "transition-all",
-            selectedFrequency === option.value ? "text-primary-foreground bg-[#00b0c7] hover:bg-none" : "bg-background hover:bg-muted",
-            isPending && "opacity-70",
+      <ToggleGroup type="single" onValueChange={handleFrequencyChange} defaultValue={frequencyP}   aria-label="Frequency" className="flex gap-2 relative">
+        {
+          frequencyDicc[category as keyof typeof frequencyDicc].map((frequency) => (
+            <ToggleGroupItem
+              key={frequency.value}
+              value={frequency.value}
+              className={cn(
+                "w-[120px] h-[40px] bg-[#00b0c7] text-white",
+                frequencyP === frequency.value ? "bg-[#00b0c7] hover:bg-inherit" : "bg-gray-100 text-gray-700"
+              )}
+              disabled={frequencyP === frequency.value}
+            >
+              {frequency.label}
+            </ToggleGroupItem>
+          ))
+        }
+        {isPending && (
+              <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+              </div>
           )}
-          disabled={isPending && selectedFrequency === option.value}
-        >
-          {option.label}
-       
-        </Button>
-      ))}
+      </ToggleGroup>
     </div>
   )
 }

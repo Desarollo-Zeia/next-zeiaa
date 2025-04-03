@@ -5,7 +5,6 @@ import { SearchParams } from "@/app/type";
 import { DateRangePicker } from "@/app/ui/energia/filters/datepicker-energy-filter";
 import HeadquarterEnergyFilter from "@/app/ui/energia/filters/headquarter-energy-filter";
 import PanelsFilterEnergy from "@/app/ui/energia/filters/panels-energy-filter";
-import ContractedPowerSidebar from "@/app/ui/energia/monitoreo/contracted-power-sidebar";
 import ExcessPower from "@/app/ui/energia/monitoreo/excess-power";
 import PowerUsageChart from "@/app/ui/energia/monitoreo/power-dashboard";
 import FiltersContainer from "@/app/ui/filters/filters-container";
