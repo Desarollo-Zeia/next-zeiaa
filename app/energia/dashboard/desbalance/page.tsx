@@ -117,14 +117,14 @@ export default async function page({ searchParams } : SearchParams) {
                     ) : (
                       <>
                         <CurrentMeter      
-                          label="Fase T"
+                          label="Fase R"
                           minValue={0.0}
                           currentValue={lastVoltageReadingArray[0] as number}
                           status={"normal"}
                           unit="V"
                         />
                         <CurrentMeter      
-                          label="Fase T"
+                          label="Fase S"
                           minValue={0.0}
                           currentValue={lastVoltageReadingArray[1] as number}
                           status={"normal"}
