@@ -19,11 +19,11 @@ export default async function page({ searchParams } : SearchParams) {
 
 const { companies } = await getCompanyData()
     
-const { headquarter = '1' , panel = '1',  date_after = format(new Date(), 'yyyy-MM-dd'), date_before = format(new Date(), 'yyyy-MM-dd'), data_type = 'current', page = '1'} = await searchParams
+const { headquarter = '1' , panel = '1',  date_after = new Date(), date_before = new Date(), data_type = 'current', page = '1'} = await searchParams
 
 const energyDetails = await getEnergyCompanyDetails({ headquarterId: companies[0].id })
 
- const armonicsReadings = await armonics({ headquarterId: headquarter, panelId: panel, date_after, date_before, data_type, page })
+ const armonicsReadings = await armonics({ headquarterId: headquarter, panelId: panel, date_after: format(date_after, 'yyyy-MM-dd'), date_before: format(date_before, 'yyyy-MM-dd'), data_type, page })
 
   return (
     <div className="w-full">

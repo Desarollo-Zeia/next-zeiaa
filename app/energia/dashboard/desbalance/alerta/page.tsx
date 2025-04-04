@@ -1,9 +1,9 @@
 import { getCompanyData } from "@/app/lib/auth";
 import { getEnergyCompanyDetails } from "@/app/sevices/energy/enterprise/data";
 import AlertTable from "@/app/ui/energia/desbalance/alerta/alerts-table";
-import { DateRangePicker } from "@/app/ui/energia/filters/datepicker-energy-filter";
 import HeadquarterEnergyFilter from "@/app/ui/energia/filters/headquarter-energy-filter";
 import PanelsFilterEnergy from "@/app/ui/energia/filters/panels-energy-filter";
+import { DatepickerRange } from "@/app/ui/filters/datepicker-range";
 import FiltersContainer from "@/app/ui/filters/filters-container";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
@@ -25,7 +25,7 @@ return (
         </Link>
         <HeadquarterEnergyFilter energyHeadquarter={energyDetails.energy_headquarters} />
         <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters[0].electrical_panels} />
-        <DateRangePicker/>
+        <DatepickerRange />
     </FiltersContainer>
     <AlertTable/>
 </div>
