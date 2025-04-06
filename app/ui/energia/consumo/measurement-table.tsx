@@ -44,7 +44,7 @@ interface Readings {
   type Values = Record<string, number>
 
 
-  export default function MeasurementTable({ readings, category, indicator }: { readings: Readings, category?: string, indicator?: string }) {
+  export default function MeasurementTable({ readings, category }: { readings: Readings, category?: string, indicator?: string }) {
 
     const router = useRouter()
     const pathname = usePathname()
@@ -64,14 +64,11 @@ interface Readings {
   
     // Handle indicator selection
     const handleIndicatorSelect = (indicator: string) => {
+      setSelectedIndicator(indicator)
       startTransition(() => {
-        setSelectedIndicator(indicator)
         router.push(pathname + "?" + createQueryString("indicator", indicator), { scroll: false })
       })
     }
-
-    // const indicatorsHeaders = Object.keys(readings.results[0].indicators.values_per_channel[0].values)
-    
 
     const [selectedIndicator, setSelectedIndicator] = useState('')
 
@@ -154,9 +151,9 @@ interface Readings {
                                 selectedIndicator === indicator && isPending ? 
                                 (
                                   <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50">
-                                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white">
-                                    Cargando...
-                                  </div>
+                                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white">
+                                      Cargando...
+                                    </div>
                                   </div>
                                 ) : (
                                   ELECTRIC_PARAMETERS[indicator as keyof typeof ELECTRIC_PARAMETERS].parameter
