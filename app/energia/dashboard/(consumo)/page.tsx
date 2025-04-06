@@ -4,21 +4,21 @@ import { getCompanyData } from "@/app/lib/auth"
 import { getEnergyCompanyDetails } from "@/app/sevices/energy/enterprise/data"
 import HeadquarterEnergyFilter from "@/app/ui/energia/filters/headquarter-energy-filter"
 import PanelsFilterEnergy from "@/app/ui/energia/filters/panels-energy-filter"
-import { DateRangePicker } from "@/app/ui/energia/filters/datepicker-energy-filter"
 import MeasurementTable from "@/app/ui/energia/consumo/measurement-table"
 import MeasurementGraph from "@/app/ui/energia/consumo/measurement-graph"
 import { SearchParams } from "@/app/type"
 import { format } from "date-fns"
+import { DatepickerRange } from "@/app/ui/filters/datepicker-range"
 
 
 export default async function Page({ searchParams }: SearchParams) {
   const { companies } = await getCompanyData()
 
-  const { headquarter = '1', panel = '1', date_after = format(new Date(), 'yyyy-MM-dd'), date_before = format(new Date(), 'yyyy-MM-dd'), unit = 'V', indicator = 'P', page = '1', last_by = 'hour', category = 'power' } = await searchParams
+  const { headquarter = '1', panel = '1', date_after = new Date(), date_before = new Date(), unit = 'V', indicator = 'P', page = '1', last_by = 'hour', category = 'power' } = await searchParams
 
   const readings = await consume({
-    date_after,
-    date_before,
+    date_after: format(date_after, 'yyyy-MM-dd'),
+    date_before: format(date_before, 'yyyy-MM-dd'),
     headquarterId: headquarter,
     panelId: panel,
     page,
@@ -27,8 +27,8 @@ export default async function Page({ searchParams }: SearchParams) {
   })
 
   const readingsGraph = await consumeGraph({
-    date_after,
-    date_before,
+    date_after: format(date_after, 'yyyy-MM-dd'),
+    date_before: format(date_before, 'yyyy-MM-dd'),
     headquarterId: headquarter,
     panelId: panel,
     indicador: indicator,
@@ -44,7 +44,7 @@ export default async function Page({ searchParams }: SearchParams) {
       <FiltersContainer>
         <HeadquarterEnergyFilter energyHeadquarter={energyDetails.energy_headquarters} />
         <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters[0].electrical_panels} />
-        <DateRangePicker/>
+        <DatepickerRange />
       </FiltersContainer>
       <div className="flex">
         <MeasurementTable readings={readings} category={category} indicator={indicator}/>

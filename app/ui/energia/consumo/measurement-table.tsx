@@ -5,7 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { CalendarIcon, ClockIcon } from "lucide-react";
 import ElectricUnitFilter from "../filters/unit-energy-filter";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useTransition } from "react";
 import PaginationNumberComponent from "../../pagination-number";
 import NoResultsFound from "../../no-result";
 import { ELECTRIC_PARAMETERS } from "@/app/utils/formatter";
@@ -49,7 +49,7 @@ interface Readings {
     const router = useRouter()
     const pathname = usePathname()
     const searchParams = useSearchParams()
-    console.log(indicator)
+    const [isPending, startTransition] = useTransition() 
 
     const indicatorsObject = readings.results?.[0]?.indicators?.values_per_channel[0].values
 
@@ -64,23 +64,22 @@ interface Readings {
   
     // Handle indicator selection
     const handleIndicatorSelect = (indicator: string) => {
-      // Update URL with the selected indicator
-      setSelectedIndicator(indicator)
-      router.push(pathname + "?" + createQueryString("indicator", indicator), { scroll: false })
+      startTransition(() => {
+        setSelectedIndicator(indicator)
+        router.push(pathname + "?" + createQueryString("indicator", indicator), { scroll: false })
+      })
     }
 
     // const indicatorsHeaders = Object.keys(readings.results[0].indicators.values_per_channel[0].values)
     
 
-    const algo = avaibleIndicators[0]
-      
-    const [selectedIndicator, setSelectedIndicator] = useState(algo)
+    const [selectedIndicator, setSelectedIndicator] = useState('')
 
     useEffect(() => {
       if (avaibleIndicators.length > 0) {
         setSelectedIndicator(avaibleIndicators[0]);
       }
-    }, [category, readings]);
+    }, [category]);
 
     const createQueryString = useCallback(
       (name: string, value: string) => {
@@ -139,9 +138,31 @@ interface Readings {
                           Hora
                         </div>
                       </TableHead>
+                      {/* {
+                        isPending && 
+                        <TableHead>
+                          cargandoo...
+                        </TableHead>
+                      } */}
                       {avaibleIndicators.map((indicator, index) => {
                         return (
-                          <TableHead className={`cursor-pointer text-center ${selectedIndicator === indicator ? 'bg-[#00b0c7] opacity-70 text-white font-medium' : ''}`} key={index} onClick={() => handleIndicatorSelect(indicator)}>{ELECTRIC_PARAMETERS[indicator as keyof typeof ELECTRIC_PARAMETERS].parameter}</TableHead>
+                          <TableHead className={`cursor-pointer text-center ${selectedIndicator === indicator ? 'bg-[#00b0c7] opacity-70 text-white font-medium' : ''}`} 
+                            key={index}       
+                            onClick={() => handleIndicatorSelect(indicator)}
+                            >
+                              {
+                                selectedIndicator === indicator && isPending ? 
+                                (
+                                  <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50">
+                                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white">
+                                    Cargando...
+                                  </div>
+                                  </div>
+                                ) : (
+                                  ELECTRIC_PARAMETERS[indicator as keyof typeof ELECTRIC_PARAMETERS].parameter
+                                )
+                              }
+                          </TableHead>
                         )
                       } )}
                     </TableRow>
