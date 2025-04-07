@@ -10,7 +10,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 const meterVariants = cva("flex justify-between p-4 rounded-lg border transition-all shadow-sm", {
   variants: {
     status: {
-      normal: "bg-blue-50 border-blue-200 text-blue-900 dark:bg-blue-950 dark:border-blue-900 dark:text-blue-100",
+      normal: "bg-white border-blue-200 text-[#00b0c7] dark:bg-blue-950 dark:border-[#00b0c7] dark:text-blue-100",
       warning:
         "bg-amber-50 border-amber-200 text-amber-900 dark:bg-amber-950 dark:border-amber-900 dark:text-amber-100",
       critical: "bg-red-50 border-red-200 text-red-900 dark:bg-red-950 dark:border-red-900 dark:text-red-100",
@@ -72,7 +72,7 @@ export function CurrentMeter({
         <div className="flex items-center gap-1.5">
           <Zap
             className={cn("size-4", {
-              "text-blue-600 dark:text-blue-400": determinedStatus === "normal",
+              "text-[#00b0c7] dark:text-[#00b0c7]": determinedStatus === "normal",
               "text-amber-600 dark:text-amber-400": determinedStatus === "warning",
               "text-red-600 dark:text-red-400": determinedStatus === "critical",
             })}
