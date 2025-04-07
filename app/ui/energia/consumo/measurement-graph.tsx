@@ -63,7 +63,6 @@ export interface EnergyDifferenceChartProps {
   count?: number
   frequency?: string,
   category?: string,
-
 }
 
 // Tipos para las props del tooltip
@@ -89,7 +88,7 @@ export default function MeasurementGraph({
   count = 0,
   frequency,
   className = "",
-  category
+  category,
 }: EnergyDifferenceChartProps) {
   // Formatear los datos para la gráfica
 
