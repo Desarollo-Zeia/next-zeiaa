@@ -74,7 +74,9 @@ interface Readings {
 
     useEffect(() => {
       if (avaibleIndicators.length > 0) {
-        setSelectedIndicator(avaibleIndicators[0]);
+        const params = new URLSearchParams(searchParams.toString())
+        setSelectedIndicator(avaibleIndicators[0])
+        params.delete('frequency');
         router.push(pathname + "?" + createQueryString("indicator", avaibleIndicators[0]), { scroll: false })
       }
     }, [category]);

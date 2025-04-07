@@ -90,7 +90,6 @@ export default function MeasurementGraph({
   className = "",
   category,
 }: EnergyDifferenceChartProps) {
-  // Formatear los datos para la gráfica
 
   const xAxisFormatter = {
     hour: "HH:mm",
