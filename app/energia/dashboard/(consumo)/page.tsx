@@ -50,7 +50,7 @@ export default async function Page({ searchParams }: SearchParams) {
       <div className="flex">
         <MeasurementTable readings={readings} category={category} indicator={indicator}/>
         {/* <MeasurementGraph data={readingsGraph} unit={unit} count={readings.count} frequency={last_by} category={category}/> */}
-        <Graph readingsGraph={readingsGraph}/>
+        <Graph readingsGraph={readingsGraph} category={category} indicator={indicator}/>
       </div>
     </div>
   )
