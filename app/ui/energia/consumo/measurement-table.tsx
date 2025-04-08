@@ -74,7 +74,10 @@ interface Readings {
 
     useEffect(() => {
       if (avaibleIndicators.length > 0) {
-        setSelectedIndicator(avaibleIndicators[0]);
+        const params = new URLSearchParams(searchParams.toString())
+        setSelectedIndicator(avaibleIndicators[0])
+        params.delete('frequency');
+        router.push(pathname + "?" + createQueryString("indicator", avaibleIndicators[0]), { scroll: false })
       }
     }, [category]);
 
@@ -152,7 +155,6 @@ interface Readings {
                                 (
                                   <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50">
                                     <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white">
-                                      Cargando...
                                     </div>
                                   </div>
                                 ) : (

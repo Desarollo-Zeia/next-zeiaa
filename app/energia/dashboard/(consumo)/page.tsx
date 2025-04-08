@@ -9,12 +9,13 @@ import MeasurementGraph from "@/app/ui/energia/consumo/measurement-graph"
 import { SearchParams } from "@/app/type"
 import { format } from "date-fns"
 import { DatepickerRange } from "@/app/ui/filters/datepicker-range"
+import Graph from "@/app/ui/energia/consumo/graph"
 
 
 export default async function Page({ searchParams }: SearchParams) {
   const { companies } = await getCompanyData()
 
-  const { headquarter = '1', panel = '1', date_after = new Date(), date_before = new Date(), unit = 'V', indicator = 'P', page = '1', last_by = 'hour', category = 'power' } = await searchParams
+  const { headquarter = '1', panel = '1', date_after = new Date(), date_before = new Date(), unit = 'V', indicator = 'P', page = '1', last_by, category = 'power' } = await searchParams
 
   const readings = await consume({
     date_after: format(date_after, 'yyyy-MM-dd'),
@@ -34,8 +35,8 @@ export default async function Page({ searchParams }: SearchParams) {
     indicador: indicator,
     category,
     unit,
-    last_by
   })
+
 
   const energyDetails = await getEnergyCompanyDetails({ headquarterId: companies[0].id })
 
@@ -48,7 +49,8 @@ export default async function Page({ searchParams }: SearchParams) {
       </FiltersContainer>
       <div className="flex">
         <MeasurementTable readings={readings} category={category} indicator={indicator}/>
-        <MeasurementGraph data={readingsGraph} unit={unit} count={readings.count} frequency={last_by} category={category}/>
+        {/* <MeasurementGraph data={readingsGraph} unit={unit} count={readings.count} frequency={last_by} category={category}/> */}
+        <Graph readingsGraph={readingsGraph}/>
       </div>
     </div>
   )
