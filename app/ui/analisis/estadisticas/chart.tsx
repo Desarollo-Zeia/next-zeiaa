@@ -95,7 +95,7 @@ for (const i in readings) {
 return [
   {
     data: dataRecopilationFromAllDays,
-    tension: 0.2,
+    tension: 0.8,
     pointRadius: 0,
     label: 'Tendencia',
      }
