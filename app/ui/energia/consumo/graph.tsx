@@ -213,7 +213,9 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by }) => {
         
       </ToggleGroup>
       <h2 className="mb-4 font-semibold text-xl">Gráfica de {ELECTRIC_PARAMETERS[indicator as keyof typeof ELECTRIC_PARAMETERS].parameter}</h2>
-      <Line data={data} options={options} />
+      {
+        !last_by && <Line data={data} options={options} />
+      }
     </div>
   );
 };
