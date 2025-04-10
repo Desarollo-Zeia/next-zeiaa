@@ -108,7 +108,7 @@ export default function ExcessPower({ excessPowerData, panel, powers }: { excess
           {excessPowerEvents.map((event, index) => (
             <div key={index} className="p-3 rounded-lg text-sm flex flex-wrap items-center gap-1 bg-sky-50/50">
               <span>
-                El {event.date} a las {event.time} con{" "}
+                Se excedió la potencia instalada el {event.date} a las {event.time} con{" "}
               </span>
               <span className="font-medium">{event.power}</span>
               <span>(</span>

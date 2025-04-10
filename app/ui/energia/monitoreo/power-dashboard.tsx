@@ -64,6 +64,8 @@ export default function PowerUsageChart({ readings, group } : { readings: PowerR
   const pathname = usePathname()
   const { replace } = useRouter()
 
+  console.log(readings, 'readings')
+
   
   const handleGroupChange = (group: string) => {
     startTransition(() => {
@@ -75,7 +77,7 @@ export default function PowerUsageChart({ readings, group } : { readings: PowerR
         newParams.set('group_by', group);
       }
 
-      if (group === 'none') {
+      if (group === 'hour') {
         newParams.delete('group_by');
       }
 
@@ -85,7 +87,7 @@ export default function PowerUsageChart({ readings, group } : { readings: PowerR
 
   const chartData = readings?.map((item) => ({
     time: item.created_at,
-    power: item.values_per_channel[0]?.power || 0,
+    power: item.values_per_channel[0]?.power?.toFixed(2) || 0,
   }))
  // Revertimos el array para mostrar los datos en orden cronológico
   // Encontrar el valor máximo para el dominio del eje Y

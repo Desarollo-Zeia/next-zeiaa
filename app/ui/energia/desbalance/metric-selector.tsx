@@ -13,7 +13,8 @@ interface MetricSelectorProps {
   alertCount?: number
   alertsPath?: string
   onMetricChange?: (metric: "current" | "voltage") => void
-  className?: string
+  className?: string,
+  dontShowIt?: string
 }
 
 export function MetricSelector({
@@ -22,6 +23,7 @@ export function MetricSelector({
   alertsPath = "/energia/dashboard/desbalance/alerta",
   onMetricChange,
   className,
+  dontShowIt,
 }: MetricSelectorProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -93,7 +95,7 @@ export function MetricSelector({
         </button>
       </div>
 
-      <Button variant="outline" size="sm" asChild className="gap-1.5 relative">
+      <Button variant="outline" size="sm" asChild className={`gap-1.5 relative ${dontShowIt}`}>
         <Link href={alertsPath}>
           <span>Ver alertas</span>
           <Bell className="h-4 w-4" />

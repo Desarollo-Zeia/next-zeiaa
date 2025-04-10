@@ -14,7 +14,7 @@ export default async function page({ searchParams } : SearchParams) {
 
   const { companies } = await getCompanyData()
 
-  const { headquarter = '1' , panel = '1',  date_after = new Date(), date_before = new Date(), group_by = 'day'} = await searchParams
+  const { headquarter = '1' , panel = '1',  date_after = new Date(), date_before = new Date(), group_by} = await searchParams
 
   const energyDetails = await getEnergyCompanyDetails({ headquarterId: companies[0].id })
 
