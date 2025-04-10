@@ -5,7 +5,6 @@ import { getEnergyCompanyDetails } from "@/app/sevices/energy/enterprise/data"
 import HeadquarterEnergyFilter from "@/app/ui/energia/filters/headquarter-energy-filter"
 import PanelsFilterEnergy from "@/app/ui/energia/filters/panels-energy-filter"
 import MeasurementTable from "@/app/ui/energia/consumo/measurement-table"
-import MeasurementGraph from "@/app/ui/energia/consumo/measurement-graph"
 import { SearchParams } from "@/app/type"
 import { format } from "date-fns"
 import { DatepickerRange } from "@/app/ui/filters/datepicker-range"
@@ -35,6 +34,7 @@ export default async function Page({ searchParams }: SearchParams) {
     indicador: indicator,
     category,
     unit,
+    last_by
   })
 
   const energyDetails = await getEnergyCompanyDetails({ headquarterId: companies[0].id })

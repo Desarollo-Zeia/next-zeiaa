@@ -17,7 +17,7 @@ import { format } from "date-fns";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { ELECTRIC_PARAMETERS } from "@/app/utils/formatter";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import MeasurementGraph from "./measurement-graph";
+import DeviceReadingsChart from "./measurement-graph";
 
 // Registro de componentes en ChartJS
 ChartJS.register(LineElement, PointElement, LinearScale, TimeScale, Tooltip, Legend, zoomPlugin)
@@ -28,15 +28,16 @@ const energyToggleArray =  [
   { label: "Semana", value: "week" },
   { label: "Mes", value: "month" },
 ]
-
-const SimpleLineChart = ({ readingsGraph, category, indicator, last_by }) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const SimpleLineChart = ({ readingsGraph, category, indicator, last_by } : { readingsGraph: any, category: any, indicator: any, last_by: any}) => {  
 
     const [isPending, startTransition] = useTransition();
     const searchParams = useSearchParams();
     const pathname = usePathname();
     const { replace } = useRouter();
   // Se transforma el JSON para obtener un array de puntos de datos
-  const dataPoints = readingsGraph.map((item) => ({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const dataPoints = readingsGraph.map((item : any ) => ({
     x: new Date(item.first_reading), // Se convierte la fecha a objeto Date
     y: item.first_value,
     
@@ -76,7 +77,8 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by }) => {
   }
 
   // Opciones para configurar el gráfico, usando una escala de tiempo en el eje X
-  const options = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const options : any = {
     interaction: {
       mode: 'nearest',
       axis: 'x',
@@ -94,8 +96,8 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by }) => {
           },
         },
         ticks: {
-          callback: function (value) {
-            console.log(value);
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          callback: function (value: any) {
             const date = new Date(value)
             return format(date, "PP", { locale: es }) // Formato de fecha
            }
@@ -120,7 +122,7 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by }) => {
         },
         ticks: {
           display: false
-        }
+        },
       },
     },
     plugins: {
@@ -130,13 +132,15 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by }) => {
         bodyColor: "#333", // Color para el contenido del tooltip
         callbacks: {
           // Personalización del título del tooltip (ej. para formatear la fecha)
-          title: function (tooltipItems) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          title: function (tooltipItems: any) {
             // tooltipItems es un array de elementos (en este caso de un único punto)
             const date = new Date(tooltipItems[0].parsed.x);
             return format(date, "PP p", { locale: es });
           },
           // Personalización de la etiqueta del tooltip
-          label: function (context) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          label: function (context: any) {
             let label = context.dataset.label || "";
             if (label) {
               label += ": ";
@@ -148,19 +152,35 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by }) => {
         },
       },
       zoom: {
-        pan: {
-          enabled: true,
-          mode: "x", // Permite desplazar (pan) solo en el eje X. También puedes usar "y" o "xy".
-        },
+        // wheel: {
+        //   enabled: true,
+        //   mode: "xy"
+        // },
+        // pan: {
+        //   enabled: true,
+        //   mode: "xy", // Permite desplazar (pan) solo en el eje X. También puedes usar "y" o "xy".
+        // },
         zoom: {
           wheel: {
-            enabled: true, // Activa el zoom con la rueda del mouse
+            enabled: true,
+            mode: "x",
+            speed: 0.1,
+            threshold: 2,
+          },
+           pan: {
+            enabled: true,
+            mode: "xy", // Permite desplazar (pan) solo en el eje X. También puedes usar "y" o "xy".
           },
           pinch: {
-            enabled: true, // Activa el zoom en dispositivos táctiles
+            enabled: true,
           },
-          mode: "x", // Permite hacer zoom en el eje X.
+          mode: "x",
         },
+        limits: {
+          y: { min: 'original', max: 'original' },
+          x: { min: 'original', max: 'original' }
+        }
+
       },
       decimation: { 
         enabled: true,
@@ -176,7 +196,7 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by }) => {
 
   return (
     <div className="flex-1 w-full h-lvh p-4 bg-white flex flex-col justify-center items-center relative">
-      <ToggleGroup type="single"  defaultValue={last_by || 'none'} onValueChange={handleFrequency}   aria-label="Frequency" className="flex gap-2 top-0 mt-4 relative">
+      <ToggleGroup type="single"  defaultValue={last_by || 'none'} onValueChange={handleFrequency}   aria-label="Frequency" className="flex gap-2 top-0 mt-4 absolute">
         {
           category !== 'energy' ? 
           (
@@ -215,6 +235,9 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by }) => {
       <h2 className="mb-4 font-semibold text-xl">Gráfica de {ELECTRIC_PARAMETERS[indicator as keyof typeof ELECTRIC_PARAMETERS].parameter}</h2>
       {
         !last_by && <Line data={data} options={options} />
+      }
+      {
+        last_by && <DeviceReadingsChart data={readingsGraph} last_by={last_by}/>
       }
     </div>
   );
