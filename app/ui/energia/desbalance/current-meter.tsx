@@ -42,7 +42,6 @@ export function CurrentMeter({
   status,
   size,
   label,
-  minValue,
   currentValue,
   unit = "A",
   warningThreshold = 300,
@@ -80,8 +79,8 @@ export function CurrentMeter({
           <p className="font-medium">{label}</p>
         </div>
         <p className="text-sm opacity-80">
-          Min {minValue.toFixed(1)}
-          {unit}
+          {/* Min {minValue.toFixed(1)} */}
+          {/* {unit} */}
         </p>
       </div>
 
