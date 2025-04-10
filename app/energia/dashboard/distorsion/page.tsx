@@ -29,7 +29,7 @@ export default async function page({ searchParams } : SearchParams) {
     <div className='w-full'>
       <FiltersContainer>
         <HeadquarterEnergyFilter energyHeadquarter={energyDetails.energy_headquarters} />
-        <PanelsFilterEnergy energyPanels={  energyDetails.energy_headquarters[0].electrical_panels} />
+        {/* <PanelsFilterEnergy energyPanels={  energyDetails.energy_headquarters[0].electrical_panels} /> */}
          <DatepickerRange />
       </FiltersContainer>
       <div className="mx-6">
