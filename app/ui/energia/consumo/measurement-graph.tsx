@@ -153,10 +153,8 @@ export default function MeasurementGraph({
 
   return (
     <>
-      {count > 0 ? (
+      {1 > 0 ? (
         <div className={`flex-1 flex flex-col justify-center gap-6 bg-white ${className}`}>
-          <FrequencyEnergyFilter category={category as string} frequencyP={frequency as string}/>
-          <h2 className="text-xl font-bold mb-2 text-center">{chartTitle}</h2>
           <ChartContainer
             config={{
               difference: {
@@ -178,7 +176,7 @@ export default function MeasurementGraph({
             }}
             className="min-h-[350px]"
           >
-            {frequency === "hour" || frequency === "day" ? (
+            {frequency === "hour" ? (
               // Gráfico lineal para hora o día
               <LineChart data={chartData} margin={{ left: 50, right: 50 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />

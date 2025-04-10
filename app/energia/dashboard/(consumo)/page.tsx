@@ -37,7 +37,6 @@ export default async function Page({ searchParams }: SearchParams) {
     unit,
   })
 
-
   const energyDetails = await getEnergyCompanyDetails({ headquarterId: companies[0].id })
 
   return (
@@ -49,8 +48,7 @@ export default async function Page({ searchParams }: SearchParams) {
       </FiltersContainer>
       <div className="flex">
         <MeasurementTable readings={readings} category={category} indicator={indicator}/>
-        {/* <MeasurementGraph data={readingsGraph} unit={unit} count={readings.count} frequency={last_by} category={category}/> */}
-        <Graph readingsGraph={readingsGraph} category={category} indicator={indicator}/>
+        <Graph readingsGraph={readingsGraph} category={category} indicator={indicator} last_by={last_by}/>
       </div>
     </div>
   )
