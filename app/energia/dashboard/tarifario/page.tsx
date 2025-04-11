@@ -1,6 +1,6 @@
 import { getCompanyData } from "@/app/lib/auth"
 import { getEnergyCompanyDetails } from "@/app/sevices/energy/enterprise/data"
-import { consumptionCalculator, consumptionGraph, consumptionInvoice, consumptionTable } from "@/app/sevices/energy/tarifario/data"
+import { consumptionCalculator, consumptionGraph, consumptionInvoice, consumptionTable, consumptionTariff } from "@/app/sevices/energy/tarifario/data"
 import { SearchParams } from "@/app/type"
 import HeadquarterEnergyFilter from "@/app/ui/energia/filters/headquarter-energy-filter"
 import PanelsFilterEnergy from "@/app/ui/energia/filters/panels-energy-filter"
@@ -43,6 +43,9 @@ export default async function Page({ searchParams }: SearchParams) {
     const cosumptionCalculatorReadings = await consumptionCalculator({ panelId: panel, headquarterId: headquarter, date_after: format(date_after, 'yyyy-MM-dd'), date_before: format(date_before, 'yyyy-MM-dd') })
     const consumptionInvoiceReadings = await consumptionInvoice({ panelId: panel, headquarterId: headquarter})
 
+    const consumptionTariffReadings = await consumptionTariff({ panelId: panel, headquarterId: headquarter})
+
+    console.log(consumptionTariffReadings)
 
   return (
     <div className="w-full">

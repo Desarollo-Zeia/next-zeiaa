@@ -48,3 +48,13 @@ export async function consumptionGraph({ headquarterId, panelId, group_by, date_
   return res 
 }
 
+export async function consumptionTariff({ headquarterId, panelId } : { panelId?: string, headquarterId?: string}) {
+
+  
+  const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/rate-consumption/detail-tariff`, baseUrlEnergy)
+
+  const res = await fetchWithAuthEnergy(`${url.pathname}`)
+
+  return res 
+}
+

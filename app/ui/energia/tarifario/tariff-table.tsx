@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   Table,
@@ -10,124 +9,195 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Zap, ChevronDown, ChevronRight } from 'lucide-react'
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+
+// Simulación de la data proveniente del JSON
+const tariffData = {
+  billing_data: {
+    tariff_rating: true,
+    billing_data_type: "BT3",
+    billing_cycle_start: "2025-02-25",
+    billing_cycle_end: "2025-03-25",
+    cargo_fijo_mensual: 4.36,
+    cargo_por_energia_activa_en_punta: 35.05,
+    cargo_por_energia_activa_fuera_de_punta: 29.93,
+    cargo_por_potencia_activa_de_generacion_para_usuarios: { presentes_en_punta: 65.69, presentes_fuera_de_punta: 39.13 },
+    cargo_por_potencia_activa_de_redes_de_distribucion_para_usuarios: { presentes_en_punta: 66.29, presentes_fuera_de_punta: 57.71 },
+    "cargo_por_energia_reactiva_que_exceda_el_30%_del_total_de_energia_activa": 5.36,
+  },
+  consumption: {
+    energy_peak: 25.58,
+    energy_off_peak: 117.68,
+    power_generation: 40000,
+    power_distribution: 35.7,
+    energy_reactive: 26.62,
+  },
+  importe: {
+    cargo_fijo: 4.36,
+    cargo_por_energia_activa_en_punta: 8.97,
+    cargo_por_energia_activa_fuera_de_punta: 35.22,
+    cargo_por_potencia_activa_generacion: 2627600,
+    cargo_por_potencia_activa_distribucion: 2366.55,
+    cargo_por_energia_reactiva: null,
+    total: 2630015.1,
+  },
+}
 
 export default function TariffTable() {
-  const [openGeneration, setOpenGeneration] = useState(true)
-  const [openDistribution, setOpenDistribution] = useState(true)
+  const { billing_data, consumption, importe } = tariffData
+  const tariffRating = billing_data.tariff_rating
+
+  // Se armó un arreglo de filas, donde cada objeto representa un concepto
+  // y cada columna contiene el valor correspondiente de cada sección.
+  // Para billing_data, en los conceptos que contienen objeto se evalúa tariffRating.
+  const tableRows = [
+    {
+      concepto: "Tipo de Tarifa",
+      billing: billing_data.billing_data_type,
+      consumption: "",
+      importe: "",
+    },
+    {
+      concepto: "Ciclo de Facturación",
+      billing: `${billing_data.billing_cycle_start} a ${billing_data.billing_cycle_end}`,
+      consumption: "",
+      importe: "",
+    },
+    {
+      concepto: "Cargo Fijo Mensual",
+      billing: billing_data.cargo_fijo_mensual,
+      consumption: "",
+      importe: "",
+    },
+    {
+      concepto: "Cargo por Energía Activa",
+      billing: tariffRating
+        ? billing_data.cargo_por_energia_activa_en_punta
+        : billing_data.cargo_por_energia_activa_fuera_de_punta,
+      consumption: "",
+      importe: "",
+    },
+    {
+      concepto: "Cargo por Potencia Activa de Generación para Usuarios",
+      billing: tariffRating
+        ? billing_data.cargo_por_potencia_activa_de_generacion_para_usuarios.presentes_en_punta
+        : billing_data.cargo_por_potencia_activa_de_generacion_para_usuarios.presentes_fuera_de_punta,
+      consumption: "",
+      importe: "",
+    },
+    {
+      concepto: "Cargo por Potencia Activa de Redes de Distribución para Usuarios",
+      billing: tariffRating
+        ? billing_data.cargo_por_potencia_activa_de_redes_de_distribucion_para_usuarios.presentes_en_punta
+        : billing_data.cargo_por_potencia_activa_de_redes_de_distribucion_para_usuarios.presentes_fuera_de_punta,
+      consumption: "",
+      importe: "",
+    },
+    {
+      concepto: "Cargo por Energía Reactiva que exceda el 30%",
+      billing: billing_data["cargo_por_energia_reactiva_que_exceda_el_30%_del_total_de_energia_activa"],
+      consumption: "",
+      importe: "",
+    },
+    {
+      concepto: "Energy Peak",
+      billing: "",
+      consumption: consumption.energy_peak,
+      importe: "",
+    },
+    {
+      concepto: "Energy Off Peak",
+      billing: "",
+      consumption: consumption.energy_off_peak,
+      importe: "",
+    },
+    {
+      concepto: "Power Generation",
+      billing: "",
+      consumption: consumption.power_generation,
+      importe: "",
+    },
+    {
+      concepto: "Power Distribution",
+      billing: "",
+      consumption: consumption.power_distribution,
+      importe: "",
+    },
+    {
+      concepto: "Energy Reactive",
+      billing: "",
+      consumption: consumption.energy_reactive,
+      importe: "",
+    },
+    {
+      concepto: "Cargo Fijo",
+      billing: "",
+      consumption: "",
+      importe: importe.cargo_fijo,
+    },
+    {
+      concepto: "Cargo por Energía Activa en Punta",
+      billing: "",
+      consumption: "",
+      importe: importe.cargo_por_energia_activa_en_punta,
+    },
+    {
+      concepto: "Cargo por Energía Activa fuera de Punta",
+      billing: "",
+      consumption: "",
+      importe: importe.cargo_por_energia_activa_fuera_de_punta,
+    },
+    {
+      concepto: "Cargo por Potencia Activa Generación",
+      billing: "",
+      consumption: "",
+      importe: importe.cargo_por_potencia_activa_generacion,
+    },
+    {
+      concepto: "Cargo por Potencia Activa Distribución",
+      billing: "",
+      consumption: "",
+      importe: importe.cargo_por_potencia_activa_distribucion,
+    },
+    {
+      concepto: "Cargo por Energía Reactiva",
+      billing: "",
+      consumption: "",
+      importe: importe.cargo_por_energia_reactiva,
+    },
+    {
+      concepto: "Total",
+      billing: "",
+      consumption: "",
+      importe: importe.total,
+    },
+  ]
 
   return (
     <Card className="w-full mx-auto overflow-hidden border-none shadow-lg">
       <CardHeader className="bg-[#01b7ca] py-6">
-        <div className="flex items-center gap-3">
-          <Zap className="h-6 w-6 text-white" />
-          <CardTitle className="text-white text-xl font-bold tracking-tight">BAJA TENSIÓN : TARIFA BT4</CardTitle>
-        </div>
+        <CardTitle className="text-white text-xl font-bold tracking-tight">
+          BAJA TENSIÓN : TARIFA BT4
+        </CardTitle>
       </CardHeader>
-      <CardContent className="p-0 bg-[#f4f9ff]">
+      <CardContent className="p-4 bg-[#f4f9ff]">
         <Table className="w-full">
           <TableHeader>
-            <TableRow className="bg-[#01b7ca] w-full">
-              <TableHead className="text-white font-medium w-[50%] py-4">TARIFA CON SIMPLE MEDICIÓN DE ENERGÍA ACTIVA Y CONTRATACIÓN O MEDICIÓN DE UNA POTENCIA 1E1P</TableHead>
-              <TableHead className="text-white font-medium text-center py-4">UNIDAD</TableHead>
-              <TableHead className="text-white font-medium text-center py-4">TARIFA</TableHead>
-              <TableHead className="text-white font-medium text-center py-4">Consumo</TableHead>
+            <TableRow className="bg-[#01b7ca]">
+              <TableHead className="py-4 pl-4 text-white font-medium">Concepto</TableHead>
+              <TableHead className="py-4 text-center text-white font-medium">Billing Data</TableHead>
+              <TableHead className="py-4 text-center text-white font-medium">Consumption</TableHead>
+              <TableHead className="py-4 text-center text-white font-medium">Importe</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow className="bg-white hover:bg-[#f4f9ff] transition-colors w-full">
-              <TableCell className="font-medium">Cargo Fijo Mensual</TableCell>
-              <TableCell className="text-center">$/mes</TableCell>
-              <TableCell className="text-center font-medium">4.37</TableCell>
-              <TableCell className="text-center font-medium text-[#01b7ca]">24.20</TableCell>
-            </TableRow>
-            <TableRow className="bg-white hover:bg-[#f4f9ff] transition-colors w-full">
-              <TableCell className="font-medium">Cargo por Energía Activa en Punta</TableCell>
-              <TableCell className="text-center">ctm. $/kW.h</TableCell>
-              <TableCell className="text-center font-medium">36.35</TableCell>
-              <TableCell className="text-center font-medium text-[#01b7ca]">66.95</TableCell>
-            </TableRow>
-            
-            {/* Sección desplegable: Cargo por Potencia Activa de generación */}
-            <tr className="w-full">
-              <td colSpan={4} className="p-0 w-full">
-                <Collapsible open={openGeneration} onOpenChange={setOpenGeneration} className="w-full">
-                  <CollapsibleTrigger className="w-full">
-                    <div 
-                      className="bg-[#d9eeff] cursor-pointer hover:bg-[#c5e4ff] transition-colors py-3 px-4 w-full flex items-center font-semibold text-[#01b7ca]"
-                    >
-                      {openGeneration ? <ChevronDown className="mr-2 h-4 w-4" /> : <ChevronRight className="mr-2 h-4 w-4" />}
-                      Cargo por Potencia Activa de generación para Usuarios:
-                    </div>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent className="w-full">
-                    <Table className="w-full">
-                      <TableBody>
-                        <TableRow className="bg-white hover:bg-[#f4f9ff] transition-colors w-full">
-                          <TableCell className="pl-8 border-l-4 border-[#01b7ca]">Presentes en Punta</TableCell>
-                          <TableCell className="text-center">$/kW-mes</TableCell>
-                          <TableCell className="text-center font-medium">65.81</TableCell>
-                          <TableCell className="text-center font-medium text-[#01b7ca]">164.20</TableCell>
-                        </TableRow>
-                        <TableRow className="bg-white hover:bg-[#f4f9ff] transition-colors w-full">
-                          <TableCell className="pl-8 border-l-4 border-[#01b7ca]">Presentes Fuera de Punta</TableCell>
-                          <TableCell className="text-center">$/kW-mes</TableCell>
-                          <TableCell className="text-center font-medium">39.20</TableCell>
-                          <TableCell className="text-center font-medium text-[#01b7ca]">86.65</TableCell>
-                        </TableRow>
-                      </TableBody>
-                    </Table>
-                  </CollapsibleContent>
-                </Collapsible>
-              </td>
-            </tr>
-            
-            {/* Sección desplegable: Cargo por Potencia Activa de redes de distribución */}
-            <tr className="w-full">
-              <td colSpan={4} className="p-0 w-full">
-                <Collapsible open={openDistribution} onOpenChange={setOpenDistribution} className="w-full">
-                  <CollapsibleTrigger className="w-full">
-                    <div 
-                      className="bg-[#d9eeff] cursor-pointer hover:bg-[#c5e4ff] transition-colors py-3 px-4 w-full flex items-center font-semibold text-[#01b7ca]"
-                    >
-                      {openDistribution ? <ChevronDown className="mr-2 h-4 w-4" /> : <ChevronRight className="mr-2 h-4 w-4" />}
-                      Cargo por Potencia Activa de redes de distribución para Usuarios:
-                    </div>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent className="w-full">
-                    <Table className="w-full">
-                      <TableBody>
-                        <TableRow className="bg-white hover:bg-[#f4f9ff] transition-colors w-full">
-                          <TableCell className="pl-8 border-l-4 border-[#01b7ca]">Presentes en Punta</TableCell>
-                          <TableCell className="text-center">$/kW-mes</TableCell>
-                          <TableCell className="text-center font-medium">66.42</TableCell>
-                          <TableCell className="text-center font-medium text-[#01b7ca]">106.65</TableCell>
-                        </TableRow>
-                        <TableRow className="bg-white hover:bg-[#f4f9ff] transition-colors w-full">
-                          <TableCell className="pl-8 border-l-4 border-[#01b7ca]">Presentes Fuera de Punta</TableCell>
-                          <TableCell className="text-center">$/kW-mes</TableCell>
-                          <TableCell className="text-center font-medium">57.83</TableCell>
-                          <TableCell className="text-center font-medium text-[#01b7ca]">120.20</TableCell>
-                        </TableRow>
-                      </TableBody>
-                    </Table>
-                  </CollapsibleContent>
-                </Collapsible>
-              </td>
-            </tr>
-            
-            <TableRow className="bg-[#ffeeee] hover:bg-[#ffe0e0] transition-colors w-full">
-              <TableCell className="font-medium">Cargo por Energía Reactiva que exceda el 30% del total de la Energía Activa</TableCell>
-              <TableCell className="text-center">ctm. $/kVAr.h</TableCell>
-              <TableCell className="text-center font-medium">5.45</TableCell>
-              <TableCell className="text-center font-medium text-[#01b7ca]">106.65</TableCell>
-            </TableRow>
-            
-            <TableRow className="bg-[#01b7ca] text-white w-full">
-              <TableCell colSpan={3} className="text-right font-semibold">Costo total</TableCell>
-              <TableCell className="text-center font-bold text-xl">5,678.89</TableCell>
-            </TableRow>
+            {tableRows.map((row, index) => (
+              <TableRow key={index} className="bg-white hover:bg-[#f4f9ff] transition-colors">
+                <TableCell className="py-3 pl-4 font-medium">{row.concepto}</TableCell>
+                <TableCell className="py-3 text-center">{row.billing}</TableCell>
+                <TableCell className="py-3 text-center">{row.consumption}</TableCell>
+                <TableCell className="py-3 text-center">{row.importe}</TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </CardContent>
