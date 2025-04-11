@@ -4,6 +4,7 @@ import { getEnergyCompanyDetails } from '@/app/sevices/energy/enterprise/data'
 import { SearchParams } from '@/app/type'
 import CurrentChart from '@/app/ui/energia/distorsion/current-chart'
 import CurrentVoltageToggle from '@/app/ui/energia/distorsion/current-voltage-toggle'
+import IndicatorsModal from '@/app/ui/energia/distorsion/indicators-modal'
 import VoltageChart from '@/app/ui/energia/distorsion/voltage-current'
 import HeadquarterEnergyFilter from '@/app/ui/energia/filters/headquarter-energy-filter'
 // import PanelsFilterEnergy from '@/app/ui/energia/filters/panels-energy-filter'
@@ -68,9 +69,7 @@ export default async function page({ searchParams } : SearchParams) {
               </div>
               <p>5%</p>
             </div>
-            <div className='w-full flex justify-center p-2 items-center bg-slate-400 text-sm'>
-              <p className='text-white'>¿Qué se mide?</p>
-            </div>
+            <IndicatorsModal />
           </div>
           {/* <div className='bg-purple-300 h-4 w-10'>
             
