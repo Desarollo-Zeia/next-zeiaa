@@ -45,8 +45,6 @@ export default async function Page({ searchParams }: SearchParams) {
 
     const consumptionTariffReadings = await consumptionTariff({ panelId: panel, headquarterId: headquarter})
 
-    console.log(consumptionTariffReadings)
-
   return (
     <div className="w-full">
       <FiltersContainer>
@@ -123,7 +121,7 @@ export default async function Page({ searchParams }: SearchParams) {
             }
             {
               selected === 'Tarifario' && (
-                <TariffTable/>
+                <TariffTable tariffData={consumptionTariffReadings}/>
               )
             }
             
