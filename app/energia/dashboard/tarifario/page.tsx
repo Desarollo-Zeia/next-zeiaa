@@ -52,7 +52,7 @@ export default async function Page({ searchParams }: SearchParams) {
           <PanelsFilterEnergy energyPanels={  energyDetails.energy_headquarters?.[0].electrical_panels} />
           <DatepickerRange />
       </FiltersContainer>
-      <div className="w-full flex flex-col gap-24">
+      <div className="w-full flex flex-col gap-24 px-6">
         <div className="w-full flex gap-2">
           <Card className="p-4 flex flex-col gap-2 shadow-md">
             <h3 className="font-semibold">Calculadora de consumos</h3>

@@ -83,10 +83,10 @@ export default function TariffTable( { tariffData }: { tariffData: TariffData } 
                  S//mes
               </TableCell>
               <TableCell className="text-center">
-                 {billing_data.cargo_fijo_mensual}
+                S/ {billing_data.cargo_fijo_mensual}
               </TableCell>
               <TableCell className="text-center">
-                 {importe.cargo_fijo}
+                S/ {importe.cargo_fijo}
               </TableCell>
             </TableRow>
             <TableRow>
@@ -97,10 +97,10 @@ export default function TariffTable( { tariffData }: { tariffData: TariffData } 
                  ctm. S//kWh
               </TableCell>
               <TableCell className="text-center">
-                 {billing_data.cargo_por_energia_activa_en_punta}
+                S/ {billing_data.cargo_por_energia_activa_en_punta}
               </TableCell>
               <TableCell className="text-center">
-                 {importe.cargo_por_energia_activa_en_punta}
+                S/ {importe.cargo_por_energia_activa_en_punta}
               </TableCell>
             </TableRow>
             <TableRow>
@@ -111,10 +111,10 @@ export default function TariffTable( { tariffData }: { tariffData: TariffData } 
                  ctm. S//kWh
               </TableCell>
               <TableCell className="text-center">
-                 {billing_data.cargo_por_energia_activa_fuera_de_punta}
+                S/ {billing_data.cargo_por_energia_activa_fuera_de_punta}
               </TableCell>
               <TableCell className="text-center">
-                 {importe.cargo_por_energia_activa_fuera_de_punta}
+                S/ {importe.cargo_por_energia_activa_fuera_de_punta}
               </TableCell>
             </TableRow>
             <TableRow>
@@ -125,10 +125,10 @@ export default function TariffTable( { tariffData }: { tariffData: TariffData } 
                  ctm. S//kWh
               </TableCell>
               <TableCell className="text-center">
-                {billing_data.tariff_rating ? billing_data.cargo_por_potencia_activa_de_generacion_para_usuarios.presentes_en_punta : billing_data.cargo_por_potencia_activa_de_generacion_para_usuarios.presentes_fuera_de_punta}
+                S/{billing_data.tariff_rating ? billing_data.cargo_por_potencia_activa_de_generacion_para_usuarios.presentes_en_punta : billing_data.cargo_por_potencia_activa_de_generacion_para_usuarios.presentes_fuera_de_punta}
               </TableCell>
               <TableCell className="text-center">
-                  {importe.cargo_por_potencia_activa_generacion}
+                S/  {importe.cargo_por_potencia_activa_generacion}
               </TableCell>
             </TableRow>
             <TableRow>
@@ -139,10 +139,10 @@ export default function TariffTable( { tariffData }: { tariffData: TariffData } 
                  ctm. S//kWh
               </TableCell>
               <TableCell className="text-center">
-                {billing_data.tariff_rating ? billing_data.cargo_por_potencia_activa_de_redes_de_distribucion_para_usuarios.presentes_en_punta : billing_data.cargo_por_potencia_activa_de_redes_de_distribucion_para_usuarios.presentes_fuera_de_punta}
+                S/ {billing_data.tariff_rating ? billing_data.cargo_por_potencia_activa_de_redes_de_distribucion_para_usuarios.presentes_en_punta : billing_data.cargo_por_potencia_activa_de_redes_de_distribucion_para_usuarios.presentes_fuera_de_punta}
               </TableCell>
               <TableCell className="text-center">
-                  {importe.cargo_por_potencia_activa_distribucion}
+                S/  {importe.cargo_por_potencia_activa_distribucion}
               </TableCell>
             </TableRow>
             <TableRow>
@@ -153,10 +153,10 @@ export default function TariffTable( { tariffData }: { tariffData: TariffData } 
                 ctm S//kVar.h
               </TableCell>
               <TableCell className="text-center">
-                {billing_data["cargo_por_energia_reactiva_que_exceda_el_30%_del_total_de_energia_activa"]}
+                S/ {billing_data["cargo_por_energia_reactiva_que_exceda_el_30%_del_total_de_energia_activa"]}
               </TableCell>
               <TableCell className="text-center">
-                  {importe.cargo_por_energia_reactiva}
+                {importe.cargo_por_energia_reactiva}
               </TableCell>
             </TableRow>
             <TableRow className="bg-[#01b7ca] hover:bg-[#01b7ca]">
@@ -165,10 +165,10 @@ export default function TariffTable( { tariffData }: { tariffData: TariffData } 
               <TableCell className="text-center">
               </TableCell>
               <TableCell className="text-center text-white">
-                  Costo total
+                Costo total
               </TableCell>
               <TableCell className="text-center text-white font-bold">
-                  {importe.total}
+                S/  {importe.total}
               </TableCell>
             </TableRow>
           </TableBody>
