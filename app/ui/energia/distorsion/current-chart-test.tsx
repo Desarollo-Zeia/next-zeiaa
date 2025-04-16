@@ -18,6 +18,16 @@ import "chartjs-adapter-date-fns"; // Adaptador para manejo de fechas
 import { es } from 'date-fns/locale';
 import { format } from "date-fns";
 
+export type CurrentReading = {
+    date: string; // Ejemplo: '2025-04-16'
+    time: string; // Ejemplo: '00:01'
+    current: {
+        THDIa: number;
+        THDIb: number;
+        THDIc: number;
+    };
+  };
+
 // Registrar los componentes de Chart.js
 ChartJS.register(
   CategoryScale,
@@ -31,10 +41,10 @@ ChartJS.register(
   Legend
 );
 
-const CurrentChartTest = ({ currentReadings }) => {
+const CurrentChartTest = ({ currentReadings } : { currentReadings : CurrentReading[]}) => {
   // Preparar etiquetas y datos
   const labels = currentReadings.map(
-    (item) => `${item.date} ${item.time}`
+    (item: CurrentReading) => `${item.date} ${item.time}`
   );
   const thdiaData = currentReadings.map((item) => item.current.THDIa);
   const thdibData = currentReadings.map((item) => item.current.THDIb);
@@ -76,7 +86,7 @@ const CurrentChartTest = ({ currentReadings }) => {
     ],
   }
 
-  const options = {
+  const options: any = {
     interaction: {
         mode: 'nearest',
         axis: 'x',
@@ -158,6 +168,7 @@ const CurrentChartTest = ({ currentReadings }) => {
     },
   }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
   return <Line data={data} options={options} />;
 };
 

@@ -17,6 +17,17 @@ import "chartjs-adapter-date-fns";
 import { es } from 'date-fns/locale';
 import { format } from "date-fns";
 
+export type VoltageReading = {
+    date: string; // Ejemplo: '2025-04-16'
+    time: string; // Ejemplo: '00:01'
+    voltage: {
+      THDUa: number;
+      THDUb: number;
+      THDUc: number;
+    };
+  };
+  
+
 // Registrar los componentes de Chart.js
 ChartJS.register(
   CategoryScale,
@@ -30,7 +41,7 @@ ChartJS.register(
   Legend
 );
 
-const VoltageChartTest = ({ voltageReadings }) => {
+const VoltageChartTest = ({ voltageReadings } : { voltageReadings : VoltageReading[]}) => {
   // Preparar etiquetas y datos
   const labels = voltageReadings.map(
     (item) => `${item.date} ${item.time}`
@@ -75,7 +86,7 @@ const VoltageChartTest = ({ voltageReadings }) => {
     ],
   };
 
-  const options = {
+  const options : any = {
     interaction: {
       mode: 'nearest',
       axis: 'x',
@@ -133,7 +144,7 @@ const VoltageChartTest = ({ voltageReadings }) => {
           },
         },
         ticks: {
-          callback: function (value) {
+          callback: function (value : any) {
             const date = new Date(value);
             return format(date, "PP", { locale: es });
           }
@@ -155,6 +166,7 @@ const VoltageChartTest = ({ voltageReadings }) => {
     },
   };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
   return <Line data={data} options={options} />;
 };
 
