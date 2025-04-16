@@ -64,9 +64,6 @@ export default function PowerUsageChart({ readings, group } : { readings: PowerR
   const pathname = usePathname()
   const { replace } = useRouter()
 
-  console.log(readings, 'readings')
-
-  
   const handleGroupChange = (group: string) => {
     startTransition(() => {
       const newParams = new URLSearchParams(searchParams);
@@ -81,20 +78,18 @@ export default function PowerUsageChart({ readings, group } : { readings: PowerR
         newParams.delete('group_by');
       }
 
-      replace(`${pathname}?${newParams.toString()}`, { scroll: false });
-    });
+      replace(`${pathname}?${newParams.toString()}`, { scroll: false })
+    })
   }
 
   const chartData = readings?.map((item) => ({
     time: item.created_at,
     power: item.values_per_channel[0]?.power?.toFixed(2) || 0,
   }))
- // Revertimos el array para mostrar los datos en orden cronológico
-  // Encontrar el valor máximo para el dominio del eje Y
   return (
     <div className="flex-1 p-6">
       <div className="flex justify-end">
-        <ToggleGroup type="single" className="relative" onValueChange={handleGroupChange} defaultValue="day">
+        <ToggleGroup type="single" className="relative" onValueChange={handleGroupChange} defaultValue={group || 'hour'}>
           {isPending && (
             <div className="absolute inset-0 flex items-center justify-center bg-background/50 rounded-md z-10">
               <span className="animate-spin h-4 w-4 border-2 border-primary border-t-transparent rounded-full"></span>
