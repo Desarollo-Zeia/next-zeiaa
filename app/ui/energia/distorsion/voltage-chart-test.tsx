@@ -86,7 +86,7 @@ const VoltageChartTest = ({ voltageReadings } : { voltageReadings : VoltageReadi
     ],
   };
 
-  const options : any = {
+  const options: any = { // eslint-disable-line @typescript-eslint/no-explicit-any
     interaction: {
       mode: 'nearest',
       axis: 'x',
@@ -166,7 +166,7 @@ const VoltageChartTest = ({ voltageReadings } : { voltageReadings : VoltageReadi
     },
   };
 
-  return <Line data={data} options={options} />;
+  return <Line data={data} options={options} />; 
 };
 
 export default VoltageChartTest;
