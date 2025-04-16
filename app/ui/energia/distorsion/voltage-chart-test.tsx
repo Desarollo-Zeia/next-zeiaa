@@ -85,8 +85,7 @@ const VoltageChartTest = ({ voltageReadings } : { voltageReadings : VoltageReadi
       },
     ],
   };
-  
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const options : any = {
     interaction: {
       mode: 'nearest',
