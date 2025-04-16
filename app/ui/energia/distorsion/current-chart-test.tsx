@@ -145,8 +145,7 @@ const CurrentChartTest = ({ currentReadings } : { currentReadings : CurrentReadi
           },
         },
         ticks: {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            callback: function (value: any) {
+            callback: function (value: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
             const date = new Date(value)
             return format(date, "PP", { locale: es }) // Formato de fecha
             }

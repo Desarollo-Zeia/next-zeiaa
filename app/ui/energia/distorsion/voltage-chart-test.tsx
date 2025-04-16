@@ -144,7 +144,7 @@ const VoltageChartTest = ({ voltageReadings } : { voltageReadings : VoltageReadi
           },
         },
         ticks: {
-          callback: function (value : any) {
+          callback: function (value : any) { // eslint-disable-line @typescript-eslint/no-explicit-any
             const date = new Date(value);
             return format(date, "PP", { locale: es });
           }
