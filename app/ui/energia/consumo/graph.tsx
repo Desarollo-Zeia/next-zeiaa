@@ -153,6 +153,7 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by } : { rea
       },
       zoom: {
         // wheel: {
+
         //   enabled: true,
         //   mode: "xy"
         // },
@@ -160,16 +161,17 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by } : { rea
         //   enabled: true,
         //   mode: "xy", // Permite desplazar (pan) solo en el eje X. También puedes usar "y" o "xy".
         // },
+        pan: {
+          enabled: true,
+          mode: "x", // "x", "y" o "xy"
+        },
         zoom: {
+         
           wheel: {
             enabled: true,
             mode: "x",
             speed: 0.1,
             threshold: 2,
-          },
-           pan: {
-            enabled: true,
-            mode: "xy", // Permite desplazar (pan) solo en el eje X. También puedes usar "y" o "xy".
           },
           pinch: {
             enabled: true,

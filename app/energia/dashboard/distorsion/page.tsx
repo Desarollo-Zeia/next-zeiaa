@@ -2,10 +2,12 @@ import { getCompanyData } from '@/app/lib/auth'
 import { armonicsGraph } from '@/app/sevices/energy/distorsion/data'
 import { getEnergyCompanyDetails } from '@/app/sevices/energy/enterprise/data'
 import { SearchParams } from '@/app/type'
-import CurrentChart from '@/app/ui/energia/distorsion/current-chart'
+// import CurrentChart from '@/app/ui/energia/distorsion/current-chart'
+import CurrentChartTest from '@/app/ui/energia/distorsion/current-chart-test'
 import CurrentVoltageToggle from '@/app/ui/energia/distorsion/current-voltage-toggle'
 import IndicatorsModal from '@/app/ui/energia/distorsion/indicators-modal'
-import VoltageChart from '@/app/ui/energia/distorsion/voltage-current'
+import VoltageChartTest from '@/app/ui/energia/distorsion/voltage-chart-test'
+// import VoltageChart from '@/app/ui/energia/distorsion/voltage-current'
 import HeadquarterEnergyFilter from '@/app/ui/energia/filters/headquarter-energy-filter'
 // import PanelsFilterEnergy from '@/app/ui/energia/filters/panels-energy-filter'
 import { DatepickerRange } from '@/app/ui/filters/datepicker-range'
@@ -20,11 +22,11 @@ export default async function page({ searchParams } : SearchParams) {
 
   const { companies } = await getCompanyData()
   
-    const { headquarter = '1' , panel = '1',  date_after = new Date(), date_before = new Date(), data_type = 'current'} = await searchParams
-  
-    const energyDetails = await getEnergyCompanyDetails({ headquarterId: companies[0].id })
+  const { headquarter = '1' , panel = '1',  date_after = new Date(), date_before = new Date(), data_type = 'current'} = await searchParams
 
-    const armonicsGraphReadings = await armonicsGraph({ headquarterId: headquarter, panelId: panel, date_after: format(date_after, 'yyyy-MM-dd'), date_before: format(date_before, 'yyyy-MM-dd'), data_type })
+  const energyDetails = await getEnergyCompanyDetails({ headquarterId: companies[0].id })
+
+  const armonicsGraphReadings = await armonicsGraph({ headquarterId: headquarter, panelId: panel, date_after: format(date_after, 'yyyy-MM-dd'), date_before: format(date_before, 'yyyy-MM-dd'), data_type })
 
   return (
     <div className='w-full'>
@@ -42,14 +44,14 @@ export default async function page({ searchParams } : SearchParams) {
             </Button>
           </Link>
         </CurrentVoltageToggle>
-        <div>
+        <div className='w-[1300px] mx-auto'>
           {
             data_type === 'current' ? 
             (
-              <CurrentChart currentReadings={armonicsGraphReadings}/>
+              <CurrentChartTest currentReadings={armonicsGraphReadings}/>
             ) : 
             (
-              <VoltageChart voltageReadings={armonicsGraphReadings}/>
+              <VoltageChartTest voltageReadings={armonicsGraphReadings}/>
             )
           }
         </div>
