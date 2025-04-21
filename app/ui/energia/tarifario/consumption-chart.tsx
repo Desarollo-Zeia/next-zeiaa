@@ -3,23 +3,18 @@
 import { Bar, BarChart, CartesianGrid, Tooltip, XAxis } from "recharts"
 import { ChartContainer } from "@/components/ui/chart"
 import type { TooltipProps } from "recharts"
-import NoResultFound from "../../no-result-found";
-import { formattedDate } from "@/app/utils/func";
+import NoResultFound from "../../no-result-found"
+import { format, subDays } from "date-fns"
+import { es } from 'date-fns/locale';
 
 const dateFormatWithHour = (dateStr: string) => {
-  const date = new Date(dateStr);
-  const formattedDate = date.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' }).replace('.', '');
-  const finalOutput = `${formattedDate}`
-
-  return finalOutput
+  return format(new Date(dateStr), "PP", { locale: es })
 }
 
-const dateFormatWithDay = (dateStr: string) => {
-  const date = new Date(dateStr);
-// Opciones para formatear la fecha
-const formattedDate = date.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' }).replace('.', '')
 
-return formattedDate
+
+const dateFormatWithDay = (dateStr: string) => {
+  return format(new Date(dateStr), "PP", { locale: es })
 }
 
 interface DataPoint {
@@ -46,18 +41,18 @@ interface DataPoint {
   
     // Extract data from the first payload item
     const data = payload[0].payload
-  
+    
     return (
       <div className="bg-white dark:bg-gray-800 p-3 border rounded-lg shadow-sm">
         <p className="text-sm font-medium mb-2">
-          {formattedDate(data.date)}
+          {dateFormatWithHour(data.date)}
         </p>
   
         {payload.map((entry, index) => (
           <div key={index} className="flex items-center gap-2 text-xs mb-1">
             <span className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }} />
             <span>{entry.dataKey === "consumption" ? "Consumo" : entry.dataKey}:</span>
-            <span className="font-medium">{entry.value.toFixed(2)} kWh</span>
+            <span className="font-medium">{entry?.value?.toFixed(2)} kWh</span>
           </div>
         ))}
   

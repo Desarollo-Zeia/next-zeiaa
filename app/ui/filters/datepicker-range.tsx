@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { format } from "date-fns"
+import { format, subDays } from "date-fns"
 import { es } from "date-fns/locale"
 import { CalendarIcon } from 'lucide-react'
 import { DateRange } from "react-day-picker"
@@ -34,7 +34,7 @@ export function DatepickerRange({
     to: end ?? new Date(),
   })
 
-  // Llama a updatePathname cuando cambie la fecha
+
   React.useEffect(() => {
 
     startTransition(() => {
@@ -54,11 +54,12 @@ export function DatepickerRange({
         params.delete('date_before')
       }
       params.set('page', '1')
-      setFecha(fecha)
+      setFecha(lastFecha)
       replace(`${pathname}?${params.toString()}`, { scroll: false})
     })
    
   }, [fecha])
+
 
   return (
     <div className={cn("grid gap-2", className)}>
@@ -76,8 +77,8 @@ export function DatepickerRange({
             {fecha?.from ? (
               fecha.to ? (
                 <>
-                  {format(fecha.from, "d MMMM, yyyy", { locale: es })} -{" "}
-                  {format(fecha.to, "d MMMM, yyyy", { locale: es })}
+                  {format(subDays(fecha.from, 1), "d MMMM, yyyy", { locale: es })} -{" "}
+                  {format(subDays(fecha.to, 1), "d MMMM, yyyy", { locale: es })}
                   {isPending && (
                       <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50">
                       <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-black"></div>
@@ -97,7 +98,7 @@ export function DatepickerRange({
           <Calendar
             initialFocus
             mode="range"
-            defaultMonth={fecha?.from}
+            defaultMonth={fecha.from}
             selected={fecha}
             onSelect={setFecha}
             numberOfMonths={2}
