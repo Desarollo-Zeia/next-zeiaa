@@ -29,8 +29,6 @@ export default async function page({ searchParams } : SearchParams) {
 
   const armonicsGraphReadings = await armonicsGraph({ headquarterId: headquarter, panelId: panel, date_after: format(date_after, 'yyyy-MM-dd'), date_before: format(date_before, 'yyyy-MM-dd'), data_type })
 
-  console.log(armonicsGraphReadings?.length)
-
   return (
     <div className='w-full'>
       <FiltersContainer>
