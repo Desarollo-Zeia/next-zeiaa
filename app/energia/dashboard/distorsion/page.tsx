@@ -12,6 +12,7 @@ import HeadquarterEnergyFilter from '@/app/ui/energia/filters/headquarter-energy
 // import PanelsFilterEnergy from '@/app/ui/energia/filters/panels-energy-filter'
 import { DatepickerRange } from '@/app/ui/filters/datepicker-range'
 import FiltersContainer from '@/app/ui/filters/filters-container'
+import NoResultFound from '@/app/ui/no-result-found'
 import { Button } from '@/components/ui/button'
 import { format } from 'date-fns'
 import { Eye } from 'lucide-react'
@@ -27,6 +28,8 @@ export default async function page({ searchParams } : SearchParams) {
   const energyDetails = await getEnergyCompanyDetails({ headquarterId: companies[0].id })
 
   const armonicsGraphReadings = await armonicsGraph({ headquarterId: headquarter, panelId: panel, date_after: format(date_after, 'yyyy-MM-dd'), date_before: format(date_before, 'yyyy-MM-dd'), data_type })
+
+  console.log(armonicsGraphReadings?.length)
 
   return (
     <div className='w-full'>
@@ -46,12 +49,16 @@ export default async function page({ searchParams } : SearchParams) {
         </CurrentVoltageToggle>
         <div className='w-[1300px] mx-auto'>
           {
-            data_type === 'current' ? 
-            (
-              <CurrentChartTest currentReadings={armonicsGraphReadings}/>
-            ) : 
-            (
-              <VoltageChartTest voltageReadings={armonicsGraphReadings}/>
+            armonicsGraphReadings?.length === 0 ? (
+              <NoResultFound/>
+            ) : (
+              data_type === 'current' ? 
+              (
+                <CurrentChartTest currentReadings={armonicsGraphReadings}/>
+              ) : 
+              (
+                <VoltageChartTest voltageReadings={armonicsGraphReadings}/>
+              )
             )
           }
         </div>

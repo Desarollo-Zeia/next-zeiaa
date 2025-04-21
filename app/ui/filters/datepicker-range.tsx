@@ -25,6 +25,7 @@ export function DatepickerRange({
   const params = new URLSearchParams(searchParams)
   const pathname = usePathname()
   const { replace } = useRouter()
+  const [isPending, startTransition] = React.useTransition()
   const start = params.get('date_after')
   const end = params.get('date_before')
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -35,24 +36,27 @@ export function DatepickerRange({
 
   // Llama a updatePathname cuando cambie la fecha
   React.useEffect(() => {
-    const lastFecha = {...fecha}
 
-    if (lastFecha.from) {
-      // const from = format(fecha?.from, "yyyy-MM-dd" )
-      params.set('date_after', lastFecha.from.toString())
-    } else {
-      params.delete('date_after')
-    }
+    startTransition(() => {
+      const lastFecha = {...fecha}
 
-    if (lastFecha.to) {
-      // const to = format(fecha?.to, "yyyy-MM-dd" )
-      params.set('date_before', lastFecha.to.toString())
-    } else {
-      params.delete('date_before')
-    }
-    params.set('page', '1')
-    setFecha(fecha)
-    replace(`${pathname}?${params.toString()}`, { scroll: false})
+      if (lastFecha.from) {
+        // const from = format(fecha?.from, "yyyy-MM-dd" )
+        params.set('date_after', lastFecha.from.toString())
+      } else {
+        params.delete('date_after')
+      }
+  
+      if (lastFecha.to) {
+        // const to = format(fecha?.to, "yyyy-MM-dd" )
+        params.set('date_before', lastFecha.to.toString())
+      } else {
+        params.delete('date_before')
+      }
+      params.set('page', '1')
+      setFecha(fecha)
+      replace(`${pathname}?${params.toString()}`, { scroll: false})
+    })
    
   }, [fecha])
 
@@ -64,7 +68,7 @@ export function DatepickerRange({
             id="fecha"
             variant={"outline"}
             className={cn(
-              "w-[300px] justify-start text-left font-normal",
+              "w-[300px] justify-start text-left font-normal relative",
               !fecha && "text-muted-foreground"
             )}
           >
@@ -74,8 +78,14 @@ export function DatepickerRange({
                 <>
                   {format(fecha.from, "d MMMM, yyyy", { locale: es })} -{" "}
                   {format(fecha.to, "d MMMM, yyyy", { locale: es })}
+                  {isPending && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50">
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-black"></div>
+                      </div>
+                  )}
                 </>
               ) : (
+                
                 format(fecha.from, "d MMMM, yyyy", { locale: es })
               )
             ) : (
