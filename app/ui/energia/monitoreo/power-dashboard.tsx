@@ -112,7 +112,7 @@ export default function PowerUsageChart({ readings, group } : { readings: PowerR
               axisLine={false}
               tickLine={false}
               tick={{ fontSize: 12 }}
-              tickFormatter={(date) => group === 'hour' ?  format(new Date(date), 'HH:mm') : format(new Date(date), 'dd MMM')}
+              tickFormatter={(date) => group === 'day' ?  format(new Date(date), 'dd MMM') : format(new Date(date), 'HH:mm')}
               interval="preserveStartEnd"
             />
           
