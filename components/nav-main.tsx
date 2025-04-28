@@ -42,7 +42,7 @@ export function NavMain({
       <SidebarGroupLabel>Módulos</SidebarGroupLabel>
       <SidebarMenu>
         <SidebarMenuItem>
-            <SidebarMenuButton asChild>
+            <SidebarMenuButton asChild tooltip={'Listado de salas'}>
               <Link href={module.dashboard} prefetch>
                 <LayoutList />
                 <span>Listado de salas</span>
@@ -50,7 +50,7 @@ export function NavMain({
             </SidebarMenuButton>
         </SidebarMenuItem>
         <SidebarMenuItem>
-            <SidebarMenuButton asChild>
+            <SidebarMenuButton asChild tooltip={'Monitoreo de salas'}>
               <Link href={module.monitoreo} prefetch>
                 <Activity />
                 <span>Monitoreo de salas</span>
@@ -96,7 +96,7 @@ export function NavMain({
         {
          module.covid && (
           <SidebarMenuItem>
-              <SidebarMenuButton asChild>
+              <SidebarMenuButton asChild tooltip={'Normativa covid'}>
                 <Link href={module.covid ?? "#"} prefetch>
                   <ShieldAlert   />
                   <span>Normativa covid</span>
@@ -106,7 +106,7 @@ export function NavMain({
          )
         }
         <SidebarMenuItem>
-            <SidebarMenuButton asChild>
+            <SidebarMenuButton asChild tooltip={'Alertas'}>
               <Link href={module.alertas} prefetch>
                 <Megaphone />
                 <span>Alertas</span>

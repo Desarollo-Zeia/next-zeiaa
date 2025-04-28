@@ -47,8 +47,6 @@ export default async function Page({ searchParams }: SearchParams) {
 
   const consumptionTariffReadings = await consumptionTariff({ panelId: panel, headquarterId: headquarter})
 
-  console.log(consumptionGraphReadings)
-
   return (
     <div className="w-full">
       <FiltersContainer>

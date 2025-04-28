@@ -20,7 +20,6 @@ import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 export function DatepickerRange({
   className,
 }: React.HTMLAttributes<HTMLDivElement>) {
-
   const searchParams = useSearchParams()
   const params = new URLSearchParams(searchParams)
   const pathname = usePathname()
@@ -28,38 +27,28 @@ export function DatepickerRange({
   const [isPending, startTransition] = React.useTransition()
   const start = params.get('date_after')
   const end = params.get('date_before')
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [fecha, setFecha] = React.useState<DateRange | undefined | any>({
-    from: start ?? new Date(),
-    to: end ?? new Date(),
+
+  // Parsear fechas correctamente
+  const [fecha, setFecha] = React.useState<DateRange | undefined>({
+    from: start ? new Date(start) : undefined,
+    to: end ? new Date(end) : undefined,
   })
 
-
   React.useEffect(() => {
-
-    startTransition(() => {
-      const lastFecha = {...fecha}
-
-      if (lastFecha.from) {
-        // const from = format(fecha?.from, "yyyy-MM-dd" )
-        params.set('date_after', lastFecha.from.toString())
+      if (fecha?.from) {
+        params.set('date_after', fecha.from.toISOString())
       } else {
         params.delete('date_after')
       }
-  
-      if (lastFecha.to) {
-        // const to = format(fecha?.to, "yyyy-MM-dd" )
-        params.set('date_before', lastFecha.to.toString())
+
+      if (fecha?.to) {
+        params.set('date_before', fecha.to.toISOString())
       } else {
         params.delete('date_before')
       }
-      params.set('page', '1')
-      setFecha(lastFecha)
-      replace(`${pathname}?${params.toString()}`, { scroll: false})
-    })
-   
-  }, [fecha])
 
+      replace(`${pathname}?${params.toString()}`, { scroll: false })
+  }, [fecha])
 
   return (
     <div className={cn("grid gap-2", className)}>
@@ -77,16 +66,15 @@ export function DatepickerRange({
             {fecha?.from ? (
               fecha.to ? (
                 <>
-                  {format(subDays(fecha.from, 1), "d MMMM, yyyy", { locale: es })} -{" "}
-                  {format(subDays(fecha.to, 1), "d MMMM, yyyy", { locale: es })}
-                  {isPending && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50">
+                  {format(fecha.from, "d MMMM, yyyy", { locale: es })} -{" "}
+                  {format(fecha.to, "d MMMM, yyyy", { locale: es })}
+                  {/* {isPending && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50">
                       <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-black"></div>
-                      </div>
-                  )}
+                    </div>
+                  )} */}
                 </>
               ) : (
-                
                 format(fecha.from, "d MMMM, yyyy", { locale: es })
               )
             ) : (
@@ -98,14 +86,12 @@ export function DatepickerRange({
           <Calendar
             initialFocus
             mode="range"
-            defaultMonth={fecha.from}
+            defaultMonth={fecha?.from}
             selected={fecha}
             onSelect={setFecha}
             numberOfMonths={2}
             locale={es}
             classNames={{
-              // day_selected: "bg-[#00b0c7] text-primary-foreground",
-              // day_range_middle: "bg-[#9ed2d9] text-primary-foreground",
               day_range_end: "bg-[#00b0c7] text-primary-foreground",
               day_range_start: "bg-[#00b0c7] text-primary-foreground",
             }}

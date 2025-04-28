@@ -26,6 +26,9 @@ export default async function Page({ searchParams }: SearchParams) {
 
   })
 
+  console.log(readings)
+
+
   const readingsGraph = await consumeGraph({
     date_after: format(date_after, 'yyyy-MM-dd'),
     date_before: format(date_before, 'yyyy-MM-dd'),
