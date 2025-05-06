@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { format } from "date-fns"
+import { format, subDays } from "date-fns"
 import { es } from "date-fns/locale"
 import { CalendarIcon } from 'lucide-react'
 import { DateRange } from "react-day-picker"
@@ -20,40 +20,34 @@ import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 export function DatepickerRange({
   className,
 }: React.HTMLAttributes<HTMLDivElement>) {
-
   const searchParams = useSearchParams()
   const params = new URLSearchParams(searchParams)
   const pathname = usePathname()
   const { replace } = useRouter()
+  const [isPending, startTransition] = React.useTransition()
   const start = params.get('date_after')
   const end = params.get('date_before')
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [fecha, setFecha] = React.useState<DateRange | undefined | any>({
-    from: start ?? new Date(),
-    to: end ?? new Date(),
+
+  // Parsear fechas correctamente
+  const [fecha, setFecha] = React.useState<DateRange | undefined>({
+    from: start ? new Date(start) : undefined,
+    to: end ? new Date(end) : undefined,
   })
 
-  // Llama a updatePathname cuando cambie la fecha
   React.useEffect(() => {
-    const lastFecha = {...fecha}
+      if (fecha?.from) {
+        params.set('date_after', fecha.from.toISOString())
+      } else {
+        params.delete('date_after')
+      }
 
-    if (lastFecha.from) {
-      // const from = format(fecha?.from, "yyyy-MM-dd" )
-      params.set('date_after', lastFecha.from.toString())
-    } else {
-      params.delete('date_after')
-    }
+      if (fecha?.to) {
+        params.set('date_before', fecha.to.toISOString())
+      } else {
+        params.delete('date_before')
+      }
 
-    if (lastFecha.to) {
-      // const to = format(fecha?.to, "yyyy-MM-dd" )
-      params.set('date_before', lastFecha.to.toString())
-    } else {
-      params.delete('date_before')
-    }
-    params.set('page', '1')
-    setFecha(fecha)
-    replace(`${pathname}?${params.toString()}`, { scroll: false})
-   
+      replace(`${pathname}?${params.toString()}`, { scroll: false })
   }, [fecha])
 
   return (
@@ -64,7 +58,7 @@ export function DatepickerRange({
             id="fecha"
             variant={"outline"}
             className={cn(
-              "w-[300px] justify-start text-left font-normal",
+              "w-[300px] justify-start text-left font-normal relative",
               !fecha && "text-muted-foreground"
             )}
           >
@@ -74,6 +68,11 @@ export function DatepickerRange({
                 <>
                   {format(fecha.from, "d MMMM, yyyy", { locale: es })} -{" "}
                   {format(fecha.to, "d MMMM, yyyy", { locale: es })}
+                  {/* {isPending && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50">
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-black"></div>
+                    </div>
+                  )} */}
                 </>
               ) : (
                 format(fecha.from, "d MMMM, yyyy", { locale: es })
@@ -93,8 +92,6 @@ export function DatepickerRange({
             numberOfMonths={2}
             locale={es}
             classNames={{
-              // day_selected: "bg-[#00b0c7] text-primary-foreground",
-              // day_range_middle: "bg-[#9ed2d9] text-primary-foreground",
               day_range_end: "bg-[#00b0c7] text-primary-foreground",
               day_range_start: "bg-[#00b0c7] text-primary-foreground",
             }}

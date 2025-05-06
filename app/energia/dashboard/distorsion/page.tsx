@@ -12,6 +12,7 @@ import HeadquarterEnergyFilter from '@/app/ui/energia/filters/headquarter-energy
 // import PanelsFilterEnergy from '@/app/ui/energia/filters/panels-energy-filter'
 import { DatepickerRange } from '@/app/ui/filters/datepicker-range'
 import FiltersContainer from '@/app/ui/filters/filters-container'
+import NoResultFound from '@/app/ui/no-result-found'
 import { Button } from '@/components/ui/button'
 import { format } from 'date-fns'
 import { Eye } from 'lucide-react'
@@ -46,12 +47,16 @@ export default async function page({ searchParams } : SearchParams) {
         </CurrentVoltageToggle>
         <div className='w-[1300px] mx-auto'>
           {
-            data_type === 'current' ? 
-            (
-              <CurrentChartTest currentReadings={armonicsGraphReadings}/>
-            ) : 
-            (
-              <VoltageChartTest voltageReadings={armonicsGraphReadings}/>
+            armonicsGraphReadings?.length === 0 ? (
+              <NoResultFound/>
+            ) : (
+              data_type === 'current' ? 
+              (
+                <CurrentChartTest currentReadings={armonicsGraphReadings}/>
+              ) : 
+              (
+                <VoltageChartTest voltageReadings={armonicsGraphReadings}/>
+              )
             )
           }
         </div>

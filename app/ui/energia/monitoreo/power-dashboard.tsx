@@ -34,13 +34,33 @@ const formatTime = (dateString: string) => {
   return date.toLocaleTimeString("es-ES", { day: "2-digit", month: "long", hour: "2-digit", minute: "2-digit" })
 }
 
+function hoursToMinutes(horaStr : string) {
+  // Separa las horas y los minutos
+  const [horas, minutos] = horaStr.split(':').map(Number);
+  // Calcula el total de minutos desde la medianoche (00:00)
+  return horas * 60 + minutos;
+}
+
 // Transformar los datos del JSON al formato esperado por el gráfico
 
 // Convertir los datos al formato esperado por el gráfico
 
 const CustomTooltip = ({ active, payload, label }: any) => {  // eslint-disable-line @typescript-eslint/no-explicit-any
   // eslint-disable-line @typescript-eslint/no-explicit-any
-  
+
+  const date = new Date(label)
+  const hour = date.getHours()
+  const minute = date.getMinutes()
+
+  const hourFormatted = hour.toString().padStart(2, "0")
+  const minuteFormatted = minute.toString().padStart(2, "0")
+
+  const current = `${hourFormatted}:${minuteFormatted}`
+
+  const start = hoursToMinutes('18:00')
+  const end = hoursToMinutes('23:00')
+  const compared = hoursToMinutes(current)
+
   if (active && payload && payload.length) {  
 
     return (
@@ -51,6 +71,12 @@ const CustomTooltip = ({ active, payload, label }: any) => {  // eslint-disable-
           <span>Potencia actual:</span>
           <span className="font-medium">{payload[0].value} kW</span>
         </div>
+        {compared > start && compared < end && 
+          <div className="flex items-center gap-2 text-xs">
+            <div className="w-2 h-2 rounded-full bg-red-600"/>
+            <span>Dentro de la hora punta</span>
+          </div>
+        }
       </div>
     )
   }
@@ -112,7 +138,7 @@ export default function PowerUsageChart({ readings, group } : { readings: PowerR
               axisLine={false}
               tickLine={false}
               tick={{ fontSize: 12 }}
-              tickFormatter={(date) => group === 'hour' ?  format(new Date(date), 'HH:mm') : format(new Date(date), 'dd MMM')}
+              tickFormatter={(date) => group === 'day' ?  format(new Date(date), 'dd MMM') : format(new Date(date), 'HH:mm')}
               interval="preserveStartEnd"
             />
           

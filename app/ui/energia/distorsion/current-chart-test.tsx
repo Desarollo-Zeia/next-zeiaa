@@ -86,7 +86,7 @@ const CurrentChartTest = ({ currentReadings } : { currentReadings : CurrentReadi
     ],
   }
 
-  const options: any = { // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const options: any = { // eslint-disable-line @typescript-eslint/no-explicit-any
     interaction: {
         mode: 'nearest',
         axis: 'x',

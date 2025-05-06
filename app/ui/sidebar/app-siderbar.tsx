@@ -74,7 +74,7 @@ export function AppSidebar() {
             <SidebarMenu>
               {energyItems.map((item) => (
                 <SidebarMenuItem key={item.title} >
-                  <SidebarMenuButton asChild data-active={pathname === item.url && 'true'}>
+                  <SidebarMenuButton asChild data-active={pathname === item.url && 'true'} tooltip={item.title}>
                     <Link href={item.url}>
                       <item.icon />
                       <span>{item.title}</span>

@@ -15,6 +15,8 @@ interface DataPoint {
 }
 
 export default function HistoricalCosumption({ type, group_by, consumptionGraphReadings } : { type: string, group_by: string, consumptionGraphReadings: DataPoint[]}) {
+
+  console.log(consumptionGraphReadings)
   return (
     <>
       <div className="flex justify-between items-center">

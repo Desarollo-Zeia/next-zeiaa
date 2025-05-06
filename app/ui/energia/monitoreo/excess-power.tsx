@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Eye } from "lucide-react"
 import Link from "next/link"
 import ContractedPowerSidebar from "./contracted-power-sidebar"
+import { Card, CardContent, CardTitle } from "@/components/ui/card"
 
 interface DeviceInfo {
   id: number
@@ -89,6 +90,15 @@ export default function ExcessPower({ excessPowerData, panel, powers }: { excess
   return (
     <div className="w-full flex">
       <div>
+        <Card className="w-full max-w-xs mx-auto">
+          <CardContent className="flex flex-col items-center justify-center p-6 space-y-3">
+            <CardTitle className="text-xl">Rango de hora punta</CardTitle>
+            <div className="flex items-center gap-4">
+              <p className="text-lg font-medium">18:00 a 23:00</p>
+              <div className="w-4 h-4 rounded-full bg-red-600"/>
+            </div>
+          </CardContent>
+        </Card>
         <ContractedPowerSidebar panel={panel} powers={powers}/>
       </div>
       <div className="p-4 space-y-4 flex-1">

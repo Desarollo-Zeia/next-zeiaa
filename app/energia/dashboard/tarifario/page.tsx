@@ -12,6 +12,8 @@ import { DatepickerRange } from "@/app/ui/filters/datepicker-range"
 import FiltersContainer from "@/app/ui/filters/filters-container"
 import { Card } from "@/components/ui/card"
 import { format } from "date-fns"
+import { es } from 'date-fns/locale';
+
 
 function formatDate(dateString: string) {
   const originalDate = new Date(dateString);
@@ -33,17 +35,17 @@ export default async function Page({ searchParams }: SearchParams) {
 
   const { companies } = await getCompanyData()
   
-    const { headquarter = '1' , panel = '1',  date_after = new Date(), date_before = new Date(), group_by = 'day', type = 'consumption', page = '1', selected = 'Resumen de consumos'} = await searchParams
+  const { headquarter = '1' , panel = '1',  date_after = new Date(), date_before = new Date(), group_by = 'day', type = 'consumption', page = '1', selected = 'Resumen de consumos'} = await searchParams
 
-    const energyDetails = await getEnergyCompanyDetails({ headquarterId: companies[0].id })
+  const energyDetails = await getEnergyCompanyDetails({ headquarterId: companies[0].id })
 
-    const consumptionGraphReadings = await consumptionGraph({ panelId: panel, headquarterId: headquarter, date_after: format(date_after, 'yyyy-MM-dd'), date_before: format(date_before, 'yyyy-MM-dd') , group_by})
-    const consumptionTableReadings = await consumptionTable({ panelId: panel, headquarterId: headquarter, date_after: format(date_after, 'yyyy-MM-dd'), date_before: format(date_before, 'yyyy-MM-dd') , page})
+  const consumptionGraphReadings = await consumptionGraph({ panelId: panel, headquarterId: headquarter, date_after: format(date_after, 'yyyy-MM-dd'), date_before: format(date_before, 'yyyy-MM-dd') , group_by})
+  const consumptionTableReadings = await consumptionTable({ panelId: panel, headquarterId: headquarter, date_after: format(date_after, 'yyyy-MM-dd'), date_before: format(date_before, 'yyyy-MM-dd') , page})
 
-    const cosumptionCalculatorReadings = await consumptionCalculator({ panelId: panel, headquarterId: headquarter, date_after: format(date_after, 'yyyy-MM-dd'), date_before: format(date_before, 'yyyy-MM-dd') })
-    const consumptionInvoiceReadings = await consumptionInvoice({ panelId: panel, headquarterId: headquarter})
+  const cosumptionCalculatorReadings = await consumptionCalculator({ panelId: panel, headquarterId: headquarter, date_after: format(date_after, 'yyyy-MM-dd'), date_before: format(date_before, 'yyyy-MM-dd') })
+  const consumptionInvoiceReadings = await consumptionInvoice({ panelId: panel, headquarterId: headquarter})
 
-    const consumptionTariffReadings = await consumptionTariff({ panelId: panel, headquarterId: headquarter})
+  const consumptionTariffReadings = await consumptionTariff({ panelId: panel, headquarterId: headquarter})
 
   return (
     <div className="w-full">
@@ -59,11 +61,11 @@ export default async function Page({ searchParams }: SearchParams) {
             <div className="flex gap-4">
               <div>
                 <p className='text-sm font-medium'>Consumo total de energía</p>
-                <p className="text-4xl font-semibold">{cosumptionCalculatorReadings.consumption.toFixed(2)} kWH</p>
+                <p className="text-4xl font-semibold">{cosumptionCalculatorReadings.consumption?.toFixed(2)} kWH</p>
               </div>
               <div>
                 <p className='text-sm font-medium'>Consumo total soles</p>
-                <p className="text-4xl font-semibold">S/ {cosumptionCalculatorReadings.cost}</p>
+                <p className="text-4xl font-semibold">S/ {cosumptionCalculatorReadings?.cost}</p>
               </div>
             </div>
           </Card>
@@ -72,37 +74,36 @@ export default async function Page({ searchParams }: SearchParams) {
             <div className="w-full grid grid-cols-5 grid-rows-2 gap-2">
               <div className="col-span-2 shadow-sm  rounded-lg p-2">
                 <h4 className='text-sm font-medium'>Consumo total energía</h4>
-                <p className='text-xs'>{consumptionInvoiceReadings.total_consumption} kWH</p>
+                <p className='text-xs'>{consumptionInvoiceReadings?.total_consumption} kWH</p>
               </div>
               <div className="shadow-sm  rounded-lg p-2">
                 <h4 className='text-sm font-medium'>Consumo total soles</h4>
-                <p className='text-xs'>S/ {consumptionInvoiceReadings.cost}</p>
+                <p className='text-xs'>S/ {consumptionInvoiceReadings?.cost}</p>
               </div>
               <div className="shadow-sm  rounded-lg p-2">
                 <h4 className='text-sm font-medium'>N° de Suministro</h4>
-                <p className='text-xs'>{consumptionInvoiceReadings.supply_number}</p>
+                <p className='text-xs'>{consumptionInvoiceReadings?.supply_number}</p>
               </div>
               <div className="shadow-sm  rounded-lg p-2">
                 <h4 className='text-sm font-medium'>Empresa concesionario</h4>
-                <p className='text-xs'>{consumptionInvoiceReadings.energy_provider}</p>
+                <p className='text-xs'>{consumptionInvoiceReadings?.energy_provider}</p>
               </div>
 
               <div className="shadow-sm  rounded-lg p-2">
                 <h4 className='text-sm font-medium'>Potencia contratado</h4>
-                <p className='text-xs'>{consumptionInvoiceReadings.power_contracted} kWh</p>
+                <p className='text-xs'>{consumptionInvoiceReadings?.power_contracted} kWh</p>
               </div>
               <div className="shadow-sm  rounded-lg p-2">
                 <h4 className='text-sm font-medium'>Tipo</h4>
-                <p className='text-xs'>{consumptionInvoiceReadings.electrical_panel_type}</p>
+                <p className='text-xs'>{consumptionInvoiceReadings?.electrical_panel_type}</p>
               </div>
               <div className="shadow-sm  rounded-lg p-2">
                 <h4 className='text-sm font-medium'>Días facturados</h4>
-                {/* <p className='text-xs'>{consumptionInvoiceReadings.billing_cycle_start} de {consumptionInvoiceReadings.billing_cycle_end} días</p> */}
-                <p className='text-xs'>28 de 28 días</p>
+                <p className='text-xs'>{format(new Date(), 'dd', { locale: es })} de {format(new Date(consumptionInvoiceReadings?.billing_cycle_end), 'dd', { locale: es })}</p>
               </div>
               <div className="col-span-2 shadow-sm rounded-lg p-2">
                 <h4 className='text-sm font-medium'>Ciclo de facturación</h4>
-                <p className='text-xs'>{formatDate(consumptionInvoiceReadings.billing_cycle_start)} - {formatDate(consumptionInvoiceReadings.billing_cycle_end)}</p>
+                <p className='text-xs'>{formatDate(consumptionInvoiceReadings?.billing_cycle_start)} - {formatDate(consumptionInvoiceReadings?.billing_cycle_end)}</p>
               </div>
             </div>
           </Card>
