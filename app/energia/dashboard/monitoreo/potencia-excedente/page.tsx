@@ -4,6 +4,7 @@ import { exceeded } from "@/app/sevices/energy/monitoreo/data";
 import { SearchParams } from "@/app/type";
 import HeadquarterEnergyFilter from "@/app/ui/energia/filters/headquarter-energy-filter";
 import PanelsFilterEnergy from "@/app/ui/energia/filters/panels-energy-filter";
+import DownloadExcelMonitoreo from "@/app/ui/energia/monitoreo/potencia-excedente/download-excel";
 import PowerConsumptionTable from "@/app/ui/energia/monitoreo/potencia-excedente/power-consumption-table";
 import { DatepickerRange } from "@/app/ui/filters/datepicker-range";
 import FiltersContainer from "@/app/ui/filters/filters-container";
@@ -33,6 +34,7 @@ export default async function page({ searchParams } : SearchParams) {
         <HeadquarterEnergyFilter energyHeadquarter={energyDetails.energy_headquarters} />
         <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters[0].electrical_panels} />
         <DatepickerRange />
+        <DownloadExcelMonitoreo headquarterId={headquarter} panelId={panel} />
       </FiltersContainer>
       <PowerConsumptionTable exceeded={exceededPowers}/>
     </div>

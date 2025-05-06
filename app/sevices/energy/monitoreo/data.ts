@@ -37,4 +37,11 @@ export async function exceeded({ headquarterId, panelId, date_after, date_before
   return res 
 }
 
+export async function exceededExcel({ headquarterId, panelId} : { headquarterId?: string, panelId?: string }) {
+  
+    const res = await fetchWithAuthEnergy(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/powers/report-exceeded`)
+  
+    return res
+}
+
 

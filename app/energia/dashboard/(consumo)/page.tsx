@@ -9,6 +9,8 @@ import { SearchParams } from "@/app/type"
 import { format } from "date-fns"
 import { DatepickerRange } from "@/app/ui/filters/datepicker-range"
 import Graph from "@/app/ui/energia/consumo/graph"
+import DownloadExcel from "@/app/ui/energia/consumo/download-excel"
+
 
 
 export default async function Page({ searchParams }: SearchParams) {
@@ -25,9 +27,6 @@ export default async function Page({ searchParams }: SearchParams) {
     category
 
   })
-
-  console.log(readings)
-
 
   const readingsGraph = await consumeGraph({
     date_after: format(date_after, 'yyyy-MM-dd'),
@@ -48,6 +47,7 @@ export default async function Page({ searchParams }: SearchParams) {
         <HeadquarterEnergyFilter energyHeadquarter={energyDetails.energy_headquarters} />
         <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters[0].electrical_panels} />
         <DatepickerRange />
+        <DownloadExcel headquarterId={headquarter} panelId={panel} date_after={format(date_after, 'yyyy-MM-dd')} date_before={format(date_before, 'yyyy-MM-dd')} unit={unit}/>
       </FiltersContainer>
       <div className="flex">
         <MeasurementTable readings={readings} category={category} indicator={indicator}/>

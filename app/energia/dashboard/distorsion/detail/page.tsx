@@ -14,6 +14,7 @@ import { Card } from "@/components/ui/card"
 import { format } from "date-fns"
 import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
+import DownloadExcelDistorsion from "./download-excel-distorsion"
 
 export default async function page({ searchParams } : SearchParams) {
 
@@ -37,6 +38,7 @@ const energyDetails = await getEnergyCompanyDetails({ headquarterId: companies[0
             <HeadquarterEnergyFilter energyHeadquarter={energyDetails.energy_headquarters} />
             <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters[0].electrical_panels} />
             <DateRangePicker/>
+            <DownloadExcelDistorsion headquarterId={headquarter} panelId={panel} date_after={format(date_after, 'yyyy-MM-dd')} date_before={format(date_before, 'yyyy-MM-dd')} data_type={data_type}/>
         </FiltersContainer>
         <Card className="w-full p-6 flex flex-col gap-4">
             <CurrentVoltageToggle type={data_type}/>
