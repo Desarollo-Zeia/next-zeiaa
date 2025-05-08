@@ -16,7 +16,7 @@ import DownloadExcel from "@/app/ui/energia/consumo/download-excel"
 export default async function Page({ searchParams }: SearchParams) {
   const { companies } = await getCompanyData()
 
-  const { headquarter = '1', panel = '1', date_after = new Date(), date_before = new Date(), unit = 'V', indicator = 'P', page = '1', last_by, category = 'power' } = await searchParams
+  const { headquarter = '1', panel = '1', date_after = new Date(), date_before = new Date(), unit = 'V', indicator = 'P', page = '1', last_by = 'hour', category = 'power' } = await searchParams
 
   const readings = await consume({
     date_after: format(date_after, 'yyyy-MM-dd'),

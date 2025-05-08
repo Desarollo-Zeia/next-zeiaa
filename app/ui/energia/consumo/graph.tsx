@@ -92,16 +92,15 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by } : { rea
           unit: "day", // Puedes ajustar la unidad a 'hour', 'day', etc.
           displayFormats: {
             minute: "HH:mm",
-            
           },
         },
-        ticks: {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          callback: function (value: any) {
-            const date = new Date(value)
-            return format(date, "PP", { locale: es }) // Formato de fecha
-           }
-        },
+        // ticks: {
+        //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        //   callback: function (value: any) {
+        //     const date = new Date(value)
+        //     return format(date, "PP", { locale: es }) // Formato de fecha
+        //    }
+        // },
         title: {
           display: false,
           text: "Hora de Lectura",
@@ -236,10 +235,10 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by } : { rea
       </ToggleGroup>
       <h2 className="mb-4 font-semibold text-xl">Gráfica de {ELECTRIC_PARAMETERS[indicator as keyof typeof ELECTRIC_PARAMETERS].parameter}</h2>
       {
-        !last_by && <Line data={data} options={options} />
+        last_by === 'hour' && <Line data={data} options={options} />
       }
       {
-        last_by && <DeviceReadingsChart data={readingsGraph} last_by={last_by}/>
+        last_by !== 'hour' && <DeviceReadingsChart data={readingsGraph} last_by={last_by}/>
       }
     </div>
   );
