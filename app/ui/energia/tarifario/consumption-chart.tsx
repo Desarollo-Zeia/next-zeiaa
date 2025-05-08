@@ -4,7 +4,7 @@ import { Bar, BarChart, CartesianGrid, Tooltip, XAxis } from "recharts"
 import { ChartContainer } from "@/components/ui/chart"
 import type { TooltipProps } from "recharts"
 import NoResultFound from "../../no-result-found"
-import { format, subDays } from "date-fns"
+import { format } from "date-fns"
 import { es } from 'date-fns/locale';
 
 const dateFormatWithHour = (dateStr: string) => {

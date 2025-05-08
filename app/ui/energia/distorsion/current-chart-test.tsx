@@ -130,7 +130,7 @@ const CurrentChartTest = ({ currentReadings } : { currentReadings : CurrentReadi
       },
       tooltip: {
         callbacks: {
-          label: (ctx) => {
+          label: (ctx: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
             const label = ctx.dataset.label || ''
             const val = ctx.parsed.y
             return `${label}: ${val.toFixed(2)}%`

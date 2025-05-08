@@ -11,9 +11,7 @@ export default function DownloadExcel({ headquarterId, panelId, date_after, date
 
   const handleExcelDownload = async () => {
     try {
-      let blob
-      
-      blob = await consumeExcel({ headquarterId, panelId, date_after, date_before, unit });
+      const blob = await consumeExcel({ headquarterId, panelId, date_after, date_before, unit });
       
       saveAs(blob, `Reporte:`);
     } catch (error) {

@@ -10,9 +10,7 @@ export default function DownloadExcelDistorsion({ headquarterId, panelId, data_t
 
   const handleExcelDownload = async () => {
     try {
-      let blob
-      
-      blob = await armonicsExcel({ headquarterId, panelId, data_type, date_after, date_before });
+      const blob = await armonicsExcel({ headquarterId, panelId, data_type, date_after, date_before });
       
       saveAs(blob, `Reporte:`);
     } catch (error) {

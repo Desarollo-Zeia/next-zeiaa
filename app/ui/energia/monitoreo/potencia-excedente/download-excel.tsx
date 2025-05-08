@@ -11,9 +11,9 @@ export default function DownloadExcelMonitoreo({ headquarterId, panelId} : { hea
 
   const handleExcelDownload = async () => {
     try {
-      let blob
       
-      blob = await exceededExcel({ headquarterId, panelId });
+      
+      const blob = await exceededExcel({ headquarterId, panelId });
       
       saveAs(blob, `Reporte:`);
     } catch (error) {

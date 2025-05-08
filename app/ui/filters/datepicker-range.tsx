@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { format, subDays } from "date-fns"
+import { format } from "date-fns"
 import { es } from "date-fns/locale"
 import { CalendarIcon } from 'lucide-react'
 import { DateRange } from "react-day-picker"
@@ -24,7 +24,7 @@ export function DatepickerRange({
   const params = new URLSearchParams(searchParams)
   const pathname = usePathname()
   const { replace } = useRouter()
-  const [isPending, startTransition] = React.useTransition()
+  // const [isPending, startTransition] = React.useTransition()
   const start = params.get('date_after')
   const end = params.get('date_before')
 
@@ -36,13 +36,13 @@ export function DatepickerRange({
 
   React.useEffect(() => {
       if (fecha?.from) {
-        params.set('date_after', fecha.from.toISOString())
+        params.set('date_after', fecha.from.toString())
       } else {
         params.delete('date_after')
       }
 
       if (fecha?.to) {
-        params.set('date_before', fecha.to.toISOString())
+        params.set('date_before', fecha.to.toString())
       } else {
         params.delete('date_before')
       }
