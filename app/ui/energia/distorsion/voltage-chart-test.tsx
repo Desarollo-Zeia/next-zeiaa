@@ -127,6 +127,15 @@ const VoltageChartTest = ({ voltageReadings } : { voltageReadings : VoltageReadi
           x: { min: 'original', max: 'original' }
         }
       },
+      tooltip: {
+        callbacks: {
+          label: (ctx) => {
+            const label = ctx.dataset.label || ''
+            const val = ctx.parsed.y
+            return `${label}: ${val.toFixed(2)}%`
+          },
+        }
+      }
     },
     scales: {
       x: {

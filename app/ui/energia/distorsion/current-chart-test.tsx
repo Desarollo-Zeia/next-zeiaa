@@ -128,6 +128,15 @@ const CurrentChartTest = ({ currentReadings } : { currentReadings : CurrentReadi
         }
 
       },
+      tooltip: {
+        callbacks: {
+          label: (ctx) => {
+            const label = ctx.dataset.label || ''
+            const val = ctx.parsed.y
+            return `${label}: ${val.toFixed(2)}%`
+          },
+        }
+      }
     },
     scales: {
       x: {
