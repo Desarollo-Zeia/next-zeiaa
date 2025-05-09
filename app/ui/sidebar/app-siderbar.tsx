@@ -23,6 +23,9 @@ import { NavUser } from "@/components/nav-user"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import Image from "next/image"
+import { useEffect, useState } from "react"
+import { fetchWithAuth } from "@/app/lib/api"
+import { accountData } from "@/app/utils/account"
 
 const energyItems = [
   {
@@ -55,17 +58,30 @@ const energyItems = [
 export function AppSidebar() {
 
   const pathname = usePathname()
+  const [userInfo, setUserInfo] = useState<object>({ email: '', name: '', avatar: '' })
 
-  const userinfo = {
-    name: "",
-    email: "",
-    avatar: "",
-  }
+  useEffect(() => {
+
+    const handleRequest = async () => {
+        try {
+          const res = await accountData()
+          const { results } = res 
+          const user = results[0]
+          const { email, last_name } = user
+          setUserInfo({ email, name: last_name, avatar: '' })
+        } catch (error) {
+          console.log(error)
+        }
+    }
+    handleRequest()
+
+  }, [ ])
+
 
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
-        <NavUser userinfo={userinfo} />
+        <NavUser userinfo={userInfo} />
       </SidebarHeader>
       <SidebarContent className="relative">
         <SidebarGroup>
