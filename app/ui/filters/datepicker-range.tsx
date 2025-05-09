@@ -4,8 +4,6 @@ import * as React from "react"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
 import { CalendarIcon } from 'lucide-react'
-import { DateRange } from "react-day-picker"
-
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
@@ -29,20 +27,20 @@ export function DatepickerRange({
   const end = params.get('date_before')
 
   // Parsear fechas correctamente
-  const [fecha, setFecha] = React.useState<DateRange | undefined>({
+  const [fecha, setFecha] = React.useState<any>({ // eslint-disable-line @typescript-eslint/no-explicit-any
     from: start ? new Date(start) : undefined,
     to: end ? new Date(end) : undefined,
   })
 
   React.useEffect(() => {
       if (fecha?.from) {
-        params.set('date_after', fecha.from.toString())
+        params.set('date_after', fecha.from) 
       } else {
         params.delete('date_after')
       }
 
       if (fecha?.to) {
-        params.set('date_before', fecha.to.toString())
+        params.set('date_before', fecha.to)
       } else {
         params.delete('date_before')
       }

@@ -141,7 +141,6 @@ export default function PowerUsageChart({ readings, group } : { readings: PowerR
               tickFormatter={(date) => group === 'day' ?  format(new Date(date), 'dd MMM') : format(new Date(date), 'HH:mm')}
               interval="preserveStartEnd"
             />
-          
             <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12 }} />
             <Tooltip content={<CustomTooltip />} />
             <Line

@@ -12,7 +12,7 @@ import { DatepickerRange } from "@/app/ui/filters/datepicker-range"
 import FiltersContainer from "@/app/ui/filters/filters-container"
 import { Card } from "@/components/ui/card"
 import { format } from "date-fns"
-import { es } from 'date-fns/locale';
+// import { parseISO, differenceInCalendarDays } from 'date-fns';
 
 
 function formatDate(dateString: string) {
@@ -31,6 +31,31 @@ function formatDate(dateString: string) {
   return `${day} ${month} ${year}`;
 }
 
+// function billingCycleInfo(
+//   startIso,   // ej. "2025-02-25"
+//   endIso,     // ej. "2025-03-25"
+//   today = new Date()
+// ) {
+//   const start = parseISO(startIso);
+//   const end   = parseISO(endIso);
+
+//   // días totales del ciclo (inclusive)
+//   const totalDays =
+//     differenceInCalendarDays(end, start) + 1;
+
+//   // días que han pasado: hoy − inicio + 1
+//   const daysPassed =
+//     differenceInCalendarDays(today, start) + 1;
+
+//   // días que faltan (no baja de 0 ni sube de totalDays)
+//   const daysRemaining = Math.max(
+//     0,
+//     Math.min(totalDays - daysPassed, totalDays)
+//   );
+
+//   return { totalDays, daysPassed, daysRemaining };
+// }
+
 export default async function Page({ searchParams }: SearchParams) {
 
   const { companies } = await getCompanyData()
@@ -46,6 +71,8 @@ export default async function Page({ searchParams }: SearchParams) {
   const consumptionInvoiceReadings = await consumptionInvoice({ panelId: panel, headquarterId: headquarter})
 
   const consumptionTariffReadings = await consumptionTariff({ panelId: panel, headquarterId: headquarter})
+
+  // const { totalDays, daysPassed, daysRemaining } = billingCycleInfo(consumptionInvoiceReadings?.billing_cycle_start, consumptionInvoiceReadings?.billing_cycle_end, new Date())
 
   return (
     <div className="w-full">
@@ -99,7 +126,7 @@ export default async function Page({ searchParams }: SearchParams) {
               </div>
               <div className="shadow-sm  rounded-lg p-2">
                 <h4 className='text-sm font-medium'>Días facturados</h4>
-                <p className='text-xs'>{format(new Date(), 'dd', { locale: es })} de {format(new Date(consumptionInvoiceReadings?.billing_cycle_end), 'dd', { locale: es })}</p>
+                <p className='text-xs'>29 de 29 </p>
               </div>
               <div className="col-span-2 shadow-sm rounded-lg p-2">
                 <h4 className='text-sm font-medium'>Ciclo de facturación</h4>
