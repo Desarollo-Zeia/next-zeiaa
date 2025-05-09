@@ -49,7 +49,7 @@ export default function DeviceReadingsChart({ data, last_by } : { data: any; las
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const chartData = data.map((reading: any) => {
 
-    const weekAndMonthFormat = `${format(new Date(reading.first_reading), "dd MMM", { locale: es })} - ${format(new Date(reading.last_reading), "dd MMM", { locale: es })}`
+    const weekAndMonthFormat = `${format(new Date(reading.first_reading), "dd", { locale: es })} - ${format(new Date(reading.last_reading), "dd MMM", { locale: es })}`
 
     return (
       {
