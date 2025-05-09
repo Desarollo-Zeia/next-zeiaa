@@ -22,13 +22,13 @@ export function DatepickerRange({
   const params = new URLSearchParams(searchParams)
   const pathname = usePathname()
   const { replace } = useRouter()
-  const start = params.get('date_after')
-  const end = params.get('date_before')
+  // const start = params.get('date_after')
+  // const end = params.get('date_before')
 
   // Parsear fechas correctamente
   const [fecha, setFecha] = React.useState<any>({ // eslint-disable-line @typescript-eslint/no-explicit-any
-    from: start ? new Date(start) : new Date(),
-    to: end ? new Date(end) : new Date(),
+    from: new Date(),
+    to: new Date(),
   })
 
   React.useEffect(() => {
