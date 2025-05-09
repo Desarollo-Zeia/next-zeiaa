@@ -27,8 +27,8 @@ export function DatepickerRange({
 
   // Parsear fechas correctamente
   const [fecha, setFecha] = React.useState<any>({ // eslint-disable-line @typescript-eslint/no-explicit-any
-    from: start ? new Date(start) : undefined,
-    to: end ? new Date(end) : undefined,
+    from: start ? new Date(start) : new Date(),
+    to: end ? new Date(end) : new Date(),
   })
 
   React.useEffect(() => {
