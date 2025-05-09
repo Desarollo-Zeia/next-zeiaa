@@ -13,6 +13,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
+import { subDays } from 'date-fns'
 
 
 export function DatepickerRange({
@@ -27,7 +28,7 @@ export function DatepickerRange({
 
   // Parsear fechas correctamente
   const [fecha, setFecha] = React.useState<any>({ // eslint-disable-line @typescript-eslint/no-explicit-any
-    from: new Date(),
+    from: subDays(new Date(), 1),
     to: new Date(),
   })
 
