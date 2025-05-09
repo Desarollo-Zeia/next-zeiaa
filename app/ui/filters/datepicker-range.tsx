@@ -22,7 +22,6 @@ export function DatepickerRange({
   const params = new URLSearchParams(searchParams)
   const pathname = usePathname()
   const { replace } = useRouter()
-  // const [isPending, startTransition] = React.useTransition()
   const start = params.get('date_after')
   const end = params.get('date_before')
 
