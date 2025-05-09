@@ -21,7 +21,7 @@ export default async function page({ searchParams } : SearchParams) {
   const currentPanel = energyDetails.energy_headquarters[0].electrical_panels?.filter((item : any) => item.id ===  Number(panel)) // eslint-disable-line @typescript-eslint/no-explicit-any
   const currentPowers = energyDetails.energy_headquarters[0].powers
 
-  const monitoringGraphReadings = await monitoringGraph({ headquarterId: headquarter, panelId: panel, date_after: format(date_after,"yyyy-MM-dd"), date_before: format(date_before, "yyyy-MM-dd"), group_by })
+  const monitoringGraphReadings = await monitoringGraph({ headquarterId: headquarter, panelId: panel, date_after: format(date_after,"yyyy-MM-dd"), date_before: format(date_before, "yyyy-MM-dd"), group_by: 'hour' })
   const monitoringLastThreeReadings = await monitoringLastThree({ headquarterId: headquarter, panelId: panel })
 
   return (

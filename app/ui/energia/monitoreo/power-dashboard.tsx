@@ -100,9 +100,9 @@ export default function PowerUsageChart({ readings, group } : { readings: PowerR
         newParams.set('group_by', group);
       }
 
-      if (group === 'hour') {
-        newParams.delete('group_by');
-      }
+      // if (group === 'hour') {
+      //   newParams.delete('group_by');
+      // }
 
       replace(`${pathname}?${newParams.toString()}`, { scroll: false })
     })
