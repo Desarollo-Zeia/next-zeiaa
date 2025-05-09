@@ -4,6 +4,7 @@ import * as React from "react"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
 import { CalendarIcon } from 'lucide-react'
+
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
@@ -13,7 +14,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
-import { subDays } from 'date-fns'
 
 
 export function DatepickerRange({
@@ -23,24 +23,25 @@ export function DatepickerRange({
   const params = new URLSearchParams(searchParams)
   const pathname = usePathname()
   const { replace } = useRouter()
-  // const start = params.get('date_after')
-  // const end = params.get('date_before')
+  // const [isPending, startTransition] = React.useTransition()
+  const start = params.get('date_after')
+  const end = params.get('date_before')
 
   // Parsear fechas correctamente
   const [fecha, setFecha] = React.useState<any>({ // eslint-disable-line @typescript-eslint/no-explicit-any
-    from: subDays(new Date(), 1),
-    to: new Date(),
+    from: start ? new Date(start) : undefined,
+    to: end ? new Date(end) : undefined,
   })
 
   React.useEffect(() => {
       if (fecha?.from) {
-        params.set('date_after', fecha.from) 
+        params.set('date_after', fecha.from.toISOString()) 
       } else {
         params.delete('date_after')
       }
 
       if (fecha?.to) {
-        params.set('date_before', fecha.to)
+        params.set('date_before', fecha.to.toISOString())
       } else {
         params.delete('date_before')
       }
