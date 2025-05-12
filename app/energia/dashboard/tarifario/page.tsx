@@ -16,42 +16,6 @@ import { BadgeAlert } from "lucide-react"
 // import { parseISO, differenceInCalendarDays } from 'date-fns';
 
 
-function billingDays() {
-
-  const billing_cycle_start = '2025-03-25' 
-  const billing_cycle_end = '2025-04-25'
-
-  
-
-
-
-}
-
-// function billingCycleInfo(
-//   startIso,   // ej. "2025-02-25"
-//   endIso,     // ej. "2025-03-25"
-//   today = new Date()
-// ) {
-//   const start = parseISO(startIso);
-//   const end   = parseISO(endIso);
-
-//   // días totales del ciclo (inclusive)
-//   const totalDays =
-//     differenceInCalendarDays(end, start) + 1;
-
-//   // días que han pasado: hoy − inicio + 1
-//   const daysPassed =
-//     differenceInCalendarDays(today, start) + 1;
-
-//   // días que faltan (no baja de 0 ni sube de totalDays)
-//   const daysRemaining = Math.max(
-//     0,
-//     Math.min(totalDays - daysPassed, totalDays)
-//   );
-
-//   return { totalDays, daysPassed, daysRemaining };
-// }
-
 export default async function Page({ searchParams }: SearchParams) {
 
   const { companies } = await getCompanyData()

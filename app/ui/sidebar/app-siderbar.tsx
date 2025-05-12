@@ -24,7 +24,6 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import Image from "next/image"
 import { useEffect, useState } from "react"
-import { fetchWithAuth } from "@/app/lib/api"
 import { accountData } from "@/app/utils/account"
 
 const energyItems = [
