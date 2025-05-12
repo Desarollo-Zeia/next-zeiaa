@@ -16,13 +16,39 @@ export default async function page({ searchParams } : SearchParams) {
 
   const { headquarter = '1' , panel = '1',  date_after = new Date(), date_before = new Date(), group_by} = await searchParams
 
-  const energyDetails = await getEnergyCompanyDetails({ headquarterId: companies[0].id })
+  // 1) Formateamos fechas solo una vez
+  const formattedDateAfter = format(date_after, 'yyyy-MM-dd')
+  const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
 
-  const currentPanel = energyDetails.energy_headquarters[0].electrical_panels?.filter((item : any) => item.id ===  Number(panel)) // eslint-disable-line @typescript-eslint/no-explicit-any
-  const currentPowers = energyDetails.energy_headquarters[0].powers
+  // 2) Parale­lizamos las llamadas
+  const [
+    energyDetails,
+    monitoringGraphReadings,
+    monitoringLastThreeReadings
+  ] = await Promise.all([
+    getEnergyCompanyDetails({
+      headquarterId: companies[0].id
+    }),
+    monitoringGraph({
+      headquarterId: headquarter,
+      panelId: panel,
+      date_after: formattedDateAfter,
+      date_before: formattedDateBefore,
+      group_by: 'hour'
+    }),
+    monitoringLastThree({
+      headquarterId: headquarter,
+      panelId: panel
+    })
+  ])
 
-  const monitoringGraphReadings = await monitoringGraph({ headquarterId: headquarter, panelId: panel, date_after: format(date_after,"yyyy-MM-dd"), date_before: format(date_before, "yyyy-MM-dd"), group_by: 'hour' })
-  const monitoringLastThreeReadings = await monitoringLastThree({ headquarterId: headquarter, panelId: panel })
+  // 3) Desestructuramos solo lo que necesitamos
+  const hq = energyDetails.energy_headquarters[0]
+  const currentPanel = hq.electrical_panels?.find(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (item : any ) => item.id === Number(panel)
+  )
+  const currentPowers = hq.powers
 
   return (
     <div className="w-full">

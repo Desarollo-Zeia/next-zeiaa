@@ -70,7 +70,7 @@ const formatDateTime = (dateString: string) => {
   return { date: formattedDate, time: formattedTime }
 }
 
-export default function ExcessPower({ excessPowerData, panel, powers }: { excessPowerData: ExcessPowerData, panel: Panel[]; powers: Powers[] }) {
+export default function ExcessPower({ excessPowerData, panel, powers }: { excessPowerData: ExcessPowerData, panel: Panel; powers: Powers[] }) {
 
   const excessPowerEvents = excessPowerData.results.map((item) => {
     const { date, time } = formatDateTime(item.created_at)

@@ -18,6 +18,7 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { ELECTRIC_PARAMETERS } from "@/app/utils/formatter";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import DeviceReadingsChart from "./measurement-graph";
+import NoResultFound from "../../no-result-found";
 
 // Registro de componentes en ChartJS
 ChartJS.register(LineElement, PointElement, LinearScale, TimeScale, Tooltip, Legend, zoomPlugin)
@@ -42,6 +43,8 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by } : { rea
     y: item.first_value,
     
   }))
+
+  console.log(readingsGraph)
 
   const handleFrequency = (frequency: string) => {
     startTransition(() => {
@@ -197,49 +200,65 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by } : { rea
 
   return (
     <div className="flex-1 w-full h-lvh p-4 bg-white flex flex-col justify-center items-center relative">
-      <ToggleGroup type="single"  defaultValue={last_by || 'none'} onValueChange={handleFrequency}   aria-label="Frequency" className="flex gap-2 top-0 mt-4 absolute">
+      {
+        readingsGraph.length > 0 && (
+          <ToggleGroup type="single"  defaultValue={last_by || 'none'} onValueChange={handleFrequency}   aria-label="Frequency" className="flex gap-2 top-0 mt-4 absolute">
+            {
+              category !== 'energy'? 
+              (
+                <ToggleGroupItem value="hour" className={"w-[120px] h-[40px] bg-[#00b0c7] text-white"} disabled>
+                  Hora
+                </ToggleGroupItem>
+              ) : (
+                <>
+                  {
+                    energyToggleArray.map(times => (
+                      <ToggleGroupItem
+                        key={times.value}
+                        value={times.value}
+                        className={`w-[120px] h-[40px] ${times.value === last_by ? 'bg-[#00b0c7] text-white' : 'bg-gray-100 text-black'}`}
+                      >
+                        {
+                          isPending ? 
+                          (
+                            <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50">
+                              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+                            </div>
+                          ) : (
+                            <>
+                              {times.label}
+                            </>
+                          )
+                        }
+                      </ToggleGroupItem>
+                    ))
+                  }
+                </>
+              )
+            }
+            
+          </ToggleGroup>
+        )
+      }
+    
+      { readingsGraph.length > 0  && <h2 className="mb-4 font-semibold text-xl">Gráfica de {ELECTRIC_PARAMETERS[indicator as keyof typeof ELECTRIC_PARAMETERS].parameter}</h2>}
+      <>
         {
-          category !== 'energy' ? 
-          (
-            <ToggleGroupItem value="hour" className={"w-[120px] h-[40px] bg-[#00b0c7] text-white"} disabled>
-              Hora
-            </ToggleGroupItem>
+          readingsGraph.length <= 0 ? (
+            <NoResultFound/>
           ) : (
             <>
               {
-                energyToggleArray.map(times => (
-                  <ToggleGroupItem
-                    key={times.value}
-                    value={times.value}
-                    className={`w-[120px] h-[40px] ${times.value === last_by ? 'bg-[#00b0c7] text-white' : 'bg-gray-100 text-black'}`}
-                  >
-                    {
-                      isPending ? 
-                      (
-                        <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50">
-                          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
-                        </div>
-                      ) : (
-                        <>
-                          {times.label}
-                        </>
-                      )
-                    }
-                  </ToggleGroupItem>
-                ))
+                last_by === 'hour' ? (
+                  <Line data={data} options={options} />
+                ) : (
+                  <DeviceReadingsChart data={readingsGraph} last_by={last_by}/>
+                )
               }
             </>
           )
         }
-        
-      </ToggleGroup>
-      <h2 className="mb-4 font-semibold text-xl">Gráfica de {ELECTRIC_PARAMETERS[indicator as keyof typeof ELECTRIC_PARAMETERS].parameter}</h2>
-      {
-        last_by === 'hour' && <Line data={data} options={options} />
-      }
-      {
-        last_by !== 'hour' && <DeviceReadingsChart data={readingsGraph} last_by={last_by}/>
-      }
+      </>
     </div>
   );
 };

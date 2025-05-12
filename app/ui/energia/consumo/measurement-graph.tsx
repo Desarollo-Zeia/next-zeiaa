@@ -46,6 +46,7 @@ const CustomTooltip = ({ active, payload }: any) => {
 }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function DeviceReadingsChart({ data, last_by } : { data: any; last_by: string }) {
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const chartData = data.map((reading: any) => {
 
@@ -61,6 +62,7 @@ export default function DeviceReadingsChart({ data, last_by } : { data: any; las
      }
   )
   })
+
 
   return (
     <div className="h-[300px] w-full">
