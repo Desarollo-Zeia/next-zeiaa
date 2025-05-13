@@ -18,28 +18,40 @@ export default async function Page({ searchParams }: SearchParams) {
 
   const { headquarter = '1', panel = '1', date_after = new Date(), date_before = new Date(), unit = 'V', indicator = 'P', page = '1', last_by = 'hour', category = 'power' } = await searchParams
 
-  const readings = await consume({
-    date_after: format(date_after, 'yyyy-MM-dd'),
-    date_before: format(date_before, 'yyyy-MM-dd'),
-    headquarterId: headquarter,
-    panelId: panel,
-    page,
-    category
+const formattedDateAfter  = format(date_after,  'yyyy-MM-dd')
+  const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
 
-  })
+  // 4. Paralle­lizar las llamadas
+  const [readings, readingsGraph, energyDetails] = await Promise.all([
+    consume({
+      date_after:  formattedDateAfter,
+      date_before: formattedDateBefore,
+      headquarterId: headquarter,
+      panelId:       panel,
+      page,
+      category
+    }),
+    consumeGraph({
+      date_after:  formattedDateAfter,
+      date_before: formattedDateBefore,
+      headquarterId: headquarter,
+      panelId:       panel,
+      indicador:     indicator,
+      category,
+      unit,
+      last_by
+    }),
+    getEnergyCompanyDetails({
+      headquarterId: companies[0].id
+    })
+  ])
 
-  const readingsGraph = await consumeGraph({
-    date_after: format(date_after, 'yyyy-MM-dd'),
-    date_before: format(date_before, 'yyyy-MM-dd'),
-    headquarterId: headquarter,
-    panelId: panel,
-    indicador: indicator,
-    category,
-    unit,
-    last_by
-  })
-
-  const energyDetails = await getEnergyCompanyDetails({ headquarterId: companies[0].id })
+  // 5. Extraer sólo lo que necesitas de energyDetails
+  // const hq = energyDetails.energy_headquarters[0]
+  // const currentPanel  = hq.electrical_panels?.find(
+  //   (p: any ) => p.id === Number(panel) // eslint-disable-line @typescript-eslint/no-explicit-any
+  // )
+  // const currentPowers = hq.powers
 
   return (
     <div className="w-full">

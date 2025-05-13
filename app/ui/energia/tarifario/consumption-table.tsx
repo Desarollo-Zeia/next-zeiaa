@@ -23,7 +23,6 @@ interface RateConsumptionResponse {
 
 export default function ConsumptionTable({ consumptionTableReadings } : { consumptionTableReadings: RateConsumptionResponse }) {
 
-  console.log(consumptionTableReadings)
   return (
     <>
       {

@@ -60,28 +60,31 @@ export default async function page({ searchParams } : SearchParams) {
             )
           }
         </div>
-        <div className='flex justify-start'>
-          <div className='bg-white shadow-md p-4 flex flex-col gap-2'>
-            <div className='flex justify-between gap-6 bg-slate-100 p-2 text-sm'>
-              <div className='flex items-center gap-2'>
-                <div className='h-4 w-4 bg-yellow-300 rounded-lg'></div>
-                <p>Límite de distorsión en voltaje THD</p>
+        {
+           armonicsGraphReadings?.length === 0 ? (
+              ''
+           ) : (
+            <div className='flex justify-start'>
+              <div className='bg-white shadow-md p-4 flex flex-col gap-2'>
+                <div className='flex justify-between gap-6 bg-slate-100 p-2 text-sm'>
+                  <div className='flex items-center gap-2'>
+                    <div className='h-4 w-4 bg-yellow-300 rounded-lg'></div>
+                    <p>Límite de distorsión en voltaje THD</p>
+                  </div>
+                  <p>8%</p>
+                </div>
+                <div className='flex justify-between gap-6 bg-slate-100 p-2 text-sm'>
+                  <div className='flex items-center gap-2'>
+                    <div className='h-4 w-4 bg-red-500 rounded-lg'></div>
+                    <p>Límite de distorsión en voltaje armónico</p>
+                  </div>
+                  <p>5%</p>
+                </div>
+                <IndicatorsModal />
               </div>
-              <p>8%</p>
             </div>
-            <div className='flex justify-between gap-6 bg-slate-100 p-2 text-sm'>
-              <div className='flex items-center gap-2'>
-                <div className='h-4 w-4 bg-red-500 rounded-lg'></div>
-                <p>Límite de distorsión en voltaje armónico</p>
-              </div>
-              <p>5%</p>
-            </div>
-            <IndicatorsModal />
-          </div>
-          {/* <div className='bg-purple-300 h-4 w-10'>
-            
-          </div> */}
-        </div>
+           )
+        }
       </div>
     </div>
   )

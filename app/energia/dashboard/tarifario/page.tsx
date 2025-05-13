@@ -12,49 +12,9 @@ import { DatepickerRange } from "@/app/ui/filters/datepicker-range"
 import FiltersContainer from "@/app/ui/filters/filters-container"
 import { Card } from "@/components/ui/card"
 import { format } from "date-fns"
+import { BadgeAlert } from "lucide-react"
 // import { parseISO, differenceInCalendarDays } from 'date-fns';
 
-
-function formatDate(dateString: string) {
-  const originalDate = new Date(dateString);
-
-  // Subtract 7 months
-  originalDate.setMonth(originalDate.getMonth());
-
-  // Subtract 1 year
-  originalDate.setFullYear(originalDate.getFullYear());
-
-  const day = originalDate.getDate().toString().padStart(2, '0');
-  const month = originalDate.toLocaleString('default', { month: 'short' });
-  const year = originalDate.getFullYear();
-
-  return `${day} ${month} ${year}`;
-}
-
-// function billingCycleInfo(
-//   startIso,   // ej. "2025-02-25"
-//   endIso,     // ej. "2025-03-25"
-//   today = new Date()
-// ) {
-//   const start = parseISO(startIso);
-//   const end   = parseISO(endIso);
-
-//   // días totales del ciclo (inclusive)
-//   const totalDays =
-//     differenceInCalendarDays(end, start) + 1;
-
-//   // días que han pasado: hoy − inicio + 1
-//   const daysPassed =
-//     differenceInCalendarDays(today, start) + 1;
-
-//   // días que faltan (no baja de 0 ni sube de totalDays)
-//   const daysRemaining = Math.max(
-//     0,
-//     Math.min(totalDays - daysPassed, totalDays)
-//   );
-
-//   return { totalDays, daysPassed, daysRemaining };
-// }
 
 export default async function Page({ searchParams }: SearchParams) {
 
@@ -62,15 +22,48 @@ export default async function Page({ searchParams }: SearchParams) {
   
   const { headquarter = '1' , panel = '1',  date_after = new Date(), date_before = new Date(), group_by = 'day', type = 'consumption', page = '1', selected = 'Resumen de consumos'} = await searchParams
 
-  const energyDetails = await getEnergyCompanyDetails({ headquarterId: companies[0].id })
+const formattedDateAfter = format(date_after, 'yyyy-MM-dd')
+  const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
 
-  const consumptionGraphReadings = await consumptionGraph({ panelId: panel, headquarterId: headquarter, date_after: format(date_after, 'yyyy-MM-dd'), date_before: format(date_before, 'yyyy-MM-dd') , group_by})
-  const consumptionTableReadings = await consumptionTable({ panelId: panel, headquarterId: headquarter, date_after: format(date_after, 'yyyy-MM-dd'), date_before: format(date_before, 'yyyy-MM-dd') , page})
-
-  const cosumptionCalculatorReadings = await consumptionCalculator({ panelId: panel, headquarterId: headquarter, date_after: format(date_after, 'yyyy-MM-dd'), date_before: format(date_before, 'yyyy-MM-dd') })
-  const consumptionInvoiceReadings = await consumptionInvoice({ panelId: panel, headquarterId: headquarter})
-
-  const consumptionTariffReadings = await consumptionTariff({ panelId: panel, headquarterId: headquarter})
+  // 4. Paralelizar todas las peticiones dependientes
+  const [
+    energyDetails,
+    consumptionGraphReadings,
+    consumptionTableReadings,
+    consumptionCalculatorReadings,
+    consumptionInvoiceReadings,
+    consumptionTariffReadings
+  ] = await Promise.all([
+    getEnergyCompanyDetails({ headquarterId: companies[0].id }),
+    consumptionGraph({
+      panelId: panel,
+      headquarterId: headquarter,
+      date_after: formattedDateAfter,
+      date_before: formattedDateBefore,
+      group_by
+    }),
+    consumptionTable({
+      panelId: panel,
+      headquarterId: headquarter,
+      date_after: formattedDateAfter,
+      date_before: formattedDateBefore,
+      page
+    }),
+    consumptionCalculator({
+      panelId: panel,
+      headquarterId: headquarter,
+      date_after: formattedDateAfter,
+      date_before: formattedDateBefore
+    }),
+    consumptionInvoice({
+      panelId: panel,
+      headquarterId: headquarter
+    }),
+    consumptionTariff({
+      panelId: panel,
+      headquarterId: headquarter
+    })
+  ])
 
   // const { totalDays, daysPassed, daysRemaining } = billingCycleInfo(consumptionInvoiceReadings?.billing_cycle_start, consumptionInvoiceReadings?.billing_cycle_end, new Date())
 
@@ -88,11 +81,15 @@ export default async function Page({ searchParams }: SearchParams) {
             <div className="flex gap-4">
               <div>
                 <p className='text-sm font-medium'>Consumo total de energía</p>
-                <p className="text-4xl font-semibold">{cosumptionCalculatorReadings.consumption?.toFixed(2)} kWH</p>
+                { consumptionCalculatorReadings?.consumption ? <p className="text-4xl font-semibold mt-4">S/ {consumptionCalculatorReadings?.consumption?.toFixed(2)}</p> : <p className="mt-4 font-bold flex flex-col items-center"> Intente otras fechas
+                  <BadgeAlert />
+                  </p>}
               </div>
               <div>
                 <p className='text-sm font-medium'>Consumo total soles</p>
-                <p className="text-4xl font-semibold">S/ {cosumptionCalculatorReadings?.cost}</p>
+                 { consumptionCalculatorReadings?.consumption ? <p className="text-4xl font-semibold mt-4">S/ {consumptionCalculatorReadings?.cost}</p> : <p className="mt-4 font-bold flex flex-col items-center"> Intente otras fechas
+                  <BadgeAlert className="text-center"/>
+                  </p>}
               </div>
             </div>
           </Card>
@@ -101,7 +98,7 @@ export default async function Page({ searchParams }: SearchParams) {
             <div className="w-full grid grid-cols-5 grid-rows-2 gap-2">
               <div className="col-span-2 shadow-sm  rounded-lg p-2">
                 <h4 className='text-sm font-medium'>Consumo total energía</h4>
-                <p className='text-xs'>{consumptionInvoiceReadings?.total_consumption} kWH</p>
+                <p className='text-xs'>{consumptionInvoiceReadings?.total_consumption.toFixed(2)} kWH</p>
               </div>
               <div className="shadow-sm  rounded-lg p-2">
                 <h4 className='text-sm font-medium'>Consumo total soles</h4>
@@ -130,7 +127,7 @@ export default async function Page({ searchParams }: SearchParams) {
               </div>
               <div className="col-span-2 shadow-sm rounded-lg p-2">
                 <h4 className='text-sm font-medium'>Ciclo de facturación</h4>
-                <p className='text-xs'>{formatDate(consumptionInvoiceReadings?.billing_cycle_start)} - {formatDate(consumptionInvoiceReadings?.billing_cycle_end)}</p>
+                <p className='text-xs'>{consumptionInvoiceReadings?.billing_cycle_start} - {consumptionInvoiceReadings?.billing_cycle_end}</p>
               </div>
             </div>
           </Card>

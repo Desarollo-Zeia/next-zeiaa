@@ -7,11 +7,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { HelpCircle } from "lucide-react"
 
 interface Panel {
-  id: number
-  name: string
-  is_active: boolean
-  type: "monofasico" // O bien: string, en caso de admitir otros tipos.
-  threads: any[] | null  // eslint-disable-line @typescript-eslint/no-explicit-any
+  id?: number
+  name?: string
+  is_active?: boolean
+  type: string // O bien: string, en caso de admitir otros tipos.
+  threads?: any[] | null  // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 interface Powers {
@@ -21,10 +21,9 @@ interface Powers {
   power_max: number
 }
 
-export default function ContractedPowerSidebar({ panel, powers }: { panel: Panel[]; powers: Powers[] }) {
+export default function ContractedPowerSidebar({ panel, powers }: { panel: Panel; powers: Powers[] }) {
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  // Usando el primer elemento del array de resultados
   return (
     <div className="p-4">
       <div className="p-4 space-y-5">
@@ -36,7 +35,7 @@ export default function ContractedPowerSidebar({ panel, powers }: { panel: Panel
 
           <div className="flex-1 bg-gray-100 flex flex-col items-center gap-2 p-2 rounded-lg">
             <p className="text-nowrap text-xs">Tipo</p>
-            <p className="font-semibold font-sm">{capitalizeFirstLetter(panel?.[0].type)}</p>
+            <p className="font-semibold font-sm">{capitalizeFirstLetter(panel?.type)}</p>
           </div>
         </div>
 
