@@ -1,3 +1,4 @@
+'use client'
 import React from 'react'
 import ChartFilters from './chart-seletectors-filter'
 import ConsumoChart from './consumption-chart'
@@ -16,7 +17,6 @@ interface DataPoint {
 
 export default function HistoricalCosumption({ type, group_by, consumptionGraphReadings } : { type: string, group_by: string, consumptionGraphReadings: DataPoint[]}) {
 
-  console.log(consumptionGraphReadings)
   return (
     <>
       <div className="flex justify-between items-center">

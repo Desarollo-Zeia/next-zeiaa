@@ -1,3 +1,4 @@
+'use client'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import PaginationNumberComponent from "@/app/ui/pagination-number"
 import NoResultFound from "../../no-result-found";

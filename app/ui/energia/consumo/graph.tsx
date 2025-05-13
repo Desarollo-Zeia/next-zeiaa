@@ -44,8 +44,6 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by } : { rea
     
   }))
 
-  console.log(readingsGraph)
-
   const handleFrequency = (frequency: string) => {
     startTransition(() => {
       const newParams = new URLSearchParams(searchParams)
