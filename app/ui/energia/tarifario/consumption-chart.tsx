@@ -72,7 +72,7 @@ interface DataPoint {
   
 
 export default function ConsumoChart({ data, group_by } : { data: DataPoint[], group_by: string}) {
-
+  
   const formattedData = data?.map((item) => {
 
     const dateHours = `${dateFormatWithHour(item.date_first_value)}`
@@ -86,7 +86,7 @@ export default function ConsumoChart({ data, group_by } : { data: DataPoint[], g
   })
 
   return (
-    <div className="w-full p-6 bg-white rounded-lg shadow">
+    <div className="w-full  p-6 bg-white rounded-lg shadow">
       {
         data.length > 0 ? (
           <ChartContainer
@@ -96,7 +96,7 @@ export default function ConsumoChart({ data, group_by } : { data: DataPoint[], g
               color: "hsl(var(--chart-2))",
             },
           }}
-          className="min-h-[350px]"
+          className="h-[450px] w-full"
         >
           <BarChart
             accessibilityLayer

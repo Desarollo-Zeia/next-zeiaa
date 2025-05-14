@@ -147,7 +147,7 @@ interface Readings {
                           cargandoo...
                         </TableHead>
                       } */}
-                      {avaibleIndicators.map((indicator, index) => {
+                      {avaibleIndicators?.map((indicator, index) => {
                         return (
                           <TableHead className={`cursor-pointer text-center ${selectedIndicator === indicator ? 'bg-[#00b0c7] opacity-70 text-white font-medium' : ''}`} 
                             key={index}       
@@ -180,7 +180,7 @@ interface Readings {
                         <TableRow key={readingIndex}>
                           <TableCell className="text-nowrap">{date}</TableCell>
                           <TableCell>{time}</TableCell>
-                          {avaibleIndicators.map((header, headerIndex) => {
+                          {avaibleIndicators?.map((header, headerIndex) => {
                             return indicatorValues[header] === null ? <TableCell key={headerIndex}>-</TableCell> : (
                               <TableCell className={`cursor-pointer text-center ${selectedIndicator === header ? 'bg-[#00b0c7] opacity-70 text-white font-medium' : ''}`} key={headerIndex}>{indicatorValues[header]}</TableCell>
                             )

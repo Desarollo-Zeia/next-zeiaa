@@ -1,4 +1,3 @@
-'use client'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import PaginationNumberComponent from "@/app/ui/pagination-number"
 import NoResultFound from "../../no-result-found";
@@ -15,14 +14,14 @@ interface RateConsumptionResume {
   date_last_value: string;
 }
 
-interface RateConsumptionResponse {
+interface ConsumptionTableReadings {
   count: number;
   next: string | null;
   previous: string | null;
   results: RateConsumptionResume[];
 }
 
-export default function ConsumptionTable({ consumptionTableReadings } : { consumptionTableReadings: RateConsumptionResponse }) {
+export default function ConsumptionTable({ consumptionTableReadings } : { consumptionTableReadings : ConsumptionTableReadings }) {
 
   return (
     <>
@@ -40,7 +39,7 @@ export default function ConsumptionTable({ consumptionTableReadings } : { consum
             </TableHeader>
             <TableBody>
               {
-                consumptionTableReadings.results.map((reading) => (
+                consumptionTableReadings.results.map((reading : RateConsumptionResume) => (
                   <TableRow key={reading.date}>
                     <TableCell className="text-sm">{format(new Date(reading.date), "EEEE d 'de' MMMM", { locale: es})}</TableCell>
                     <TableCell className="text-sm">{reading.consumption.toFixed(2)} kWh</TableCell>

@@ -30,19 +30,19 @@ const energyToggleArray =  [
   { label: "Mes", value: "month" },
 ]
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const SimpleLineChart = ({ readingsGraph, category, indicator, last_by } : { readingsGraph: any, category: any, indicator: any, last_by: any}) => {  
-
+const SimpleLineChart = ({ readingsGraph, category, indicator, last_by } : { readingsGraph: any, category: any, indicator: any, last_by: any}) => { 
+  
     const [isPending, startTransition] = useTransition();
     const searchParams = useSearchParams();
     const pathname = usePathname();
     const { replace } = useRouter();
   // Se transforma el JSON para obtener un array de puntos de datos
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const dataPoints = readingsGraph.map((item : any ) => ({
+  const dataPoints = readingsGraph?.map((item : any ) => ({
     x: new Date(item.first_reading), // Se convierte la fecha a objeto Date
     y: item.first_value,
     
-  }))
+  })) || [];
 
   const handleFrequency = (frequency: string) => {
     startTransition(() => {

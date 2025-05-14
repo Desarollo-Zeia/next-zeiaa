@@ -28,7 +28,7 @@ export interface CustomTooltipProps extends TooltipProps<any, any> { // eslint-d
     payload?: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
   }
 
-  interface DataPoint {
+interface DataPoint {
     date: string;
     consumption: number;
     cost: number;
@@ -38,7 +38,7 @@ export interface CustomTooltipProps extends TooltipProps<any, any> { // eslint-d
     date_last_value: string;
     timestamp: string;
   }
-  
+
   export function CustomTooltip({ active, payload }: CustomTooltipProps) {
     if (!active || !payload || payload.length === 0) {
       return null
@@ -100,7 +100,7 @@ export default function TarifarioChart({ data, group_by } : { data: DataPoint[],
               color: "hsl(var(--chart-1))",
             },
           }}
-          className="min-h-[350px]"
+          className="h-[450px] w-full"
         >
           <BarChart
             accessibilityLayer

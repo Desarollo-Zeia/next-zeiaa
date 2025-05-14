@@ -16,25 +16,16 @@ import { useTransition } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 
-export default function ChartFilters({ type, group_by } : { type: string, group_by: string}) {
-    const [isPending, startTransition] = useTransition();
+export default function ChartFilters({ setType, type, group_by } : { setType: React.Dispatch<React.SetStateAction<string>>, type: string, group_by: string}) {
+
+const [isPending, startTransition] = useTransition();
 const searchParams = useSearchParams();
 const pathname = usePathname();
 const { replace } = useRouter();
 
   const handleConsumptionChange = (type: string) => {
     startTransition(() => {
-      const newParams = new URLSearchParams(searchParams);
-      
-      if (type) {
-        newParams.set('type', type);
-      }
-
-      if (type === 'none') {
-        newParams.delete('type');
-      }
-
-      replace(`${pathname}?${newParams.toString()}`, { scroll: false });
+      setType(type);
     })
   }
 

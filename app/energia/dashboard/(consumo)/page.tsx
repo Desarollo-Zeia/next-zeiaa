@@ -13,6 +13,7 @@ import DownloadExcel from "@/app/ui/energia/consumo/download-excel"
 
 
 
+
 export default async function Page({ searchParams }: SearchParams) {
   const { companies } = await getCompanyData()
 
