@@ -14,7 +14,7 @@ export default async function page({ searchParams } : SearchParams) {
 
   const { companies } = await getCompanyData()
 
-  const { headquarter = '1' , panel = '1',  date_after = new Date(), date_before = new Date(), group_by} = await searchParams
+  const { headquarter = '1' , panel = '1',  date_after = new Date(), date_before = new Date(), group_by = 'day'} = await searchParams
 
   // 1) Formateamos fechas solo una vez
   const formattedDateAfter = format(date_after, 'yyyy-MM-dd')
@@ -34,7 +34,7 @@ export default async function page({ searchParams } : SearchParams) {
       panelId: panel,
       date_after: formattedDateAfter,
       date_before: formattedDateBefore,
-      group_by: 'hour'
+      group_by
     }),
     monitoringLastThree({
       headquarterId: headquarter,
@@ -54,7 +54,7 @@ export default async function page({ searchParams } : SearchParams) {
     <div className="w-full">
       <FiltersContainer>
         <HeadquarterEnergyFilter energyHeadquarter={energyDetails.energy_headquarters} />
-        <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters[0].electrical_panels} />
+        <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters?.[0].electrical_panels} />
         <DatepickerRange />
       </FiltersContainer>
       <div className="flex gap-4 mx-6">
