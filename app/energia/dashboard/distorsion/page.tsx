@@ -45,7 +45,7 @@ export default async function page({ searchParams } : SearchParams) {
             </Button>
           </Link>
         </CurrentVoltageToggle>
-        <div className='w-full mx-auto'>
+        <div className='w-full mx-auto h-[300px]'>
           {
             armonicsGraphReadings?.length === 0 ? (
               <NoResultFound/>

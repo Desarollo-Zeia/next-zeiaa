@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { use, useState } from 'react'
 import TariffTable from './tariff-table'
 import ConsumptionTable from './consumption-table'
 import HistoricalCosumption from './historical-consumption'
@@ -21,11 +21,17 @@ interface ConsumptionTableReadings {
   results: RateConsumptionResume[];
 }
 
+type ConsumptionTableReadingsPromise = 
+  Promise<ConsumptionTableReadings>
+
 interface TariffData {
   billing_data: BillingData;
   consumption: Consumption;
   importe: Importe;
 }
+
+type TariffDataPromise = 
+  Promise<TariffData>
 
 interface BillingData {
   tariff_rating: boolean;
@@ -75,10 +81,17 @@ interface DataPoint {
     timestamp: string;
   }
 
+type DataPointPromise = 
+  Promise<DataPoint[]>
+
 const options = ['Resumen de consumo', 'Tarifario', 'Historial de consumo']
 
 
-export default function TarrifDetail({consumptionTariffReadings, consumptionTableReadings, group_by, consumptionGraphReadings}: {consumptionTariffReadings: TariffData, consumptionTableReadings: ConsumptionTableReadings, group_by: string, consumptionGraphReadings: DataPoint[]}) {
+export default function TarrifDetail({consumptionTariffReadings, consumptionTableReadings, group_by, consumptionGraphReadings}: {consumptionTariffReadings: TariffDataPromise, consumptionTableReadings: ConsumptionTableReadingsPromise, group_by: string, consumptionGraphReadings: DataPointPromise}) {
+
+  const tariffReadings = use(consumptionTariffReadings)
+  const tableReadings = use(consumptionTableReadings)
+  const graphReadings = use(consumptionGraphReadings)
 
   const [option, setOption] = useState<string>('Resumen de consumo')
 
@@ -96,17 +109,17 @@ export default function TarrifDetail({consumptionTariffReadings, consumptionTabl
       </div>
       {
         option === 'Resumen de consumo' && (
-          <ConsumptionTable consumptionTableReadings={consumptionTableReadings}/> 
+          <ConsumptionTable consumptionTableReadings={tableReadings}/> 
         )
       } 
       {
         option === 'Historial de consumo' && (
-          <HistoricalCosumption group_by={group_by} consumptionGraphReadings={consumptionGraphReadings}/>
+          <HistoricalCosumption group_by={group_by} consumptionGraphReadings={graphReadings}/>
         )
       }
       {
         option === 'Tarifario' && (
-          <TariffTable tariffData={consumptionTariffReadings}/>
+          <TariffTable tariffData={tariffReadings}/>
         )
       }
     </div>
