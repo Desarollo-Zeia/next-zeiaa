@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/toggle-group"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
+import NoResultFound from "../../no-result-found";
 
 
 interface DeviceInfo {
@@ -115,7 +116,7 @@ export default function PowerUsageChart({ readings, group } : { readings: PowerR
   return (
     <div className="flex-1 p-6">
       <div className="flex justify-end">
-        <ToggleGroup type="single" className="relative" onValueChange={handleGroupChange} defaultValue={group || 'hour'}>
+        <ToggleGroup type="single" className="relative" onValueChange={handleGroupChange} defaultValue={group}>
           {isPending && (
             <div className="absolute inset-0 flex items-center justify-center bg-background/50 rounded-md z-10">
               <span className="animate-spin h-4 w-4 border-2 border-primary border-t-transparent rounded-full"></span>
@@ -130,30 +131,36 @@ export default function PowerUsageChart({ readings, group } : { readings: PowerR
         </ToggleGroup>
       </div>
       <div className="h-[400px] w-full">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} />
-            <XAxis
-              dataKey="time"
-              axisLine={false}
-              tickLine={false}
-              tick={{ fontSize: 12 }}
-              tickFormatter={(date) => group === 'day' ?  format(new Date(date), 'dd MMM') : format(new Date(date), 'HH:mm')}
-              interval="preserveStartEnd"
-            />
-            <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12 }} />
-            <Tooltip content={<CustomTooltip />} />
-            <Line
-              type="step"
-              dataKey="power"
-              stroke="#00b0c7"
-              strokeWidth={2}
-              dot={false}
-              activeDot={{ r: 8 }}
-              name="Potencia actual"
-            />
-          </LineChart>
-        </ResponsiveContainer>
+        {
+          readings?.length > 0 ? (
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} />
+              <XAxis
+                dataKey="time"
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 12 }}
+                tickFormatter={(date) => group === 'day' ?  format(new Date(date), 'dd MMM') : format(new Date(date), 'HH:mm')}
+                interval="preserveStartEnd"
+              />
+              <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12 }} />
+              <Tooltip content={<CustomTooltip />} />
+              <Line
+                type="step"
+                dataKey="power"
+                stroke="#00b0c7"
+                strokeWidth={2}
+                dot={false}
+                activeDot={{ r: 8 }}
+                name="Potencia actual"
+              />
+            </LineChart>
+          </ResponsiveContainer>
+          ) : (
+            <NoResultFound/>
+          )
+        }
       </div>
     </div>
   )

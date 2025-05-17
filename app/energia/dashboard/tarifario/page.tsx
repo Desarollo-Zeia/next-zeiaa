@@ -11,6 +11,7 @@ import FiltersContainer from "@/app/ui/filters/filters-container"
 // import { Card } from "@/components/ui/card"
 import { format } from "date-fns";
 import TarrifDetail from "@/app/ui/energia/tarifario/tariff-detail"
+import { Suspense } from "react"
 // import { BadgeAlert } from "lucide-react"
 
 
@@ -23,45 +24,44 @@ export default async function Page({ searchParams }: SearchParams) {
   const formattedDateAfter = format(date_after, 'yyyy-MM-dd')
   const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
 
-  // 4. Paralelizar todas las peticiones dependientes
-  const [
-    energyDetails,
-    consumptionGraphReadings,
-    consumptionTableReadings,
-    consumptionCalculatorReadings,
-    consumptionInvoiceReadings,
-    consumptionTariffReadings
-  ] = await Promise.all([
-    getEnergyCompanyDetails({ headquarterId: companies[0].id }),
-    consumptionGraph({
-      panelId: panel,
-      headquarterId: headquarter,
-      date_after: formattedDateAfter,
-      date_before: formattedDateBefore,
-      group_by
-    }),
-    consumptionTable({
-            panelId: panel,
-            headquarterId: headquarter,
-            date_after: formattedDateAfter,
-            date_before: formattedDateBefore,
-            page
-          }),
-    consumptionCalculator({
-      panelId: panel,
-      headquarterId: headquarter,
-      date_after: formattedDateAfter,
-      date_before: formattedDateBefore
-    }),
-    consumptionInvoice({
-      panelId: panel,
-      headquarterId: headquarter
-    }),
-    consumptionTariff({
-      panelId: panel,
-      headquarterId: headquarter
-    })
-  ])
+  // Fetch energy details first as it's needed for filters
+  const energyDetails = await getEnergyCompanyDetails({
+    headquarterId: companies[0].id,
+  })
+
+  // Prepare data fetching promises but don't await them yet
+  const consumptionGraphPromise = consumptionGraph({
+    panelId: panel,
+    headquarterId: headquarter,
+    date_after: formattedDateAfter,
+    date_before: formattedDateBefore,
+    group_by,
+  })
+
+  const consumptionTablePromise = consumptionTable({
+    panelId: panel,
+    headquarterId: headquarter,
+    date_after: formattedDateAfter,
+    date_before: formattedDateBefore,
+    page,
+  })
+
+  const consumptionCalculatorPromise = consumptionCalculator({
+    panelId: panel,
+    headquarterId: headquarter,
+    date_after: formattedDateAfter,
+    date_before: formattedDateBefore,
+  })
+
+  const consumptionInvoicePromise = consumptionInvoice({
+    panelId: panel,
+    headquarterId: headquarter,
+  })
+
+  const consumptionTariffPromise = consumptionTariff({
+    panelId: panel,
+    headquarterId: headquarter,
+  })
 
 
   return (
@@ -73,11 +73,15 @@ export default async function Page({ searchParams }: SearchParams) {
       </FiltersContainer> 
       <div className="w-full flex flex-col gap-24 px-6">
         <div className="w-full flex gap-2">
-          <ConsumeCalculator consumptionCalculatorReadings={consumptionCalculatorReadings}/>
-          <ConsumeCycle consumptionInvoiceReadings={consumptionInvoiceReadings}/>
+          <Suspense fallback={<p>Cargando...</p>}>
+            <ConsumeCalculator consumptionCalculatorReadings={consumptionCalculatorPromise}/>
+          </Suspense>
+          <Suspense fallback={<p>Cargando...</p>}>
+            <ConsumeCycle consumptionInvoiceReadings={consumptionInvoicePromise}/>
+          </Suspense>
         </div>
         <div className="w-full shadow-md">
-          <TarrifDetail consumptionTariffReadings={consumptionTariffReadings} consumptionTableReadings={consumptionTableReadings} group_by={group_by} consumptionGraphReadings={consumptionGraphReadings}/>
+          <TarrifDetail consumptionTariffReadings={consumptionTariffPromise} consumptionTableReadings={consumptionTablePromise} group_by={group_by} consumptionGraphReadings={consumptionGraphPromise}/>
         </div>
       </div>
     </div>
