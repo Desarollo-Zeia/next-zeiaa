@@ -19,7 +19,7 @@ export default async function Page({ searchParams }: SearchParams) {
 
   const { companies } = await getCompanyData()
   
-  const { headquarter = '1' , panel = '1',  date_after = new Date(), date_before = new Date(), page = '1', group_by = 'hour'} = await searchParams
+  const { headquarter = '1' , panel = '1',  date_after = new Date(), date_before = new Date(), page = '1', group_by = 'day'} = await searchParams
 
   const formattedDateAfter = format(date_after, 'yyyy-MM-dd')
   const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
