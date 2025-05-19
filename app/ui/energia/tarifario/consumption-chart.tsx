@@ -100,7 +100,7 @@ export default function ConsumoChart({ data } : { data: DataPoint[], group_by?: 
       ],
     }
 
-      const options : any = {
+      const options : any = {  // eslint-disable-line @typescript-eslint/no-explicit-any
         interaction: {
           mode: 'nearest',
           axis: 'x',
