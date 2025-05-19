@@ -1,0 +1,10 @@
+{
+  "functions": {
+    "pages/api/**/*.js":    { "maxDuration": 30 },
+    "pages/**/*.js":        { "maxDuration": 30 },
+    "app/api/**/*.js":      { "maxDuration": 30 },
+    "pages/api/**/*.ts":    { "maxDuration": 30 },
+    "pages/**/*.ts":        { "maxDuration": 30 },
+    "app/api/**/*.ts":      { "maxDuration": 30 }
+  }
+}
