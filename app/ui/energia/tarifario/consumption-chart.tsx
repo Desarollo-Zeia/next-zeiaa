@@ -24,10 +24,6 @@ const dateFormatWithHour = (dateStr: string) => {
   return format(new Date(dateStr), "PP", { locale: es })
 }
 
-const dateFormatWithDay = (dateStr: string) => {
-  return format(new Date(dateStr), "PP", { locale: es })
-}
-
 interface DataPoint {
     date: string;
     consumption: number;
@@ -82,7 +78,7 @@ interface DataPoint {
   }
   
 
-export default function ConsumoChart({ data, group_by } : { data: DataPoint[], group_by: string}) {
+export default function ConsumoChart({ data } : { data: DataPoint[], group_by?: string}) {
 
   const dataPoints = data?.map((item : any ) => ({ // eslint-disable-line @typescript-eslint/no-explicit-any
     x: new Date(item.date), // Se convierte la fecha a objeto Date

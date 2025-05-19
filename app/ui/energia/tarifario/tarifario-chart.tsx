@@ -20,24 +20,6 @@ import "chartjs-adapter-date-fns"; // Adaptador para manejo de fechas
 
 ChartJS.register(LineElement, BarElement, PointElement, LinearScale, TimeScale, Tooltip, Legend, zoomPlugin)
 
-const dateFormatWithHour = (dateStr: string) => {
-  const date = new Date(dateStr);
-  const formattedDate = date.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' }).replace('.', '');
-  // Formatear la hora
-  const finalOutput = `${formattedDate}`
-
-  return finalOutput
-}
-
-const dateFormatWithDay = (dateStr: string) => {
-  const date = new Date(dateStr);
-
-// Opciones para formatear la fecha
-const formattedDate = date.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' }).replace('.', '')
-
-return formattedDate
-}
-
 export interface CustomTooltipProps extends TooltipProps<any, any> { // eslint-disable-line @typescript-eslint/no-explicit-any
     active?: boolean
     payload?: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -88,7 +70,7 @@ interface DataPoint {
     )
   }
 
-export default function TarifarioChart({ data, group_by } : { data: DataPoint[], group_by: string}) {
+export default function TarifarioChart({ data } : { data: DataPoint[], group_by?: string}) {
 
     const dataPoints = data?.map((item : any ) => ({ // eslint-disable-line @typescript-eslint/no-explicit-any
       x: new Date(item.date), // Se convierte la fecha a objeto Date
