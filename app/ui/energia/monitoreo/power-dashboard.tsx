@@ -42,19 +42,6 @@ interface PowerReading {
   values_per_channel: MeasurementPoint[]
 }
 
-// Función para formatear la fecha a solo hora y minutos
-const formatTime = (dateString: string) => {
-  const date = new Date(dateString)
-  return date.toLocaleTimeString("es-ES", { day: "2-digit", month: "long", hour: "2-digit", minute: "2-digit" })
-}
-
-function hoursToMinutes(horaStr : string) {
-  // Separa las horas y los minutos
-  const [horas, minutos] = horaStr.split(':').map(Number);
-  // Calcula el total de minutos desde la medianoche (00:00)
-  return horas * 60 + minutos;
-}
-
 // Transformar los datos del JSON al formato esperado por el gráfico
 
 // Convertir los datos al formato esperado por el gráfico
@@ -161,13 +148,6 @@ export default function PowerUsageChart({ readings, group } : { readings: PowerR
             minute: "HH:mm",
           },
         },
-        // ticks: {
-        //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        //   callback: function (value: any) {
-        //     const date = new Date(value)
-        //     return format(date, "PP", { locale: es }) // Formato de fecha
-        //    }
-        // },
         title: {
           display: false,
           text: "Hora de Lectura",
