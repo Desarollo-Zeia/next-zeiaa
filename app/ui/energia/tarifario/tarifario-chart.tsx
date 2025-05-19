@@ -90,7 +90,7 @@ interface DataPoint {
 
 export default function TarifarioChart({ data, group_by } : { data: DataPoint[], group_by: string}) {
 
-    const dataPoints = data?.map((item : any ) => ({
+    const dataPoints = data?.map((item : any ) => ({ // eslint-disable-line @typescript-eslint/no-explicit-any
       x: new Date(item.date), // Se convierte la fecha a objeto Date
       y: item.consumption,
       
@@ -110,7 +110,7 @@ export default function TarifarioChart({ data, group_by } : { data: DataPoint[],
         ],
       }
   
-        const options : any = {
+        const options : any = { // eslint-disable-line @typescript-eslint/no-explicit-any
           interaction: {
             mode: 'nearest',
             axis: 'x',
@@ -228,17 +228,17 @@ export default function TarifarioChart({ data, group_by } : { data: DataPoint[],
         }
 
   // Formatear las fechas para mostrar solo el día y mes
-  const formattedData = data?.map((item) => {
+  // const formattedData = data?.map((item) => {
 
-    const dateHours = `${dateFormatWithHour(item.date_first_value)}`
-    const dateMonth = `${dateFormatWithDay(item.date_first_value)} - ${dateFormatWithDay(item.date_last_value)}`
+  //   const dateHours = `${dateFormatWithHour(item.date_first_value)}`
+  //   const dateMonth = `${dateFormatWithDay(item.date_first_value)} - ${dateFormatWithDay(item.date_last_value)}`
 
-    const formattedTooltip = group_by === 'day' ? dateHours : dateMonth
-    return {
-      ...item,
-      formattedTooltip,
-    }
-  })
+  //   const formattedTooltip = group_by === 'day' ? dateHours : dateMonth
+  //   return {
+  //     ...item,
+  //     formattedTooltip,
+  //   }
+  // })
 
   return (
     <div className="w-full p-6 bg-white rounded-lg">

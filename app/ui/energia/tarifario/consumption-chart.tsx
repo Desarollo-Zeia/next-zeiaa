@@ -1,11 +1,10 @@
 "use client"
 
-import { ChartContainer } from "@/components/ui/chart"
 import type { TooltipProps } from "recharts"
 import NoResultFound from "../../no-result-found"
 import { format } from "date-fns"
 import { es } from 'date-fns/locale';
-import { Line, Bar } from "react-chartjs-2";
+import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   LineElement,
@@ -85,7 +84,7 @@ interface DataPoint {
 
 export default function ConsumoChart({ data, group_by } : { data: DataPoint[], group_by: string}) {
 
-  const dataPoints = data?.map((item : any ) => ({
+  const dataPoints = data?.map((item : any ) => ({ // eslint-disable-line @typescript-eslint/no-explicit-any
     x: new Date(item.date), // Se convierte la fecha a objeto Date
     y: item.consumption,
     
@@ -222,16 +221,16 @@ export default function ConsumoChart({ data, group_by } : { data: DataPoint[], g
         }
       }
   
-  const formattedData = data?.map((item) => {
-    const dateHours = `${dateFormatWithHour(item.date_first_value)}`
-    const dateMonth = `${dateFormatWithDay(item.date_first_value)} - ${dateFormatWithDay(item.date_last_value)}`
+  // const formattedData = data?.map((item) => {
+  //   const dateHours = `${dateFormatWithHour(item.date_first_value)}`
+  //   const dateMonth = `${dateFormatWithDay(item.date_first_value)} - ${dateFormatWithDay(item.date_last_value)}`
 
-    const formattedTooltip = group_by === 'day' ? dateHours : dateMonth
-    return {
-      ...item,
-      formattedTooltip,
-    }
-  })
+  //   const formattedTooltip = group_by === 'day' ? dateHours : dateMonth
+  //   return {
+  //     ...item,
+  //     formattedTooltip,
+  //   }
+  // })
 
   return (
     <div className="w-full  p-6 bg-white rounded-lg shadow">

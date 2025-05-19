@@ -93,7 +93,7 @@ export default function PowerUsageChart({ readings, group } : { readings: PowerR
 
   console.log(readings)
 
-  const dataPoints = readings?.map((item : any, i: any ) => ({
+  const dataPoints = readings?.map((item : any ) => ({ // eslint-disable-line @typescript-eslint/no-explicit-any
     x: new Date(item?.created_at),
     y: item.values_per_channel?.[0].power,
   })) || []
@@ -132,7 +132,7 @@ export default function PowerUsageChart({ readings, group } : { readings: PowerR
     ],
   }
 
-  const options : any = {
+  const options : any = { // eslint-disable-line @typescript-eslint/no-explicit-any
     interaction: {
       mode: 'nearest',
       axis: 'x',
