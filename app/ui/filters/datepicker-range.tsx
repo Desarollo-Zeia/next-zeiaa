@@ -28,8 +28,8 @@ export function DatepickerRange({
   const end = params.get("date_before")
 
   const [fecha, setFecha] = React.useState<{
-    from: Date | undefined
-    to: Date | undefined
+    from: any // eslint-disable-line @typescript-eslint/no-explicit-any
+    to: any // eslint-disable-line @typescript-eslint/no-explicit-any
   }>({
     from: start ? new Date(start) : undefined,
     to: end ? new Date(end) : undefined,
