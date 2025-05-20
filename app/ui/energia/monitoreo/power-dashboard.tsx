@@ -6,10 +6,23 @@ import {
   ToggleGroup,
   ToggleGroupItem,
 } from "@/components/ui/toggle-group"
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import NoResultFound from "../../no-result-found";
+import { Line } from "react-chartjs-2";
+import "chartjs-adapter-date-fns"; // Adaptador para manejo de fechas
+import zoomPlugin from "chartjs-plugin-zoom";
+import { es } from 'date-fns/locale';
+import {
+  Chart as ChartJS,
+  LineElement,
+  PointElement,
+  LinearScale,
+  TimeScale,
+  Tooltip,
+  Legend,
+} from "chart.js"
 
+ChartJS.register(LineElement, PointElement, LinearScale, TimeScale, Tooltip, Legend, zoomPlugin)
 
 interface DeviceInfo {
   id: number
@@ -29,60 +42,47 @@ interface PowerReading {
   values_per_channel: MeasurementPoint[]
 }
 
-// Función para formatear la fecha a solo hora y minutos
-const formatTime = (dateString: string) => {
-  const date = new Date(dateString)
-  return date.toLocaleTimeString("es-ES", { day: "2-digit", month: "long", hour: "2-digit", minute: "2-digit" })
-}
-
-function hoursToMinutes(horaStr : string) {
-  // Separa las horas y los minutos
-  const [horas, minutos] = horaStr.split(':').map(Number);
-  // Calcula el total de minutos desde la medianoche (00:00)
-  return horas * 60 + minutos;
-}
-
 // Transformar los datos del JSON al formato esperado por el gráfico
 
 // Convertir los datos al formato esperado por el gráfico
 
-const CustomTooltip = ({ active, payload, label }: any) => {  // eslint-disable-line @typescript-eslint/no-explicit-any
-  // eslint-disable-line @typescript-eslint/no-explicit-any
+// const CustomTooltip = ({ active, payload, label }: any) => {  
+//   // eslint-disable-line @typescript-eslint/no-explicit-any
 
-  const date = new Date(label)
-  const hour = date.getHours()
-  const minute = date.getMinutes()
+//   const date = new Date(label)
+//   const hour = date.getHours()
+//   const minute = date.getMinutes()
 
-  const hourFormatted = hour.toString().padStart(2, "0")
-  const minuteFormatted = minute.toString().padStart(2, "0")
+//   const hourFormatted = hour.toString().padStart(2, "0")
+//   const minuteFormatted = minute.toString().padStart(2, "0")
 
-  const current = `${hourFormatted}:${minuteFormatted}`
+//   const current = `${hourFormatted}:${minuteFormatted}`
 
-  const start = hoursToMinutes('18:00')
-  const end = hoursToMinutes('23:00')
-  const compared = hoursToMinutes(current)
+//   const start = hoursToMinutes('18:00')
+//   const end = hoursToMinutes('23:00')
+//   const compared = hoursToMinutes(current)
 
-  if (active && payload && payload.length) {  
+//   if (active && payload && payload.length) {  
 
-    return (
-      <div className="bg-white p-3 border rounded-lg shadow-sm">
-        <p className="text-sm font-medium mb-2">{formatTime(label)}</p>
-        <div className="flex items-center gap-2 text-xs">
-          <span className="w-2 h-2 rounded-full bg-[#0ea5e9]" />
-          <span>Potencia actual:</span>
-          <span className="font-medium">{payload[0].value} kW</span>
-        </div>
-        {compared > start && compared < end && 
-          <div className="flex items-center gap-2 text-xs">
-            <div className="w-2 h-2 rounded-full bg-red-600"/>
-            <span>Dentro de la hora punta</span>
-          </div>
-        }
-      </div>
-    )
-  }
-  return null
-}
+//     return (
+//       <div className="bg-white p-3 border rounded-lg shadow-sm">
+//         {/* <p className="text-sm font-medium mb-2">{formatTime(label)}</p> */}
+//         <div className="flex items-center gap-2 text-xs">
+//           <span className="w-2 h-2 rounded-full bg-[#0ea5e9]" />
+//           <span>Potencia actual:</span>
+//           <span className="font-medium">{payload[0].value} kW</span>
+//         </div>
+//         {compared > start && compared < end && 
+//           <div className="flex items-center gap-2 text-xs">
+//             <div className="w-2 h-2 rounded-full bg-red-600"/>
+//             <span>Dentro de la hora punta</span>
+//           </div>
+//         }
+//       </div>
+//     )
+//   }
+//   return null
+// }
 
 export default function PowerUsageChart({ readings, group } : { readings: PowerReading[], group?: string }) {
 
@@ -90,6 +90,15 @@ export default function PowerUsageChart({ readings, group } : { readings: PowerR
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const { replace } = useRouter()
+
+  console.log(readings)
+
+  const dataPoints = readings?.map((item : any ) => ({ // eslint-disable-line @typescript-eslint/no-explicit-any
+    x: new Date(item?.created_at),
+    y: item.values_per_channel?.[0].power,
+  })) || []
+
+  console.log(dataPoints)
 
   const handleGroupChange = (group: string) => {
     startTransition(() => {
@@ -109,10 +118,130 @@ export default function PowerUsageChart({ readings, group } : { readings: PowerR
     })
   }
 
-  const chartData = readings?.map((item) => ({
-    time: item.created_at,
-    power: item.values_per_channel[0]?.power?.toFixed(2) || 0,
-  }))
+  const data = {
+    datasets: [
+      {
+        label: `Hollaa`, // Se utiliza el indicador como label
+        data: dataPoints,
+        fill: false,
+        borderColor: "#00b0c7",
+        stepped: true,
+        tension: 0,
+        pointRadius: 2, 
+      },
+    ],
+  }
+
+  const options : any = { // eslint-disable-line @typescript-eslint/no-explicit-any
+    interaction: {
+      mode: 'nearest',
+      axis: 'x',
+      intersect: false
+    },
+    responsive: true,
+    scales: {
+      x: {
+        type: "time",
+        time: {
+          unit: "day", // Puedes ajustar la unidad a 'hour', 'day', etc.
+          displayFormats: {
+            minute: "HH:mm",
+          },
+        },
+        title: {
+          display: false,
+          text: "Hora de Lectura",
+        },
+        grid: {
+          display: false,
+          tickLength: 50
+        },
+      },
+      y: {
+        title: {
+          display: false,
+          text: "Valor",
+        },
+        grid: {
+          display: false,
+          tickLength: 50
+        },
+        ticks: {
+          display: false
+        },
+      },
+    },
+    plugins: {
+      tooltip: {
+        backgroundColor: "rgba(255, 255, 255)", // Cambia el fondo a un color claro
+        titleColor: "#333", // Color para el título del tooltip
+        bodyColor: "#333", // Color para el contenido del tooltip
+        callbacks: {
+          // Personalización del título del tooltip (ej. para formatear la fecha)
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          title: function (tooltipItems: any) {
+            // tooltipItems es un array de elementos (en este caso de un único punto)
+            const date = new Date(tooltipItems[0].parsed.x);
+            return format(date, "PP p", { locale: es });
+          },
+          // Personalización de la etiqueta del tooltip
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          label: function (context: any) {
+            let label = context.dataset.label || "";
+            if (label) {
+              label += ": ";
+            }
+            // Se redondea el valor 'y' a dos decimales
+            label += context.parsed.y.toFixed(2);
+            return label;
+          },
+        },
+      },
+      zoom: {
+        // wheel: {
+
+        //   enabled: true,
+        //   mode: "xy"
+        // },
+        // pan: {
+        //   enabled: true,
+        //   mode: "xy", // Permite desplazar (pan) solo en el eje X. También puedes usar "y" o "xy".
+        // },
+        pan: {
+          enabled: true,
+          mode: "x", // "x", "y" o "xy"
+        },
+        zoom: {
+          
+          wheel: {
+            enabled: true,
+            mode: "x",
+            speed: 0.1,
+            threshold: 2,
+          },
+          pinch: {
+            enabled: true,
+          },
+          mode: "x",
+        },
+        limits: {
+          y: { min: 'original', max: 'original' },
+          x: { min: 'original', max: 'original' }
+        }
+
+      },
+      decimation: { 
+        enabled: true,
+        algorithm: 'lttb',
+        samples: 20, // Aumenta este valor para conservar más detalles
+        threshold: 5
+      },
+      legend: {
+        display: false
+      }
+    }
+  }
+
   return (
     <div className="flex-1 p-6">
       <div className="flex justify-end">
@@ -130,33 +259,10 @@ export default function PowerUsageChart({ readings, group } : { readings: PowerR
           </ToggleGroupItem>
         </ToggleGroup>
       </div>
-      <div className="h-[400px] w-full">
+      <div className="h-[400px] w-full mx-auto">
         {
           readings?.length > 0 ? (
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} />
-              <XAxis
-                dataKey="time"
-                axisLine={false}
-                tickLine={false}
-                tick={{ fontSize: 12 }}
-                tickFormatter={(date) => group === 'day' ?  format(new Date(date), 'dd MMM') : format(new Date(date), 'HH:mm')}
-                interval="preserveStartEnd"
-              />
-              <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12 }} />
-              <Tooltip content={<CustomTooltip />} />
-              <Line
-                type="step"
-                dataKey="power"
-                stroke="#00b0c7"
-                strokeWidth={2}
-                dot={false}
-                activeDot={{ r: 8 }}
-                name="Potencia actual"
-              />
-            </LineChart>
-          </ResponsiveContainer>
+              <Line data={data} options={options} className="mx-auto h-full min-w-[900px]"/>
           ) : (
             <NoResultFound/>
           )

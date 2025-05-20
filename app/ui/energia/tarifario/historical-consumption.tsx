@@ -17,9 +17,9 @@ interface DataPoint {
 
 export default function HistoricalCosumption({group_by, consumptionGraphReadings } : { group_by: string, consumptionGraphReadings: DataPoint[]}) {
 
-  
-  const [type, setType] = useState<string>('consumption')
+  console.log(group_by)
 
+  const [type, setType] = useState<string>('consumption')
 
   return (
     <div>
