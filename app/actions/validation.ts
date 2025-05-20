@@ -81,6 +81,6 @@ export async function actionEnergy(prevState: { message: string}, formData: Form
     console.error('Error:', error)
   }
 
-  redirect(`/energia/dashboard`)
+  redirect(`/energia/dashboard/home`)
 
 }
