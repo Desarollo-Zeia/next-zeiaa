@@ -29,9 +29,10 @@ import { accountData } from "@/app/utils/account"
 const energyItems = [
   {
     title: "Consumo energético",
-    url: "/energia/dashboard",
+    url: "/energia/dashboard/home",
     icon: Zap,
   },
+
   {
     title: "Consumo tarifario",
     url: "/energia/dashboard/tarifario",
@@ -76,7 +77,6 @@ export function AppSidebar() {
 
   }, [ ])
 
-
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
@@ -89,7 +89,7 @@ export function AppSidebar() {
             <SidebarMenu>
               {energyItems.map((item) => (
                 <SidebarMenuItem key={item.title} >
-                  <SidebarMenuButton asChild data-active={pathname === item.url && 'true'} tooltip={item.title}>
+                  <SidebarMenuButton asChild data-active={pathname.includes(item.url) && 'true'} tooltip={item.title}>
                     <Link href={item.url}>
                       <item.icon />
                       <span>{item.title}</span>

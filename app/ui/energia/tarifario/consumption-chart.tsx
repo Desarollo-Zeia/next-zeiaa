@@ -229,10 +229,10 @@ export default function ConsumoChart({ data } : { data: DataPoint[], group_by?: 
   // })
 
   return (
-    <div className="w-full  p-6 bg-white rounded-lg shadow">
+    <div className="min-w-[640px] min-h-[540px] bg-white rounded-lg shadow">
       {
         data.length > 0 ? (
-          <Bar data={dataLine} options={options}/>
+          <Bar data={dataLine} options={options} className="w-full h-full"/>
         ) : (
           <NoResultFound/>
         )

@@ -24,7 +24,7 @@ interface ConsumptionTableReadings {
 export default function ConsumptionTable({ consumptionTableReadings } : { consumptionTableReadings : ConsumptionTableReadings }) {
 
   return (
-    <>
+    <div className="flex-1 p-4">
       {
         consumptionTableReadings.count > 0 ? 
         (
@@ -58,6 +58,6 @@ export default function ConsumptionTable({ consumptionTableReadings } : { consum
         )
       }
      
-    </>
+    </div>
   )
 }

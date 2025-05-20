@@ -38,6 +38,7 @@ interface BillingData {
   billing_data_type: string;
   billing_cycle_start: string; // Formato de fecha: YYYY-MM-DD
   billing_cycle_end: string;   // Formato de fecha: YYYY-MM-DD
+  billing_description: string;
   cargo_fijo_mensual: number;
   cargo_por_energia_activa_en_punta: number;
   cargo_por_energia_activa_fuera_de_punta: number;

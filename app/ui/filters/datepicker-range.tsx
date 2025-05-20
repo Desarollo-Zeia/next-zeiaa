@@ -3,7 +3,7 @@
 import * as React from "react"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
-import { CalendarIcon } from 'lucide-react'
+import { CalendarIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -13,8 +13,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { useSearchParams, usePathname, useRouter } from 'next/navigation';
-
+import { useSearchParams, usePathname, useRouter } from "next/navigation"
 
 export function DatepickerRange({
   className,
@@ -23,31 +22,51 @@ export function DatepickerRange({
   const params = new URLSearchParams(searchParams)
   const pathname = usePathname()
   const { replace } = useRouter()
-  // const [isPending, startTransition] = React.useTransition()
-  const start = params.get('date_after')
-  const end = params.get('date_before')
+  const [isPending, startTransition] = React.useTransition()
 
-  // Parsear fechas correctamente
-  const [fecha, setFecha] = React.useState<any>({ // eslint-disable-line @typescript-eslint/no-explicit-any
-    from: start ? new Date(start) : new Date(),
-    to: end ? new Date(end) : new Date(),
+  const start = params.get("date_after")
+  const end = params.get("date_before")
+
+  const [fecha, setFecha] = React.useState<{
+    from: Date | undefined
+    to: Date | undefined
+  }>({
+    from: start ? new Date(start) : undefined,
+    to: end ? new Date(end) : undefined,
   })
 
+  // ref para el timer del debounce
+  const debounceRef = React.useRef<number>(0) 
+ 
   React.useEffect(() => {
+    // limpiamos timeout previo
+    window.clearTimeout(debounceRef.current)
+
+    // programamos el replace para 500 ms después
+    debounceRef.current = window.setTimeout(() => {
+      // actualizamos params según fecha
       if (fecha?.from) {
-        params.set('date_after', fecha.from.toISOString()) 
+        params.set("date_after", fecha.from.toISOString())
       } else {
-        params.delete('date_after')
+        params.delete("date_after")
       }
 
       if (fecha?.to) {
-        params.set('date_before', fecha.to.toISOString())
+        params.set("date_before", fecha.to.toISOString())
       } else {
-        params.delete('date_before')
+        params.delete("date_before")
       }
 
-      replace(`${pathname}?${params.toString()}`, { scroll: false })
-  }, [fecha])
+      // hacemos el replace en transición
+      startTransition(() => {
+        replace(`${pathname}?${params.toString()}`, { scroll: false })
+      })
+    }, 500)
+
+    return () => {
+      window.clearTimeout(debounceRef.current)
+    }
+  }, [fecha, pathname, replace])
 
   return (
     <div className={cn("grid gap-2", className)}>
@@ -55,7 +74,7 @@ export function DatepickerRange({
         <PopoverTrigger asChild>
           <Button
             id="fecha"
-            variant={"outline"}
+            variant="outline"
             className={cn(
               "w-[300px] justify-start text-left font-normal relative",
               !fecha && "text-muted-foreground"
@@ -67,17 +86,18 @@ export function DatepickerRange({
                 <>
                   {format(fecha.from, "d MMMM, yyyy", { locale: es })} -{" "}
                   {format(fecha.to, "d MMMM, yyyy", { locale: es })}
-                  {/* {isPending && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50">
-                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-black"></div>
-                    </div>
-                  )} */}
                 </>
               ) : (
                 format(fecha.from, "d MMMM, yyyy", { locale: es })
               )
             ) : (
               <span>Selecciona un rango de fechas</span>
+            )}
+
+            {isPending && (
+              <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-black" />
+              </div>
             )}
           </Button>
         </PopoverTrigger>
@@ -91,8 +111,8 @@ export function DatepickerRange({
             numberOfMonths={2}
             locale={es}
             classNames={{
-              day_range_end: "bg-[#00b0c7] text-primary-foreground",
               day_range_start: "bg-[#00b0c7] text-primary-foreground",
+              day_range_end: "bg-[#00b0c7] text-primary-foreground",
             }}
           />
         </PopoverContent>

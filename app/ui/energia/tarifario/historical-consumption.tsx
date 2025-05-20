@@ -17,20 +17,21 @@ interface DataPoint {
 
 export default function HistoricalCosumption({group_by, consumptionGraphReadings } : { group_by: string, consumptionGraphReadings: DataPoint[]}) {
 
-  console.log(group_by)
-
   const [type, setType] = useState<string>('consumption')
 
   return (
-    <div>
+    <div className='flex-1'>
       <div className="flex justify-between items-center">
-        <div>
+        {/* <div>
           <h4>Consumo energético (kWH)</h4>
           <p className="text-xs">Durante el periodo seleccionado</p>
+        </div> */}
+        <div>
+          
         </div>
         <ChartFilters setType={setType} type={type} group_by={group_by}/>
       </div>  
-      <div className='h-52'>
+      <div className='h-52 w-full '>
         {
           type === 'consumption' ? 
           (
