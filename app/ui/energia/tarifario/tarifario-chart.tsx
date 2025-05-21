@@ -72,8 +72,6 @@ interface DataPoint {
 
 export default function TarifarioChart({ data, group_by } : { data: DataPoint[], group_by?: string}) {
 
-  console.log(data)
-
     const dataPoints = data?.map((item : any ) => ({ // eslint-disable-line @typescript-eslint/no-explicit-any
       x: new Date(item.date), // Se convierte la fecha a objeto Date
       y: item.consumption,
