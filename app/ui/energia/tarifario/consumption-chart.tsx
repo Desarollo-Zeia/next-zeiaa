@@ -163,7 +163,6 @@ export default function ConsumoChart({ data, group_by } : { data: DataPoint[], g
               // Personalización de la etiqueta del tooltip
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               label: function (context: any) {
-                console.log(context)
                 let label = context.dataset.label || "";
                 if (label) {
                   label += ": ";
