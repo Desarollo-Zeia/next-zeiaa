@@ -98,8 +98,6 @@ export default function PowerUsageChart({ readings, group } : { readings: PowerR
     y: item.values_per_channel?.[0].power,
   })) || []
 
-  console.log(dataPoints)
-
   const handleGroupChange = (group: string) => {
     startTransition(() => {
       const newParams = new URLSearchParams(searchParams);
@@ -121,7 +119,7 @@ export default function PowerUsageChart({ readings, group } : { readings: PowerR
   const data = {
     datasets: [
       {
-        label: `Hollaa`, // Se utiliza el indicador como label
+        label: readings[0]?.values_per_channel?.[0]?.measurement_point_name, // Se utiliza el indicador como label
         data: dataPoints,
         fill: false,
         borderColor: "#00b0c7",
@@ -259,10 +257,10 @@ export default function PowerUsageChart({ readings, group } : { readings: PowerR
           </ToggleGroupItem>
         </ToggleGroup>
       </div>
-      <div className="h-[400px] w-full mx-auto">
+      <div className="w-full mx-auto">
         {
           readings?.length > 0 ? (
-              <Line data={data} options={options} className="mx-auto h-full min-w-[900px]"/>
+              <Line data={data} options={options}/>
           ) : (
             <NoResultFound/>
           )

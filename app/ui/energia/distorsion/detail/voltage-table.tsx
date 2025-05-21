@@ -63,43 +63,44 @@ export default function VoltageTable({ readings } : { readings: HarmonicDistorti
   })
 
   return (
-    <Table>
-      {
-        readings.count > 0 ? 
-        (
-          <>
-            <TableHeader>
-              <TableRow>
-                  <TableHead className="text-sm font-medium text-muted-foreground">Fecha</TableHead>
-                  <TableHead className="text-sm font-medium text-muted-foreground">Hora</TableHead>
-                  {
-                    indicators.map((indicator) => (
-                      <TableHead key={indicator} className="text-sm font-medium text-muted-foreground">{indicator}</TableHead>
-                    ))
-                  }
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {
-                currentReadings.map((reading, index) => (
-                  <TableRow key={index}>
-                  <TableCell className="text-sm">{reading.date}</TableCell>
-                  <TableCell className="text-sm">{reading.time}</TableCell>
-                  <TableCell className="text-sm">{reading.THDUa}</TableCell>
-                  <TableCell className="text-sm">{reading.THDUb}</TableCell>
-                  <TableCell className="text-sm">{reading.THDUc}</TableCell>
+    <>
+      <Table>
+        {
+          readings.count > 0 ? 
+          (
+            <>
+              <TableHeader>
+                <TableRow>
+                    <TableHead className="text-sm font-medium text-muted-foreground">Fecha</TableHead>
+                    <TableHead className="text-sm font-medium text-muted-foreground">Hora</TableHead>
+                    {
+                      indicators.map((indicator) => (
+                        <TableHead key={indicator} className="text-sm font-medium text-muted-foreground">{indicator}</TableHead>
+                      ))
+                    }
                 </TableRow>
-                ))
-              }
-            </TableBody>
-          </>
-        ) : 
-        (
-          <NoResultFound/>
-        )
-      }
-     
-      { readings.count > 0 && <PaginationNumberComponent count={readings.count} itemsPerPage={5}/>}
-    </Table>
+              </TableHeader>
+              <TableBody>
+                {
+                  currentReadings.map((reading, index) => (
+                    <TableRow key={index}>
+                    <TableCell className="text-sm">{reading.date}</TableCell>
+                    <TableCell className="text-sm">{reading.time}</TableCell>
+                    <TableCell className="text-sm">{reading.THDUa}</TableCell>
+                    <TableCell className="text-sm">{reading.THDUb}</TableCell>
+                    <TableCell className="text-sm">{reading.THDUc}</TableCell>
+                  </TableRow>
+                  ))
+                }
+              </TableBody>
+            </>
+          ) : 
+          (
+            <NoResultFound/>
+          )
+        }
+      </Table>
+      { readings.count > 0 && <PaginationNumberComponent count={readings.count} itemsPerPage={5}/>} 
+    </>
   )
 }
