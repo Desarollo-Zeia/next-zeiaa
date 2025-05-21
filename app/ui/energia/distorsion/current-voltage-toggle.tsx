@@ -43,7 +43,7 @@ export default function CurrentVoltageToggle({ type, children } : { type: string
                 <p>Corriente</p>
             </ToggleGroupItem>
             <ToggleGroupItem value="voltage" aria-label="voltage">
-                <p>Votaje</p>
+                <p>Voltaje</p>
             </ToggleGroupItem>
             <div className='ml-4'>
               { children }
