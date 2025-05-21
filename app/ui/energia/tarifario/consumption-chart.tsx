@@ -78,9 +78,7 @@ interface DataPoint {
   }
   
 
-export default function ConsumoChart({ data, group_by, type } : { data: DataPoint[], group_by?: string, type?:string}) {
-
-  console.log(data)
+export default function ConsumoChart({ data, group_by } : { data: DataPoint[], group_by?: string } ) {
 
   const dataPoints = data?.map((item : any ) => ({ // eslint-disable-line @typescript-eslint/no-explicit-any
     x: new Date(item.date), // Se convierte la fecha a objeto Date
