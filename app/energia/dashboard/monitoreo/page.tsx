@@ -5,6 +5,7 @@ import { SearchParams } from "@/app/type";
 import HeadquarterEnergyFilter from "@/app/ui/energia/filters/headquarter-energy-filter";
 import PanelsFilterEnergy from "@/app/ui/energia/filters/panels-energy-filter";
 import ExcessPower from "@/app/ui/energia/monitoreo/excess-power";
+import DownloadExcelMonitoreo from "@/app/ui/energia/monitoreo/potencia-excedente/download-excel";
 import PowerUsageChart from "@/app/ui/energia/monitoreo/power-dashboard";
 import { DatepickerRange } from "@/app/ui/filters/datepicker-range";
 import FiltersContainer from "@/app/ui/filters/filters-container";
@@ -56,6 +57,7 @@ export default async function page({ searchParams } : SearchParams) {
         <HeadquarterEnergyFilter energyHeadquarter={energyDetails.energy_headquarters} />
         <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters?.[0].electrical_panels} />
         <DatepickerRange />
+        <DownloadExcelMonitoreo headquarterId={headquarter} panelId={panel}/>
       </FiltersContainer>
       <div className="flex gap-4 mx-6">
         <div className="flex-1">

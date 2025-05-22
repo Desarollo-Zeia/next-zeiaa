@@ -160,7 +160,7 @@ const VoltageChartTest = ({ voltageReadings } : { voltageReadings : VoltageReadi
         },
       },
       y: {
-        display: false,
+        display: true,
         title: {
           display: true,
           text: "THDU (%)",
@@ -169,7 +169,7 @@ const VoltageChartTest = ({ voltageReadings } : { voltageReadings : VoltageReadi
           display: false
         },
         tricks: {
-          display: false
+          display: true
         }
       },
     },

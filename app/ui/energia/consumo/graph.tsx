@@ -113,7 +113,7 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by } : { rea
       },
       y: {
         title: {
-          display: false,
+          display: true,
           text: "Valor",
         },
         grid: {
@@ -121,7 +121,7 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by } : { rea
           tickLength: 50
         },
         ticks: {
-          display: false
+          display: true
         },
       },
     },

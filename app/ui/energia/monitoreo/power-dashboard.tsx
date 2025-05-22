@@ -21,8 +21,9 @@ import {
   Tooltip,
   Legend,
 } from "chart.js"
+import annotationPlugin from 'chartjs-plugin-annotation';
 
-ChartJS.register(LineElement, PointElement, LinearScale, TimeScale, Tooltip, Legend, zoomPlugin)
+ChartJS.register(LineElement, PointElement, LinearScale, TimeScale, Tooltip, Legend, zoomPlugin, annotationPlugin)
 
 interface DeviceInfo {
   id: number
@@ -157,7 +158,7 @@ export default function PowerUsageChart({ readings, group } : { readings: PowerR
       },
       y: {
         title: {
-          display: false,
+          display: true,
           text: "Valor",
         },
         grid: {
@@ -165,7 +166,7 @@ export default function PowerUsageChart({ readings, group } : { readings: PowerR
           tickLength: 50
         },
         ticks: {
-          display: false
+          display: true
         },
       },
     },
@@ -227,6 +228,38 @@ export default function PowerUsageChart({ readings, group } : { readings: PowerR
           x: { min: 'original', max: 'original' }
         }
 
+      },
+      annotation: {
+        annotations: {
+          line1: {
+            type: 'line',
+            yMin: 51.1,
+            yMax: 51.1,
+            borderColor: '#d9c308',
+            borderWidth: 2,
+            borderDash: [5, 5],
+            label: {
+              display: true,
+              color: 'white',
+              backgroundColor: '#d9c308',
+              content: ['Máxima demanda de potencia'],
+            }
+          },
+          line2: {
+            type: 'line',
+            yMin: 88,
+            yMax: 88,
+            borderColor: 'orange',
+            borderWidth: 2,
+            borderDash: [5, 5],
+            label: {
+              display: true,
+              color: 'white',
+              backgroundColor: 'orange',
+              content: ['Potencia contratada'],
+            }
+          }
+        }
       },
       decimation: { 
         enabled: true,

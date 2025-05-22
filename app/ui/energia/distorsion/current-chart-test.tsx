@@ -161,7 +161,7 @@ const CurrentChartTest = ({ currentReadings } : { currentReadings : CurrentReadi
         },
       },
       y: {
-        display: false,
+        display: true,
         title: {
           display: true,
           text: "THDI (%)",
@@ -170,7 +170,7 @@ const CurrentChartTest = ({ currentReadings } : { currentReadings : CurrentReadi
             display: false
         },
         tricks: {
-            display: false
+            display: true
         }
       },
     },

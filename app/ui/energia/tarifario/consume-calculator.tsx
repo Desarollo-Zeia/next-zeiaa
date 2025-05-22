@@ -2,6 +2,7 @@
 import { Card } from '@/components/ui/card'
 import { BadgeAlert, PiggyBank } from 'lucide-react'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import React from 'react'
 
 interface ConsumptionCalculatorReadings  {
@@ -14,6 +15,8 @@ interface ConsumptionCalculatorReadings  {
 }
 
 export default function ConsumeCalculator({ consumptionCalculatorReadings } : { consumptionCalculatorReadings : ConsumptionCalculatorReadings}) {
+
+  const searchParams = useSearchParams()
 
   return (
        <Card className="p-4 flex flex-col gap-2 shadow-md justify-between">
@@ -32,7 +35,7 @@ export default function ConsumeCalculator({ consumptionCalculatorReadings } : { 
                 </p>}
             </div>
           </div>
-          <Link href={'/energia/dashboard/tarifario/historial-consumo'}>
+          <Link href={`/energia/dashboard/tarifario/historial-consumo/?${searchParams}`}>
             <div className='bg-[#01b7ca] flex justify-center items-center p-4 rounded-lg gap-2'>
               <PiggyBank color='white'/>
               <p className='text-white'>Visualizar historial de consumo</p>
