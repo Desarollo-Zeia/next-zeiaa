@@ -5,12 +5,15 @@ import { MetricSelector } from '../metric-selector'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import PaginationNumberComponent from '@/app/ui/pagination-number'
+import NoResultFound from '@/app/ui/no-result-found'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function AlertTable({ readings, metric }: any) {
+
+  console.log(readings)
   // Aplanamos las lecturas, usando "first_reading" en caso de que "period" sea nulo.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const readingsData = readings?.results.flatMap((reading: any) =>
+  const readingsData = readings?.results?.flatMap((reading: any) =>
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
     reading.values_per_channel.map((channel: any) => ({
       id: reading.id,
@@ -35,43 +38,53 @@ export default function AlertTable({ readings, metric }: any) {
         <MetricSelector dontShowIt="hidden" />
       </div>
       <div className="overflow-x-auto">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="text-sm font-medium text-muted-foreground">Fecha</TableHead>
-              <TableHead className="text-sm font-medium text-muted-foreground">Hora</TableHead>
-              <TableHead className="text-sm font-medium text-muted-foreground">R</TableHead>
-              <TableHead className="text-sm font-medium text-muted-foreground">S</TableHead>
-              <TableHead className="text-sm font-medium text-muted-foreground">T</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
+        {
+          readings?.results?.length > 0 ? (
+            <>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="text-sm font-medium text-muted-foreground">Fecha</TableHead>
+                    <TableHead className="text-sm font-medium text-muted-foreground">Hora</TableHead>
+                    <TableHead className="text-sm font-medium text-muted-foreground">R</TableHead>
+                    <TableHead className="text-sm font-medium text-muted-foreground">S</TableHead>
+                    <TableHead className="text-sm font-medium text-muted-foreground">T</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
 
-            {/* Renderizamos las filas de la tabla usando "readingsData" */}
-            {/* // eslint-disable-next-line @typescript-eslint/no-explicit-any*/}
-            {readingsData?.map((reading: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
-              const date = new Date(reading.created_at)
-              return (
-                <TableRow key={`${reading.id}-${reading.channel}`}>
-                  {/* Formateamos la fecha y la hora usando date-fns */}
-                  <TableCell className="text-sm">{format(date, "eeee, dd MMMM yyyy", { locale: es })}</TableCell>
-                  <TableCell className="text-sm">{format(date, "hh:mm", { locale: es })}</TableCell>
-                  {/* Renderizamos los valores de forma condicional según "metric" */}
-                  <TableCell className="text-sm">
-                    {metric === 'current' ? reading.Ia : reading.Uab}
-                  </TableCell>
-                  <TableCell className="text-sm">
-                    {metric === 'current' ? reading.Ib : reading.Ubc}
-                  </TableCell>
-                  <TableCell className="text-sm">
-                    {metric === 'current' ? reading.Ic : reading.Uac}
-                  </TableCell>
-                </TableRow>
-              )
-            })}
-          </TableBody>
-        </Table>
-        <PaginationNumberComponent count={readings.count} itemsPerPage={5}/>
+                  {/* Renderizamos las filas de la tabla usando "readingsData" */}
+                  {/* // eslint-disable-next-line @typescript-eslint/no-explicit-any*/}
+                  {readingsData?.map((reading: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+                    const date = new Date(reading.created_at)
+                    return (
+                      <TableRow key={`${reading.id}-${reading.channel}`}>
+                        {/* Formateamos la fecha y la hora usando date-fns */}
+                        <TableCell className="text-sm">{format(date, "eeee, dd MMMM yyyy", { locale: es })}</TableCell>
+                        <TableCell className="text-sm">{format(date, "hh:mm", { locale: es })}</TableCell>
+                        {/* Renderizamos los valores de forma condicional según "metric" */}
+                        <TableCell className="text-sm">
+                          {metric === 'current' ? reading.Ia : reading.Uab}
+                        </TableCell>
+                        <TableCell className="text-sm">
+                          {metric === 'current' ? reading.Ib : reading.Ubc}
+                        </TableCell>
+                        <TableCell className="text-sm">
+                          {metric === 'current' ? reading.Ic : reading.Uac}
+                        </TableCell>
+                      </TableRow>
+                    )
+                  })}
+                </TableBody>
+              </Table>
+              <PaginationNumberComponent count={readings.count} itemsPerPage={5}/>
+            </>
+          ) : (
+            <NoResultFound/>
+          )
+          
+        }
+        
       </div>
     </Card>
   )

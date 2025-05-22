@@ -65,7 +65,7 @@ export default async function page({ searchParams } : SearchParams) {
           <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters?.[0].electrical_panels} />
           <DatepickerRange />
       </FiltersContainer> 
-      <section className='flex' >
+      <section>
         <ConsumptionTable consumptionTableReadings={consumptionTableReadings}/> 
         <HistoricalCosumption group_by={group_by} consumptionGraphReadings={consumptionGraphReadings}/>
       </section>

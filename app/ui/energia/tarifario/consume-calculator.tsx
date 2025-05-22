@@ -21,7 +21,7 @@ export default function ConsumeCalculator({ consumptionCalculatorReadings } : { 
           <div className="flex gap-4">
             <div>
               <p className='text-sm font-medium'>Consumo total de energía</p>
-              { consumptionCalculatorReadings?.consumption ? <p className="text-4xl font-semibold mt-2">S/ {consumptionCalculatorReadings?.consumption?.toFixed(2)}</p> : <p className="mt-2 font-bold flex flex-col items-center"> Intente otras fechas
+              { consumptionCalculatorReadings?.consumption ? <p className="text-4xl font-semibold mt-2">{consumptionCalculatorReadings?.consumption?.toFixed(2)}</p> : <p className="mt-2 font-bold flex flex-col items-center"> Intente otras fechas
                 <BadgeAlert />
                 </p>}
             </div>

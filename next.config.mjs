@@ -10,7 +10,8 @@ const nextConfig = {
                 pathname: '/f/**'
             }
         ]
-    }
+    },
+    
 };
 
 export default nextConfig;

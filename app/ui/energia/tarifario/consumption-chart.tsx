@@ -78,9 +78,7 @@ interface DataPoint {
   }
   
 
-export default function ConsumoChart({ data } : { data: DataPoint[], group_by?: string}) {
-
-  console.log(data)
+export default function ConsumoChart({ data, group_by } : { data: DataPoint[], group_by?: string } ) {
 
   const dataPoints = data?.map((item : any ) => ({ // eslint-disable-line @typescript-eslint/no-explicit-any
     x: new Date(item.date), // Se convierte la fecha a objeto Date
@@ -91,10 +89,11 @@ export default function ConsumoChart({ data } : { data: DataPoint[], group_by?: 
    const dataLine = {
       datasets: [
         {
-          label: `hola`, // Se utiliza el indicador como label
+          label: `Consumo`, // Se utiliza el indicador como label
           data: dataPoints,
           fill: false,
-          borderColor: "#00b0c7",
+          backgroundColor: "#00b0c7", // color de relleno de cada barra
+          borderColor: "#008ba3",       // opcional: color del borde
           stepped: true,
           tension: 0,
           pointRadius: 2, 
@@ -106,14 +105,14 @@ export default function ConsumoChart({ data } : { data: DataPoint[], group_by?: 
         interaction: {
           mode: 'nearest',
           axis: 'x',
-          intersect: false
+          intersect: false  
         },
         responsive: true,
         scales: {
           x: {
             type: "time",
             time: {
-              unit: "day", // Puedes ajustar la unidad a 'hour', 'day', etc.
+              unit: group_by === 'day' ? 'day' : 'month', // Puedes ajustar la unidad a 'hour', 'day', etc.
               displayFormats: {
                 minute: "HH:mm",
               },
@@ -136,7 +135,7 @@ export default function ConsumoChart({ data } : { data: DataPoint[], group_by?: 
           },
           y: {
             title: {
-              display: false,
+              display: true,
               text: "Valor",
             },
             grid: {
@@ -144,7 +143,7 @@ export default function ConsumoChart({ data } : { data: DataPoint[], group_by?: 
               tickLength: 50
             },
             ticks: {
-              display: false
+              display: true
             },
           },
         },
@@ -169,7 +168,7 @@ export default function ConsumoChart({ data } : { data: DataPoint[], group_by?: 
                   label += ": ";
                 }
                 // Se redondea el valor 'y' a dos decimales
-                label += context.parsed.y.toFixed(2);
+                label += `${context.parsed.y.toFixed(2)} kWh`;
                 return label;
               },
             },
