@@ -105,8 +105,8 @@ export default function TariffTable( { tariffData }: { tariffData: TariffData } 
                 S/ {billing_data?.cargo_por_energia_activa_en_punta}
               </TableCell>
                  <TableCell>
-                S/ {consumption?.energy_peak.toFixed(2)}
-              </TableCell>
+                  {consumption?.energy_peak.toFixed(2)}
+                </TableCell>
               <TableCell className="text-center">
                 S/ {importe?.cargo_por_energia_activa_en_punta}
               </TableCell>
@@ -122,7 +122,7 @@ export default function TariffTable( { tariffData }: { tariffData: TariffData } 
                 S/ {billing_data?.cargo_por_energia_activa_fuera_de_punta}
               </TableCell>
               <TableCell>
-                S/ {consumption?.energy_off_peak.toFixed(2)}
+                {consumption?.energy_off_peak.toFixed(2)}
               </TableCell>
               <TableCell className="text-center">
                 S/ {importe?.cargo_por_energia_activa_fuera_de_punta}
@@ -139,7 +139,7 @@ export default function TariffTable( { tariffData }: { tariffData: TariffData } 
                 S/{billing_data?.tariff_rating ? billing_data?.cargo_por_potencia_activa_de_generacion_para_usuarios?.presentes_en_punta : billing_data?.cargo_por_potencia_activa_de_generacion_para_usuarios.presentes_fuera_de_punta}
               </TableCell>
               <TableCell>
-                S/ {consumption?.power_generation.toFixed(2)}
+                {consumption?.power_generation.toFixed(2)}
               </TableCell>
               <TableCell className="text-center">
                 S/  {importe?.cargo_por_potencia_activa_generacion}
@@ -156,7 +156,7 @@ export default function TariffTable( { tariffData }: { tariffData: TariffData } 
                 S/ {billing_data?.tariff_rating ? billing_data?.cargo_por_potencia_activa_de_redes_de_distribucion_para_usuarios.presentes_en_punta : billing_data?.cargo_por_potencia_activa_de_redes_de_distribucion_para_usuarios.presentes_fuera_de_punta}
               </TableCell>
               <TableCell>
-                S/ {consumption?.power_distribution.toFixed(2)}
+                {consumption?.power_distribution.toFixed(2)}
               </TableCell>
               <TableCell className="text-center">
                 S/  {importe?.cargo_por_potencia_activa_distribucion}
@@ -173,7 +173,7 @@ export default function TariffTable( { tariffData }: { tariffData: TariffData } 
                 S/ {billing_data?.["cargo_por_energia_reactiva_que_exceda_el_30%_del_total_de_energia_activa"]}
               </TableCell>
                  <TableCell>
-                S/ {consumption?.energy_reactive.toFixed(2)}
+                {consumption?.energy_reactive.toFixed(2)}
               </TableCell>
               <TableCell className="text-center">
                 {importe?.cargo_por_energia_reactiva}
