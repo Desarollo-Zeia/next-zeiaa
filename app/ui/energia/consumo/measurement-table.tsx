@@ -182,7 +182,7 @@ interface Readings {
                           <TableCell>{time}</TableCell>
                           {avaibleIndicators?.map((header, headerIndex) => {
                             return indicatorValues[header] === null ? <TableCell key={headerIndex}>-</TableCell> : (
-                              <TableCell className={`cursor-pointer text-center ${selectedIndicator === header ? 'bg-[#00b0c7] opacity-70 text-white font-medium' : ''}`} key={headerIndex}>{indicatorValues[header]}</TableCell>
+                              <TableCell className={`cursor-pointer text-center ${selectedIndicator === header ? 'bg-[#00b0c7] opacity-70 text-white font-medium' : ''}`} key={headerIndex}>{indicatorValues[header].toFixed(2)}</TableCell>
                             )
                           })}
                         </TableRow>
