@@ -95,7 +95,7 @@ interface Powers {
 export default function PowerUsageChart({ readings, group, powers } : { readings: PowerReading[], group?: string, powers: Powers[] }) {
 
 
-  const { power_contracted, power_installed, power_max } = powers?.[0]
+  const { power_contracted, power_max } = powers?.[0]
 
   const [isPending, startTransition] = useTransition()
   const searchParams = useSearchParams()
