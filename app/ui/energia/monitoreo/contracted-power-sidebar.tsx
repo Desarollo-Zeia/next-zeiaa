@@ -30,25 +30,23 @@ export default function ContractedPowerSidebar({ panel, powers }: { panel: Panel
         <div className="flex gap-2">
           <div className="flex-1 bg-gray-100 flex flex-col items-center gap-2 p-2 rounded-lg">
             <p className="text-nowrap text-xs">Potencia contratada</p>
-            <p className="font-semibold font-sm">{powers?.[0].power_contracted} kW</p>
+            <p className="font-semibold font-sm">{powers?.[0].power_contracted ? powers?.[0].power_contracted + ' kW'  : 'No estimada'}</p>
           </div>
-
           <div className="flex-1 bg-gray-100 flex flex-col items-center gap-2 p-2 rounded-lg">
             <p className="text-nowrap text-xs">Tipo</p>
             <p className="font-semibold font-sm">{capitalizeFirstLetter(panel?.type)}</p>
           </div>
         </div>
-
         <div className="space-y-2.5">
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 rounded-full bg-yellow-500"></span>
-            <span className="text-sm">Máxima demanda de potencia</span>
-            <span className="text-sm font-medium ml-auto text-nowrap">{powers?.[0].power_max} kW</span>
+            <span className="text-sm">Máxima demanda de potencia:</span>
+            <span className="text-sm font-medium ml-auto text-nowrap">{powers?.[0].power_max ? powers?.[0].power_max + ' kW'  : 'No estimada'}</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 rounded-full bg-orange-500"></span>
-            <span className="text-sm">Potencia contratada</span>
-            <span className="text-sm font-medium ml-auto text-nowrap">{powers?.[0].power_contracted} kW</span>
+            <span className="text-sm">Potencia contratada:</span>
+            <span className="text-sm font-medium ml-auto text-nowrap">{powers?.[0].power_contracted ? powers?.[0].power_contracted + ' kW'  : 'No estimada'}</span>
           </div>
           {/* <div className="flex items-center gap-2">
             <span className="w-3 h-3 rounded-full bg-rose-500"></span>

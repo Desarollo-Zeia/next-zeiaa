@@ -43,6 +43,13 @@ interface PowerReading {
   values_per_channel: MeasurementPoint[]
 }
 
+interface Powers {
+  id: number
+  power_installed: number
+  power_contracted: number
+  power_max: number
+}
+
 // Transformar los datos del JSON al formato esperado por el gráfico
 
 // Convertir los datos al formato esperado por el gráfico
@@ -85,7 +92,10 @@ interface PowerReading {
 //   return null
 // }
 
-export default function PowerUsageChart({ readings, group } : { readings: PowerReading[], group?: string }) {
+export default function PowerUsageChart({ readings, group, powers } : { readings: PowerReading[], group?: string, powers: Powers[] }) {
+
+
+  const { power_contracted, power_installed, power_max } = powers?.[0]
 
   const [isPending, startTransition] = useTransition()
   const searchParams = useSearchParams()
@@ -231,8 +241,9 @@ export default function PowerUsageChart({ readings, group } : { readings: PowerR
         annotations: {
           line1: {
             type: 'line',
-            yMin: 51.1,
-            yMax: 51.1,
+            display: power_max ? true : false,
+            yMin: power_max ? power_max : null,
+            yMax: power_max ? power_max : null,
             borderColor: '#d9c308',
             borderWidth: 2,
             borderDash: [5, 5],
@@ -245,8 +256,9 @@ export default function PowerUsageChart({ readings, group } : { readings: PowerR
           },
           line2: {
             type: 'line',
-            yMin: 88,
-            yMax: 88,
+            display: power_contracted ? true : false,
+            yMin: power_contracted,
+            yMax: power_contracted,
             borderColor: 'orange',
             borderWidth: 2,
             borderDash: [5, 5],
