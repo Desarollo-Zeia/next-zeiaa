@@ -19,9 +19,10 @@ import { ELECTRIC_PARAMETERS } from "@/app/utils/formatter";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import DeviceReadingsChart from "./measurement-graph";
 import NoResultFound from "../../no-result-found";
+import annotationPlugin from 'chartjs-plugin-annotation';
 
 // Registro de componentes en ChartJS
-ChartJS.register(LineElement, PointElement, LinearScale, TimeScale, Tooltip, Legend, zoomPlugin)
+ChartJS.register(LineElement, PointElement, LinearScale, TimeScale, Tooltip, Legend, zoomPlugin, annotationPlugin)
 
 const energyToggleArray =  [
   { label: "Hora", value: "none" },
@@ -42,7 +43,9 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by } : { rea
     x: new Date(item.first_reading), // Se convierte la fecha a objeto Date
     y: item.first_value,
     
-  })) || [];
+  })) || []
+
+  console.log(category)
 
   const handleFrequency = (frequency: string) => {
     startTransition(() => {
@@ -74,6 +77,7 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by } : { rea
         tension: 0,
         pointRadius: 2, 
       },
+     
     ],
   }
 
@@ -192,14 +196,49 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by } : { rea
       },
       legend: {
         display: false
+      },
+       annotation: {
+        annotations: {
+           line1: {
+            display: category === 'voltage' ? true : false,
+            type: 'line',
+            yMin: 209,
+            yMax: 209,
+            borderColor: '#000',
+            borderWidth: 2,
+            borderDash: [5, 5],
+            label: {
+              display: true,
+              color: 'white',
+              backgroundColor: '#000',
+              content: ['209 v'],
+            }
+          },
+          line2: {
+          display: category === 'voltage' ? true : false,
+          type: 'line',
+          yMin: 231,
+          yMax: 231,
+          borderColor: '#000',
+          borderWidth: 2,
+          borderDash: [5, 5],
+          label: {
+            display: true,
+            color: 'white',
+            backgroundColor: '#000',
+            content: ['231 v'],
+          }
+          },
+        }
       }
-    }
+    },
+    
   }
 
   return (
     <div className="flex-1 w-full h-lvh p-4 bg-white flex flex-col justify-center items-center relative">
       {
-        readingsGraph.length > 0 && (
+        readingsGraph?.length > 0 && (
           <ToggleGroup type="single"  defaultValue={last_by || 'none'} onValueChange={handleFrequency}   aria-label="Frequency" className="flex gap-2 top-0 mt-4 absolute">
             {
               category !== 'energy'? 
@@ -248,7 +287,9 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by } : { rea
             <>
               {
                 last_by === 'hour' ? (
-                  <Line data={data} options={options} />
+                  <div className="w-full">
+                    <Line data={data} options={options} />
+                  </div>
                 ) : (
                   <DeviceReadingsChart data={readingsGraph} last_by={last_by}/>
                 )

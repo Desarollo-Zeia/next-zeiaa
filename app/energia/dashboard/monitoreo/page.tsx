@@ -61,7 +61,7 @@ export default async function page({ searchParams } : SearchParams) {
       </FiltersContainer>
       <div className="flex gap-4 mx-6">
         <div className="flex-1">
-          <PowerUsageChart readings={monitoringGraphReadings} group={group_by}/>
+          <PowerUsageChart readings={monitoringGraphReadings} group={group_by} powers={currentPowers}/>
           <ExcessPower excessPowerData={monitoringLastThreeReadings} panel={currentPanel} powers={currentPowers}/>
         </div>
       </div>
