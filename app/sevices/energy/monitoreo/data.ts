@@ -2,9 +2,9 @@
 import { fetchWithAuthEnergy } from "@/app/lib/api"
 import { baseUrlEnergy } from "@/app/lib/constant"
 
-export async function monitoringGraph({ headquarterId, panelId, date_after, date_before, group_by} : { date_after?: string,  date_before?: string, panelId?: string, headquarterId?: string, group_by?:string}) {
+export async function monitoringGraph({ headquarterId, date_after, date_before, group_by} : { date_after?: string,  date_before?: string, panelId?: string, headquarterId?: string, group_by?:string}) {
 
-  const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/powers/graph`, baseUrlEnergy)
+  const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/powers/graph`, baseUrlEnergy)
 
   if (date_after) url.searchParams.set('date_after', date_after)
   if (date_before) url.searchParams.set('date_before', date_before)
@@ -16,17 +16,17 @@ export async function monitoringGraph({ headquarterId, panelId, date_after, date
 }
 
 
-export async function monitoringLastThree({ headquarterId, panelId} : { panelId?: string, headquarterId?: string}) {
+export async function monitoringLastThree({ headquarterId} : { panelId?: string, headquarterId?: string}) {
 
-  const res = await fetchWithAuthEnergy(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/powers/last-exceeded`)
+  const res = await fetchWithAuthEnergy(`/api/v1/headquarter/${headquarterId}/electrical_panel/powers/last-exceeded`)
 
   return res 
 }
 
 
-export async function exceeded({ headquarterId, panelId, date_after, date_before, page} : { date_after?: string,  date_before?: string, panelId?: string, headquarterId?: string, page?: string}) {
+export async function exceeded({ headquarterId, date_after, date_before, page} : { date_after?: string,  date_before?: string, panelId?: string, headquarterId?: string, page?: string}) {
 
-  const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/powers/all-exceeded`, baseUrlEnergy)
+  const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/powers/all-exceeded`, baseUrlEnergy)
 
   if (date_after) url.searchParams.set('date_after', date_after)
   if (date_before) url.searchParams.set('date_before', date_before)
@@ -37,9 +37,9 @@ export async function exceeded({ headquarterId, panelId, date_after, date_before
   return res 
 }
 
-export async function exceededExcel({ headquarterId, panelId} : { headquarterId?: string, panelId?: string }) {
+export async function exceededExcel({ headquarterId} : { headquarterId?: string, panelId?: string }) {
   
-    const res = await fetchWithAuthEnergy(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/powers/report-exceeded`)
+    const res = await fetchWithAuthEnergy(`/api/v1/headquarter/${headquarterId}/electrical_panel/powers/report-exceeded`)
   
     return res
 }

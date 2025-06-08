@@ -2,9 +2,9 @@
 import { fetchWithAuthEnergy } from "@/app/lib/api"
 import { baseUrlEnergy } from "@/app/lib/constant"
 
-export async function armonics({ headquarterId, panelId, date_after, date_before, data_type, page} : { date_after?: string,  date_before?: string, panelId?: string, headquarterId?: string, data_type?:string, page?: string}) {
+export async function armonics({ headquarterId, date_after, date_before, data_type, page} : { date_after?: string,  date_before?: string, panelId?: string, headquarterId?: string, data_type?:string, page?: string}) {
 
-  const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/harmonic-distortion/list`, baseUrlEnergy)
+  const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/harmonic-distortion/list`, baseUrlEnergy)
 
   if (date_after) url.searchParams.set('date_after', date_after)
   if (date_before) url.searchParams.set('date_before', date_before)
@@ -16,9 +16,9 @@ export async function armonics({ headquarterId, panelId, date_after, date_before
   return res 
 }
 
-export async function armonicsGraph({ headquarterId, panelId, date_after, date_before, data_type} : { date_after?: string,  date_before?: string, panelId?: string, headquarterId?: string, data_type?:string}) {
+export async function armonicsGraph({ headquarterId, date_after, date_before, data_type} : { date_after?: string,  date_before?: string, panelId?: string, headquarterId?: string, data_type?:string}) {
 
-  const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/harmonic-distortion/graph`, baseUrlEnergy)
+  const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/harmonic-distortion/graph`, baseUrlEnergy)
 
   if (date_after) url.searchParams.set('date_after', date_after)
   if (date_before) url.searchParams.set('date_before', date_before)
@@ -29,9 +29,9 @@ export async function armonicsGraph({ headquarterId, panelId, date_after, date_b
   return res 
 }
 
-export async function armonicsExcel({ headquarterId, panelId, date_after, date_before, data_type } : { headquarterId?: string, panelId?: string, date_after?: string,  date_before?: string, data_type?:string}) {
+export async function armonicsExcel({ headquarterId, date_after, date_before, data_type } : { headquarterId?: string, panelId?: string, date_after?: string,  date_before?: string, data_type?:string}) {
   
-    const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/harmonic-distortion/report`, baseUrlEnergy)
+    const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/harmonic-distortion/report`, baseUrlEnergy)
   
     if (date_after) url.searchParams.set('date_after', date_after)
     if (date_before) url.searchParams.set('date_before', date_before)

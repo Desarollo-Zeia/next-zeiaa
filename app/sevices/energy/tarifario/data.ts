@@ -2,9 +2,9 @@
 import { fetchWithAuthEnergy } from "@/app/lib/api"
 import { baseUrlEnergy } from "@/app/lib/constant"
 
-export async function consumptionCalculator({ headquarterId, panelId, date_after, date_before } : { date_after?: string,  date_before?: string, panelId?: string, headquarterId?: string}) {
+export async function consumptionCalculator({ headquarterId, date_after, date_before } : { date_after?: string,  date_before?: string, panelId?: string, headquarterId?: string}) {
 
-  const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/rate-consumption`, baseUrlEnergy)
+  const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/rate-consumption`, baseUrlEnergy)
 
   if (date_after) url.searchParams.set('date_after', date_after)
   if (date_before) url.searchParams.set('date_before', date_before)
@@ -14,16 +14,16 @@ export async function consumptionCalculator({ headquarterId, panelId, date_after
   return res 
 }
 
-export async function consumptionInvoice({ headquarterId, panelId } : { date_after?: string,  date_before?: string, panelId?: string, headquarterId?: string}) {
+export async function consumptionInvoice({ headquarterId } : { date_after?: string,  date_before?: string, panelId?: string, headquarterId?: string}) {
 
-  const res = await fetchWithAuthEnergy(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/rate-consumption/cycle`)
+  const res = await fetchWithAuthEnergy(`/api/v1/headquarter/${headquarterId}/electrical_panel/rate-consumption/cycle`)
 
   return res 
 }
 
-export async function consumptionTable({ headquarterId, panelId, date_after, date_before, page } : { date_after?: string,  date_before?: string, panelId?: string, headquarterId?: string, page?: string}) {
+export async function consumptionTable({ headquarterId, date_after, date_before, page } : { date_after?: string,  date_before?: string, panelId?: string, headquarterId?: string, page?: string}) {
 
-  const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/rate-consumption/resume`, baseUrlEnergy)
+  const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/rate-consumption/resume`, baseUrlEnergy)
 
   if (date_after) url.searchParams.set('date_after', date_after)
   if (date_before) url.searchParams.set('date_before', date_before)
@@ -34,10 +34,10 @@ export async function consumptionTable({ headquarterId, panelId, date_after, dat
   return res 
 }
 
-export async function consumptionGraph({ headquarterId, panelId, group_by, date_after, date_before,  } : { date_after?: string,  date_before?: string, panelId?: string, headquarterId?: string, group_by?: string}) {
+export async function consumptionGraph({ headquarterId, group_by, date_after, date_before,  } : { date_after?: string,  date_before?: string, panelId?: string, headquarterId?: string, group_by?: string}) {
 
   
-  const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/rate-consumption/historical`, baseUrlEnergy)
+  const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/rate-consumption/historical`, baseUrlEnergy)
 
   if (date_after) url.searchParams.set('date_after', date_after)
   if (date_before) url.searchParams.set('date_before', date_before)
@@ -48,10 +48,10 @@ export async function consumptionGraph({ headquarterId, panelId, group_by, date_
   return res 
 }
 
-export async function consumptionTariff({ headquarterId, panelId } : { panelId?: string, headquarterId?: string}) {
+export async function consumptionTariff({ headquarterId } : { panelId?: string, headquarterId?: string}) {
 
   
-  const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/rate-consumption/detail-tariff`, baseUrlEnergy)
+  const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/rate-consumption/detail-tariff`, baseUrlEnergy)
 
   const res = await fetchWithAuthEnergy(`${url.pathname}`)
 
