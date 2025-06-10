@@ -1,6 +1,8 @@
 'use client'
 
 import { Card } from '@/components/ui/card'
+import { differenceInDays, format, parse, parseISO } from 'date-fns';
+import { useEffect } from 'react';
 
 interface ConsumptionInvoiceReadings {
   power_contracted: number;
@@ -20,6 +22,16 @@ interface ConsumptionInvoiceReadings {
 }
 
 export default function ConsumeCycle({ consumptionInvoiceReadings } : { consumptionInvoiceReadings : ConsumptionInvoiceReadings }) {
+
+
+  const fecha1 = parseISO(consumptionInvoiceReadings?.billing_cycle_start)
+  const fecha2 = parseISO(consumptionInvoiceReadings?.billing_cycle_end)
+  const hoy = new Date()
+
+  const dias = differenceInDays(fecha2, fecha1)
+  const count = differenceInDays(fecha1, hoy)
+
+
 
 
   return (
@@ -53,11 +65,11 @@ export default function ConsumeCycle({ consumptionInvoiceReadings } : { consumpt
           </div>
           <div className="shadow-sm  rounded-lg p-2">
             <h4 className='text-sm font-medium'>Días facturados</h4>
-            <p className='text-xs'>29 de 29 </p>
+            <p className='text-xs'>{count} de {dias}</p>
           </div>
           <div className="col-span-2 shadow-sm rounded-lg p-2">
             <h4 className='text-sm font-medium'>Ciclo de facturación</h4>
-            <p className='text-xs'>{consumptionInvoiceReadings?.billing_cycle_start} - {consumptionInvoiceReadings?.billing_cycle_end}</p>
+            <p className='text-xs'>{format(consumptionInvoiceReadings?.billing_cycle_start, 'dd-MM-yyyy')} - {format(consumptionInvoiceReadings?.billing_cycle_end, 'dd-MM-yyyy')}</p>
           </div>
         </div>
       </Card>
