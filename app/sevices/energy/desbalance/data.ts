@@ -18,7 +18,7 @@ export async function current({ headquarterId, date_after, date_before, status, 
 
 export async function currentGraph({ headquarterId, date_after, date_before, status, page} : { date_after?: string,  date_before?: string, panelId?: string, headquarterId?: string, status?: string, page?: string}) {
 
-    const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/measurement_point/1/current-imbalanced/graph`, baseUrlEnergy)
+    const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/current-imbalanced/graph`, baseUrlEnergy)
   
     if (date_after) url.searchParams.set('date_after', date_after)
     if (date_before) url.searchParams.set('date_before', date_before)
@@ -47,7 +47,7 @@ export async function currentGraph({ headquarterId, date_after, date_before, sta
 
   export async function voltageGraph({ headquarterId, date_after, date_before, status} : { date_after?: string,  date_before?: string, panelId?: string, headquarterId?: string, status?: string}) {
 
-    const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/measurement_point/1/voltage-imbalanced/graph`, baseUrlEnergy)
+    const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/voltage-imbalanced/graph`, baseUrlEnergy)
   
     if (date_after) url.searchParams.set('date_after', date_after)
     if (date_before) url.searchParams.set('date_before', date_before)
