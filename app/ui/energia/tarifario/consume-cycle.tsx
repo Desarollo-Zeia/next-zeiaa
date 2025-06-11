@@ -1,8 +1,7 @@
 'use client'
 
 import { Card } from '@/components/ui/card'
-import { differenceInDays, format, parse, parseISO } from 'date-fns';
-import { useEffect } from 'react';
+import { differenceInDays, format, parseISO } from 'date-fns';
 
 interface ConsumptionInvoiceReadings {
   power_contracted: number;
