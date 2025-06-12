@@ -44,7 +44,9 @@ interface Readings {
   type Values = Record<string, number>
 
 
-  export default function MeasurementTable({ readings, category }: { readings: Readings, category?: string, indicator?: string }) {
+  export default function MeasurementTable({ readings, category, indicator }: { readings: Readings, category?: string, indicator?: string }) {
+
+    console.log(indicator)
 
     const router = useRouter()
     const pathname = usePathname()
