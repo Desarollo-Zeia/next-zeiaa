@@ -1,9 +1,9 @@
-import { getCompanyData } from "@/app/lib/auth";
-import { getEnergyCompanyDetails } from "@/app/sevices/energy/enterprise/data";
+// import { getCompanyData } from "@/app/lib/auth";
+import { getEnergyCompanyDetails, getHeadquarters } from "@/app/sevices/energy/enterprise/data";
 import { monitoringGraph, monitoringLastThree } from "@/app/sevices/energy/monitoreo/data";
 import { SearchParams } from "@/app/type";
 import HeadquarterEnergyFilter from "@/app/ui/energia/filters/headquarter-energy-filter";
-import PanelsFilterEnergy from "@/app/ui/energia/filters/panels-energy-filter";
+// import PanelsFilterEnergy from "@/app/ui/energia/filters/panels-energy-filter";
 import ExcessPower from "@/app/ui/energia/monitoreo/excess-power";
 import DownloadExcelMonitoreo from "@/app/ui/energia/monitoreo/potencia-excedente/download-excel";
 import PowerUsageChart from "@/app/ui/energia/monitoreo/power-dashboard";
@@ -13,9 +13,13 @@ import { format } from "date-fns";
 
 export default async function page({ searchParams } : SearchParams) {
 
-  const { companies } = await getCompanyData()
 
   const { headquarter = '1' , panel = '1',  date_after = new Date(), date_before = new Date(), group_by = 'day'} = await searchParams
+
+  const headquarters  = await getHeadquarters()
+  const energyDetails = await getEnergyCompanyDetails()
+  const { results } = headquarters
+  const firstHeadquarter = headquarter || results[0].id
 
   // 1) Formateamos fechas solo una vez
   const formattedDateAfter = format(date_after, 'yyyy-MM-dd')
@@ -23,22 +27,18 @@ export default async function page({ searchParams } : SearchParams) {
 
   // 2) Parale­lizamos las llamadas
   const [
-    energyDetails,
     monitoringGraphReadings,
     monitoringLastThreeReadings
   ] = await Promise.all([
-    getEnergyCompanyDetails({
-      headquarterId: companies[0].id
-    }),
     monitoringGraph({
-      headquarterId: headquarter,
+      headquarterId: firstHeadquarter,
       panelId: panel,
       date_after: formattedDateAfter,
       date_before: formattedDateBefore,
       group_by
     }),
     monitoringLastThree({
-      headquarterId: headquarter,
+      headquarterId: firstHeadquarter,
       panelId: panel
     })
   ])
@@ -46,16 +46,15 @@ export default async function page({ searchParams } : SearchParams) {
   // 3) Desestructuramos solo lo que necesitamos
   const hq = energyDetails.energy_headquarters[0]
   const currentPanel = hq.electrical_panels?.find(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (item : any ) => item.id === Number(panel)
+    (item : any ) => item.id === Number(panel) // eslint-disable-line @typescript-eslint/no-explicit-any
   )
   const currentPowers = hq.powers
 
   return (
     <div className="w-full">
       <FiltersContainer>
-        <HeadquarterEnergyFilter energyHeadquarter={energyDetails.energy_headquarters} />
-        <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters?.[0].electrical_panels} />
+        <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} />
+        {/* <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters?.[0].electrical_panels} /> */}
         <DatepickerRange />
         <DownloadExcelMonitoreo headquarterId={headquarter} panelId={panel}/>
       </FiltersContainer>

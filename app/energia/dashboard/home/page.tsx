@@ -1,7 +1,7 @@
 import { consume, consumeGraph } from "@/app/sevices/energy/data"
 import FiltersContainer from "@/app/ui/filters/filters-container"
-import { getCompanyData } from "@/app/lib/auth"
-import { getEnergyCompanyDetails } from "@/app/sevices/energy/enterprise/data"
+// import { getCompanyData } from "@/app/lib/auth"
+import { getEnergyMeasurementPoints, getHeadquarters } from "@/app/sevices/energy/enterprise/data"
 import HeadquarterEnergyFilter from "@/app/ui/energia/filters/headquarter-energy-filter"
 import PanelsFilterEnergy from "@/app/ui/energia/filters/panels-energy-filter"
 import MeasurementTable from "@/app/ui/energia/consumo/measurement-table"
@@ -15,19 +15,28 @@ import DownloadExcel from "@/app/ui/energia/consumo/download-excel"
 
 
 export default async function Page({ searchParams }: SearchParams) {
-  const { companies } = await getCompanyData()
+  // const { companies } = await getCompanyData()
 
-  const { headquarter = '1', panel = '1', date_after = new Date(), date_before = new Date(), unit = 'V', indicator = 'P', page = '1', last_by = 'hour', category = 'power' } = await searchParams
+const { headquarter, panel = '1', date_after = new Date(), date_before = new Date(), unit = 'V', indicator = 'P', page = '1', last_by = 'hour', category = 'power' } = await searchParams
+
+const headquarters  = await getHeadquarters()
+const { results } = headquarters
+const firstHeadquarter = headquarter || results[0].id
+
+console.log(firstHeadquarter)
+
+const measurementPoints = await getEnergyMeasurementPoints({ headquarterId: firstHeadquarter})
 
 const formattedDateAfter  = format(date_after,  'yyyy-MM-dd')
-  const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
+const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
+
 
   // 4. Paralle­lizar las llamadas
-  const [readings, readingsGraph, energyDetails] = await Promise.all([
+  const [readings, readingsGraph] = await Promise.all([
     consume({
       date_after:  formattedDateAfter,
       date_before: formattedDateBefore,
-      headquarterId: headquarter,
+      headquarterId: firstHeadquarter,
       panelId:       panel,
       page,
       category
@@ -35,16 +44,13 @@ const formattedDateAfter  = format(date_after,  'yyyy-MM-dd')
     consumeGraph({
       date_after:  formattedDateAfter,
       date_before: formattedDateBefore,
-      headquarterId: headquarter,
+      headquarterId: firstHeadquarter,
       panelId:       panel,
       indicador:     indicator,
       category,
       unit,
       last_by
     }),
-    getEnergyCompanyDetails({
-      headquarterId: companies[0].id
-    })
   ])
 
   // 5. Extraer sólo lo que necesitas de energyDetails
@@ -57,10 +63,10 @@ const formattedDateAfter  = format(date_after,  'yyyy-MM-dd')
   return (
     <div className="w-full">
       <FiltersContainer>
-        <HeadquarterEnergyFilter energyHeadquarter={energyDetails.energy_headquarters} />
-        <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters[0].electrical_panels} />
+        <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} />
+        <PanelsFilterEnergy energyPanels={measurementPoints.devices} />
         <DatepickerRange />
-        <DownloadExcel headquarterId={headquarter} panelId={panel} date_after={format(date_after, 'yyyy-MM-dd')} date_before={format(date_before, 'yyyy-MM-dd')} unit={unit}/>
+        <DownloadExcel headquarterId={firstHeadquarter} panelId={panel} date_after={format(date_after, 'yyyy-MM-dd')} date_before={format(date_before, 'yyyy-MM-dd')} unit={unit}/>
       </FiltersContainer>
       <div className="flex">
         <MeasurementTable readings={readings} category={category} indicator={indicator}/>

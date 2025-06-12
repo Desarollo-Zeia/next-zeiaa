@@ -1,6 +1,6 @@
-import { getCompanyData } from "@/app/lib/auth";
+// import { getCompanyData } from "@/app/lib/auth";
 import { currentGraph, voltageGraph } from "@/app/sevices/energy/desbalance/data";
-import { getEnergyCompanyDetails } from "@/app/sevices/energy/enterprise/data";
+import { getHeadquarters } from "@/app/sevices/energy/enterprise/data";
 import { SearchParams } from "@/app/type";
 import { StatusAlert } from "@/app/ui/energia/desbalance/alert-balance";
 import CurrentCharts from "@/app/ui/energia/desbalance/current-chart";
@@ -8,7 +8,7 @@ import { CurrentMeter } from "@/app/ui/energia/desbalance/current-meter";
 import { MetricSelector } from "@/app/ui/energia/desbalance/metric-selector";
 import VoltageCharts from "@/app/ui/energia/desbalance/voltage-chart";
 import HeadquarterEnergyFilter from "@/app/ui/energia/filters/headquarter-energy-filter";
-import PanelsFilterEnergy from "@/app/ui/energia/filters/panels-energy-filter";
+// import PanelsFilterEnergy from "@/app/ui/energia/filters/panels-energy-filter";
 import { DatepickerRange } from "@/app/ui/filters/datepicker-range";
 import FiltersContainer from "@/app/ui/filters/filters-container";
 import NoResultFound from "@/app/ui/no-result-found";
@@ -17,21 +17,21 @@ import { format } from "date-fns";
 
 export default async function page({ searchParams } : SearchParams) {
 
-
-  const { companies } = await getCompanyData()
-
-   const { headquarter = '1' , panel = '1',  date_after = new Date(), date_before = new Date(), metric = 'current'} = await searchParams
+   const { headquarter, panel = '1',  date_after = new Date(), date_before = new Date(), metric = 'current'} = await searchParams
   
-  const energyDetails = await getEnergyCompanyDetails({ headquarterId: companies[0].id })
+  const headquarters = await getHeadquarters()
+
+  const { results } = headquarters
+  const firstHeadquarter = headquarter || results[0].id
 
   const currentReadings = await currentGraph({
-    headquarterId: headquarter,
+    headquarterId: firstHeadquarter,
     panelId: panel,
     date_after: format(date_after, "yyyy-MM-dd"),
     date_before: format(date_before, "yyyy-MM-dd"),
   })
   const voltageReadings = await voltageGraph({
-    headquarterId: headquarter,
+    headquarterId: firstHeadquarter,
     panelId: panel,
     date_after: format(date_after, "yyyy-MM-dd"),
     date_before: format(date_before, "yyyy-MM-dd"),
@@ -67,8 +67,8 @@ export default async function page({ searchParams } : SearchParams) {
   return (
     <div className="w-full">
       <FiltersContainer>
-        <HeadquarterEnergyFilter energyHeadquarter={energyDetails.energy_headquarters} />
-        <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters[0].electrical_panels} />
+        <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} />
+        {/* <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters[0].electrical_panels} /> */}
         <DatepickerRange />
       </FiltersContainer>
       <div className="flex gap-4 mx-6">

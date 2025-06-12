@@ -1,9 +1,9 @@
-import { getCompanyData } from "@/app/lib/auth"
-import { getEnergyCompanyDetails } from "@/app/sevices/energy/enterprise/data"
+// import { getCompanyData } from "@/app/lib/auth"
+import { getHeadquarters } from "@/app/sevices/energy/enterprise/data"
 import { consumptionCalculator, consumptionInvoice, consumptionTariff } from "@/app/sevices/energy/tarifario/data"
 import { SearchParams } from "@/app/type"
 import HeadquarterEnergyFilter from "@/app/ui/energia/filters/headquarter-energy-filter"
-import PanelsFilterEnergy from "@/app/ui/energia/filters/panels-energy-filter"
+// import PanelsFilterEnergy from "@/app/ui/energia/filters/panels-energy-filter"
 import ConsumeCalculator from "@/app/ui/energia/tarifario/consume-calculator"
 import ConsumeCycle from "@/app/ui/energia/tarifario/consume-cycle"
 import { DatepickerRange } from "@/app/ui/filters/datepicker-range"
@@ -17,34 +17,34 @@ import TariffTable from "@/app/ui/energia/tarifario/tariff-table"
 
 export default async function Page({ searchParams }: SearchParams) {
 
-  const { companies } = await getCompanyData()  
   
   const { headquarter = '1' , panel = '1',  date_after = new Date(), date_before = new Date()} = await searchParams
 
   const formattedDateAfter = format(date_after, 'yyyy-MM-dd')
   const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
 
+    const headquarters  = await getHeadquarters()
+    const { results } = headquarters
+    const firstHeadquarter = headquarter || results[0].id
+
   // Fetch energy details first as it's needed for filters
-  const energyDetails = await getEnergyCompanyDetails({
-    headquarterId: companies[0].id,
-  })
 
 
   const consumptionCalculatorPromise = consumptionCalculator({
     panelId: panel,
-    headquarterId: headquarter,
+    headquarterId: firstHeadquarter,
     date_after: formattedDateAfter,
     date_before: formattedDateBefore,
   })
 
   const consumptionInvoicePromise = consumptionInvoice({
     panelId: panel,
-    headquarterId: headquarter,
+    headquarterId: firstHeadquarter,
   })
 
   const consumptionTariffPromise = consumptionTariff({
     panelId: panel,
-    headquarterId: headquarter,
+    headquarterId: firstHeadquarter,
   })
 
   const [
@@ -62,8 +62,8 @@ export default async function Page({ searchParams }: SearchParams) {
     <div className="w-full">
       <FiltersContainer>
       
-          <HeadquarterEnergyFilter energyHeadquarter={energyDetails.energy_headquarters} />
-          <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters?.[0].electrical_panels} />
+          <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} />
+          {/* <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters?.[0].electrical_panels} /> */}
           <DatepickerRange />
       </FiltersContainer> 
       <div className="w-full flex flex-col gap-4 px-6">
