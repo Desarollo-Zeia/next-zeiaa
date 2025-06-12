@@ -109,7 +109,7 @@ export default function CurrentCharts({ currentReadings }: { currentReadings: Me
               return `${date.getHours()}:${date.getMinutes().toString().padStart(2, "0")}`
             }}
           />
-          <YAxis hide={false} />
+          <YAxis hide={true} />
           <Tooltip content={<CustomTooltip />} />
           <Line type="stepAfter" dataKey="Ia" stroke="#00b0c7" strokeWidth={2} dot={false} isAnimationActive={true} />
         </LineChart>

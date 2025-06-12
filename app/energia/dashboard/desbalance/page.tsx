@@ -9,6 +9,7 @@ import { MetricSelector } from "@/app/ui/energia/desbalance/metric-selector";
 import VoltageCharts from "@/app/ui/energia/desbalance/voltage-chart";
 import HeadquarterEnergyFilter from "@/app/ui/energia/filters/headquarter-energy-filter";
 import PanelsFilterEnergy from "@/app/ui/energia/filters/panels-energy-filter";
+import { DatepickerRange } from "@/app/ui/filters/datepicker-range";
 import FiltersContainer from "@/app/ui/filters/filters-container";
 import NoResultFound from "@/app/ui/no-result-found";
 import { format } from "date-fns";
@@ -68,6 +69,7 @@ export default async function page({ searchParams } : SearchParams) {
       <FiltersContainer>
         <HeadquarterEnergyFilter energyHeadquarter={energyDetails.energy_headquarters} />
         <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters[0].electrical_panels} />
+        <DatepickerRange />
       </FiltersContainer>
       <div className="flex gap-4 mx-6">
         <div className="min-w-[350px] flex flex-col gap-2">
