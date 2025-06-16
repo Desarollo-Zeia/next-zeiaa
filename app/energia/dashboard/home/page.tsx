@@ -11,9 +11,6 @@ import { DatepickerRange } from "@/app/ui/filters/datepicker-range"
 import Graph from "@/app/ui/energia/consumo/graph"
 import DownloadExcel from "@/app/ui/energia/consumo/download-excel"
 
-
-
-
 export default async function Page({ searchParams }: SearchParams) {
   // const { companies } = await getCompanyData()
 
@@ -23,13 +20,11 @@ const headquarters  = await getHeadquarters()
 const { results } = headquarters
 const firstHeadquarter = headquarter || results[0].id
 
-console.log(firstHeadquarter)
 
 const measurementPoints = await getEnergyMeasurementPoints({ headquarterId: firstHeadquarter})
 
 const formattedDateAfter  = format(date_after,  'yyyy-MM-dd')
 const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
-
 
   // 4. Paralle­lizar las llamadas
   const [readings, readingsGraph] = await Promise.all([
@@ -64,7 +59,8 @@ const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
     <div className="w-full">
       <FiltersContainer>
         <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} />
-        <PanelsFilterEnergy energyPanels={measurementPoints.devices} />
+        <PanelsFilterEnergy energyPanels={measurementPoints.results} />
+
         <DatepickerRange />
         <DownloadExcel headquarterId={firstHeadquarter} panelId={panel} date_after={format(date_after, 'yyyy-MM-dd')} date_before={format(date_before, 'yyyy-MM-dd')} unit={unit}/>
       </FiltersContainer>
