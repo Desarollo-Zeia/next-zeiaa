@@ -32,33 +32,28 @@ interface Readings {
   
   interface Indicators {
     id: number;
-    values_per_channel: ValuePerChannel[];
-    measurement_point_name: string;
+    values: ValuePerChannel
   }
   
   interface ValuePerChannel {
     values: Values;
-    channel: number;
   }
   
   type Values = Record<string, number>
 
-
-  export default function MeasurementTable({ readings, category, indicator }: { readings: Readings, category?: string, indicator?: string }) {
-
-    console.log(indicator)
+  export default function MeasurementTable({ readings, category }: { readings: Readings, category?: string, indicator?: string }) {
 
     const router = useRouter()
     const pathname = usePathname()
     const searchParams = useSearchParams()
     const [isPending, startTransition] = useTransition() 
 
-    const indicatorsObject = readings.results?.[0]?.indicators?.values_per_channel[0].values
+    const indicatorsObject = readings.results?.[0]?.indicators?.values
 
     const avaibleIndicators = [] as Array<string>
 
     for (const key in indicatorsObject) {
-       if (indicatorsObject[key] !== null) {
+       if (indicatorsObject[key as keyof typeof indicatorsObject] !== null) {
         avaibleIndicators.push(key)
        } 
       }
@@ -176,15 +171,15 @@ interface Readings {
                       const { date, time } = formatDateTime(reading.created_at)
       
                       // Obtenemos los valores de los indicadores para este reading
-                      const indicatorValues = reading.indicators.values_per_channel[0].values
+                      const indicatorValues = reading.indicators.values
 
                       return (
                         <TableRow key={readingIndex}>
                           <TableCell className="text-nowrap">{date}</TableCell>
                           <TableCell>{time}</TableCell>
                           {avaibleIndicators?.map((header, headerIndex) => {
-                            return indicatorValues[header] === null ? <TableCell key={headerIndex}>-</TableCell> : (
-                              <TableCell className={`cursor-pointer text-center ${selectedIndicator === header ? 'bg-[#00b0c7] opacity-70 text-white font-medium' : ''}`} key={headerIndex}>{indicatorValues[header].toFixed(2)}</TableCell>
+                            return indicatorValues[header as keyof typeof indicatorValues] === null ? <TableCell key={headerIndex}>-</TableCell> : (
+                              <TableCell className={`cursor-pointer text-center ${selectedIndicator === header ? 'bg-[#00b0c7] opacity-70 text-white font-medium' : ''}`} key={headerIndex}>{indicatorValues[header as any].toFixed(2)}</TableCell>
                             )
                           })}
                         </TableRow>
