@@ -55,15 +55,13 @@ export default async function Page({ searchParams }: SearchParams) {
   consumptionCalculatorPromise,
   consumptionInvoicePromise,
   consumptionTariffPromise,
-]);
-
+])
 
   return (
     <div className="w-full">
       <FiltersContainer>
       
           <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} />
-          {/* <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters?.[0].electrical_panels} /> */}
           <DatepickerRange />
       </FiltersContainer> 
       <div className="w-full flex flex-col gap-4 px-6">
@@ -77,7 +75,6 @@ export default async function Page({ searchParams }: SearchParams) {
         </div>
         <div className="w-full shadow-md">
           <TariffTable tariffData={tariffResult}/>
-          {/* <TarrifDetail consumptionTariffReadings={consumptionTariffPromise} consumptionTableReadings={consumptionTablePromise} group_by={group_by} consumptionGraphReadings={consumptionGraphPromise}/> */}
         </div>
       </div>
     </div>
