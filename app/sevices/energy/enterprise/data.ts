@@ -7,7 +7,7 @@ export async function getHeadquarters() {
 
 }
 
-export async function getEnergyMeasurementPoints({ headquarterId } : { headquarterId : string}) {
+export async function getEnergyMeasurementPointPanels({ headquarterId } : { headquarterId : string}) {
 
   return await fetchWithAuthEnergy(`/api/v1/headquarter/${headquarterId}/measurement-points/`)
 

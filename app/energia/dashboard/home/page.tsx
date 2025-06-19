@@ -1,7 +1,7 @@
 import { consume, consumeGraph } from "@/app/sevices/energy/data"
 import FiltersContainer from "@/app/ui/filters/filters-container"
 // import { getCompanyData } from "@/app/lib/auth"
-import { getEnergyMeasurementPoints, getHeadquarters } from "@/app/sevices/energy/enterprise/data"
+import { getEnergyMeasurementPointPanels, getHeadquarters } from "@/app/sevices/energy/enterprise/data"
 import HeadquarterEnergyFilter from "@/app/ui/energia/filters/headquarter-energy-filter"
 import PanelsFilterEnergy from "@/app/ui/energia/filters/panels-energy-filter"
 import MeasurementTable from "@/app/ui/energia/consumo/measurement-table"
@@ -10,6 +10,8 @@ import { format } from "date-fns"
 import { DatepickerRange } from "@/app/ui/filters/datepicker-range"
 import Graph from "@/app/ui/energia/consumo/graph"
 import DownloadExcel from "@/app/ui/energia/consumo/download-excel"
+import { getMeasurementPoints } from "@/app/sevices/filters/data"
+import MeasurementPointFilter from "@/app/ui/filters/measurement-points-filter"
 
 export default async function Page({ searchParams }: SearchParams) {
   // const { companies } = await getCompanyData()
@@ -21,7 +23,8 @@ const { results } = headquarters
 const firstHeadquarter = headquarter || results[0].id
 
 
-const measurementPoints = await getEnergyMeasurementPoints({ headquarterId: firstHeadquarter})
+const measurementPointsPanels = await getEnergyMeasurementPointPanels({ headquarterId: firstHeadquarter})
+const measurementPoints = await getMeasurementPoints({ electricalpanelId: panel})
 
 const formattedDateAfter  = format(date_after,  'yyyy-MM-dd')
 const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
@@ -59,8 +62,8 @@ const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
     <div className="w-full">
       <FiltersContainer>
         <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} />
-        <PanelsFilterEnergy energyPanels={measurementPoints.results} />
-
+        <PanelsFilterEnergy energyPanels={measurementPointsPanels.results} />
+        <MeasurementPointFilter measurementPoints={measurementPoints}/>
         <DatepickerRange />
         <DownloadExcel headquarterId={firstHeadquarter} panelId={panel} date_after={format(date_after, 'yyyy-MM-dd')} date_before={format(date_before, 'yyyy-MM-dd')} unit={unit}/>
       </FiltersContainer>

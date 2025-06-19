@@ -55,9 +55,6 @@ interface Readings {
       }
 
 
-      console.log(avaibleIndicators)
-  
-    // Handle indicator selection
     const handleIndicatorSelect = (indicator: string) => {
       setSelectedIndicator(indicator)
       startTransition(() => {

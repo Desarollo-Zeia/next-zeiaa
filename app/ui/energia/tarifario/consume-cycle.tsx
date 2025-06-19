@@ -28,10 +28,7 @@ export default function ConsumeCycle({ consumptionInvoiceReadings } : { consumpt
   const hoy = new Date()
 
   const dias = differenceInDays(fecha2, fecha1)
-  const count = differenceInDays(fecha1, hoy)
-
-
-
+  const count = differenceInDays(hoy, fecha1)
 
   return (
       <Card className="flex-1 p-4 flex flex-col gap-2 shadow-md">

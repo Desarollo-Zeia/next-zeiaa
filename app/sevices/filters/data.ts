@@ -1,4 +1,4 @@
-import { fetchWithAuth, fetchWithAuthAmbiental } from "@/app/lib/api"
+import { fetchWithAuth, fetchWithAuthAmbiental, fetchWithAuthEnergy } from "@/app/lib/api"
 
 export async function getRooms() {
   return await fetchWithAuth('/enterprise/api/enterprise/basic/room-list/')
@@ -15,4 +15,9 @@ export async function getHeadquarters() {
 
 export async function getHeadquartersAmbiental() {
   return await fetchWithAuthAmbiental('/enterprise/api/ambiental/enterprise/basic/headquearter-list/')
+}
+
+
+export async function getMeasurementPoints({ electricalpanelId } : { electricalpanelId: string }) {
+  return await fetchWithAuthEnergy(`/api/v1/electrical-panel/${electricalpanelId}/devices/measurement-points/`)
 }
