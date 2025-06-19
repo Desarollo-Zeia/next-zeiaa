@@ -32,15 +32,11 @@ interface Readings {
   
   interface Indicators {
     id: number;
-    values: ValuePerChannel
+    values: {
+      [key: string]: number
+    }
   }
   
-  interface ValuePerChannel {
-    values: Values;
-  }
-  
-  type Values = Record<string, number>
-
   export default function MeasurementTable({ readings, category }: { readings: Readings, category?: string, indicator?: string }) {
 
     const router = useRouter()
@@ -53,11 +49,13 @@ interface Readings {
     const avaibleIndicators = [] as Array<string>
 
     for (const key in indicatorsObject) {
-       if (indicatorsObject[key as keyof typeof indicatorsObject] !== null) {
+       if (indicatorsObject[key] !== null) {
         avaibleIndicators.push(key)
        } 
       }
 
+
+      console.log(avaibleIndicators)
   
     // Handle indicator selection
     const handleIndicatorSelect = (indicator: string) => {
@@ -178,8 +176,8 @@ interface Readings {
                           <TableCell className="text-nowrap">{date}</TableCell>
                           <TableCell>{time}</TableCell>
                           {avaibleIndicators?.map((header, headerIndex) => {
-                            return indicatorValues[header as keyof typeof indicatorValues] === null ? <TableCell key={headerIndex}>-</TableCell> : (
-                              <TableCell className={`cursor-pointer text-center ${selectedIndicator === header ? 'bg-[#00b0c7] opacity-70 text-white font-medium' : ''}`} key={headerIndex}>{indicatorValues[header as any].toFixed(2)}</TableCell>
+                            return indicatorValues[header] === null ? <TableCell key={headerIndex}>-</TableCell> : (
+                              <TableCell className={`cursor-pointer text-center ${selectedIndicator === header ? 'bg-[#00b0c7] opacity-70 text-white font-medium' : ''}`} key={headerIndex}>{indicatorValues[header]}</TableCell>
                             )
                           })}
                         </TableRow>
