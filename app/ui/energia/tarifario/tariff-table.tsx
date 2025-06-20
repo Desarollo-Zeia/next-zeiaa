@@ -14,31 +14,9 @@ import {
 
 
 interface BillingData {
-  tariff_rating: boolean;
   billing_data_type: string;
-  billing_description: string;
   billing_cycle_start: string; // Formato de fecha: YYYY-MM-DD
   billing_cycle_end: string;   // Formato de fecha: YYYY-MM-DD
-  cargo_fijo_mensual: number;
-  cargo_por_energia_activa_en_punta: number;
-  cargo_por_energia_activa_fuera_de_punta: number;
-  cargo_por_potencia_activa_de_generacion_para_usuarios: {
-    presentes_en_punta: number;
-    presentes_fuera_de_punta: number;
-  };
-  cargo_por_potencia_activa_de_redes_de_distribucion_para_usuarios: {
-    presentes_en_punta: number;
-    presentes_fuera_de_punta: number;
-  };
-  "cargo_por_energia_reactiva_que_exceda_el_30%_del_total_de_energia_activa": number;
-}
-
-interface Consumption {
-  energy_peak: number;
-  energy_off_peak: number;
-  power_generation: number;
-  power_distribution: number;
-  energy_reactive: number;
 }
 
 interface Consumption {
@@ -53,11 +31,9 @@ interface Charge {
   billed: number;
 }
 
-type ChargesList = Charge[]
-
 interface TariffData {
   billing_data: BillingData;
-  charges: ChargesList;
+  charges: Charge[];
   total: number
 
 }

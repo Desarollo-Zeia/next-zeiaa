@@ -50,7 +50,7 @@ export default async function Page({ searchParams }: SearchParams) {
   const [
   calculatorResult,
   invoiceResult,
-  tariffResult,
+  tariffData,
 ] = await Promise.all([
   consumptionCalculatorPromise,
   consumptionInvoicePromise,
@@ -74,7 +74,7 @@ export default async function Page({ searchParams }: SearchParams) {
           </Suspense>
         </div>
         <div className="w-full shadow-md">
-          <TariffTable tariffData={tariffResult}/>
+          <TariffTable tariffData={tariffData}/>
         </div>
       </div>
     </div>
