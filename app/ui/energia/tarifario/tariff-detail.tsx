@@ -24,6 +24,26 @@ interface ConsumptionTableReadings {
 type ConsumptionTableReadingsPromise = 
   Promise<ConsumptionTableReadings>
 
+  interface Consumption {
+  value: number;
+}
+
+interface Charge {
+  description: string;
+  unit: string; // O podrías usar un tipo literal de unión si sabes los valores exactos, ej: "S/" | "$"
+  cargo: number;
+  consumption: Consumption;
+  billed: number;
+}
+
+
+interface TariffData {
+  billing_data: BillingData;
+  charges: Charge[];
+  total: number
+
+}
+
 interface TariffData {
   billing_data: BillingData;
   consumption: Consumption;
