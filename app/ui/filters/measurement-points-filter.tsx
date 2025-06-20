@@ -1,4 +1,5 @@
-import React from 'react'
+'use client'
+import React, { useTransition } from 'react'
 
 import {
   Select,
@@ -9,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 
 type MeasurementPoint = {
   id: number,
@@ -34,10 +36,38 @@ interface MeasurementPointResults {
 
 export default function MeasurementPointFilter({ measurementPoints } : { measurementPoints: MeasurementPointResults}) {
 
-  console.log(measurementPoints.results)
+    const [isPending, startTransition] = useTransition();
+    const searchParams = useSearchParams();
+    const pathname = usePathname()
+    const { replace } = useRouter()
+
+
+      const handlePointChange = (point: string) => {
+        console.log(point)
+      startTransition(() => {
+        const newParams = new URLSearchParams(searchParams);
+        
+        newParams.set('page', '1');
+  
+        if (point) {
+          newParams.set('point', point);
+        }
+  
+        if (point === 'none') {
+          newParams.delete('point');
+        }
+  
+        replace(`${pathname}?${newParams.toString()}`, { scroll: false });
+      });
+    };
+
+
   return (
     <div className='relative'>
-      <Select>
+      <Select
+          onValueChange={handlePointChange} 
+          disabled={isPending}
+        >
         <SelectTrigger className="w-[240px] bg-[#00b0c7]">
           <SelectValue placeholder="Puntos de medición" />
         </SelectTrigger>

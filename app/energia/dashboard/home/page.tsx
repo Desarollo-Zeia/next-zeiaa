@@ -16,15 +16,16 @@ import MeasurementPointFilter from "@/app/ui/filters/measurement-points-filter"
 export default async function Page({ searchParams }: SearchParams) {
   // const { companies } = await getCompanyData()
 
-const { headquarter, panel = '1', date_after = new Date(), date_before = new Date(), unit = 'V', indicator = 'P', page = '1', last_by = 'hour', category = 'power' } = await searchParams
+const { headquarter, panel, date_after = new Date(), date_before = new Date(), unit = 'V', indicator = 'P', page = '1', last_by = 'hour', category = 'power' } = await searchParams
 
 const headquarters  = await getHeadquarters()
 const { results } = headquarters
 const firstHeadquarter = headquarter || results[0].id
+const firstPanel = panel || results[0].electrical_panels[0].id
 
 
 const measurementPointsPanels = await getEnergyMeasurementPointPanels({ headquarterId: firstHeadquarter})
-const measurementPoints = await getMeasurementPoints({ electricalpanelId: panel})
+const measurementPoints = await getMeasurementPoints({ electricalpanelId: firstPanel})
 
 const formattedDateAfter  = format(date_after,  'yyyy-MM-dd')
 const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
@@ -35,7 +36,7 @@ const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
       date_after:  formattedDateAfter,
       date_before: formattedDateBefore,
       headquarterId: firstHeadquarter,
-      panelId:       panel,
+      panelId:       firstPanel,
       page,
       category
     }),
@@ -43,7 +44,7 @@ const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
       date_after:  formattedDateAfter,
       date_before: formattedDateBefore,
       headquarterId: firstHeadquarter,
-      panelId:       panel,
+      panelId:       firstPanel,
       indicador:     indicator,
       category,
       unit,
