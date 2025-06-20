@@ -1,10 +1,24 @@
 import React from 'react'
 
-interface MeasurementPointResults {
-  results: Result[]
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+
+type MeasurementPoint = {
+  id: number,
+  name: string,
+  is_active: string,
+  channel: string
 }
 
-type Result = {
+
+type Device = {
   id: number,
   name: string,
   dev_eui: string,
@@ -14,17 +28,43 @@ type Result = {
   measurement_points: MeasurementPoint[]
 }
 
-type MeasurementPoint = {
-  id: number,
-  name: string,
-  is_active: string,
-  channel: string
+interface MeasurementPointResults {
+  results: Device[]
 }
 
 export default function MeasurementPointFilter({ measurementPoints } : { measurementPoints: MeasurementPointResults}) {
 
-  console.log(measurementPoints.results[0])
+  console.log(measurementPoints.results)
   return (
-    <div>MeasurementPointFilter</div>
+    <div className='relative'>
+      <Select>
+        <SelectTrigger className="w-[240px] bg-[#00b0c7]">
+          <SelectValue placeholder="Puntos de medición" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            {
+              measurementPoints.results.map((device) => {
+                return (
+                  <React.Fragment key={device.id}>
+                    <SelectLabel>{device.name}</SelectLabel>
+                    {
+                      device.measurement_points.map((point) => 
+                        (
+                          <SelectItem value={point.name} key={point.id}>
+                              {point.name}
+                          </SelectItem>
+                        )
+                      )
+                    }
+                  </React.Fragment>
+                )
+              })
+            }
+            
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+    </div>
   )
 }
