@@ -23,10 +23,12 @@ type EnergyHeadquarter = {
 }
 
 type Props = {
-  energyHeadquarter: EnergyHeadquarter[] // Nombre exacto del prop
+  energyHeadquarter: EnergyHeadquarter[], // Nombre exacto del prop
+  energy: string
 }
 
-export default function HeadquarterEnergyFilter({ energyHeadquarter = [] }: Props) {
+
+export default function HeadquarterEnergyFilter({ energyHeadquarter = [], energy }: Props ) {
 
    const [isPending, startTransition] = useTransition()
    const searchParams = useSearchParams()
@@ -37,6 +39,8 @@ export default function HeadquarterEnergyFilter({ energyHeadquarter = [] }: Prop
   const handleHeadquarterChange = (headquarterId: string) => {
     startTransition(() => {
         const params = new URLSearchParams(searchParams)
+        params.delete("point")
+        params.delete("panel")
         params.set("headquarter", headquarterId)
         params.set("page", '1')
         replace(`${pathname}?${params.toString()}`)
@@ -45,7 +49,7 @@ export default function HeadquarterEnergyFilter({ energyHeadquarter = [] }: Prop
   
   return (
     <div>
-      <Select defaultValue="1" onValueChange={handleHeadquarterChange}>
+      <Select defaultValue={energy} onValueChange={handleHeadquarterChange}>
         <SelectTrigger className="w-[240px] bg-[#00b0c7]">
           <SelectValue placeholder="Seleccionar sede" />
         </SelectTrigger>

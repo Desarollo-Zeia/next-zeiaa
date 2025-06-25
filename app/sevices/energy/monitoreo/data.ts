@@ -5,7 +5,7 @@ import { baseUrlEnergy } from "@/app/lib/constant"
 export async function monitoringGraph({ headquarterId, date_after, date_before, group_by} : { date_after?: string,  date_before?: string, panelId?: string, headquarterId?: string, group_by?:string}) {
 
   const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/powers/graph`, baseUrlEnergy)
-
+  
   if (date_after) url.searchParams.set('date_after', date_after)
   if (date_before) url.searchParams.set('date_before', date_before)
   if (group_by) url.searchParams.set('group_by', group_by)
@@ -19,8 +19,8 @@ export async function monitoringGraph({ headquarterId, date_after, date_before, 
 export async function monitoringLastThree({ headquarterId} : { panelId?: string, headquarterId?: string}) {
 
   const res = await fetchWithAuthEnergy(`/api/v1/headquarter/${headquarterId}/electrical_panel/powers/last-exceeded`)
-
   return res 
+
 }
 
 

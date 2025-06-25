@@ -30,11 +30,11 @@ type Device = {
   measurement_points: MeasurementPoint[]
 }
 
-interface MeasurementPointResults {
-  results: Device[]
+interface MeasurementPointResults { 
+  results: Device[],
 }
 
-export default function MeasurementPointFilter({ measurementPoints } : { measurementPoints: MeasurementPointResults}) {
+export default function MeasurementPointFilter({ measurementPoints, point } : { measurementPoints: MeasurementPointResults, point: string}) {
 
     const [isPending, startTransition] = useTransition();
     const searchParams = useSearchParams();
@@ -43,7 +43,6 @@ export default function MeasurementPointFilter({ measurementPoints } : { measure
 
 
       const handlePointChange = (point: string) => {
-        console.log(point)
       startTransition(() => {
         const newParams = new URLSearchParams(searchParams);
         
@@ -67,6 +66,7 @@ export default function MeasurementPointFilter({ measurementPoints } : { measure
       <Select
           onValueChange={handlePointChange} 
           disabled={isPending}
+          defaultValue={point}
         >
         <SelectTrigger className="w-[240px] bg-[#00b0c7]">
           <SelectValue placeholder="Puntos de medición" />
@@ -81,7 +81,7 @@ export default function MeasurementPointFilter({ measurementPoints } : { measure
                     {
                       device.measurement_points.map((point) => 
                         (
-                          <SelectItem value={point.name} key={point.id}>
+                          <SelectItem value={point.id.toString()} key={point.id}>
                               {point.name}
                           </SelectItem>
                         )

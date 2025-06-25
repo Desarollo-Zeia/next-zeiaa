@@ -35,8 +35,10 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by } : { rea
 
     const [isPending, startTransition] = useTransition();
     const searchParams = useSearchParams();
-    const pathname = usePathname();
-    const { replace } = useRouter();
+    const pathname = usePathname()
+    const { replace } = useRouter()
+
+    console.log(readingsGraph)
   // Se transforma el JSON para obtener un array de puntos de datos
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const dataPoints = readingsGraph?.map((item : any ) => ({

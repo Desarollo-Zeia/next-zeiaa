@@ -53,7 +53,7 @@ export default async function page({ searchParams } : SearchParams) {
   return (
     <div className="w-full">
       <FiltersContainer>
-        <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} />
+        <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} energy={firstHeadquarter}/>
         {/* <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters?.[0].electrical_panels} /> */}
         <DatepickerRange />
         <DownloadExcelMonitoreo headquarterId={headquarter} panelId={panel}/>

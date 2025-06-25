@@ -11,10 +11,11 @@ interface ElectricalPanel {
 }
 
 interface PanelsFilterProps {
-  energyPanels: ElectricalPanel[]
+  energyPanels: ElectricalPanel[],
+  panel: string
 }
 
-export default function PanelsFilterEnergy({ energyPanels = [] }: PanelsFilterProps) {
+export default function PanelsFilterEnergy({ energyPanels = [], panel }: PanelsFilterProps) {
 
   const [isPending, startTransition] = useTransition()
   const searchParams = useSearchParams()
@@ -34,7 +35,7 @@ export default function PanelsFilterEnergy({ energyPanels = [] }: PanelsFilterPr
   
   return (
     <div className="relative">
-      <Select defaultValue={'1'} onValueChange={handlePanelChange}>
+      <Select defaultValue={panel} onValueChange={handlePanelChange}>
         <SelectTrigger className="w-[240px] bg-[#00b0c7]">
           <SelectValue placeholder="Seleccionar panel" />
         </SelectTrigger>

@@ -54,7 +54,6 @@ interface Readings {
        } 
       }
 
-
     const handleIndicatorSelect = (indicator: string) => {
       setSelectedIndicator(indicator)
       startTransition(() => {

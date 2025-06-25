@@ -16,16 +16,20 @@ import MeasurementPointFilter from "@/app/ui/filters/measurement-points-filter"
 export default async function Page({ searchParams }: SearchParams) {
   // const { companies } = await getCompanyData()
 
-const { headquarter, panel, date_after = new Date(), date_before = new Date(), unit = 'V', indicator = 'P', page = '1', last_by = 'hour', category = 'power' } = await searchParams
+const { headquarter, panel, date_after = new Date(), date_before = new Date(), unit = 'V', indicator = 'P', page = '1', last_by = 'hour', category = 'power', point } = await searchParams
 
 const headquarters  = await getHeadquarters()
 const { results } = headquarters
-const firstHeadquarter = headquarter || results[0].id
-const firstPanel = panel || results[0].electrical_panels[0].id
 
+const firstHeadquarter = headquarter || results[0].id.toString()
 
 const measurementPointsPanels = await getEnergyMeasurementPointPanels({ headquarterId: firstHeadquarter})
-const measurementPoints = await getMeasurementPoints({ electricalpanelId: firstPanel})
+
+const firstPanel = panel || measurementPointsPanels?.results[0]?.id.toString()
+
+const measurementPoints = await getMeasurementPoints({ electricalpanelId: firstPanel })
+
+const firstPoint = point || measurementPoints?.results[0]?.measurement_points[0].id.toString()
 
 const formattedDateAfter  = format(date_after,  'yyyy-MM-dd')
 const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
@@ -37,8 +41,9 @@ const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
       date_before: formattedDateBefore,
       headquarterId: firstHeadquarter,
       panelId:       firstPanel,
+      point: firstPoint,
       page,
-      category
+      category,
     }),
     consumeGraph({
       date_after:  formattedDateAfter,
@@ -46,9 +51,10 @@ const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
       headquarterId: firstHeadquarter,
       panelId:       firstPanel,
       indicador:     indicator,
+      point: firstPoint,
       category,
       unit,
-      last_by
+      last_by,
     }),
   ])
 
@@ -62,9 +68,9 @@ const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
   return (
     <div className="w-full">
       <FiltersContainer>
-        <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} />
-        <PanelsFilterEnergy energyPanels={measurementPointsPanels.results} />
-        <MeasurementPointFilter measurementPoints={measurementPoints}/>
+        <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} energy={firstHeadquarter}/>
+        <PanelsFilterEnergy energyPanels={measurementPointsPanels.results} panel={firstPanel}/>
+        <MeasurementPointFilter measurementPoints={measurementPoints} point={firstPoint}/>
         <DatepickerRange />
         <DownloadExcel headquarterId={firstHeadquarter} panelId={panel} date_after={format(date_after, 'yyyy-MM-dd')} date_before={format(date_before, 'yyyy-MM-dd')} unit={unit}/>
       </FiltersContainer>
