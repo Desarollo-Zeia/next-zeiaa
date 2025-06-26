@@ -35,7 +35,7 @@ const firstHeadquarter = headquarter || results[0].id
             >
             <ArrowLeft className="h-4 w-4 "/>
             </Link>
-            <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} />
+            <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} energy={firstHeadquarter}/>
             {/* <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters[0].electrical_panels} /> */}
             <DateRangePicker/>
             <DownloadExcelDistorsion headquarterId={headquarter} panelId={panel} date_after={format(date_after, 'yyyy-MM-dd')} date_before={format(date_before, 'yyyy-MM-dd')} data_type={data_type}/>
