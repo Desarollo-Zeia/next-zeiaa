@@ -58,6 +58,7 @@ const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
     }),
   ])
 
+
   // 5. Extraer sólo lo que necesitas de energyDetails
   // const hq = energyDetails.energy_headquarters[0]
   // const currentPanel  = hq.electrical_panels?.find(

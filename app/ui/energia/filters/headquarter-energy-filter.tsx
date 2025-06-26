@@ -39,8 +39,6 @@ export default function HeadquarterEnergyFilter({ energyHeadquarter = [], energy
   const handleHeadquarterChange = (headquarterId: string) => {
     startTransition(() => {
         const params = new URLSearchParams(searchParams)
-        params.delete("point")
-        params.delete("panel")
         params.set("headquarter", headquarterId)
         params.set("page", '1')
         replace(`${pathname}?${params.toString()}`)
@@ -49,7 +47,7 @@ export default function HeadquarterEnergyFilter({ energyHeadquarter = [], energy
   
   return (
     <div>
-      <Select defaultValue={energy} onValueChange={handleHeadquarterChange}>
+      <Select value={energy} onValueChange={handleHeadquarterChange}>
         <SelectTrigger className="w-[240px] bg-[#00b0c7]">
           <SelectValue placeholder="Seleccionar sede" />
         </SelectTrigger>

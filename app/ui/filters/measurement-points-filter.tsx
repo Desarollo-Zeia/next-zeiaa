@@ -41,7 +41,6 @@ export default function MeasurementPointFilter({ measurementPoints, point } : { 
     const pathname = usePathname()
     const { replace } = useRouter()
 
-
       const handlePointChange = (point: string) => {
       startTransition(() => {
         const newParams = new URLSearchParams(searchParams);
@@ -66,7 +65,7 @@ export default function MeasurementPointFilter({ measurementPoints, point } : { 
       <Select
           onValueChange={handlePointChange} 
           disabled={isPending}
-          defaultValue={point}
+          value={point}
         >
         <SelectTrigger className="w-[240px] bg-[#00b0c7]">
           <SelectValue placeholder="Puntos de medición" />

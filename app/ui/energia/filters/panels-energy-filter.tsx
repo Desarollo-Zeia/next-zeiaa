@@ -32,10 +32,10 @@ export default function PanelsFilterEnergy({ energyPanels = [], panel }: PanelsF
          replace(`${pathname}?${params.toString()}`, { scroll: false });
       })
     }
-  
+
   return (
     <div className="relative">
-      <Select defaultValue={panel} onValueChange={handlePanelChange}>
+      <Select value={panel} onValueChange={handlePanelChange}>
         <SelectTrigger className="w-[240px] bg-[#00b0c7]">
           <SelectValue placeholder="Seleccionar panel" />
         </SelectTrigger>
