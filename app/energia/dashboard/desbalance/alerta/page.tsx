@@ -44,7 +44,7 @@ return (
         >
           <ArrowLeft className="h-4 w-4 "/>
         </Link>
-        <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} />
+        <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} energy={firstHeadquarter}/>
         <DatepickerRange />
     </FiltersContainer>
     <AlertTable readings={metric === 'current' ?  currentReadings :  voltageReadings} metric={metric}/>
