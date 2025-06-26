@@ -32,7 +32,7 @@ const exceededPowers = await exceeded({ headquarterId: firstHeadquarter, panelId
         >
           <ArrowLeft className="h-4 w-4 "/>
         </Link>
-        <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} />
+        <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} energy={firstHeadquarter}/>
         {/* <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters[0].electrical_panels} /> */}
         <DatepickerRange />
         <DownloadExcelMonitoreo headquarterId={headquarter} panelId={panel} />
