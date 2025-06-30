@@ -41,6 +41,8 @@ export default function HeadquarterEnergyFilter({ energyHeadquarter = [], energy
         const params = new URLSearchParams(searchParams)
         params.set("headquarter", headquarterId)
         params.set("page", '1')
+        params.delete('point')
+        params.delete('panel')
         replace(`${pathname}?${params.toString()}`)
     })
     }
