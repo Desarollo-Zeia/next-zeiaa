@@ -40,7 +40,7 @@ export default function ConsumeCycle({ consumptionInvoiceReadings } : { consumpt
           </div>
           <div className="shadow-sm  rounded-lg p-2">
             <h4 className='text-sm font-medium'>Consumo total soles</h4>
-            <p className='text-xs'>S/ {consumptionInvoiceReadings?.cost}</p>
+            <p className='text-xs'>S/ {consumptionInvoiceReadings?.cost?.toFixed(2)}</p>
           </div>
           <div className="shadow-sm  rounded-lg p-2">
             <h4 className='text-sm font-medium'>N° de Suministro</h4>

@@ -29,6 +29,7 @@ export default function PanelsFilterEnergy({ energyPanels = [], panel }: PanelsF
         params.set("panel", panelId)
         params.set("page", '1')
         params.delete('point')
+        params.delete('panel')
   
          replace(`${pathname}?${params.toString()}`, { scroll: false });
       })

@@ -17,7 +17,7 @@ export default async function page({ searchParams }: SearchParams) {
 
   return (
     <div className="relative p-6">
-      <TableComponent readings={dashboardTableReadings}/>
+      <TableComponent readings={dashboardTableReadings}/> 
     </div>
   )
 }

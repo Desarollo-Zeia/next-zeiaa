@@ -74,10 +74,10 @@ export default function TariffTable( { tariffData }: { tariffData: TariffData } 
                       {charge.cargo}
                     </TableCell>
                     <TableCell className="text-center">
-                      {charge.consumption.value}
+                      {charge.consumption.value.toFixed(2)}
                     </TableCell>
                     <TableCell className="text-center">
-                      {charge.billed}
+                      {charge.billed.toFixed(2)}
                     </TableCell>
                   </TableRow>
                 )
@@ -94,7 +94,7 @@ export default function TariffTable( { tariffData }: { tariffData: TariffData } 
                 Costo total
               </TableCell>
               <TableCell className="text-center text-white font-bold">
-                S/  {total}
+                S/  {total.toFixed(2)}
               </TableCell>
             </TableRow>
           </TableBody>
