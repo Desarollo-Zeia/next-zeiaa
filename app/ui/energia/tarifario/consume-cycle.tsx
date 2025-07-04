@@ -22,13 +22,14 @@ interface ConsumptionInvoiceReadings {
 
 export default function ConsumeCycle({ consumptionInvoiceReadings } : { consumptionInvoiceReadings : ConsumptionInvoiceReadings }) {
 
+  console.log(consumptionInvoiceReadings)
 
-  const fecha1 = parseISO(consumptionInvoiceReadings?.billing_cycle_start)
-  const fecha2 = parseISO(consumptionInvoiceReadings?.billing_cycle_end)
-  const hoy = new Date()
+  // const fecha1 = parseISO(consumptionInvoiceReadings?.billing_cycle_start)
+  // const fecha2 = parseISO(consumptionInvoiceReadings?.billing_cycle_end)
+  // const hoy = new Date()
 
-  const dias = differenceInDays(fecha2, fecha1)
-  const count = differenceInDays(hoy, fecha1)
+  // const dias = differenceInDays(fecha2, fecha1)
+  // const count = differenceInDays(hoy, fecha1)
 
   return (
       <Card className="flex-1 p-4 flex flex-col gap-2 shadow-md">
@@ -40,7 +41,7 @@ export default function ConsumeCycle({ consumptionInvoiceReadings } : { consumpt
           </div>
           <div className="shadow-sm  rounded-lg p-2">
             <h4 className='text-sm font-medium'>Consumo total soles</h4>
-            <p className='text-xs'>S/ {consumptionInvoiceReadings?.cost}</p>
+            <p className='text-xs'>S/ {consumptionInvoiceReadings?.cost?.toFixed(2)}</p>
           </div>
           <div className="shadow-sm  rounded-lg p-2">
             <h4 className='text-sm font-medium'>N° de Suministro</h4>
@@ -61,7 +62,7 @@ export default function ConsumeCycle({ consumptionInvoiceReadings } : { consumpt
           </div>
           <div className="shadow-sm  rounded-lg p-2">
             <h4 className='text-sm font-medium'>Días facturados</h4>
-            <p className='text-xs'>{count} de {dias}</p>
+            {/* <p className='text-xs'>{count} de {dias}</p> */}
           </div>
           <div className="col-span-2 shadow-sm rounded-lg p-2">
             <h4 className='text-sm font-medium'>Ciclo de facturación</h4>

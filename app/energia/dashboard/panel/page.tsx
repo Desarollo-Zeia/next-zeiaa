@@ -1,5 +1,6 @@
 import { dashboardTable } from '@/app/sevices/panel/data'
 import { SearchParams } from '@/app/type'
+import ChartComponent from '@/app/ui/energia/panel/chart'
 import TableComponent from '@/app/ui/energia/panel/table'
 import React from 'react'
 
@@ -16,8 +17,9 @@ export default async function page({ searchParams }: SearchParams) {
   const dashboardTableReadings = await dashboardTable({ headquarterId: headquarter })
 
   return (
-    <div className="relative p-6">
-      <TableComponent readings={dashboardTableReadings}/>
+    <div className="relative p-6 flex justify-center items-center">
+      <TableComponent readings={dashboardTableReadings}/> 
+      <ChartComponent/>
     </div>
   )
 }

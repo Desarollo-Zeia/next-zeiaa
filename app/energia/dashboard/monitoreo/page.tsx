@@ -19,8 +19,9 @@ export default async function page({ searchParams } : SearchParams) {
   const headquarters  = await getHeadquarters()
   const energyDetails = await getEnergyCompanyDetails()
   const { results } = headquarters
-  const firstHeadquarter = headquarter || results[0].id
+  const firstHeadquarter = results[0].id || headquarter
 
+  console.log(results)
   // 1) Formateamos fechas solo una vez
   const formattedDateAfter = format(date_after, 'yyyy-MM-dd')
   const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
@@ -48,7 +49,6 @@ export default async function page({ searchParams } : SearchParams) {
   const currentPanel = hq.electrical_panels?.find(
     (item : any ) => item.id === Number(panel) // eslint-disable-line @typescript-eslint/no-explicit-any
   )
-  const currentPowers = hq.powers
 
   return (
     <div className="w-full">
@@ -60,8 +60,8 @@ export default async function page({ searchParams } : SearchParams) {
       </FiltersContainer>
       <div className="flex gap-4 mx-6">
         <div className="flex-1">
-          <PowerUsageChart readings={monitoringGraphReadings} group={group_by} powers={currentPowers}/>
-          <ExcessPower excessPowerData={monitoringLastThreeReadings} panel={currentPanel} powers={currentPowers}/>
+          <PowerUsageChart readings={monitoringGraphReadings} group={group_by} powers={results.powers}/>
+          <ExcessPower excessPowerData={monitoringLastThreeReadings} panel={currentPanel} powers={results.powers}/>
         </div>
       </div>
     </div>

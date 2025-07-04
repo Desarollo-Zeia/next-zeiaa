@@ -29,6 +29,7 @@ export default function PanelsFilterEnergy({ energyPanels = [], panel }: PanelsF
         params.set("panel", panelId)
         params.set("page", '1')
         params.delete('point')
+        params.delete('panel')
   
          replace(`${pathname}?${params.toString()}`, { scroll: false });
       })
@@ -43,7 +44,7 @@ export default function PanelsFilterEnergy({ energyPanels = [], panel }: PanelsF
         <SelectContent>
           <SelectGroup>
             {energyPanels.map((panel) => (
-              <SelectItem key={panel.id} value={panel.id.toString()}>
+              <SelectItem key={panel.id} value={panel.id.toString()} disabled={true}>
                 {panel.name}
               </SelectItem>
             ))}

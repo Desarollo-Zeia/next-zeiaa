@@ -49,7 +49,7 @@ export default function HeadquarterEnergyFilter({ energyHeadquarter = [], energy
   
   return (
     <div>
-      <Select defaultValue={energy} onValueChange={handleHeadquarterChange}>
+      <Select value={energy.toString()} onValueChange={handleHeadquarterChange}>
         <SelectTrigger className="w-[240px] bg-[#00b0c7]">
           <SelectValue placeholder="Seleccionar sede" />
         </SelectTrigger>

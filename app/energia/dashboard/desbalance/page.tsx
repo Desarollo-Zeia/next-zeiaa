@@ -22,6 +22,7 @@ export default async function page({ searchParams } : SearchParams) {
   const headquarters = await getHeadquarters()
 
   const { results } = headquarters
+
   const firstHeadquarter = headquarter || results[0].id
 
   const currentReadings = await currentGraph({

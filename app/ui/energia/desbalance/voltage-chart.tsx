@@ -108,7 +108,7 @@ export default function VoltageCharts({ voltageReadings }: { voltageReadings: Me
               return `${date.getHours()}:${date.getMinutes().toString().padStart(2, "0")}`
             }}
           />
-          <YAxis hide={false} domain={[0, 500]}/>
+          <YAxis hide={true} domain={[0, 500]}/>
           <Tooltip content={<CustomTooltip />} />
           <Line type="stepAfter" dataKey="Uab" stroke="#00b0c7" strokeWidth={2} dot={false} isAnimationActive={true} />
         </LineChart>
