@@ -80,7 +80,7 @@ export default function MeasurementPointFilter({ measurementPoints, point } : { 
                     {
                       device.measurement_points.map((point) => 
                         (
-                          <SelectItem value={point.id.toString()} key={point.id}>
+                          <SelectItem value={point.id.toString()} key={point.id} disabled={!point.is_active}>
                               {point.name}
                           </SelectItem>
                         )

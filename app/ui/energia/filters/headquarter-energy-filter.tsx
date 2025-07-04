@@ -56,7 +56,7 @@ export default function HeadquarterEnergyFilter({ energyHeadquarter = [], energy
         <SelectContent>
           <SelectGroup>
             {energyHeadquarter.map((hq) => (
-              <SelectItem key={hq.id} value={hq.id.toString()}>
+              <SelectItem key={hq.id} value={hq.id.toString()} disabled={!hq.is_active}>
                 {hq.name}
               </SelectItem>
             ))}

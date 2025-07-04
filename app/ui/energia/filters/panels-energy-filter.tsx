@@ -17,6 +17,9 @@ interface PanelsFilterProps {
 
 export default function PanelsFilterEnergy({ energyPanels = [], panel }: PanelsFilterProps) {
 
+
+  console.log(energyPanels)
+
   const [isPending, startTransition] = useTransition()
   const searchParams = useSearchParams()
   const { replace } = useRouter()
@@ -29,8 +32,6 @@ export default function PanelsFilterEnergy({ energyPanels = [], panel }: PanelsF
         params.set("panel", panelId)
         params.set("page", '1')
         params.delete('point')
-        params.delete('panel')
-  
          replace(`${pathname}?${params.toString()}`, { scroll: false });
       })
     }
@@ -44,7 +45,7 @@ export default function PanelsFilterEnergy({ energyPanels = [], panel }: PanelsF
         <SelectContent>
           <SelectGroup>
             {energyPanels.map((panel) => (
-              <SelectItem key={panel.id} value={panel.id.toString()} disabled={true}>
+              <SelectItem key={panel.id} value={panel.id.toString()} disabled={!panel.is_active}>
                 {panel.name}
               </SelectItem>
             ))}

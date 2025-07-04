@@ -35,28 +35,28 @@ const formattedDateAfter  = format(date_after,  'yyyy-MM-dd')
 const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
 
   // 4. Paralle­lizar las llamadas
-  const [readings, readingsGraph] = await Promise.all([
-    consume({
-      date_after:  formattedDateAfter,
-      date_before: formattedDateBefore,
-      headquarterId: firstHeadquarter,
-      panelId:       firstPanel,
-      point: firstPoint,
-      page,
-      category,
-    }),
-    consumeGraph({
-      date_after:  formattedDateAfter,
-      date_before: formattedDateBefore,
-      headquarterId: firstHeadquarter,
-      panelId:       firstPanel,
-      indicador:     indicator,
-      point: firstPoint,
-      category,
-      unit,
-      last_by,
-    }),
-  ])
+const [readings, readingsGraph] = await Promise.all([
+  consume({
+    date_after:  formattedDateAfter,
+    date_before: formattedDateBefore,
+    headquarterId: firstHeadquarter,
+    panelId:       firstPanel,
+    point: firstPoint,
+    page,
+    category,
+  }),
+  consumeGraph({
+    date_after:  formattedDateAfter,
+    date_before: formattedDateBefore,
+    headquarterId: firstHeadquarter,
+    panelId:       firstPanel,
+    indicador:     indicator,
+    point: firstPoint,
+    category,
+    unit,
+    last_by,
+  }),
+])
   
   // 5. Extraer sólo lo que necesitas de energyDetails
   // const hq = energyDetails.energy_headquarters[0]

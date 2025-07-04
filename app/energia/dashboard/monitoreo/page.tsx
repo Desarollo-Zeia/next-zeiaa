@@ -21,7 +21,7 @@ export default async function page({ searchParams } : SearchParams) {
   const { results } = headquarters
   const firstHeadquarter = results[0].id || headquarter
 
-  console.log(results)
+  console.log(results[0].powers)
   // 1) Formateamos fechas solo una vez
   const formattedDateAfter = format(date_after, 'yyyy-MM-dd')
   const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
@@ -60,8 +60,8 @@ export default async function page({ searchParams } : SearchParams) {
       </FiltersContainer>
       <div className="flex gap-4 mx-6">
         <div className="flex-1">
-          <PowerUsageChart readings={monitoringGraphReadings} group={group_by} powers={results.powers}/>
-          <ExcessPower excessPowerData={monitoringLastThreeReadings} panel={currentPanel} powers={results.powers}/>
+          <PowerUsageChart readings={monitoringGraphReadings} group={group_by} powers={results[0].powers}/>
+          <ExcessPower excessPowerData={monitoringLastThreeReadings} panel={currentPanel} powers={results[0].powers}/>
         </div>
       </div>
     </div>

@@ -38,7 +38,7 @@ export default function ElectricUnitFilter({ category = "power" }: { category?: 
 
   return (
     <div className="relative">
-      <Select onValueChange={handleUnitChange} defaultValue={category} disabled={isPending}>
+      <Select onValueChange={handleUnitChange} defaultValue={category}>
         <SelectTrigger className="w-[240px] bg-[#00b0c7]">
           <SelectValue placeholder={"Seleccionar unidad"} className="text-white font-bold"/>
         </SelectTrigger>
