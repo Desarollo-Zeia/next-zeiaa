@@ -1,5 +1,5 @@
 // import { getCompanyData } from "@/app/lib/auth";
-import { getEnergyCompanyDetails, getHeadquarters } from "@/app/sevices/energy/enterprise/data";
+import { getHeadquarters } from "@/app/sevices/energy/enterprise/data";
 import { monitoringGraph, monitoringLastThree } from "@/app/sevices/energy/monitoreo/data";
 import { SearchParams } from "@/app/type";
 import HeadquarterEnergyFilter from "@/app/ui/energia/filters/headquarter-energy-filter";
