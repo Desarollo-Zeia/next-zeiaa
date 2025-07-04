@@ -17,7 +17,6 @@ export default async function page({ searchParams } : SearchParams) {
   const { headquarter = '1' , panel = '1',  date_after = new Date(), date_before = new Date(), group_by = 'day'} = await searchParams
 
   const headquarters  = await getHeadquarters()
-  const energyDetails = await getEnergyCompanyDetails()
   const { results } = headquarters
   const firstHeadquarter = results[0].id || headquarter
 
