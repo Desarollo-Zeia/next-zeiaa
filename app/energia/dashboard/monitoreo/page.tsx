@@ -21,7 +21,6 @@ export default async function page({ searchParams } : SearchParams) {
   const { results } = headquarters
   const firstHeadquarter = results[0].id || headquarter
 
-  console.log(results[0].powers)
   // 1) Formateamos fechas solo una vez
   const formattedDateAfter = format(date_after, 'yyyy-MM-dd')
   const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
@@ -44,8 +43,9 @@ export default async function page({ searchParams } : SearchParams) {
     })
   ])
 
+
   // 3) Desestructuramos solo lo que necesitamos
-  const hq = energyDetails.energy_headquarters[0]
+  const hq = headquarters?.results[0]
   const currentPanel = hq.electrical_panels?.find(
     (item : any ) => item.id === Number(panel) // eslint-disable-line @typescript-eslint/no-explicit-any
   )

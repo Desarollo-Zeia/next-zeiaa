@@ -42,10 +42,12 @@ ChartJS.register(
 );
 
 const CurrentChartTest = ({ currentReadings } : { currentReadings : CurrentReading[]}) => {
+
   // Preparar etiquetas y datos
   const labels = currentReadings.map(
     (item: CurrentReading) => `${item.date} ${item.time}`
-  );
+  )
+
   const thdiaData = currentReadings.map((item) => item.current.THDIa);
   const thdibData = currentReadings.map((item) => item.current.THDIb);
   const thdicData = currentReadings.map((item) => item.current.THDIc);

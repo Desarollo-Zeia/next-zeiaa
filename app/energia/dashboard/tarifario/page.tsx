@@ -59,7 +59,6 @@ export default async function Page({ searchParams }: SearchParams) {
   return (
     <div className="w-full">
       <FiltersContainer>
-      
           <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} energy={firstHeadquarter}/>
           <DatepickerRange />
       </FiltersContainer> 

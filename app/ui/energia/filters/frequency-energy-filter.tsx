@@ -44,7 +44,7 @@ export default function FrequencyEnergyFilter({ category, frequencyP } : { categ
 
   return (
     <div className="flex justify-center flex-wrap gap-2">
-      <ToggleGroup type="single" onValueChange={handleFrequencyChange} defaultValue={frequencyP}   aria-label="Frequency" className="flex gap-2 relative">
+      <ToggleGroup type="single" onValueChange={handleFrequencyChange} defaultValue={frequencyP.toString()}   aria-label="Frequency" className="flex gap-2 relative">
         {
           frequencyDicc[category as keyof typeof frequencyDicc].map((frequency) => (
             <ToggleGroupItem
