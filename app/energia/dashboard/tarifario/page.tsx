@@ -25,8 +25,7 @@ export default async function Page({ searchParams }: SearchParams) {
 
     const headquarters  = await getHeadquarters()
     const { results } = headquarters
-    const firstHeadquarter = headquarter || results[0].id
-
+    const firstHeadquarter = results[0].id || headquarter
   // Fetch energy details first as it's needed for filters
 
 

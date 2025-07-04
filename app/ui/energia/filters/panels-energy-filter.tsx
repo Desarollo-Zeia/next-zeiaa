@@ -44,7 +44,7 @@ export default function PanelsFilterEnergy({ energyPanels = [], panel }: PanelsF
         <SelectContent>
           <SelectGroup>
             {energyPanels.map((panel) => (
-              <SelectItem key={panel.id} value={panel.id.toString()}>
+              <SelectItem key={panel.id} value={panel.id.toString()} disabled={true}>
                 {panel.name}
               </SelectItem>
             ))}

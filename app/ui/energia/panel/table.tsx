@@ -25,8 +25,12 @@ interface PanelReadings {
 
 export default function TableComponent({ readings } : { readings : PanelReadings}) {
 
+  console.log(readings)
+
   return (
-    <Table>
+    <div className='flex-1'>
+      <h3 className='p-4 font-semibold text-[#6d6c6c]'>Tablero de distribución</h3>
+      <Table>
         <TableHeader>
           <TableRow>
             <TableHead>
@@ -43,9 +47,6 @@ export default function TableComponent({ readings } : { readings : PanelReadings
             </TableHead>
             <TableHead>
               Capacidad
-            </TableHead>
-            <TableHead>
-              Hardware
             </TableHead>
             <TableHead>
               Hardware
@@ -73,9 +74,6 @@ export default function TableComponent({ readings } : { readings : PanelReadings
                     {reading.type}
                   </TableCell>
                   <TableCell>
-                    {reading.type}
-                  </TableCell>
-                  <TableCell>
                     {reading.capacity}
                   </TableCell>
                   <TableCell>
@@ -91,5 +89,6 @@ export default function TableComponent({ readings } : { readings : PanelReadings
          
         </TableBody>
       </Table>
+    </div>
   )
 }

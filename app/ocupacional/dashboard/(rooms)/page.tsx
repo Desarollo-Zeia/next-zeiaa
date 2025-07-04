@@ -25,6 +25,8 @@ export default async function page({ searchParams } : SearchParams  ) {
   const headquarters = await getHeadquarters()
   const rooms = await roomsList({ search, status, headquarter, page, limit, offset })
 
+  console.log(rooms)
+
   return (
     <div>
       <FiltersContainer>
@@ -35,17 +37,18 @@ export default async function page({ searchParams } : SearchParams  ) {
         rooms?.results.length > 0 ? (
           <section className={styles.roomCardsContainer}>
             {
-              rooms?.results.map((room: Room) => (
-                <RoomStatusCard
-                  key={room.id}
-                  name={room.name}
-                  status={room.status}
-                  isActivated={room.is_activated}
-                  room={room.id}
-                  devEUI={room.devices[0]?.dev_eui}
-                  headquarter={room.headquarter.name}
-                />
-              ))
+              rooms?.results.map((room: Room) => { 
+                return (
+                  <RoomStatusCard
+                    key={room.id}
+                    name={room.name}
+                    status={room.status}
+                    isActivated={room.is_activated}
+                    room={room.id}
+                    devEUI={room.devices[0]?.dev_eui}
+                    headquarter={room.headquarter.name}
+                  />
+              )})
             }
           </section>
         ) : (
