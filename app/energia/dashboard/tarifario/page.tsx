@@ -18,14 +18,14 @@ import TariffTable from "@/app/ui/energia/tarifario/tariff-table"
 export default async function Page({ searchParams }: SearchParams) {
 
   
-  const { headquarter = '1' , panel = '1',  date_after = new Date(), date_before = new Date()} = await searchParams
+  const { headquarter , panel = '1',  date_after = new Date(), date_before = new Date()} = await searchParams
 
   const formattedDateAfter = format(date_after, 'yyyy-MM-dd')
   const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
 
     const headquarters  = await getHeadquarters()
     const { results } = headquarters
-    const firstHeadquarter = results[0].id || headquarter
+    const firstHeadquarter = headquarter || results[0].id.toString()
   // Fetch energy details first as it's needed for filters
 
 

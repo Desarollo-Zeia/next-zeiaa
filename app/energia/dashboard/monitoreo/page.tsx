@@ -14,11 +14,11 @@ import { format } from "date-fns";
 export default async function page({ searchParams } : SearchParams) {
 
 
-  const { headquarter = '1' , panel = '1',  date_after = new Date(), date_before = new Date(), group_by = 'day'} = await searchParams
+  const { headquarter , panel = '1',  date_after = new Date(), date_before = new Date(), group_by = 'day'} = await searchParams
 
   const headquarters  = await getHeadquarters()
   const { results } = headquarters
-  const firstHeadquarter = results[0].id || headquarter
+  const firstHeadquarter = headquarter || results[0].id.toString()
 
   // 1) Formateamos fechas solo una vez
   const formattedDateAfter = format(date_after, 'yyyy-MM-dd')
@@ -42,14 +42,10 @@ export default async function page({ searchParams } : SearchParams) {
     })
   ])
 
-
   // 3) Desestructuramos solo lo que necesitamos
-  const hq = headquarters?.results[0]
-  const currentPanel = hq.electrical_panels?.find(
-    (item : any ) => item.id === Number(panel) // eslint-disable-line @typescript-eslint/no-explicit-any
-  )
+  const { electrical_panels } = headquarters?.results.find((hq : any ) => hq.id === Number(firstHeadquarter))  // eslint-disable-line @typescript-eslint/no-explicit-any
 
-  return (
+  return (  
     <div className="w-full">
       <FiltersContainer>
         <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} energy={firstHeadquarter}/>
@@ -60,7 +56,7 @@ export default async function page({ searchParams } : SearchParams) {
       <div className="flex gap-4 mx-6">
         <div className="flex-1">
           <PowerUsageChart readings={monitoringGraphReadings} group={group_by} powers={results[0].powers}/>
-          <ExcessPower excessPowerData={monitoringLastThreeReadings} panel={currentPanel} powers={results[0].powers}/>
+          <ExcessPower excessPowerData={monitoringLastThreeReadings} panel={electrical_panels[0]} powers={results[0].powers}/>
         </div>
       </div>
     </div>
