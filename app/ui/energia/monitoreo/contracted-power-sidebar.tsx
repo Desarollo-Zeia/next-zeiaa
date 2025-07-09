@@ -22,6 +22,7 @@ interface Powers {
 }
 
 export default function ContractedPowerSidebar({ panel, powers }: { panel: Panel; powers: Powers[] }) {
+
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   return (

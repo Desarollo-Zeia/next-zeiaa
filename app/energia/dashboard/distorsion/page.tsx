@@ -20,11 +20,11 @@ import Link from 'next/link'
 
 export default async function page({ searchParams } : SearchParams) {
   
-  const { headquarter = '1' , panel = '1',  date_after = new Date(), date_before = new Date(), data_type = 'current'} = await searchParams
+  const { headquarter , panel = '1',  date_after = new Date(), date_before = new Date(), data_type = 'current'} = await searchParams
 
   const headquarters  = await getHeadquarters()
   const { results } = headquarters
-  const firstHeadquarter = results[0].id || headquarter
+  const firstHeadquarter = headquarter || results[0].id.toString()
 
   const armonicsGraphReadings = await armonicsGraph({ headquarterId: firstHeadquarter, panelId: panel, date_after: format(date_after, 'yyyy-MM-dd'), date_before: format(date_before, 'yyyy-MM-dd'), data_type })
 
