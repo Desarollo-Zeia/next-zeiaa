@@ -1,5 +1,11 @@
 import React from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 
 type Reading = {
   id: number,
@@ -24,8 +30,6 @@ interface PanelReadings {
 }
 
 export default function TableComponent({ readings } : { readings : PanelReadings}) {
-
-  console.log(readings)
 
   return (
     <div className='flex-1'>
@@ -60,7 +64,7 @@ export default function TableComponent({ readings } : { readings : PanelReadings
           {
             readings.results.map(reading => {
               return (
-                <TableRow key={reading.id}>
+                <TableRow key={reading.id} className={`${reading.is_active ? 'bg-white' : 'bg-gray-200'}`}>
                   <TableCell>
                     {reading.channel}
                   </TableCell>

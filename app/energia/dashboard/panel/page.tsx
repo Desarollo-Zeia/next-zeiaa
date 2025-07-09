@@ -17,9 +17,9 @@ export default async function page({ searchParams }: SearchParams) {
   const dashboardTableReadings = await dashboardTable({ headquarterId: headquarter })
 
   return (
-    <div className="relative p-6 flex justify-center items-center">
-      <TableComponent readings={dashboardTableReadings}/> 
+    <div className="relative p-6 flex justify-center items-center gap-8">
       <ChartComponent/>
+      <TableComponent readings={dashboardTableReadings}/> 
     </div>
   )
 }
