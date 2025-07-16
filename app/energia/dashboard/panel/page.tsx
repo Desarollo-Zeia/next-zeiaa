@@ -28,12 +28,6 @@ export default async function page({ searchParams }: SearchParams) {
 
   const { headquarter, panel = '1',  date_after = new Date(), date_before = new Date()} = await searchParams
 
-  console.log({
-    panel,
-    date_after,
-    date_before
-  })
-
   const headquarters  = await getHeadquarters()
 
   const { results } = headquarters
@@ -47,7 +41,7 @@ export default async function page({ searchParams }: SearchParams) {
         <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} energy={firstHeadquarter}/>
         {/* <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters?.[0].electrical_panels} /> */}
       </FiltersContainer>
-      <div className='flex gap-6'>
+      <div className='w-full flex gap-6 justify-between'>
         <ChartComponent/>
         <TableComponent readings={dashboardTableReadings}/> 
       </div>
