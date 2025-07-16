@@ -10,7 +10,7 @@ export async function getRoomsAmbiental() {
 
 
 export async function getHeadquarters() {
-  return await fetchWithAuth('/enterprise/api/enterprise/basic/headquearter-list/')
+  return await fetchWithAuthEnergy('/api/v1/user/headquarters/')
 }
 
 export async function getHeadquartersAmbiental() {
