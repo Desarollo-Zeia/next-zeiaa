@@ -37,16 +37,19 @@ export async function consumeGraph({ headquarterId, panelId, date_after, date_be
 
 export async function consumeExcel({ headquarterId, panelId, date_after, date_before, unit, point} : { headquarterId?: string, panelId?: string, date_after?: string,  date_before?: string, unit?: string, point?: string}) {
 
-  const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/measurement_points/${point}/readings/report`, baseUrlEnergy)
+    const url = new URL(
+    `/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/measurement_points/${point}/readings/report`,
+    baseUrlEnergy
+  );
 
   /// api/v1/headquarter/1/electrical_panel/1/measurement_points/1/readings/report?date_after=2025-02-10&date_before=2025-02-28
-  if (date_after) url.searchParams.set('date_after', date_after)
-  if (date_before) url.searchParams.set('date_before', date_before)
-  if (unit) url.searchParams.set('unit', unit)
-  if (point) url.searchParams.set('point', point)
+   if (date_after) url.searchParams.set('date_after', date_after);
+  if (date_before) url.searchParams.set('date_before', date_before);
+  if (unit) url.searchParams.set('unit', unit);
 
   const res = await fetchWithAuthEnergy(`${url.pathname}${url.search}`)
-
-  return res
+  
+  
+  return await res
 
 }
