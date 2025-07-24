@@ -67,7 +67,9 @@ export default async function page({ searchParams }: SearchParams) {
             </div>
           </div>
         </div>
-        <BarChart/>
+        <div className='w-full'> 
+          <BarChart/>
+        </div>
       </div>
     </div>
   )
