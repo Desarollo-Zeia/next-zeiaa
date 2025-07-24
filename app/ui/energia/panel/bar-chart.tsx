@@ -47,8 +47,10 @@ const data = {
 export default function BarChart() {
   return (
          <Bar
+              className='w-full px-10'
               options={
                 {
+                
                 responsive: true,
                 plugins: {
                   legend: {
