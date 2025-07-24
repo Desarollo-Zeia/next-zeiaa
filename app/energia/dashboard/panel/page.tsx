@@ -26,7 +26,7 @@ function ButtonSelect() {
 
 export default async function page({ searchParams }: SearchParams) {
 
-  const { headquarter, panel = '1',  date_after = new Date(), date_before = new Date()} = await searchParams
+  const { headquarter } = await searchParams
 
   const headquarters  = await getHeadquarters()
 
