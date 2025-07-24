@@ -57,8 +57,8 @@ export default function BarChart() {
                   },
                   title: {
                     display: true,
-                    text: 'Chart.js Pie Chart'
-                  }
+                  },
+                  
                 },
                   scales: {
                     x: { grid: { display: false } },

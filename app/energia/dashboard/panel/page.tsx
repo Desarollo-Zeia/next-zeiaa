@@ -36,7 +36,7 @@ export default async function page({ searchParams }: SearchParams) {
   const dashboardTableReadings = await dashboardTable({ headquarterId: firstHeadquarter })
 
   return (
-    <div className="relative p-6 flex flex-col justify-center items-center gap-8">
+    <div className="relative p-6 flex flex-col justify-center gap-8">
       <FiltersContainer>
         <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} energy={firstHeadquarter}/>
         {/* <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters?.[0].electrical_panels} /> */}

@@ -6,6 +6,7 @@ import {
   Gauge,
   AlertTriangle,
   AudioWaveformIcon as WaveformIcon,
+  TowerControl 
 } from "lucide-react"
 
 import {
@@ -52,6 +53,11 @@ const energyItems = [
     title: "Tasa de distorsión",
     url: "/energia/dashboard/distorsion",
     icon: WaveformIcon,
+  },
+  {
+    title: "Panel general",
+    url: "/energia/dashboard/panel",
+    icon: TowerControl,
   },
 ]
 
