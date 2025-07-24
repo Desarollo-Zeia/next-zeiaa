@@ -47,7 +47,7 @@ const data = {
 export default function BarChart() {
   return (
          <Bar
-              className='w-full px-10'
+              className='w-full h-full'
               options={
                 {
                 

@@ -32,25 +32,25 @@ export default function TableComponent({ readings } : { readings : PanelReadings
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>
+            <TableHead className='text-center'>
               Pinza
             </TableHead>
-            <TableHead>
+            <TableHead className='text-center'>
               Puntos de monitoreo
             </TableHead>
-            <TableHead>
+            <TableHead className='text-center'>
               Llave
             </TableHead>
-            <TableHead>
+            <TableHead className='text-center'>
               Tipo de red
             </TableHead>
-            <TableHead>
+            <TableHead className='text-center'>
               Capacidad
             </TableHead>
-            <TableHead>
+            <TableHead className='text-center'>
               Hardware
             </TableHead>
-            <TableHead>
+            <TableHead className='text-center'>
               Ubicación
             </TableHead>
           </TableRow>
@@ -60,25 +60,25 @@ export default function TableComponent({ readings } : { readings : PanelReadings
             readings.results.map(reading => {
               return (
                 <TableRow key={reading.id} className={`${reading.is_active ? 'bg-white' : 'bg-gray-200'}`}>
-                  <TableCell>
+                  <TableCell className='text-center'>
                     {reading.channel}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className='text-center'>
                     {reading.name}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className='text-center'>
                     {reading.key}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className='text-center'>
                     {reading.type}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className='text-center'>
                     {reading.capacity}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className='text-center'>
                     {reading.hardware}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className='text-center'>
                     {reading.electrical_panel}
                   </TableCell>
                 </TableRow>

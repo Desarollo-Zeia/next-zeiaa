@@ -41,17 +41,17 @@ export default async function page({ searchParams }: SearchParams) {
         <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} energy={firstHeadquarter}/>
         {/* <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters?.[0].electrical_panels} /> */}
       </FiltersContainer>
-      <div className='w-full flex gap-8 justify-between px-8'>
+      <div className='w-full flex gap-8 justify-between'>
         <ChartComponent/>
         <TableComponent readings={dashboardTableReadings}/> 
       </div>
       <div className='w-full'>
-        <div className='flex justify-between gap-4 px-10'>
+        <div className='flex justify-between gap-4'>
           <div className='flex flex-col justify-center'>
             <p>Consumo energético (kWh) con umbrales</p>
             <p>Gráfico de lunes a viernes con el filtro de fines de semana</p>
           </div>
-          <div className='flex flex-col gap-4'>
+          <div className='flex flex-col gap-4 px-4'>
             <div className='flex items-end justify-end'>
               <ButtonSelect/>
             </div>
@@ -67,7 +67,7 @@ export default async function page({ searchParams }: SearchParams) {
             </div>
           </div>
         </div>
-        <div className='w-full'> 
+        <div className='w-[80%] h-[740px] flex justify-center items-center m-auto'> 
           <BarChart/>
         </div>
       </div>
