@@ -5,6 +5,7 @@ import { Eye } from "lucide-react"
 import Link from "next/link"
 import ContractedPowerSidebar from "./contracted-power-sidebar"
 import { Card, CardContent, CardTitle } from "@/components/ui/card"
+import NoResultFound from "../../no-result-found"
 
 interface DeviceInfo {
   id: number
@@ -72,6 +73,8 @@ const formatDateTime = (dateString: string) => {
 
 export default function ExcessPower({ excessPowerData, panel, powers }: { excessPowerData: ExcessPowerData, panel: Panel; powers: Powers[] }) {
 
+  
+
   const excessPowerEvents = excessPowerData.results.map((item) => {
     const { date, time } = formatDateTime(item.created_at)
     const power = item.indicators[0]?.power || 0
@@ -85,7 +88,6 @@ export default function ExcessPower({ excessPowerData, panel, powers }: { excess
       thresholds: exceededThresholds.join(", "),
     }
   })
-
 
   return (
     <div className="w-full flex">
@@ -127,6 +129,9 @@ export default function ExcessPower({ excessPowerData, panel, powers }: { excess
               
             </div>
           ))}
+          {
+            excessPowerEvents.length === 0 ? <NoResultFound/> : <></>
+          }
         </div>
       </div>
     </div>
