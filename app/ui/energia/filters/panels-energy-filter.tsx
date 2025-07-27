@@ -17,9 +17,6 @@ interface PanelsFilterProps {
 
 export default function PanelsFilterEnergy({ energyPanels = [], panel }: PanelsFilterProps) {
 
-
-  console.log(energyPanels)
-
   const [isPending, startTransition] = useTransition()
   const searchParams = useSearchParams()
   const { replace } = useRouter()

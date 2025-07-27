@@ -47,8 +47,10 @@ const data = {
 export default function BarChart() {
   return (
          <Bar
+              className='w-full h-full'
               options={
                 {
+                
                 responsive: true,
                 plugins: {
                   legend: {
@@ -57,8 +59,8 @@ export default function BarChart() {
                   },
                   title: {
                     display: true,
-                    text: 'Chart.js Pie Chart'
-                  }
+                  },
+                  
                 },
                   scales: {
                     x: { grid: { display: false } },

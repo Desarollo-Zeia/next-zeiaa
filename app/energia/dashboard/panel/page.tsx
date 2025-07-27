@@ -26,7 +26,7 @@ function ButtonSelect() {
 
 export default async function page({ searchParams }: SearchParams) {
 
-  const { headquarter, panel = '1',  date_after = new Date(), date_before = new Date()} = await searchParams
+  const { headquarter } = await searchParams
 
   const headquarters  = await getHeadquarters()
 
@@ -36,12 +36,12 @@ export default async function page({ searchParams }: SearchParams) {
   const dashboardTableReadings = await dashboardTable({ headquarterId: firstHeadquarter })
 
   return (
-    <div className="relative p-6 flex flex-col justify-center items-center gap-8">
+    <div className="relative p-6 flex flex-col justify-center gap-8">
       <FiltersContainer>
         <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} energy={firstHeadquarter}/>
         {/* <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters?.[0].electrical_panels} /> */}
       </FiltersContainer>
-      <div className='w-full flex gap-6 justify-between'>
+      <div className='w-full flex gap-8 justify-between'>
         <ChartComponent/>
         <TableComponent readings={dashboardTableReadings}/> 
       </div>
@@ -51,7 +51,7 @@ export default async function page({ searchParams }: SearchParams) {
             <p>Consumo energético (kWh) con umbrales</p>
             <p>Gráfico de lunes a viernes con el filtro de fines de semana</p>
           </div>
-          <div className='flex flex-col gap-4'>
+          <div className='flex flex-col gap-4 px-4'>
             <div className='flex items-end justify-end'>
               <ButtonSelect/>
             </div>
@@ -67,7 +67,9 @@ export default async function page({ searchParams }: SearchParams) {
             </div>
           </div>
         </div>
-        <BarChart/>
+        <div className='w-[80%] h-[740px] flex justify-center items-center m-auto'> 
+          <BarChart/>
+        </div>
       </div>
     </div>
   )
