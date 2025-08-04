@@ -13,18 +13,15 @@ import { format } from "date-fns";
 
 export default async function page({ searchParams } : SearchParams) {
 
-
   const { headquarter , panel = '1',  date_after = new Date(), date_before = new Date(), group_by = 'day'} = await searchParams
 
   const headquarters  = await getHeadquarters()
   const { results } = headquarters
   const firstHeadquarter = headquarter || results[0].id.toString()
 
-  // 1) Formateamos fechas solo una vez
   const formattedDateAfter = format(date_after, 'yyyy-MM-dd')
   const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
 
-  // 2) Parale­lizamos las llamadas
   const [
     monitoringGraphReadings,
     monitoringLastThreeReadings
@@ -42,7 +39,6 @@ export default async function page({ searchParams } : SearchParams) {
     })
   ])
 
-  // 3) Desestructuramos solo lo que necesitamos
   const { electrical_panels } = headquarters?.results.find((hq : any ) => hq.id === Number(firstHeadquarter))  // eslint-disable-line @typescript-eslint/no-explicit-any
 
   return (  
