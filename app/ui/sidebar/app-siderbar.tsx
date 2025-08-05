@@ -32,6 +32,7 @@ const energyItems = [
     title: "Consumo energético",
     url: "/energia/dashboard/home",
     icon: Zap,
+    status: false
   },
 
   {
