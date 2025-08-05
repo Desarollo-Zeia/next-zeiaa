@@ -72,7 +72,7 @@ const [readings, readingsGraph] = await Promise.all([
         <PanelsFilterEnergy energyPanels={measurementPointsPanels.results} panel={firstPanel}/>
         <MeasurementPointFilter measurementPoints={measurementPoints} point={firstPoint}/>
         <DatepickerRange />
-        <DownloadExcel headquarterId={firstHeadquarter} panelId={panel} date_after={format(date_after, 'yyyy-MM-dd')} date_before={format(date_before, 'yyyy-MM-dd')} unit={unit}/>
+        <DownloadExcel headquarterId={firstHeadquarter} point={firstPoint} panelId={firstPanel} date_after={format(date_after, 'yyyy-MM-dd')} date_before={format(date_before, 'yyyy-MM-dd')} unit={unit}/>
       </FiltersContainer>
       <div className="flex">
         <MeasurementTable readings={readings} category={category} indicator={indicator}/>

@@ -70,3 +70,7 @@ export function formattedSecond(second: number) {
   // Devolver el resultado o "0s" si no hay partes
   return partes.length > 0 ? partes.join('') : '0s';
 }
+
+export function formatFromUS(date: string) {
+  return format(date, 'dd-MM-yyyy')
+}
