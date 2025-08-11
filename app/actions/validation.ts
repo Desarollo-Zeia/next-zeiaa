@@ -1,6 +1,6 @@
 'use server'
 import { redirect } from 'next/navigation'
-import { getCompanyData, removeToken, setCompanyData, setToken } from '../lib/auth'
+import { removeToken, setCompanyData, setToken } from '../lib/auth'
 import { baseUrl, baseUrlAmbiental, baseUrlEnergy } from '../lib/constant'
  
 export async function actionOccupational(prevState: { message: string}, formData: FormData) {
@@ -71,8 +71,6 @@ export async function actionEnergy(prevState: { message: string}, formData: Form
 
     if (response.ok) {
       const data = await response.json()
-      const companyData = await getCompanyData()
-      console.log(companyData)
       await setToken(data.token)
       await setCompanyData(data.user)
     } else {

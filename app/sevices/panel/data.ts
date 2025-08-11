@@ -17,3 +17,10 @@ export async function dashboardTable({ headquarterId, date_after, date_before, u
 
   return res 
 }
+
+export async function porcentageGraph({ headquarterId } : { headquarterId: string}) {
+
+  const res = await fetchWithAuthEnergy(`/api/v1/headquarter/${headquarterId}/consumption-distribution/`)
+
+  return res
+}

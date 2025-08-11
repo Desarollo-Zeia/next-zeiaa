@@ -1,5 +1,5 @@
 import { getHeadquarters } from '@/app/sevices/filters/data'
-import { dashboardTable } from '@/app/sevices/panel/data'
+import { dashboardTable, porcentageGraph } from '@/app/sevices/panel/data'
 import { SearchParams } from '@/app/type'
 import HeadquarterEnergyFilter from '@/app/ui/energia/filters/headquarter-energy-filter'
 import BarChart from '@/app/ui/energia/panel/bar-chart'
@@ -35,6 +35,8 @@ export default async function page({ searchParams }: SearchParams) {
 
   const dashboardTableReadings = await dashboardTable({ headquarterId: firstHeadquarter })
 
+  const dashboardPorcentageGraph = await porcentageGraph({ headquarterId: firstHeadquarter })
+
   return (
     <div className="relative p-6 flex flex-col justify-center gap-8">
       <FiltersContainer>
@@ -42,7 +44,7 @@ export default async function page({ searchParams }: SearchParams) {
         {/* <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters?.[0].electrical_panels} /> */}
       </FiltersContainer>
       <div className='w-full flex gap-8 justify-between'>
-        <ChartComponent/>
+        <ChartComponent electricalPanelData={dashboardPorcentageGraph}/>
         <TableComponent readings={dashboardTableReadings}/> 
       </div>
       <div className='w-full'>
