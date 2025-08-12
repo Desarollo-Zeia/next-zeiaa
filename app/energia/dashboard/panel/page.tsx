@@ -1,4 +1,5 @@
-import { getHeadquarters } from '@/app/sevices/filters/data'
+import { getEnergyMeasurementPointPanels } from '@/app/sevices/energy/enterprise/data'
+import { getHeadquarters, getMeasurementPoints } from '@/app/sevices/filters/data'
 import { dashboardTable, porcentageGraph } from '@/app/sevices/panel/data'
 import { SearchParams } from '@/app/type'
 import HeadquarterEnergyFilter from '@/app/ui/energia/filters/headquarter-energy-filter'
@@ -6,32 +7,27 @@ import BarChart from '@/app/ui/energia/panel/bar-chart'
 import ChartComponent from '@/app/ui/energia/panel/chart'
 import TableComponent from '@/app/ui/energia/panel/table'
 import FiltersContainer from '@/app/ui/filters/filters-container'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import MeasurementPointFilter from '@/app/ui/filters/measurement-points-filter'
+import MonthFilter from '@/app/ui/filters/month-filter'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import React from 'react'
-
-function ButtonSelect() {
-  return (
-    <Select>
-      <SelectTrigger className="w-[180px] bg-[#00b0c7]">
-        <SelectValue placeholder="risa" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectItem value="light">Jaja</SelectItem>
-        <SelectItem value="dark">Jeje</SelectItem>
-        <SelectItem value="system">Jiji</SelectItem>
-      </SelectContent>
-    </Select>
-  )
-} 
 
 export default async function page({ searchParams }: SearchParams) {
 
-  const { headquarter } = await searchParams
+  const { headquarter, panel, point } = await searchParams
 
   const headquarters  = await getHeadquarters()
 
   const { results } = headquarters
   const firstHeadquarter = headquarter || results[0].id.toString()
+
+  const measurementPointsPanels = await getEnergyMeasurementPointPanels({ headquarterId: firstHeadquarter})
+  
+  const firstPanel = panel || measurementPointsPanels?.results[0]?.id.toString()
+
+  const measurementPoints = await getMeasurementPoints({ electricalpanelId: firstPanel })
+
+  const firstPoint = point || measurementPoints?.results[0]?.measurement_points[0].id.toString()
 
   const dashboardTableReadings = await dashboardTable({ headquarterId: firstHeadquarter })
 
@@ -55,16 +51,16 @@ export default async function page({ searchParams }: SearchParams) {
           </div>
           <div className='flex flex-col gap-4 px-4'>
             <div className='flex items-end justify-end'>
-              <ButtonSelect/>
+              <MonthFilter/>
             </div>
-            <div className='flex justify-between gap-4'>
-              <div className='flex gap-2'>
-                <ButtonSelect/>
-                <ButtonSelect/>
-                <ButtonSelect/>
-              </div>
+            <div className='flex justify-between items-center gap-4'>
+              <ToggleGroup type="single" defaultValue='a'>
+                <ToggleGroupItem value="a">Lunes a viernes</ToggleGroupItem>
+                <ToggleGroupItem value="b">Sábado</ToggleGroupItem>
+                <ToggleGroupItem value="c">Domingo</ToggleGroupItem>
+              </ToggleGroup>
               <div>
-                <ButtonSelect/>
+                <MeasurementPointFilter measurementPoints={measurementPoints} point={firstPoint}/>
               </div>
             </div>
           </div>

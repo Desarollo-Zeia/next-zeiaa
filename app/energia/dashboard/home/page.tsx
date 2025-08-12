@@ -33,8 +33,8 @@ const firstPoint = point || measurementPoints?.results[0]?.measurement_points[0]
 
 const formattedDateAfter  = format(date_after,  'yyyy-MM-dd')
 const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
-
   // 4. Paralle­lizar las llamadas
+
 const [readings, readingsGraph] = await Promise.all([
   consume({
     date_after:  formattedDateAfter,
@@ -57,6 +57,9 @@ const [readings, readingsGraph] = await Promise.all([
     last_by,
   }),
 ])
+
+
+console.log(readingsGraph)
   
   // 5. Extraer sólo lo que necesitas de energyDetails
   // const hq = energyDetails.energy_headquarters[0]

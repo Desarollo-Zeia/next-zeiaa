@@ -22,6 +22,8 @@ export async function consumeGraph({ headquarterId, panelId, date_after, date_be
 
   const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/measurement_points/${point}/readings/graph`, baseUrlEnergy)
 
+ 
+
   if (date_after) url.searchParams.set('date_after', date_after)
   if (date_before) url.searchParams.set('date_before', date_before)
   if (indicador) url.searchParams.set('indicador', indicador)
@@ -29,6 +31,8 @@ export async function consumeGraph({ headquarterId, panelId, date_after, date_be
   if (last_by) url.searchParams.set('last_by', last_by)
   if (category) url.searchParams.set('category', category)
   if (point) url.searchParams.set('point', point)
+
+     console.log(`${url.pathname}${url.search}`)
 
   const res = await fetchWithAuthEnergy(`${url.pathname}${url.search}`)
 
