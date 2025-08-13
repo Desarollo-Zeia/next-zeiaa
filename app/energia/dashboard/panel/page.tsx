@@ -10,12 +10,13 @@ import FiltersContainer from '@/app/ui/filters/filters-container'
 import MeasurementPointFilter from '@/app/ui/filters/measurement-points-filter'
 import MonthFilter from '@/app/ui/filters/month-filter'
 import PeriodPickerFilter from '@/app/ui/filters/period-picker-filter'
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import React from 'react'
 
 export default async function page({ searchParams }: SearchParams) {
 
   const { headquarter, panel, point, weekday } = await searchParams
+
+  console.log(weekday)
 
   const headquarters  = await getHeadquarters()
 

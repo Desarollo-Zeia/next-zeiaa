@@ -16,7 +16,7 @@ import MeasurementPointFilter from "@/app/ui/filters/measurement-points-filter"
 export default async function Page({ searchParams }: SearchParams) {
   // const { companies } = await getCompanyData()
 
-const { headquarter, panel, date_after = new Date(), date_before = new Date(), unit = 'V', indicator = 'P', page = '1', last_by = 'hour', category = 'power', point } = await searchParams
+const { headquarter, panel, date_after = new Date(), date_before = new Date(), unit = 'V', indicator = 'P', page = '1', last_by = 'minute', category = 'power', point } = await searchParams
 
 const headquarters  = await getHeadquarters()
 const { results } = headquarters

@@ -33,12 +33,14 @@ const energyToggleArray =  [
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const SimpleLineChart = ({ readingsGraph, category, indicator, last_by } : { readingsGraph: any, category: any, indicator: any, last_by: any}) => { 
 
+
+  console.log(readingsGraph)
+
     const [isPending, startTransition] = useTransition();
     const searchParams = useSearchParams();
     const pathname = usePathname()
     const { replace } = useRouter()
 
-  // Se transforma el JSON para obtener un array de puntos de datos
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const dataPoints = readingsGraph?.map((item : any ) => ({
     x: new Date(item.first_reading), // Se convierte la fecha a objeto Date
@@ -57,7 +59,6 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by } : { rea
       }
 
       if (frequency === 'none') {
-        console.log('Deleted bro')
         newParams.delete('last_by')
       }
 
@@ -286,7 +287,7 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by } : { rea
           ) : (
             <>
               {
-                last_by === 'hour' ? (
+                last_by === 'minute' ? (
                   <div className="w-full">
                     <Line data={data} options={options} />
                   </div>

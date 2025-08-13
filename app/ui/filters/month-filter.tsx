@@ -20,6 +20,11 @@ function MonthFilter() {
       params.set('date_after', start)
       params.set('date_before', finish)
 
+      if (month === 'none') {
+        params.delete('date_after')
+        params.delete('date_before')
+      }
+
       replace(`${pathname}?${params.toString()}`, { scroll: false});
     })
     
@@ -27,11 +32,12 @@ function MonthFilter() {
   }
   return (
     <div className='relative'>
-      <Select onValueChange={handleMonth}>
+      <Select onValueChange={handleMonth} defaultValue='none'>
         <SelectTrigger className="w-[180px] bg-[#00b0c7]">
           <SelectValue placeholder="Meses" />
         </SelectTrigger>
         <SelectContent>
+          <SelectItem value="none">Ninguno</SelectItem>
           <SelectItem value="2025-01-01:2025-01-31">Enero</SelectItem>
           <SelectItem value="2025-02-01:2025-02-28">Febrero</SelectItem>
           <SelectItem value="2025-03-01:2025-03-31">Marzo</SelectItem>
@@ -50,7 +56,7 @@ function MonthFilter() {
         <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50">
           <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
         </div>
-      )}
+        )}
     </div>
   )
 }
