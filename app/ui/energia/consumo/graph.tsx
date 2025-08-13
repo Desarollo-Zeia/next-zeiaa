@@ -57,6 +57,7 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by } : { rea
       }
 
       if (frequency === 'none') {
+        console.log('Deleted bro')
         newParams.delete('last_by')
       }
 
