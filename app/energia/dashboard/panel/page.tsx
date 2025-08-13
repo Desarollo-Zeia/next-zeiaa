@@ -9,12 +9,13 @@ import TableComponent from '@/app/ui/energia/panel/table'
 import FiltersContainer from '@/app/ui/filters/filters-container'
 import MeasurementPointFilter from '@/app/ui/filters/measurement-points-filter'
 import MonthFilter from '@/app/ui/filters/month-filter'
+import PeriodPickerFilter from '@/app/ui/filters/period-picker-filter'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import React from 'react'
 
 export default async function page({ searchParams }: SearchParams) {
 
-  const { headquarter, panel, point } = await searchParams
+  const { headquarter, panel, point, weekday } = await searchParams
 
   const headquarters  = await getHeadquarters()
 
@@ -50,15 +51,11 @@ export default async function page({ searchParams }: SearchParams) {
             <p>Gráfico de lunes a viernes con el filtro de fines de semana</p>
           </div>
           <div className='flex flex-col gap-4 px-4'>
-            <div className='flex items-end justify-end'>
+            <div className='flex items-end justify-end relative'>
               <MonthFilter/>
             </div>
             <div className='flex justify-between items-center gap-4'>
-              <ToggleGroup type="single" defaultValue='a'>
-                <ToggleGroupItem value="a">Lunes a viernes</ToggleGroupItem>
-                <ToggleGroupItem value="b">Sábado</ToggleGroupItem>
-                <ToggleGroupItem value="c">Domingo</ToggleGroupItem>
-              </ToggleGroup>
+                <PeriodPickerFilter/>
               <div>
                 <MeasurementPointFilter measurementPoints={measurementPoints} point={firstPoint}/>
               </div>
