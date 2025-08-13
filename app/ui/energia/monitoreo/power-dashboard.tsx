@@ -94,7 +94,6 @@ interface Powers {
 
 export default function PowerUsageChart({ readings, group, powers } : { readings: PowerReading[], group?: string, powers: Powers[] }) {
 
-
   const { power_contracted, power_max } = powers?.[0]
 
   const [isPending, startTransition] = useTransition()
@@ -295,7 +294,7 @@ export default function PowerUsageChart({ readings, group, powers } : { readings
           <ToggleGroupItem value="day" aria-label="day">
             <p>Día</p>
           </ToggleGroupItem>
-          <ToggleGroupItem value="hour" aria-label="hour">
+          <ToggleGroupItem value="minute" aria-label="minute">
             <p>Hora</p>
           </ToggleGroupItem>
         </ToggleGroup>

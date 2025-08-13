@@ -73,6 +73,7 @@ export function AppSidebar() {
         try {
           const res = await accountData()
           const { results } = res 
+          console.log(results)
           const user = results[0]
           const { email, last_name, energy_modules } = user
           console.log(energy_modules)

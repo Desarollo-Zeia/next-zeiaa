@@ -59,8 +59,6 @@ const [readings, readingsGraph] = await Promise.all([
 ])
 
 
-console.log(readingsGraph)
-  
   // 5. Extraer sólo lo que necesitas de energyDetails
   // const hq = energyDetails.energy_headquarters[0]
   // const currentPanel  = hq.electrical_panels?.find(
