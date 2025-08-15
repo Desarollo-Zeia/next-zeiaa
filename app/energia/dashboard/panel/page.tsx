@@ -1,6 +1,6 @@
 import { getEnergyMeasurementPointPanels } from '@/app/sevices/energy/enterprise/data'
 import { getHeadquarters, getMeasurementPoints } from '@/app/sevices/filters/data'
-import { dashboardTable, porcentageGraph } from '@/app/sevices/panel/data'
+import { consumeGraph, dashboardTable, porcentageGraph } from '@/app/sevices/panel/data'
 import { SearchParams } from '@/app/type'
 import HeadquarterEnergyFilter from '@/app/ui/energia/filters/headquarter-energy-filter'
 import BarChart from '@/app/ui/energia/panel/bar-chart'
@@ -12,11 +12,31 @@ import MonthFilter from '@/app/ui/filters/month-filter'
 import PeriodPickerFilter from '@/app/ui/filters/period-picker-filter'
 import React from 'react'
 
+const monthDateRanges: { [key: number]: string } = {
+  1: "2025-01-01:2025-01-31", 
+  2: "2025-02-01:2025-02-28", 
+  3: "2025-03-01:2025-03-31", 
+  4: "2025-04-01:2025-04-30", 
+  5: "2025-05-01:2025-05-31", 
+  6: "2025-06-01:2025-06-30", 
+  7: "2025-07-01:2025-07-31", 
+  8: "2025-08-01:2025-08-31", 
+  9: "2025-09-01:2025-09-30", 
+  10: "2025-10-01:2025-10-31", 
+  11: "2025-11-01:2025-11-30", 
+  12: "2025-12-01:2025-12-31", 
+}
+
 export default async function page({ searchParams }: SearchParams) {
 
-  const { headquarter, panel, point, weekday } = await searchParams
 
-  console.log(weekday)
+  const { headquarter, panel, point, weekday = '1,2,3,4,5', date_after, date_before } = await searchParams
+
+  const currentMonthNumber = monthDateRanges[new Date().getMonth() + 1];
+  const [defaultStart, defaultFinish] = currentMonthNumber.split(":");
+
+  const start = date_after || defaultStart;
+  const finish = date_before || defaultFinish;
 
   const headquarters  = await getHeadquarters()
 
@@ -34,6 +54,20 @@ export default async function page({ searchParams }: SearchParams) {
   const dashboardTableReadings = await dashboardTable({ headquarterId: firstHeadquarter })
 
   const dashboardPorcentageGraph = await porcentageGraph({ headquarterId: firstHeadquarter })
+
+  const consumeGraphReadings = await  consumeGraph({
+      date_after:  start,
+      date_before: finish,
+      headquarterId: firstHeadquarter,
+      panelId:       firstPanel,
+      indicador:     'EPpos',
+      point: firstPoint,
+      // category,
+      // unit,
+      last_by: 'day',
+      weekday
+    })
+
 
   return (
     <div className="relative p-6 flex flex-col justify-center gap-8">
@@ -64,7 +98,7 @@ export default async function page({ searchParams }: SearchParams) {
           </div>
         </div>
         <div className='w-[80%] h-[740px] flex justify-center items-center m-auto'> 
-          <BarChart/>
+          <BarChart readingsGraph={consumeGraphReadings}/>
         </div>
       </div>
     </div>
