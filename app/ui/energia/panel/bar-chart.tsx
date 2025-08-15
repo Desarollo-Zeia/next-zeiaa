@@ -52,10 +52,12 @@ ChartJS.register(LineElement, PointElement, LinearScale, TimeScale, ArcElement, 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function BarChart({ readingsGraph } : { readingsGraph: any}) {
 
+  console.log(readingsGraph)
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const dataPoints = readingsGraph?.map((item : any ) => ({
     x: new Date(item.first_reading), // Se convierte la fecha a objeto Date
-    y: item.first_value,
+    y: item.difference,
   
   })) || []
 
@@ -140,7 +142,7 @@ export default function BarChart({ readingsGraph } : { readingsGraph: any}) {
              title: function (tooltipItems: any) {
                // tooltipItems es un array de elementos (en este caso de un único punto)
                const date = new Date(tooltipItems[0].parsed.x);
-               return format(date, "PP p", { locale: es });
+               return format(date, "PP", { locale: es });
              },
              // Personalización de la etiqueta del tooltip
              // eslint-disable-next-line @typescript-eslint/no-explicit-any

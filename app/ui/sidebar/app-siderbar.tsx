@@ -30,7 +30,8 @@ import { accountData } from "@/app/utils/account"
 interface EnergyItem {
   name: string;
   url: string;
-  is_active?: boolean; // El signo de interrogación indica que es opcional
+  is_active?: boolean;
+  icon: string // El signo de interrogación indica que es opcional
 }
 
 
@@ -73,6 +74,7 @@ export function AppSidebar() {
                   <SidebarMenuButton asChild data-active={pathname.includes(item.url) && 'true'} tooltip={item.name} disabled={item.is_active}>
                     <Link href={item.is_active === false ? "#" : item.url} className={item.is_active === false ? "pointer-events-none opacity-50 cursor-not-allowed" : ""}>
                       {/* <item.icon /> */}
+                      <Image src={item.icon} alt={item.icon} width={16} height={16}  className="w-4 h-4 text-white" priority/>
                       <span>{item.name}</span>
                     </Link>
                   </SidebarMenuButton>
