@@ -24,3 +24,21 @@ export async function porcentageGraph({ headquarterId } : { headquarterId: strin
 
   return res
 }
+
+export async function consumeGraph({ headquarterId, panelId, date_after, date_before, indicador, unit, last_by, category, point, weekday} : { date_after?: string,  date_before?: string, panelId?: string, headquarterId?: string, indicador?: string, unit?: string, last_by?:string, category?:string, point?: string, weekday: string}) {
+
+  const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/measurement_points/${point}/readings/graph`, baseUrlEnergy)
+
+  if (date_after) url.searchParams.set('date_after', date_after)
+  if (date_before) url.searchParams.set('date_before', date_before)
+  if (indicador) url.searchParams.set('indicador', indicador)
+  if (unit) url.searchParams.set('unit', unit)
+  if (last_by) url.searchParams.set('last_by', last_by)
+  if (category) url.searchParams.set('category', category)
+  if (point) url.searchParams.set('point', point)
+  if (weekday) url.searchParams.set('weekday', weekday)
+
+  const res = await fetchWithAuthEnergy(`${url.pathname}${url.search}`)
+
+  return res 
+}

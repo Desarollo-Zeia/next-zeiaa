@@ -1,13 +1,13 @@
 'use client'
 
-import {
-  Zap,
-  Battery,
-  Gauge,
-  AlertTriangle,
-  AudioWaveformIcon as WaveformIcon,
-  TowerControl 
-} from "lucide-react"
+// import {
+//   Zap,
+//   Battery,
+//   Gauge,
+//   AlertTriangle,
+//   AudioWaveformIcon as WaveformIcon,
+//   TowerControl 
+// } from "lucide-react"
 
 import {
   Sidebar,
@@ -27,45 +27,18 @@ import Image from "next/image"
 import { useEffect, useState } from "react"
 import { accountData } from "@/app/utils/account"
 
-const energyItems = [
-  {
-    title: "Consumo energético",
-    url: "/energia/dashboard/home",
-    icon: Zap,
-    status: false
-  },
+interface EnergyItem {
+  name: string;
+  url: string;
+  is_active?: boolean; // El signo de interrogación indica que es opcional
+}
 
-  {
-    title: "Consumo tarifario",
-    url: "/energia/dashboard/tarifario",
-    icon: Battery,
-  },
-  {
-    title: "Monitoreo de potencia",
-    url: "/energia/dashboard/monitoreo",
-    icon: Gauge,
-  },
-  {
-    title: "Desbalance de carga",
-    url: "/energia/dashboard/desbalance",
-    icon: AlertTriangle,
-  },
-  {
-    title: "Tasa de distorsión",
-    url: "/energia/dashboard/distorsion",
-    icon: WaveformIcon,
-  },
-  {
-    title: "Panel general",
-    url: "/energia/dashboard/panel",
-    icon: TowerControl,
-  },
-]
 
 export function AppSidebar() {
 
   const pathname = usePathname()
   const [userInfo, setUserInfo] = useState<object>({ email: '', name: '', avatar: '' })
+  const [energyModules, setEnergyModules] = useState<EnergyItem[]>([])
 
   useEffect(() => {
 
@@ -73,11 +46,10 @@ export function AppSidebar() {
         try {
           const res = await accountData()
           const { results } = res 
-          console.log(results)
           const user = results[0]
           const { email, last_name, energy_modules } = user
-          console.log(energy_modules)
           setUserInfo({ email, name: last_name, avatar: '' })
+          setEnergyModules(energy_modules)
         } catch (error) {
           console.log(error)
         }
@@ -96,12 +68,12 @@ export function AppSidebar() {
           <SidebarGroupLabel>Gestión energética</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {energyItems.map((item) => (
-                <SidebarMenuItem key={item.title} >
-                  <SidebarMenuButton asChild data-active={pathname.includes(item.url) && 'true'} tooltip={item.title}>
-                    <Link href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
+              {energyModules?.map((item) => (
+                <SidebarMenuItem key={item.name} >
+                  <SidebarMenuButton asChild data-active={pathname.includes(item.url) && 'true'} tooltip={item.name} disabled={item.is_active}>
+                    <Link href={item.is_active === false ? "#" : item.url} className={item.is_active === false ? "pointer-events-none opacity-50 cursor-not-allowed" : ""}>
+                      {/* <item.icon /> */}
+                      <span>{item.name}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

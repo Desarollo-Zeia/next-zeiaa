@@ -166,7 +166,7 @@ export default function PowerUsageChart({ readings, group, powers } : { readings
       y: {
         title: {
           display: true,
-          text: "Valor",
+          text: "",
         },
         grid: {
           display: false,

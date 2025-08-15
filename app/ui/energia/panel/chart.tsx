@@ -114,8 +114,8 @@ export default function ChartComponent({ electricalPanelData } : { electricalPan
         <AccordionItem value="item-1">
           <AccordionTrigger className='bg-[#00b0c7] text-white rounded-lg'>
             <div className='flex justify-between gap-4 w-full px-4'>
-              <p className='font-semibold'>{electricalPanelData.results[0].measurement_point_name}</p>
-              <p>{electricalPanelData.results[0].consumption_percentage}%</p>
+              <p className='font-semibold'>{electricalPanelData.results[0]?.measurement_point_name}</p>
+              <p>{electricalPanelData.results[0]?.consumption_percentage}%</p>
             </div>
           </AccordionTrigger>
           <AccordionContent>
@@ -123,8 +123,8 @@ export default function ChartComponent({ electricalPanelData } : { electricalPan
               electricalPanelData.results.slice(1).map(electrical => {
                 return (
                 <div className='flex justify-between w-full px-4' key={electrical.measurement_point_name}>
-                  <p className='font-semibold flex items-center gap-1 '><div className='w-2 h-2 rounded-full bg-black'/>{electrical.measurement_point_name}</p>
-                  <p className='mr-6'>{electrical.consumption_percentage}%</p>
+                  <p className='font-semibold flex items-center gap-1 '><div className='w-2 h-2 rounded-full bg-black'/>{electrical?.measurement_point_name}</p>
+                  <p className='mr-6'>{electrical?.consumption_percentage}%</p>
                 </div>
                 )
               })
