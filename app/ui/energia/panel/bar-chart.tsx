@@ -18,6 +18,7 @@ import {
 import "chartjs-adapter-date-fns"; // Adaptador para manejo de fechas
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
+import NoResultFound from '../../no-result-found';
 
 ChartJS.register(LineElement, PointElement, LinearScale, TimeScale, ArcElement, Tooltip, Legend, CategoryScale, BarElement, Colors)
 
@@ -238,10 +239,20 @@ export default function BarChart({ readingsGraph } : { readingsGraph: any}) {
        
 
   return (
-         <Bar
-              className='w-full h-full'
-              options={options}
-              data={data}
-            />
+    <>
+      {
+        readingsGraph.length > 0 ?(
+          <Bar
+          className='w-full h-full'
+          options={options}
+          data={data}
+        />
+        ) : (
+          <NoResultFound/>
+        )
+      }
+    
+      
+    </>
   )
 }
