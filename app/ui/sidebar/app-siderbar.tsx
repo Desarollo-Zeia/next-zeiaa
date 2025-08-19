@@ -1,14 +1,4 @@
 'use client'
-
-// import {
-//   Zap,
-//   Battery,
-//   Gauge,
-//   AlertTriangle,
-//   AudioWaveformIcon as WaveformIcon,
-//   TowerControl 
-// } from "lucide-react"
-
 import {
   Sidebar,
   SidebarContent,
@@ -70,7 +60,7 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {energyModules?.map((item) => (
-                <SidebarMenuItem key={item.name} >
+                <SidebarMenuItem key={item.name}>
                   <SidebarMenuButton asChild data-active={pathname.includes(item.url) && 'true'} tooltip={item.name} disabled={item.is_active}>
                     <Link href={item.is_active === false ? "#" : item.url} className={item.is_active === false ? "pointer-events-none opacity-50 cursor-not-allowed" : ""}>
                       {/* <item.icon /> */}
