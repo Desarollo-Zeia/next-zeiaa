@@ -152,7 +152,7 @@ interface Readings {
                                     </div>
                                   </div>
                                 ) : (
-                                  ELECTRIC_PARAMETERS[indicator as keyof typeof ELECTRIC_PARAMETERS].parameter
+                                  ELECTRIC_PARAMETERS[indicator as keyof typeof ELECTRIC_PARAMETERS].parameter +  ' ' + `(${ELECTRIC_PARAMETERS[indicator as keyof typeof ELECTRIC_PARAMETERS].unit})`
                                 )
                               }
                           </TableHead>

@@ -33,10 +33,12 @@ const energyToggleArray =  [
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const SimpleLineChart = ({ readingsGraph, category, indicator, last_by } : { readingsGraph: any, category: any, indicator: any, last_by: any}) => { 
 
-    const [isPending, startTransition] = useTransition();
-    const searchParams = useSearchParams();
-    const pathname = usePathname()
-    const { replace } = useRouter()
+  console.log(readingsGraph)
+
+  const [isPending, startTransition] = useTransition();
+  const searchParams = useSearchParams();
+  const pathname = usePathname()
+  const { replace } = useRouter()
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const dataPoints = readingsGraph?.map((item : any ) => ({
