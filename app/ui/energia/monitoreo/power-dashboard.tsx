@@ -41,6 +41,7 @@ interface PowerReading {
   created_at: string
   device: DeviceInfo
   values_per_channel: MeasurementPoint[]
+  unit: string
 }
 
 interface Powers {
@@ -166,7 +167,7 @@ export default function PowerUsageChart({ readings, group, powers } : { readings
       y: {
         title: {
           display: true,
-          text: "",
+          text: readings[0].unit,
         },
         grid: {
           display: false,
@@ -198,7 +199,7 @@ export default function PowerUsageChart({ readings, group, powers } : { readings
               label += ": ";
             }
             // Se redondea el valor 'y' a dos decimales
-            label += context.parsed.y.toFixed(2);
+            label += context.parsed.y.toFixed(2) + ' ' + readings[0].unit;
             return label;
           },
         },

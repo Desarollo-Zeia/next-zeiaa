@@ -53,8 +53,6 @@ ChartJS.register(LineElement, PointElement, LinearScale, TimeScale, ArcElement, 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function BarChart({ readingsGraph } : { readingsGraph: any}) {
 
-  console.log(readingsGraph)
-
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const dataPoints = readingsGraph?.map((item : any ) => ({
     x: new Date(item.first_reading), // Se convierte la fecha a objeto Date
@@ -111,7 +109,7 @@ export default function BarChart({ readingsGraph } : { readingsGraph: any}) {
            // },
            title: {
              display: false,
-             text: "Hora de Lectura",
+             text: readingsGraph[0].unit,
            },
            grid: {
              display: false,
@@ -121,7 +119,7 @@ export default function BarChart({ readingsGraph } : { readingsGraph: any}) {
          y: {
            title: {
              display: true,
-             text: "",
+             text: readingsGraph[0].unit,
            },
            grid: {
              display: false,
@@ -153,7 +151,7 @@ export default function BarChart({ readingsGraph } : { readingsGraph: any}) {
                  label += ": ";
                }
                // Se redondea el valor 'y' a dos decimales
-               label += context.parsed.y.toFixed(2);
+               label += context.parsed.y.toFixed(2) + ' ' + readingsGraph[0].unit;
                return label;
              },
            },

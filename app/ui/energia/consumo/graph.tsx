@@ -33,8 +33,6 @@ const energyToggleArray =  [
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const SimpleLineChart = ({ readingsGraph, category, indicator, last_by } : { readingsGraph: any, category: any, indicator: any, last_by: any}) => { 
 
-  console.log(readingsGraph)
-
   const [isPending, startTransition] = useTransition();
   const searchParams = useSearchParams();
   const pathname = usePathname()
@@ -118,7 +116,7 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by } : { rea
       y: {
         title: {
           display: true,
-          text: "",
+          text: readingsGraph[0].unit,
         },
         grid: {
           display: false,
@@ -150,7 +148,7 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by } : { rea
               label += ": ";
             }
             // Se redondea el valor 'y' a dos decimales
-            label += context.parsed.y.toFixed(2);
+            label += context.parsed.y.toFixed(2) + ' ' + readingsGraph[0].unit;
             return label;
           },
         },
