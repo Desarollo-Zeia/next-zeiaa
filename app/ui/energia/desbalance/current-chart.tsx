@@ -74,7 +74,6 @@ const processData = (data: MeasurementData[]): ProcessedDataPoint[] => {
     .map((item) => {
       const timestamp = new Date(item.created_at).getTime()
 
-      console.log(timestamp)
       const channel = item.values_per_channel[0]
       return {
         timestamp,

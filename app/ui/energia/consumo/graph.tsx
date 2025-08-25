@@ -116,7 +116,7 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by } : { rea
       y: {
         title: {
           display: true,
-          text: readingsGraph[0].unit,
+          text: readingsGraph[0]?.unit,
         },
         grid: {
           display: false,
@@ -148,7 +148,7 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by } : { rea
               label += ": ";
             }
             // Se redondea el valor 'y' a dos decimales
-            label += context.parsed.y.toFixed(2) + ' ' + readingsGraph[0].unit;
+            label += context.parsed.y.toFixed(2) + ' ' + readingsGraph[0]?.unit;
             return label;
           },
         },
@@ -276,10 +276,10 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by } : { rea
         )
       }
     
-      { readingsGraph.length > 0  && <h2 className="mb-4 font-semibold text-xl">Gráfica de {ELECTRIC_PARAMETERS[indicator as keyof typeof ELECTRIC_PARAMETERS].parameter}</h2>}
+      { readingsGraph?.length > 0  && <h2 className="mb-4 font-semibold text-xl">Gráfica de {ELECTRIC_PARAMETERS[indicator as keyof typeof ELECTRIC_PARAMETERS].parameter}</h2>}
       <>
         {
-          readingsGraph.length <= 0 ? (
+          readingsGraph?.length <= 0 ? (
             <NoResultFound/>
           ) : (
             <>

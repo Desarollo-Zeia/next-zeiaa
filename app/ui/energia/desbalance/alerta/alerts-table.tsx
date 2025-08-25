@@ -52,15 +52,15 @@ export default function AlertTable({ readings, metric }: any) {
                 </TableHeader>
                 <TableBody>
 
-                  {/* Renderizamos las filas de la tabla usando "readingsData" */}
+                  {/* Renderizamos las filas de la tabla usando "readingsData" format (date, "hh:mm")*/}
                   {/* // eslint-disable-next-line @typescript-eslint/no-explicit-any*/}
-                  {readingsData?.map((reading: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+                  {readingsData?.map((reading: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any 
                     const date = new Date(reading.created_at)
                     return (
                       <TableRow key={`${reading.id}-${reading.channel}`}>
                         {/* Formateamos la fecha y la hora usando date-fns */}
                         <TableCell className="text-sm">{format(date, "eeee, dd MMMM yyyy", { locale: es })}</TableCell>
-                        <TableCell className="text-sm">{format(date, "hh:mm", { locale: es })}</TableCell>
+                        <TableCell className="text-sm">{format(date, "hh:mm")}</TableCell>
                         {/* Renderizamos los valores de forma condicional según "metric" */}
                         <TableCell className="text-sm">
                           {metric === 'current' ? reading.Ia : reading.Uab}
