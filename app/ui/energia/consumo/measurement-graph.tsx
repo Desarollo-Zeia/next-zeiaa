@@ -1,6 +1,6 @@
 "use client"
 
-import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis } from "recharts"
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale"
 
@@ -78,7 +78,7 @@ export default function DeviceReadingsChart({ data, last_by } : { data: any; las
         >
           <CartesianGrid vertical={false} strokeDasharray="3 3" />
           <XAxis dataKey={`${last_by === 'day' ? 'name' : 'weekAndMonthFormat'}`} tickLine={false} axisLine={false} className="text-xs"/>
-          {/* <YAxis tickLine={false} axisLine={false} tickFormatter={(value) => `${value.toFixed(2)}`} /> */}
+          <YAxis tickLine={false} axisLine={false} tickFormatter={(value) => `${value.toFixed(0)}`} fontSize={12}/>
           <Tooltip content={<CustomTooltip />} cursor={false} />
           {/* Utilizamos un color fijo "#00b0c7" en todas las barras */}
           <Bar dataKey="value" radius={[4, 4, 0, 0]} fill="#00b0c7" />

@@ -10,7 +10,6 @@ import NoResultFound from '@/app/ui/no-result-found'
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function AlertTable({ readings, metric }: any) {
 
-  console.log(readings)
   // Aplanamos las lecturas, usando "first_reading" en caso de que "period" sea nulo.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const readingsData = readings?.results?.flatMap((reading: any) =>

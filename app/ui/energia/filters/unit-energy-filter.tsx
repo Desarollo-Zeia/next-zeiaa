@@ -21,7 +21,11 @@ export default function ElectricUnitFilter({ category = "power" }: { category?: 
   const handleUnitChange = (category: string) => {
     startTransition(() => {
       const newParams = new URLSearchParams(searchParams)
-      newParams.delete("last_by")
+     
+
+      if (category === 'energy') {
+         newParams.set("last_by", 'hour')
+      }
 
       if (category && category !== "none") {
         newParams.set("category", category)
