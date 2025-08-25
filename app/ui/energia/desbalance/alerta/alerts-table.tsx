@@ -12,6 +12,29 @@ export default function AlertTable({ readings, metric }: any) {
 
   console.log(readings)
 
+   const formatDateTime = (dateTimeString: string) => {
+        const date = new Date(dateTimeString)
+      
+        // Formatear la fecha como "Jueves, 12 de noviembre"
+        const options: Intl.DateTimeFormatOptions = {
+          weekday: "long",
+          day: "numeric",
+          month: "long"
+        }
+        let formattedDate = date.toLocaleDateString("es-ES", options)
+      
+        // Capitalizar la primera letra en caso de que no lo esté
+        formattedDate =
+          formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1)
+      
+        // Formatear la hora como HH:MM
+        const hours = date.getHours().toString().padStart(2, "0")
+        const minutes = date.getMinutes().toString().padStart(2, "0")
+        const formattedTime = `${hours}:${minutes}`
+      
+        return { date: formattedDate, time: formattedTime }
+    }
+
   // Aplanamos las lecturas, usando "first_reading" en caso de que "period" sea nulo.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const readingsData = readings?.results?.flatMap((reading: any) =>
@@ -57,12 +80,12 @@ export default function AlertTable({ readings, metric }: any) {
                   {/* Renderizamos las filas de la tabla usando "readingsDat                                                                                                                                                                                             a" format (date, "hh:mm")*/}
                   {/* // eslint-disable-next-line @typescript-eslint/no-explicit-any*/}
                   {readingsData?.map((reading: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any 
-                    const date = new Date(reading.created_at)
+                      const { date, time } = formatDateTime(reading.created_at)
                     return (
                       <TableRow key={`${reading.id}-${reading.channel}`}>
                         {/* Formateamos la fecha y la hora usando date-fns */}
-                        <TableCell className="text-sm">{format(date, "eeee, dd MMMM yyyy", { locale: es })}</TableCell>
-                        <TableCell className="text-sm">{format(date, "kk:mm", { locale: es })}</TableCell>
+                        <TableCell className="text-sm">{date}</TableCell>
+                        <TableCell className="text-sm">{time}</TableCell>
                         {/* Renderizamos los valores de forma condicional según "metric" */}
                         <TableCell className="text-sm">
                           {metric === 'current' ? reading.Ia : reading.Uab}
