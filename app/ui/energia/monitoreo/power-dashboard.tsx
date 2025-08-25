@@ -128,7 +128,7 @@ export default function PowerUsageChart({ readings, group, powers } : { readings
   const data = {
     datasets: [
       {
-        label: readings[0]?.values_per_channel?.[0]?.measurement_point_name, // Se utiliza el indicador como label
+        label: readings?.[0]?.values_per_channel?.[0]?.measurement_point_name, // Se utiliza el indicador como label
         data: dataPoints,
         fill: false,
         borderColor: "#00b0c7",
@@ -167,7 +167,7 @@ export default function PowerUsageChart({ readings, group, powers } : { readings
       y: {
         title: {
           display: true,
-          text: readings[0].unit,
+          text: readings?.[0].unit,
         },
         grid: {
           display: false,
@@ -199,7 +199,7 @@ export default function PowerUsageChart({ readings, group, powers } : { readings
               label += ": ";
             }
             // Se redondea el valor 'y' a dos decimales
-            label += context.parsed.y.toFixed(2) + ' ' + readings[0].unit;
+            label += context.parsed.y.toFixed(2) + ' ' + readings?.[0].unit;
             return label;
           },
         },
