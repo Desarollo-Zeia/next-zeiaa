@@ -2,7 +2,7 @@ import { Card } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import React from 'react'
 import { MetricSelector } from '../metric-selector'
-import { format } from 'date-fns'
+import { format, addHours } from 'date-fns'
 import { es } from 'date-fns/locale'
 import PaginationNumberComponent from '@/app/ui/pagination-number'
 import NoResultFound from '@/app/ui/no-result-found'
@@ -55,7 +55,7 @@ export default function AlertTable({ readings, metric }: any) {
                   {/* Renderizamos las filas de la tabla usando "readingsData" format (date, "hh:mm")*/}
                   {/* // eslint-disable-next-line @typescript-eslint/no-explicit-any*/}
                   {readingsData?.map((reading: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any 
-                    const date = new Date(reading.created_at)
+                    const date = addHours(new Date(reading.created_at), 5)
                     return (
                       <TableRow key={`${reading.id}-${reading.channel}`}>
                         {/* Formateamos la fecha y la hora usando date-fns */}
