@@ -64,7 +64,6 @@ export default async function page({ searchParams } : SearchParams) {
     ? Object.values(voltageValues)
     : [];
 
-
   return (
     <div className="w-full">
       <FiltersContainer>

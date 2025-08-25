@@ -89,6 +89,7 @@ const processData = (data: MeasurementData[]): ProcessedDataPoint[] => {
 }
 
 export default function CurrentCharts({ currentReadings }: { currentReadings: MeasurementData[] }) {
+
   const processedData = processData(currentReadings)
 
   return (
