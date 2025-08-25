@@ -73,6 +73,8 @@ const processData = (data: MeasurementData[]): ProcessedDataPoint[] => {
   return data
     .map((item) => {
       const timestamp = new Date(item.created_at).getTime()
+
+      console.log(timestamp)
       const channel = item.values_per_channel[0]
       return {
         timestamp,
@@ -84,7 +86,6 @@ const processData = (data: MeasurementData[]): ProcessedDataPoint[] => {
         Ic: channel.values.Ic,
       }
     })
-    .sort((a, b) => a.timestamp - b.timestamp)
 }
 
 export default function CurrentCharts({ currentReadings }: { currentReadings: MeasurementData[] }) {
