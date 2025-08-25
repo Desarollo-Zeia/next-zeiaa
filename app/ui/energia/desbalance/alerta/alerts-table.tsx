@@ -55,7 +55,7 @@ export default function AlertTable({ readings, metric }: any) {
                   {/* Renderizamos las filas de la tabla usando "readingsData" format (date, "hh:mm")*/}
                   {/* // eslint-disable-next-line @typescript-eslint/no-explicit-any*/}
                   {readingsData?.map((reading: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any 
-                    const date = addHours(new Date(reading.created_at), 5)
+                    const date = addHours(new Date(reading.created_at), 7)
                     return (
                       <TableRow key={`${reading.id}-${reading.channel}`}>
                         {/* Formateamos la fecha y la hora usando date-fns */}
