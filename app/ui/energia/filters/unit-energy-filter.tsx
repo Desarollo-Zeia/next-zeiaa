@@ -25,6 +25,8 @@ export default function ElectricUnitFilter({ category = "power" }: { category?: 
 
       if (category === 'energy') {
          newParams.set("last_by", 'hour')
+      } else {
+        newParams.delete("last_by")
       }
 
       if (category && category !== "none") {

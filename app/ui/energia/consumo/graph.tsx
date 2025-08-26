@@ -25,7 +25,7 @@ import annotationPlugin from 'chartjs-plugin-annotation';
 ChartJS.register(LineElement, PointElement, LinearScale, TimeScale, Tooltip, Legend, zoomPlugin, annotationPlugin)
 
 const energyToggleArray =  [
-  { label: "Hora", value: "none" },
+  { label: "Hora", value: "hour" },
   { label: "Día", value: "day" },
   { label: "Semana", value: "week" },
   { label: "Mes", value: "month" },
