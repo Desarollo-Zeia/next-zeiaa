@@ -12,8 +12,6 @@ import {
 } from "chart.js";
 import zoomPlugin from "chartjs-plugin-zoom";
 import "chartjs-adapter-date-fns"; // Adaptador para manejo de fechas
-import { es } from 'date-fns/locale';
-import { format } from "date-fns";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { ELECTRIC_PARAMETERS } from "@/app/utils/formatter";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -25,7 +23,7 @@ import annotationPlugin from 'chartjs-plugin-annotation';
 ChartJS.register(LineElement, PointElement, LinearScale, TimeScale, Tooltip, Legend, zoomPlugin, annotationPlugin)
 
 const energyToggleArray =  [
-  { label: "Hora", value: "hour" },
+  { label: "Hora", value: "none" },
   { label: "Día", value: "day" },
   { label: "Semana", value: "week" },
   { label: "Mes", value: "month" },
@@ -38,6 +36,30 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by } : { rea
   const pathname = usePathname()
   const { replace } = useRouter()
 
+    const formatDateTime = (dateTimeString: string) => {
+        const date = new Date(dateTimeString)
+      
+        // Formatear la fecha como "Jueves, 12 de noviembre"
+        const options: Intl.DateTimeFormatOptions = {
+          weekday: "long",
+          day: "numeric",
+          month: "long"
+        }
+        let formattedDate = date.toLocaleDateString("es-ES", options)
+      
+        // Capitalizar la primera letra en caso de que no lo esté
+        formattedDate =
+          formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1)
+      
+        // Formatear la hora como HH:MM
+        const hours = date.getHours().toString().padStart(2, "0")
+        const minutes = date.getMinutes().toString().padStart(2, "0")
+        const formattedTime = `${hours}:${minutes}`
+      
+        return { date: formattedDate, time: formattedTime }
+      }
+  
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const dataPoints = readingsGraph?.map((item : any ) => ({
     x: new Date(item.first_reading), // Se convierte la fecha a objeto Date
@@ -45,23 +67,33 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by } : { rea
     
   })) || []
 
-  const handleFrequency = (frequency: string) => {
-    startTransition(() => {
-      const newParams = new URLSearchParams(searchParams)
-    
-      newParams.set('last_by', frequency);
+const handleFrequency = (frequency: string) => {
+  startTransition(() => {
+    const newParams = new URLSearchParams(searchParams);
 
-      if (frequency) {
-        newParams.set('last_by', frequency)
-      }
+    // Por defecto, establece last_by al valor de frequency
+    // Esto asegura que si frequency es 'day', 'week', etc., se establezca correctamente.
+    newParams.set('last_by', frequency);
 
-      if (frequency === 'none') {
-        newParams.delete('last_by')
-      }
+    // CASO ESPECIAL 1: frequency es 'none' y category NO es 'energy'
+    // En este caso, eliminamos 'last_by'
+    if (frequency === 'none' && category !== 'energy') {
+      newParams.delete('last_by');
+    }
+    // CASO ESPECIAL 2: frequency es 'none' y category SÍ es 'energy'
+    // En este caso, last_by debe ser 'hour'.
+    // Esta condición se activa después de que 'last_by' ya se haya establecido a 'none'
+    // por la línea por defecto, por lo que la sobrescribimos.
+    else if (frequency === 'none' && category === 'energy') {
+      newParams.set('last_by', 'hour');
+    }
+    // Para todos los demás casos (frequency no es 'none'),
+    // newParams.set('last_by', frequency) ya hizo el trabajo correcto.
+    // No necesitamos un 'else' que sobrescriba con 'hour'.
 
-      replace(`${pathname}?${newParams.toString()}`, { scroll: false });
-    });
-  }
+    replace(`${pathname}?${newParams.toString()}`, { scroll: false });
+  });
+};
 
   // Estructura de los datos para el gráfico
   const data = {
@@ -137,8 +169,9 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by } : { rea
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           title: function (tooltipItems: any) {
             // tooltipItems es un array de elementos (en este caso de un único punto)
-            const date = new Date(tooltipItems[0].parsed.x);
-            return format(date, "PP p", { locale: es });
+            // const date = new Date(tooltipItems[0].parsed.x);
+            const { date } = formatDateTime(tooltipItems[0].parsed.x)
+            return date;
           },
           // Personalización de la etiqueta del tooltip
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -237,7 +270,7 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by } : { rea
     <div className="flex-1 w-full h-lvh p-4 bg-white flex flex-col justify-center items-center relative">
       {
         readingsGraph?.length > 0 && (
-          <ToggleGroup type="single"  defaultValue={last_by || 'none'} onValueChange={handleFrequency}   aria-label="Frequency" className="flex gap-2 top-0 mt-4 absolute">
+          <ToggleGroup type="single"  defaultValue={last_by || 'none'} value={last_by || 'none'} onValueChange={handleFrequency}   aria-label="Frequency" className="flex gap-2 top-0 mt-4 absolute">
             {
               category !== 'energy'? 
               (
@@ -251,7 +284,11 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by } : { rea
                       <ToggleGroupItem
                         key={times.value}
                         value={times.value}
-                        className={`w-[120px] h-[40px] ${times.value === last_by ? 'bg-[#00b0c7] text-white' : 'bg-gray-100 text-black'}`}
+                        className={`w-[120px] h-[40px] ${
+                            times.value === last_by 
+                              ? 'bg-[#00b0c7] text-white' 
+                              : 'bg-gray-100 text-black'
+                          } ${last_by === 'hour' && times.value === 'none' ? 'bg-[#00b0c7] text-white' : 'bg-gray-100 text-black'}`}
                       >
                         {
                           isPending ? 
