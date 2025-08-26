@@ -1,7 +1,7 @@
 "use client"
 
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
-import { format, parseISO } from "date-fns"
+import { format } from "date-fns"
 import { es } from "date-fns/locale"
 
 // Custom tooltip component
@@ -9,25 +9,28 @@ import { es } from "date-fns/locale"
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
     const data = payload[0].payload.originalData
+    const { date } = formatDateTime(data.period)
+    const firstReading = formatDateTime(data.first_reading)
+    const secondReading = formatDateTime(data.last_reading)
 
     return (
       <div className="bg-white p-4 border rounded-md shadow-md text-sm">
-        <p className="font-semibold mb-2">{format(new Date(data.period), "dd MMM yyyy", { locale: es })}</p>
+        <p className="font-semibold mb-2">{date}</p>
         <div className="border-t my-2"></div>
         <p className="text-gray-700 mb-1">
-          <span className="font-medium">Primera lectura:</span> {data.first_value.toFixed(2)}
+          <span className="font-medium">Primera lectura:</span> {data.first_value.toFixed(2)} {data.unit}
         </p>
         <p className="text-gray-700 mb-1">
           <span className="font-medium">Fecha:</span>{" "}
-          {format(parseISO(data.first_reading), "dd MMM yyyy HH:mm", { locale: es })}
+          {firstReading.date}
         </p>
         <div className="border-t my-2"></div>
         <p className="text-gray-700 mb-1">
-          <span className="font-medium">Última lectura:</span> {data.last_value.toFixed(2)}
+          <span className="font-medium">Última lectura:</span> {data.last_value.toFixed(2)} {data.unit}
         </p>
         <p className="text-gray-700 mb-1">
           <span className="font-medium">Fecha:</span>{" "}
-          {format(parseISO(data.last_reading), "dd MMM yyyy HH:mm", { locale: es })}
+          {secondReading.date}
         </p>
         <div className="border-t my-2"></div>
         <p
@@ -35,8 +38,8 @@ const CustomTooltip = ({ active, payload }: any) => {
             data.difference > 0 ? "text-green-500" : data.difference < 0 ? "text-red-500" : "text-gray-500"
           }`}
         >
-          <span className="font-medium">Diferencia:</span> {data.difference > 0 ? "+" : ""}
-          {data.difference.toFixed(2)}
+          <span className="font-medium">Consumo:</span> {data.difference > 0 ? "+" : ""} 
+          {data.difference.toFixed(2)} {data.unit}
         </p>
       </div>
     )
@@ -44,6 +47,30 @@ const CustomTooltip = ({ active, payload }: any) => {
 
   return null
 }
+
+ const formatDateTime = (dateTimeString: string) => {
+        const date = new Date(dateTimeString)
+      
+        // Formatear la fecha como "Jueves, 12 de noviembre"
+        const options: Intl.DateTimeFormatOptions = {
+          weekday: "long",
+          day: "numeric",
+          month: "long"
+        }
+        let formattedDate = date.toLocaleDateString("es-ES", options)
+      
+        // Capitalizar la primera letra en caso de que no lo esté
+        formattedDate =
+          formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1)
+      
+        // Formatear la hora como HH:MM
+        const hours = date.getHours().toString().padStart(2, "0")
+        const minutes = date.getMinutes().toString().padStart(2, "0")
+        const formattedTime = `${hours}:${minutes}`
+      
+        return { date: formattedDate, time: formattedTime }
+      }
+  
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function DeviceReadingsChart({ data, last_by } : { data: any; last_by: string }) {
 
@@ -51,6 +78,8 @@ export default function DeviceReadingsChart({ data, last_by } : { data: any; las
   const chartData = data.map((reading: any) => {
 
     const weekAndMonthFormat = `${format(new Date(reading.first_reading), "dd", { locale: es })} - ${format(new Date(reading.last_reading), "dd MMM", { locale: es })}`
+
+    
 
     return (
       {
