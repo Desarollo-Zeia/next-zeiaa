@@ -1,3 +1,4 @@
+'use client'
 import { Card } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import React from 'react'
@@ -7,6 +8,9 @@ import NoResultFound from '@/app/ui/no-result-found'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function AlertTable({ readings, metric }: any) {
+
+  console.log(readings)
+
 
    const formatDateTime = (dateTimeString: string) => {
         const date = new Date(dateTimeString)
