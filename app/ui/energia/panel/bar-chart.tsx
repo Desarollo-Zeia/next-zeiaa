@@ -101,7 +101,7 @@ export default function BarChart({ readingsGraph } : { readingsGraph: any}) {
            // },
            title: {
              display: false,
-             text: readingsGraph[0].unit,
+             text: readingsGraph[0]?.unit,
            },
            grid: {
              display: false,
@@ -111,7 +111,7 @@ export default function BarChart({ readingsGraph } : { readingsGraph: any}) {
          y: {
            title: {
              display: true,
-             text: readingsGraph[0].unit,
+             text: readingsGraph[0]?.unit,
            },
            grid: {
              display: false,
@@ -143,7 +143,7 @@ export default function BarChart({ readingsGraph } : { readingsGraph: any}) {
                  label += ": ";
                }
                // Se redondea el valor 'y' a dos decimales
-               label += context.parsed.y.toFixed(2) + ' ' + readingsGraph[0].unit;
+               label += context.parsed.y.toFixed(2) + ' ' + readingsGraph[0]?.unit;
                return label;
              },
            },
