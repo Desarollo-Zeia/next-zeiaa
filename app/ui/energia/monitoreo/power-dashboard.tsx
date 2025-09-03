@@ -167,7 +167,7 @@ export default function PowerUsageChart({ readings, group, powers } : { readings
       y: {
         title: {
           display: true,
-          text: readings?.[0].unit,
+          text: readings?.[0]?.unit,
         },
         grid: {
           display: false,
@@ -199,7 +199,7 @@ export default function PowerUsageChart({ readings, group, powers } : { readings
               label += ": ";
             }
             // Se redondea el valor 'y' a dos decimales
-            label += context.parsed.y.toFixed(2) + ' ' + readings?.[0].unit;
+            label += context.parsed.y.toFixed(2) + ' ' + readings?.[0]?.unit;
             return label;
           },
         },
