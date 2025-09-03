@@ -300,7 +300,7 @@ export default function PowerUsageChart({ readings, group, powers } : { readings
           </ToggleGroupItem>
         </ToggleGroup>
       </div>
-      <div className="w-full mx-auto">
+      <div className="w-[80%] h-[740px] mx-auto flex justify-center items-center">
         {
           readings?.length > 0 ? (
               <Line data={data} options={options}/>
