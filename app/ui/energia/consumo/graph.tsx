@@ -148,14 +148,18 @@ const handleFrequency = (frequency: string) => {
       y: {
         title: {
           display: true,
-          text: readingsGraph[0]?.unit,
+          // text: readingsGraph[0]?.unit,
         },
         grid: {
           display: false,
           tickLength: 50
         },
         ticks: {
-          display: true
+          display: true,
+          callback: function(val : any) { // eslint-disable-line @typescript-eslint/no-explicit-any 
+            // Hide every 2nd tick label
+            return `${val} ${readingsGraph[0]?.unit}`
+          },
         },
       },
     },

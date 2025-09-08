@@ -78,8 +78,7 @@ export default function DeviceReadingsChart({ data, last_by } : { data: any; las
   const chartData = data.map((reading: any) => {
 
     const weekAndMonthFormat = `${format(new Date(reading.first_reading), "dd", { locale: es })} - ${format(new Date(reading.last_reading), "dd MMM", { locale: es })}`
-
-    
+    const hourLastBy = `${format(new Date(reading.first_reading), "HH:mm", { locale: es })}` 
 
     return (
       {
@@ -87,7 +86,8 @@ export default function DeviceReadingsChart({ data, last_by } : { data: any; las
       value: reading.difference,
       // Almacena los datos originales para el tooltip
       originalData: reading,
-      weekAndMonthFormat
+      weekAndMonthFormat,
+      hourLastBy
      }
   )
   })
@@ -106,8 +106,8 @@ export default function DeviceReadingsChart({ data, last_by } : { data: any; las
           }}
         >
           <CartesianGrid vertical={false} strokeDasharray="3 3" />
-          <XAxis dataKey={`${last_by === 'day' ? 'name' : 'weekAndMonthFormat'}`} tickLine={false} axisLine={false} className="text-xs"/>
-          <YAxis tickLine={false} axisLine={false} tickFormatter={(value) => `${value.toFixed(0)}`} fontSize={12}/>
+          <XAxis dataKey={`${last_by === 'day' ? 'name' : last_by === 'hour' ? 'hourLastBy' : 'weekAndMonthFormat'}`}  tickLine={false} axisLine={false} className="text-xs"/>
+          <YAxis tickLine={false} axisLine={false} tickFormatter={(value) => `${value.toFixed(0)} KWh`} fontSize={12}/>
           <Tooltip content={<CustomTooltip />} cursor={false} />
           {/* Utilizamos un color fijo "#00b0c7" en todas las barras */}
           <Bar dataKey="value" radius={[4, 4, 0, 0]} fill="#00b0c7" />

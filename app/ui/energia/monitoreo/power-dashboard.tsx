@@ -173,9 +173,15 @@ export default function PowerUsageChart({ readings, group, powers } : { readings
           display: false,
           tickLength: 50
         },
+        
         ticks: {
-          display: true
-        },
+          display: true,
+          callback: function(val : any , index : any) { // eslint-disable-line @typescript-eslint/no-explicit-any 
+            // Hide every 2nd tick label
+            console.log({val, index})
+          },
+          color: 'red'
+        }
       },
     },
     plugins: {
