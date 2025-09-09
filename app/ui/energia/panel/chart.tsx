@@ -110,7 +110,7 @@ export default function ChartComponent({ electricalPanelData } : { electricalPan
            }
            data={graphData}
          />
-      <Accordion type="single" collapsible> 
+      <Accordion type="single" collapsible defaultValue='item-1'> 
         <AccordionItem value="item-1">
           <AccordionTrigger className='bg-[#00b0c7] text-white rounded-lg'>
             <div className='flex justify-between gap-4 w-full px-4'>

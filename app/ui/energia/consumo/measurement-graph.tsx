@@ -4,49 +4,6 @@ import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxi
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
 
-// Custom tooltip component
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const CustomTooltip = ({ active, payload }: any) => {
-  if (active && payload && payload.length) {
-    const data = payload[0].payload.originalData
-    const { date } = formatDateTime(data.period)
-    const firstReading = formatDateTime(data.first_reading)
-    const secondReading = formatDateTime(data.last_reading)
-
-    return (
-      <div className="bg-white p-4 border rounded-md shadow-md text-sm">
-        <p className="font-semibold mb-2">{date}</p>
-        <div className="border-t my-2"></div>
-        <p className="text-gray-700 mb-1">
-          <span className="font-medium">Primera lectura:</span> {data.first_value.toFixed(2)} {data.unit}
-        </p>
-        <p className="text-gray-700 mb-1">
-          <span className="font-medium">Fecha:</span>{" "}
-          {firstReading.date}
-        </p>
-        <div className="border-t my-2"></div>
-        <p className="text-gray-700 mb-1">
-          <span className="font-medium">Última lectura:</span> {data.last_value.toFixed(2)} {data.unit}
-        </p>
-        <p className="text-gray-700 mb-1">
-          <span className="font-medium">Fecha:</span>{" "}
-          {secondReading.date}
-        </p>
-        <div className="border-t my-2"></div>
-        <p
-          className={`font-semibold ${
-            data.difference > 0 ? "text-green-500" : data.difference < 0 ? "text-red-500" : "text-gray-500"
-          }`}
-        >
-          <span className="font-medium">Consumo:</span> {data.difference > 0 ? "+" : ""} 
-          {data.difference.toFixed(2)} {data.unit}
-        </p>
-      </div>
-    )
-  }
-
-  return null
-}
 
  const formatDateTime = (dateTimeString: string) => {
         const date = new Date(dateTimeString)
@@ -70,6 +27,52 @@ const CustomTooltip = ({ active, payload }: any) => {
       
         return { date: formattedDate, time: formattedTime }
       }
+
+// Custom tooltip component
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const CustomTooltip = ({ active, payload }: any) => {
+  if (active && payload && payload.length) {
+    const dataLastBy = payload[0].payload.last_by
+    const data = payload[0].payload.originalData
+    const { date } = formatDateTime(data.period)
+    const firstReading = formatDateTime(data.first_reading)
+    const secondReading = formatDateTime(data.last_reading)
+
+    return (
+      <div className="bg-white p-4 border rounded-md shadow-md text-sm">
+        <p className="font-semibold mb-2">{date}</p>
+        <div className="border-t my-2"></div>
+        <p className="text-gray-700 mb-1">
+          <span className="font-medium">Primera lectura:</span> {data.first_value.toFixed(2)} {data.unit}
+        </p>
+        <p className="text-gray-700 mb-1">
+          <span className="font-medium">Fecha:</span>{" "}
+          {firstReading.date} {dataLastBy === 'hour' && firstReading.time}
+        </p>
+        <div className="border-t my-2"></div>
+        <p className="text-gray-700 mb-1">
+          <span className="font-medium">Última lectura:</span> {data.last_value.toFixed(2)} {data.unit}
+        </p>
+        <p className="text-gray-700 mb-1">
+          <span className="font-medium">Fecha:</span>{" "}
+          {secondReading.date} {dataLastBy === 'hour' && secondReading.time}
+        </p>
+        <div className="border-t my-2"></div>
+        <p
+          className={`font-semibold ${
+            data.difference > 0 ? "text-green-500" : data.difference < 0 ? "text-red-500" : "text-gray-500"
+          }`}
+        >
+          <span className="font-medium">Consumo:</span> {data.difference > 0 ? "+" : ""} 
+          {data.difference.toFixed(2)} {data.unit}
+        </p>
+      </div>
+    )
+  }
+
+  return null
+}
+
   
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function DeviceReadingsChart({ data, last_by } : { data: any; last_by: string }) {
@@ -87,7 +90,8 @@ export default function DeviceReadingsChart({ data, last_by } : { data: any; las
       // Almacena los datos originales para el tooltip
       originalData: reading,
       weekAndMonthFormat,
-      hourLastBy
+      hourLastBy,
+      last_by
      }
   )
   })

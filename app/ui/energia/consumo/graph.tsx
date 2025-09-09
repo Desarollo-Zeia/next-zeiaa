@@ -144,6 +144,7 @@ const handleFrequency = (frequency: string) => {
           display: false,
           tickLength: 50
         },
+        
       },
       y: {
         title: {
@@ -174,8 +175,8 @@ const handleFrequency = (frequency: string) => {
           title: function (tooltipItems: any) {
             // tooltipItems es un array de elementos (en este caso de un único punto)
             // const date = new Date(tooltipItems[0].parsed.x);
-            const { date } = formatDateTime(tooltipItems[0].parsed.x)
-            return date;
+            const { date, time } = formatDateTime(tooltipItems[0].parsed.x)
+            return `${date} ${time}`; // Formato personalizado
           },
           // Personalización de la etiqueta del tooltip
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
