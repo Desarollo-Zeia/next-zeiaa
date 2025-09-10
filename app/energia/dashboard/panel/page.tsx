@@ -30,7 +30,7 @@ const monthDateRanges: { [key: number]: string } = {
 export default async function page({ searchParams }: SearchParams) {
 
 
-  const { headquarter, panel, point, weekday = '1,2,3,4,5', date_after, date_before } = await searchParams
+  const { headquarter, panel, point, weekday = '1,2,3,4,5', date_after, date_before, this_month, this_week } = await searchParams
 
   const currentMonthNumber = monthDateRanges[new Date().getMonth() + 1];
   const [defaultStart, defaultFinish] = currentMonthNumber.split(":");
@@ -53,7 +53,7 @@ export default async function page({ searchParams }: SearchParams) {
 
   const dashboardTableReadings = await dashboardTable({ headquarterId: firstHeadquarter })
 
-  const dashboardPorcentageGraph = await porcentageGraph({ headquarterId: firstHeadquarter })
+  const dashboardPorcentageGraph = await porcentageGraph({ headquarterId: firstHeadquarter, this_month, this_week })
 
   const consumeGraphReadings = await  consumeGraph({
       date_after:  start,

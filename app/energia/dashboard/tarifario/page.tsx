@@ -1,6 +1,8 @@
 // import { getCompanyData } from "@/app/lib/auth"
 import { getHeadquarters } from "@/app/sevices/energy/enterprise/data"
-import { consumptionCalculator, consumptionInvoice, consumptionTariff } from "@/app/sevices/energy/tarifario/data"
+import { consumptionCalculator, consumptionInvoice, 
+  // consumptionTariff
+ } from "@/app/sevices/energy/tarifario/data"
 import { SearchParams } from "@/app/type"
 import HeadquarterEnergyFilter from "@/app/ui/energia/filters/headquarter-energy-filter"
 // import PanelsFilterEnergy from "@/app/ui/energia/filters/panels-energy-filter"
@@ -8,10 +10,12 @@ import ConsumeCalculator from "@/app/ui/energia/tarifario/consume-calculator"
 import ConsumeCycle from "@/app/ui/energia/tarifario/consume-cycle"
 import { DatepickerRange } from "@/app/ui/filters/datepicker-range"
 import FiltersContainer from "@/app/ui/filters/filters-container"
+import NoResultsFound from "@/app/ui/no-result"
+// import NoResultFound from "@/app/ui/no-result-found"
 // import { Card } from "@/components/ui/card"
 import { format } from "date-fns";
 import { Suspense } from "react"
-import TariffTable from "@/app/ui/energia/tarifario/tariff-table"
+// import TariffTable from "@/app/ui/energia/tarifario/tariff-table"
 // import { BadgeAlert } from "lucide-react"
 
 
@@ -41,19 +45,19 @@ export default async function Page({ searchParams }: SearchParams) {
     headquarterId: firstHeadquarter,
   })
 
-  const consumptionTariffPromise = consumptionTariff({
-    panelId: panel,
-    headquarterId: firstHeadquarter,
-  })
+  // const consumptionTariffPromise = consumptionTariff({
+  //   panelId: panel,
+  //   headquarterId: firstHeadquarter,
+  // })
 
   const [
   calculatorResult,
   invoiceResult,
-  tariffData,
+  // tariffData,
 ] = await Promise.all([
   consumptionCalculatorPromise,
   consumptionInvoicePromise,
-  consumptionTariffPromise,
+  // consumptionTariffPromise,
 ])
 
   return (
@@ -71,8 +75,11 @@ export default async function Page({ searchParams }: SearchParams) {
             <ConsumeCycle consumptionInvoiceReadings={invoiceResult}/>
           </Suspense>
         </div>
-        <div className="w-full shadow-md">
+        {/* <div className="w-full shadow-md">
           <TariffTable tariffData={tariffData}/>
+        </div> */}
+        <div>
+          <NoResultsFound message="No hay detalle tarifario por ahora" suggestion="Intente revisar otros datos"/>
         </div>
       </div>
     </div>
