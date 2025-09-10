@@ -6,8 +6,16 @@ import { useSearchParams } from 'next/navigation'
 import React from 'react'
 
 interface ConsumptionCalculatorReadings  {
-  consumption?: number,
-  cost?: number,
+  consumption: {
+      "total": number,
+      "peak": number,
+      "off_peak": number
+  },
+  cost: {
+        "total": number,
+        "peak": number,
+        "off_peak": number
+    },
   first_value?: number,
   last_value?: number,
   date_first_value?: string,
@@ -24,13 +32,13 @@ export default function ConsumeCalculator({ consumptionCalculatorReadings } : { 
           <div className="flex gap-4">
             <div>
               <p className='text-sm font-medium'>Consumo total de energía</p>
-              { consumptionCalculatorReadings?.consumption ? <p className="text-4xl font-semibold mt-2">{consumptionCalculatorReadings?.consumption?.toFixed(2)}</p> : <p className="mt-2 font-bold flex flex-col items-center"> Intente otras fechas
+              { consumptionCalculatorReadings?.consumption ? <p className="text-4xl font-semibold mt-2">{consumptionCalculatorReadings?.consumption?.total. toFixed(2)}</p> : <p className="mt-2 font-bold flex flex-col items-center"> Intente otras fechas
                 <BadgeAlert />
                 </p>}
             </div>
             <div>
               <p className='text-sm font-medium'>Consumo total soles</p>
-                { consumptionCalculatorReadings?.consumption ? <p className="text-4xl font-semibold mt-2">S/ {consumptionCalculatorReadings?.cost}</p> : <p className="mt-2 font-bold flex flex-col items-center"> Intente otras fechas
+                { consumptionCalculatorReadings?.consumption ? <p className="text-4xl font-semibold mt-2">S/ {consumptionCalculatorReadings?.cost?.total}</p> : <p className="mt-2 font-bold flex flex-col items-center"> Intente otras fechas
                 <BadgeAlert className="text-center"/>
                 </p>}
             </div>

@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { useTransition } from 'react'
 import { Pie } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -18,6 +18,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 
 interface OtherLoads {
   name: string;
@@ -60,17 +62,39 @@ ChartJS.register(LineElement, PointElement, LinearScale, TimeScale, ArcElement, 
 
 export default function ChartComponent({ electricalPanelData } : { electricalPanelData : ElectricalPanelData }) {
 
+     const [isPending, startTransition] = useTransition()
+     const searchParams = useSearchParams()
+     const { replace } = useRouter()
+     const pathname = usePathname()
+  
+  
+    const handleFrequencyChange = (frequency: string) => {
+      console.log(frequency)
+      startTransition(() => {
+          const params = new URLSearchParams(searchParams)
+          if (frequency === 'month') {
+              params.set("this_month", 'true')
+              params.delete("this_week")
+           } else {
+              params.set("this_week", 'true')
+              params.delete("this_month")
+           } 
+          
+          replace(`${pathname}?${params.toString()}`)
+      })
+      }
+
   const graphData = {
     labels: electricalPanelData.results.slice(1).map(electrical => electrical.measurement_point_name),
     datasets: [
       {
         label: '',
         data: electricalPanelData.results.slice(1).map(electrical => (electrical.consumption_percentage)),
-      //   backgroundColor: [
-      //   'red',
-      //   'purple',
-      //   'orange'
-      // ]
+        backgroundColor: [
+        '#BBDCE5',
+        '#D9C4B0',
+        '#F7A5A5'
+      ]
       }
     ]
   }
@@ -85,32 +109,43 @@ export default function ChartComponent({ electricalPanelData } : { electricalPan
       {/* <div>
         <p className='text-balance'>Distribución de consumo en tiempo real</p>
       </div> */}
-      <Pie
-           options={
-             {
-             responsive: true,
-             plugins: {
-               legend: {
-                display: false,
-                position: 'top',
-               },
-               title: {
-                 display: true,
-                 text: 'Chart.js Pie Chart'
-               },
-               tooltip: {
-                callbacks: {
-                  label: function(ctx) {
-                    return `${ctx.formattedValue}%`
+       <div className='relative'>
+            <ToggleGroup type="single" defaultValue='month' onValueChange={handleFrequencyChange}>
+                <ToggleGroupItem value="month">Este mes</ToggleGroupItem>
+                <ToggleGroupItem value="week">Esta semana</ToggleGroupItem>
+            </ToggleGroup>
+            {isPending && (
+                <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+                </div>
+            )}
+        </div>
+        <Pie
+            options={
+              {
+              responsive: true,
+              plugins: {
+                legend: {
+                  display: false,
+                  position: 'top',
+                },
+                title: {
+                  display: true,
+                  text: 'Chart.js Pie Chart'
+                },
+                tooltip: {
+                  callbacks: {
+                    label: function(ctx) {
+                      return `${ctx.formattedValue}%`
+                    }
                   }
                 }
-               }
-             }
-             }  
-           }
-           data={graphData}
-         />
-      <Accordion type="single" collapsible> 
+              }
+              }  
+            }
+            data={graphData}
+          />
+      <Accordion type="single" collapsible defaultValue='item-1'> 
         <AccordionItem value="item-1">
           <AccordionTrigger className='bg-[#00b0c7] text-white rounded-lg'>
             <div className='flex justify-between gap-4 w-full px-4'>

@@ -12,7 +12,8 @@ type Reading = {
   hardware: string,
   device: string,
   dev_eui: string,
-  electrical_panel: string
+  electrical_panel: string,
+  location_reference: string,
 
 }
 
@@ -39,6 +40,9 @@ export default function TableComponent({ readings } : { readings : PanelReadings
               Puntos de monitoreo
             </TableHead>
             <TableHead className='text-center'>
+              Referencia
+            </TableHead>
+            <TableHead className='text-center'>
               Llave
             </TableHead>
             <TableHead className='text-center'>
@@ -53,6 +57,7 @@ export default function TableComponent({ readings } : { readings : PanelReadings
             <TableHead className='text-center'>
               Ubicación
             </TableHead>
+          
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -64,7 +69,10 @@ export default function TableComponent({ readings } : { readings : PanelReadings
                     {reading.channel}
                   </TableCell>
                   <TableCell className='text-center'>
-                    {reading.name}
+                    {reading.key}
+                  </TableCell>
+                  <TableCell className='text-center'>
+                    {reading.location_reference}
                   </TableCell>
                   <TableCell className='text-center'>
                     {reading.key}

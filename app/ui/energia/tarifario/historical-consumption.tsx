@@ -19,6 +19,7 @@ export default function HistoricalCosumption({group_by, consumptionGraphReadings
 
   const [type, setType] = useState<string>('consumption')
 
+
   return (
     <div className='flex-1'>
       <div className="flex justify-between items-center">

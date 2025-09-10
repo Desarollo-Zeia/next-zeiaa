@@ -32,8 +32,6 @@ export async function consumeGraph({ headquarterId, panelId, date_after, date_be
   if (category) url.searchParams.set('category', category)
   if (point) url.searchParams.set('point', point)
 
-     console.log(`${url.pathname}${url.search}`)
-
   const res = await fetchWithAuthEnergy(`${url.pathname}${url.search}`)
 
   return res 

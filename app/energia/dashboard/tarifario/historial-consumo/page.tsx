@@ -15,15 +15,14 @@ import React from 'react'
 
 export default async function page({ searchParams } : SearchParams) {
 
-  const { headquarter = '1' , panel = '1',  date_after = new Date(), date_before = new Date(), page = '1', group_by = 'day'} = await searchParams
+  const { headquarter , panel = '1',  date_after = new Date(), date_before = new Date(), page = '1', group_by = 'day'} = await searchParams
 
   const formattedDateAfter = format(date_after, 'yyyy-MM-dd')
   const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
 
   const headquarters  = await getHeadquarters()
   const { results } = headquarters
-  const firstHeadquarter = headquarter || results[0].id
-
+  const firstHeadquarter = headquarter || results[0].id.toString()
 
     const consumptionGraphPromise = await consumptionGraph({
     panelId: panel,

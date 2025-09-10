@@ -18,16 +18,21 @@ export async function dashboardTable({ headquarterId, date_after, date_before, u
   return res 
 }
 
-export async function porcentageGraph({ headquarterId } : { headquarterId: string}) {
+export async function porcentageGraph({ headquarterId, this_week, this_month } : { headquarterId: string, this_week?: string, this_month?: string}) {
 
-  const res = await fetchWithAuthEnergy(`/api/v1/headquarter/${headquarterId}/consumption-distribution/`)
+   const url = new URL(`/api/v1/headquarter/${headquarterId}/consumption-distribution/`, baseUrlEnergy)
+
+  if (this_week) url.searchParams.set('this_week', this_week)
+  if (this_month) url.searchParams.set('this_month', this_month)
+
+  const res = await fetchWithAuthEnergy(`${url.pathname}${url.search}`)
 
   return res
 }
 
 export async function consumeGraph({ headquarterId, panelId, date_after, date_before, indicador, unit, last_by, category, point, weekday} : { date_after?: string,  date_before?: string, panelId?: string, headquarterId?: string, indicador?: string, unit?: string, last_by?:string, category?:string, point?: string, weekday: string}) {
 
-  const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/measurement_points/${point}/readings/graph`, baseUrlEnergy)
+  const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/measurement_points/${point}/readings/graph?this_month=true`, baseUrlEnergy)
 
   if (date_after) url.searchParams.set('date_after', date_after)
   if (date_before) url.searchParams.set('date_before', date_before)
