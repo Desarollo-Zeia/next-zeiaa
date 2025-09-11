@@ -34,12 +34,12 @@ function MonthFilter() {
       const params = new URLSearchParams(searchParams);
       const [start, finish] = month.split(':')
 
-      params.set('date_after', start)
-      params.set('date_before', finish)
+      params.set('date_start', start)
+      params.set('date_end', finish)
 
       if (month === 'none') {
-        params.delete('date_after')
-        params.delete('date_before')
+        params.delete('date_start')
+        params.delete('date_end')
       }
 
       replace(`${pathname}?${params.toString()}`, { scroll: false});

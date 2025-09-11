@@ -10,6 +10,7 @@ import FiltersContainer from '@/app/ui/filters/filters-container'
 import MeasurementPointFilter from '@/app/ui/filters/measurement-points-filter'
 import MonthFilter from '@/app/ui/filters/month-filter'
 import PeriodPickerFilter from '@/app/ui/filters/period-picker-filter'
+import { format } from 'date-fns'
 import React from 'react'
 
 const monthDateRanges: { [key: number]: string } = {
@@ -30,13 +31,16 @@ const monthDateRanges: { [key: number]: string } = {
 export default async function page({ searchParams }: SearchParams) {
 
 
-  const { headquarter, panel, point, weekday = '1,2,3,4,5', date_after, date_before, this_month, this_week } = await searchParams
+  const { headquarter, panel, point, weekday = '1,2,3,4,5', date_start, date_end, date_after, date_before, this_month, this_week } = await searchParams
 
-  const currentMonthNumber = monthDateRanges[new Date().getMonth() + 1];
-  const [defaultStart, defaultFinish] = currentMonthNumber.split(":");
+  const currentMonthNumber = monthDateRanges[new Date().getMonth() + 1]
+  const [defaultStart, defaultFinish] = currentMonthNumber.split(":")
 
-  const start = date_after || defaultStart;
-  const finish = date_before || defaultFinish;
+  const formattedDateAfter  = date_after ?  format(date_after,  'yyyy-MM-dd') : undefined
+  const formattedDateBefore = date_before ? format(date_before, 'yyyy-MM-dd') : undefined
+
+  const start = date_start || defaultStart;
+  const finish = date_end || defaultFinish;
 
   const headquarters  = await getHeadquarters()
 
@@ -53,7 +57,7 @@ export default async function page({ searchParams }: SearchParams) {
 
   const dashboardTableReadings = await dashboardTable({ headquarterId: firstHeadquarter })
 
-  const dashboardPorcentageGraph = await porcentageGraph({ headquarterId: firstHeadquarter, this_month, this_week })
+  const dashboardPorcentageGraph = await porcentageGraph({ headquarterId: firstHeadquarter, this_month, this_week, date_after:formattedDateAfter , date_before: formattedDateBefore })
 
   const consumeGraphReadings = await  consumeGraph({
       date_after:  start,
