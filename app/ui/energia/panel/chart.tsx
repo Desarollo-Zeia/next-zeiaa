@@ -73,9 +73,6 @@ export default function ChartComponent({ electricalPanelData } : { electricalPan
 
     const currentFrequncy = month ? 'month' : week ? 'week' : ''
 
-    console.log('currentFrequncy', currentFrequncy)
-
-  
     const handleFrequencyChange = (frequency: string) => {
       
       startTransition(() => {
@@ -121,7 +118,7 @@ export default function ChartComponent({ electricalPanelData } : { electricalPan
       </div> */}
       <div className='relative'>
             <DatepickerRange />
-            <ToggleGroup type="single" value={currentFrequncy} onValueChange={handleFrequencyChange}>
+            <ToggleGroup type="single" value={currentFrequncy} defaultValue='month' onValueChange={handleFrequencyChange}>
                 <ToggleGroupItem value="month">Este mes</ToggleGroupItem>
                 <ToggleGroupItem value="week">Esta semana</ToggleGroupItem>
             </ToggleGroup>
