@@ -18,12 +18,14 @@ export async function dashboardTable({ headquarterId, date_after, date_before, u
   return res 
 }
 
-export async function porcentageGraph({ headquarterId, this_week, this_month } : { headquarterId: string, this_week?: string, this_month?: string}) {
+export async function porcentageGraph({ headquarterId, this_week, this_month, date_after, date_before } : { headquarterId: string, this_week?: string, this_month?: string, date_after?: string,  date_before?: string}) {
 
    const url = new URL(`/api/v1/headquarter/${headquarterId}/consumption-distribution/`, baseUrlEnergy)
 
   if (this_week) url.searchParams.set('this_week', this_week)
   if (this_month) url.searchParams.set('this_month', this_month)
+  if (date_after) url.searchParams.set('date_after', date_after)
+  if (date_before) url.searchParams.set('date_before', date_before)
 
   const res = await fetchWithAuthEnergy(`${url.pathname}${url.search}`)
 

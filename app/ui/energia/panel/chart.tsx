@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/accordion"
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { DatepickerRange } from '../../filters/datepicker-range';
 
 interface OtherLoads {
   name: string;
@@ -60,18 +61,27 @@ interface ElectricalPanelData {
 
 ChartJS.register(LineElement, PointElement, LinearScale, TimeScale, ArcElement, Tooltip, Legend, Colors)
 
-export default function ChartComponent({ electricalPanelData } : { electricalPanelData : ElectricalPanelData }) {
+export default function ChartComponent({ electricalPanelData } : { electricalPanelData : ElectricalPanelData}) {
 
      const [isPending, startTransition] = useTransition()
      const searchParams = useSearchParams()
      const { replace } = useRouter()
      const pathname = usePathname()
-  
+
+    const month = searchParams.get('this_month')
+    const week = searchParams.get('this_week')
+
+    const currentFrequncy = month ? 'month' : week ? 'week' : ''
+
+    console.log('currentFrequncy', currentFrequncy)
+
   
     const handleFrequencyChange = (frequency: string) => {
-      console.log(frequency)
+      
       startTransition(() => {
           const params = new URLSearchParams(searchParams)
+              params.delete("date_after")
+              params.delete("date_before")
           if (frequency === 'month') {
               params.set("this_month", 'true')
               params.delete("this_week")
@@ -109,8 +119,9 @@ export default function ChartComponent({ electricalPanelData } : { electricalPan
       {/* <div>
         <p className='text-balance'>Distribución de consumo en tiempo real</p>
       </div> */}
-       <div className='relative'>
-            <ToggleGroup type="single" defaultValue='month' onValueChange={handleFrequencyChange}>
+      <div className='relative'>
+            <DatepickerRange />
+            <ToggleGroup type="single" value={currentFrequncy} onValueChange={handleFrequencyChange}>
                 <ToggleGroupItem value="month">Este mes</ToggleGroupItem>
                 <ToggleGroupItem value="week">Esta semana</ToggleGroupItem>
             </ToggleGroup>
@@ -119,8 +130,8 @@ export default function ChartComponent({ electricalPanelData } : { electricalPan
                 <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
                 </div>
             )}
-        </div>
-        <Pie
+      </div>
+      <Pie
             options={
               {
               responsive: true,
@@ -144,7 +155,7 @@ export default function ChartComponent({ electricalPanelData } : { electricalPan
               }  
             }
             data={graphData}
-          />
+      />
       <Accordion type="single" collapsible defaultValue='item-1'> 
         <AccordionItem value="item-1">
           <AccordionTrigger className='bg-[#00b0c7] text-white rounded-lg'>
