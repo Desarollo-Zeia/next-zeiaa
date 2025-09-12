@@ -110,16 +110,20 @@ export default function BarChart({ readingsGraph } : { readingsGraph: any}) {
          },
          y: {
            title: {
-             display: true,
+             display: false,
              text: readingsGraph[0]?.unit,
            },
            grid: {
              display: false,
              tickLength: 50
            },
-           ticks: {
-             display: true
-           },
+            ticks: {
+              display: true,
+              callback: function(val : any) { // eslint-disable-line @typescript-eslint/no-explicit-any 
+                // Hide every 2nd tick label
+                return `${val.toFixed(2)} ${readingsGraph[0]?.unit}`
+          },
+        },
          },
        },
        plugins: {

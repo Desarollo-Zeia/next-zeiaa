@@ -118,9 +118,9 @@ export default function ChartComponent({ electricalPanelData } : { electricalPan
       </div> */}
       <div className='relative'>
             <DatepickerRange />
-            <ToggleGroup type="single" value={currentFrequncy} defaultValue='month' onValueChange={handleFrequencyChange}>
-                <ToggleGroupItem value="month">Este mes</ToggleGroupItem>
-                <ToggleGroupItem value="week">Esta semana</ToggleGroupItem>
+            <ToggleGroup type="single" defaultValue='month' value={currentFrequncy}  onValueChange={handleFrequencyChange}>
+                <ToggleGroupItem value="month" className='shadow-md'>Este mes</ToggleGroupItem>
+                <ToggleGroupItem value="week" className='shadow-md'>Esta semana</ToggleGroupItem>
             </ToggleGroup>
             {isPending && (
                 <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50">
