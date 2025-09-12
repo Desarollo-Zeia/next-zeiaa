@@ -159,7 +159,7 @@ const handleFrequency = (frequency: string) => {
           display: true,
           callback: function(val : any) { // eslint-disable-line @typescript-eslint/no-explicit-any 
             // Hide every 2nd tick label
-            return `${val} ${readingsGraph[0]?.unit}`
+            return `${val.toFixed(2)} ${readingsGraph[0]?.unit}`
           },
         },
       },
@@ -279,9 +279,10 @@ const handleFrequency = (frequency: string) => {
             {
               category !== 'energy'? 
               (
-                <ToggleGroupItem value="hour" className={"w-[120px] h-[40px] bg-[#00b0c7] text-white"} disabled>
-                  Hora
-                </ToggleGroupItem>
+                // <ToggleGroupItem value="hour" className={"w-[120px] h-[40px] bg-[#00b0c7] text-white"} disabled>
+                //   Hora
+                // </ToggleGroupItem>
+                <></>
               ) : (
                 <>
                   {

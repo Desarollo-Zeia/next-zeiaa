@@ -166,6 +166,7 @@ interface Readings {
       
                       // Obtenemos los valores de los indicadores para este reading
                       const indicatorValues = reading.indicators.values
+                      console.log('indicatorValues', indicatorValues)
 
                       return (
                         <TableRow key={readingIndex}>

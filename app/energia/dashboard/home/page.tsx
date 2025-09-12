@@ -33,6 +33,13 @@ const firstPoint = point || measurementPoints?.results[0]?.measurement_points[0]
 
 const formattedDateAfter  = format(date_after,  'yyyy-MM-dd')
 const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
+
+
+console.log({
+  firstHeadquarter,
+  firstPanel,
+  firstPoint
+})
   // 4. Paralle­lizar las llamadas
 
 const [readings, readingsGraph] = await Promise.all([
