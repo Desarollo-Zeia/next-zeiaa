@@ -50,203 +50,216 @@ ChartJS.register(LineElement, PointElement, LinearScale, TimeScale, ArcElement, 
 //   }]
 // };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default function BarChart({ readingsGraph } : { readingsGraph: any}) {
+type DayValues = {
+  superior: number
+  inferior: number
+}
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const dataPoints = readingsGraph?.map((item : any ) => ({
+type VoltageByDay = {
+  workdays: DayValues
+  saturday: DayValues
+  sunday: DayValues
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default function BarChart({ readingsGraph, weekday, thresholds }: { readingsGraph: any, weekday?: any, thresholds?: VoltageByDay }) {
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const dataPoints = readingsGraph?.map((item: any) => ({
     x: new Date(item.first_reading), // Se convierte la fecha a objeto Date
     y: item.difference,
-  
+
   })) || []
 
-    const data = {
-      datasets: [
-        {
-          label: ``, // Se utiliza el indicador como label
-          data: dataPoints,
-           backgroundColor: "#00b0c7",
-          fill: false,
-          borderColor: "#00b0c7",
-          stepped: true,
-          tension: 0,
-          pointRadius: 2, 
-        },
-       
-      ],
-    }
-     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-     const options : any = {
-       interaction: {
-         mode: 'nearest',
-         axis: 'x',
-         intersect: false
-       },
-       responsive: true,
-       scales: {
-         x: {
-           type: "time",
-           time: {
-             unit: "day", // Puedes ajustar la unidad a 'hour', 'day', etc.
-             displayFormats: {
-               minute: "HH:mm",
-             },
-           },
-           // ticks: {
-           //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-           //   callback: function (value: any) {
-           //     const date = new Date(value)
-           //     return format(date, "PP", { locale: es }) // Formato de fecha
-           //    }
-           // },
-           title: {
-             display: false,
-             text: readingsGraph[0]?.unit,
-           },
-           grid: {
-             display: false,
-             tickLength: 50
-           },
-         },
-         y: {
-           title: {
-             display: false,
-             text: readingsGraph[0]?.unit,
-           },
-           grid: {
-             display: false,
-             tickLength: 50
-           },
-            ticks: {
-              display: true,
-              callback: function(val : any) { // eslint-disable-line @typescript-eslint/no-explicit-any 
-                // Hide every 2nd tick label
-                return `${val.toFixed(2)} ${readingsGraph[0]?.unit}`
+  const data = {
+    datasets: [
+      {
+        label: ``, // Se utiliza el indicador como label
+        data: dataPoints,
+        backgroundColor: "#00b0c7",
+        fill: false,
+        borderColor: "#00b0c7",
+        stepped: true,
+        tension: 0,
+        pointRadius: 2,
+      },
+
+    ],
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const options: any = {
+    interaction: {
+      mode: 'nearest',
+      axis: 'x',
+      intersect: false
+    },
+    responsive: true,
+    scales: {
+      x: {
+        type: "time",
+        time: {
+          unit: "day", // Puedes ajustar la unidad a 'hour', 'day', etc.
+          displayFormats: {
+            minute: "HH:mm",
           },
         },
-         },
-       },
-       plugins: {
-         tooltip: {
-           backgroundColor: "rgba(255, 255, 255)", // Cambia el fondo a un color claro
-           titleColor: "#333", // Color para el título del tooltip
-           bodyColor: "#333", // Color para el contenido del tooltip
-           callbacks: {
-             // Personalización del título del tooltip (ej. para formatear la fecha)
-             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-             title: function (tooltipItems: any) {
-               // tooltipItems es un array de elementos (en este caso de un único punto)
-               const date = new Date(tooltipItems[0].parsed.x);
-               return format(date, "PP", { locale: es });
-             },
-             // Personalización de la etiqueta del tooltip
-             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-             label: function (context: any) {
-               let label = context.dataset.label || "";
-               if (label) {
-                 label += ": ";
-               }
-               // Se redondea el valor 'y' a dos decimales
-               label += context.parsed.y.toFixed(2) + ' ' + readingsGraph[0]?.unit;
-               return label;
-             },
-           },
-         },
-         zoom: {
-           // wheel: {
-   
-           //   enabled: true,
-           //   mode: "xy"
-           // },
-           // pan: {
-           //   enabled: true,
-           //   mode: "xy", // Permite desplazar (pan) solo en el eje X. También puedes usar "y" o "xy".
-           // },
-           pan: {
-             enabled: true,
-             mode: "x", // "x", "y" o "xy"
-           },
-           zoom: {
-            
-             wheel: {
-               enabled: true,
-               mode: "x",
-               speed: 0.1,
-               threshold: 2,
-             },
-             pinch: {
-               enabled: true,
-             },
-             mode: "x",
-           },
-           limits: {
-             y: { min: 'original', max: 'original' },
-             x: { min: 'original', max: 'original' }
-           }
-   
-         },
-         decimation: { 
-           enabled: true,
-           algorithm: 'lttb',
-           samples: 20, // Aumenta este valor para conservar más detalles
-           threshold: 5
-         },
-         legend: {
-           display: false
-         },
-        //   annotation: {
-        //    annotations: {
-        //       line1: {
-        //        display: category === 'voltage' ? true : false,
-        //        type: 'line',
-        //        yMin: 209,
-        //        yMax: 209,
-        //        borderColor: '#000',
-        //        borderWidth: 2,
-        //        borderDash: [5, 5],
-        //        label: {
-        //          display: true,
-        //          color: 'white',
-        //          backgroundColor: '#000',
-        //          content: ['209 v'],
-        //        }
-        //      },
-        //      line2: {
-        //      display: category === 'voltage' ? true : false,
-        //      type: 'line',
-        //      yMin: 231,
-        //      yMax: 231,
-        //      borderColor: '#000',
-        //      borderWidth: 2,
-        //      borderDash: [5, 5],
-        //      label: {
-        //        display: true,
-        //        color: 'white',
-        //        backgroundColor: '#000',
-        //        content: ['231 v'],
-        //      }
-        //      },
+        // ticks: {
+        //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        //   callback: function (value: any) {
+        //     const date = new Date(value)
+        //     return format(date, "PP", { locale: es }) // Formato de fecha
         //    }
-        //  }
-       }
+        // },
+        title: {
+          display: false,
+          text: readingsGraph[0]?.unit,
+        },
+        grid: {
+          display: false,
+          tickLength: 50
+        },
+      },
+      y: {
+        title: {
+          display: false,
+          text: readingsGraph[0]?.unit,
+        },
+        grid: {
+          display: false,
+          tickLength: 50
+        },
+
+        ticks: {
+          display: true,
+          callback: function (val: any) { // eslint-disable-line @typescript-eslint/no-explicit-any 
+            // Hide every 2nd tick label
+            return `${val.toFixed(2)} ${readingsGraph[0]?.unit}`
+          },
+        },
+      },
+    },
+    plugins: {
+      tooltip: {
+        backgroundColor: "rgba(255, 255, 255)", // Cambia el fondo a un color claro
+        titleColor: "#333", // Color para el título del tooltip
+        bodyColor: "#333", // Color para el contenido del tooltip
+        callbacks: {
+          // Personalización del título del tooltip (ej. para formatear la fecha)
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          title: function (tooltipItems: any) {
+            // tooltipItems es un array de elementos (en este caso de un único punto)
+            const date = new Date(tooltipItems[0].parsed.x);
+            return format(date, "PP", { locale: es });
+          },
+          // Personalización de la etiqueta del tooltip
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          label: function (context: any) {
+            let label = context.dataset.label || "";
+            if (label) {
+              label += ": ";
+            }
+            // Se redondea el valor 'y' a dos decimales
+            label += context.parsed.y.toFixed(2) + ' ' + readingsGraph[0]?.unit;
+            return label;
+          },
+        },
+      },
+      zoom: {
+        // wheel: {
+
+        //   enabled: true,
+        //   mode: "xy"
+        // },
+        // pan: {
+        //   enabled: true,
+        //   mode: "xy", // Permite desplazar (pan) solo en el eje X. También puedes usar "y" o "xy".
+        // },
+        pan: {
+          enabled: true,
+          mode: "x", // "x", "y" o "xy"
+        },
+        zoom: {
+
+          wheel: {
+            enabled: true,
+            mode: "x",
+            speed: 0.1,
+            threshold: 2,
+          },
+          pinch: {
+            enabled: true,
+          },
+          mode: "x",
+        },
+        limits: {
+          y: { min: 'original', max: 'original' },
+          x: { min: 'original', max: 'original' }
+        }
+
+      },
+      decimation: {
+        enabled: true,
+        algorithm: 'lttb',
+        samples: 20, // Aumenta este valor para conservar más detalles
+        threshold: 5
+      },
+      legend: {
+        display: false
+      },
+      annotation: {
+        annotations: {
+          line1: {
+            display: true,
+            type: 'line',
+            yMin: weekday === '1,2,3,4,5' ? thresholds?.workdays.inferior : weekday === '6' ? thresholds?.saturday.inferior : thresholds?.sunday.inferior,
+            yMax: weekday === '1,2,3,4,5' ? thresholds?.workdays.inferior : weekday === '6' ? thresholds?.saturday.inferior : thresholds?.sunday.inferior,
+            borderColor: '#59AC77',
+            borderWidth: 2,
+            borderDash: [5, 5],
+            label: {
+              display: true,
+              color: 'white',
+              backgroundColor: '#59AC77',
+              content: [`${weekday === '1,2,3,4,5' ? thresholds?.workdays.inferior : weekday === '6' ? thresholds?.saturday.inferior : thresholds?.sunday.inferior} v`],
+            }
+          },
+          line2: {
+            display: true,
+            type: 'line',
+            yMin: weekday === '1,2,3,4,5' ? thresholds?.workdays.superior : weekday === '6' ? thresholds?.saturday.superior : thresholds?.sunday.superior,
+            yMax: weekday === '1,2,3,4,5' ? thresholds?.workdays.superior : weekday === '6' ? thresholds?.saturday.superior : thresholds?.sunday.superior,
+            borderColor: '#DC143C',
+            borderWidth: 2,
+            borderDash: [5, 5],
+            label: {
+              display: true,
+              color: 'white',
+              backgroundColor: '#DC143C',
+              content: [`${weekday === '1,2,3,4,5' ? thresholds?.workdays.superior : weekday === '6' ? thresholds?.saturday.superior : thresholds?.sunday.superior} v`],
+              xAdjust: -80,
+            }
+          },
+        }
       }
-       
+    }
+  }
+
 
   return (
     <>
       {
-        readingsGraph.length > 0 ?(
+        readingsGraph.length > 0 ? (
           <Bar
-          className='w-full h-full'
-          options={options}
-          data={data}
-        />
+            className='w-full h-full'
+            options={options}
+            data={data}
+          />
         ) : (
-          <NoResultFound/>
+          <NoResultFound />
         )
       }
-    
-      
+
+
     </>
   )
 }

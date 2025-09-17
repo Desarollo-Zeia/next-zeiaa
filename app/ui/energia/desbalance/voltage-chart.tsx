@@ -4,7 +4,7 @@ import { Line, LineChart, Tooltip, XAxis, YAxis } from "recharts"
 import { ChartContainer } from "@/components/ui/chart"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
-
+import NoResultsFound from "../../no-result"
 // TypeScript interfaces for the JSON data
 interface VoltageValues {
   Uab: number
@@ -34,7 +34,8 @@ interface MeasurementData {
   device: Device
   values_per_channel: Channel[]
   balance_status: string
-  measurement_point: MeasurementPoint
+  measurement_point: MeasurementPoint,
+  message?: string
 }
 
 // Interface for processed data used in charts
@@ -47,6 +48,7 @@ interface ProcessedDataPoint {
   Ubc: number
   Uac: number
 }
+
 
 // Componente CustomTooltip que recibe props específicas
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -70,23 +72,30 @@ const CustomTooltip = ({ active, payload }: any) => {
 
 // Process data for charts
 const processData = (data: MeasurementData[]): ProcessedDataPoint[] => {
-  return data.map((item) => {
-      const timestamp = new Date(item.created_at).getTime()
-      const channel = item.values_per_channel[0]
-      return {
-        timestamp,
-        id: item.id,
-        measurementPoint: item.measurement_point.name,
-        channel: channel.channel,
-        Uab: channel.values.Uab,
-        Ubc: channel.values.Ubc,
-        Uac: channel.values.Uac,
-      }
-    })
+  return data?.map((item) => {
+    const timestamp = new Date(item.created_at).getTime()
+    const channel = item.values_per_channel[0]
+    return {
+      timestamp,
+      id: item.id,
+      measurementPoint: item.device.name,
+      channel: channel.channel,
+      Uab: channel.values.Uab,
+      Ubc: channel.values.Ubc,
+      Uac: channel.values.Uac,
+    }
+  })
     .sort((a, b) => a.timestamp - b.timestamp)
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function VoltageCharts({ voltageReadings }: { voltageReadings: MeasurementData[] }) {
+
+  if ("message" in voltageReadings) {
+    // Caso cuando NO hay datos
+    return <NoResultsFound message={voltageReadings.message as string} />
+  }
+
   const processedData = processData(voltageReadings)
 
   return (
@@ -108,7 +117,7 @@ export default function VoltageCharts({ voltageReadings }: { voltageReadings: Me
               return `${date.getHours()}:${date.getMinutes().toString().padStart(2, "0")}`
             }}
           />
-          <YAxis hide={true} domain={[0, 500]}/>
+          <YAxis hide={true} domain={[0, 500]} />
           <Tooltip content={<CustomTooltip />} />
           <Line type="stepAfter" dataKey="Uab" stroke="#00b0c7" strokeWidth={2} dot={false} isAnimationActive={true} />
         </LineChart>
@@ -157,7 +166,8 @@ export default function VoltageCharts({ voltageReadings }: { voltageReadings: Me
           <Line type="stepAfter" dataKey="Uac" stroke="#00b0c7" strokeWidth={2} dot={false} isAnimationActive={true} />
         </LineChart>
       </ChartContainer>
-    </div>
+
+    </div >
   )
 }
 

@@ -9,36 +9,33 @@ import NoResultFound from '@/app/ui/no-result-found'
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function AlertTable({ readings, metric }: any) {
 
-  console.log(readings)
+  const formatDateTime = (dateTimeString: string) => {
+    const date = new Date(dateTimeString)
 
-
-   const formatDateTime = (dateTimeString: string) => {
-        const date = new Date(dateTimeString)
-      
-        // Formatear la fecha como "Jueves, 12 de noviembre"
-        const options: Intl.DateTimeFormatOptions = {
-          weekday: "long",
-          day: "numeric",
-          month: "long"
-        }
-        let formattedDate = date.toLocaleDateString("es-ES", options)
-      
-        // Capitalizar la primera letra en caso de que no lo esté
-        formattedDate =
-          formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1)
-      
-        // Formatear la hora como HH:MM
-        const hours = date.getHours().toString().padStart(2, "0")
-        const minutes = date.getMinutes().toString().padStart(2, "0")
-        const formattedTime = `${hours}:${minutes}`
-      
-        return { date: formattedDate, time: formattedTime }
+    // Formatear la fecha como "Jueves, 12 de noviembre"
+    const options: Intl.DateTimeFormatOptions = {
+      weekday: "long",
+      day: "numeric",
+      month: "long"
     }
+    let formattedDate = date.toLocaleDateString("es-ES", options)
+
+    // Capitalizar la primera letra en caso de que no lo esté
+    formattedDate =
+      formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1)
+
+    // Formatear la hora como HH:MM
+    const hours = date.getHours().toString().padStart(2, "0")
+    const minutes = date.getMinutes().toString().padStart(2, "0")
+    const formattedTime = `${hours}:${minutes}`
+
+    return { date: formattedDate, time: formattedTime }
+  }
 
   // Aplanamos las lecturas, usando "first_reading" en caso de que "period" sea nulo.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const readingsData = readings?.results?.flatMap((reading: any) =>
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     reading.values_per_channel.map((channel: any) => ({
       id: reading.id,
       created_at: reading.created_at, // Se asume que first_reading es igual a created_at
@@ -51,7 +48,9 @@ export default function AlertTable({ readings, metric }: any) {
       Ib: channel.values.Ib,
       Ic: channel.values.Ic,
       balance_status: reading.balance_status,
-      measurement_point: reading.measurement_point.name,
+      measurement_point: reading.device.name,
+      cuf_percentage: reading.cuf_percentage,
+      vuf_percentage: reading.vuf_percentage
     }))
   )
 
@@ -73,6 +72,7 @@ export default function AlertTable({ readings, metric }: any) {
                     <TableHead className="text-sm font-medium text-muted-foreground">R</TableHead>
                     <TableHead className="text-sm font-medium text-muted-foreground">S</TableHead>
                     <TableHead className="text-sm font-medium text-muted-foreground">T</TableHead>
+                    <TableHead className="text-sm font-medium text-muted-foreground">{metric === 'current' ? 'CUF' : 'VUF'}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -80,7 +80,8 @@ export default function AlertTable({ readings, metric }: any) {
                   {/* Renderizamos las filas de la tabla usando "readingsDat                                                                                                                                                                                             a" format (date, "hh:mm")*/}
                   {/* // eslint-disable-next-line @typescript-eslint/no-explicit-any*/}
                   {readingsData?.map((reading: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any 
-                      const { date, time } = formatDateTime(reading.created_at)
+                    console.log(reading)
+                    const { date, time } = formatDateTime(reading.created_at)
                     return (
                       <TableRow key={`${reading.id}-${reading.channel}`}>
                         {/* Formateamos la fecha y la hora usando date-fns */}
@@ -96,19 +97,22 @@ export default function AlertTable({ readings, metric }: any) {
                         <TableCell className="text-sm">
                           {metric === 'current' ? reading.Ic : reading.Uac}
                         </TableCell>
+                        <TableCell className="text-sm">
+                          {metric === 'current' ? reading.cuf_percentage : reading.vuf_percentage}%
+                        </TableCell>
                       </TableRow>
                     )
                   })}
                 </TableBody>
               </Table>
-              <PaginationNumberComponent count={readings.count} itemsPerPage={5}/>
+              <PaginationNumberComponent count={readings.count} itemsPerPage={5} />
             </>
           ) : (
-            <NoResultFound/>
+            <NoResultFound />
           )
-          
+
         }
-        
+
       </div>
     </Card>
   )

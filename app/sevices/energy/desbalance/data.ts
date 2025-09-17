@@ -2,8 +2,8 @@
 import { fetchWithAuthEnergy } from "@/app/lib/api"
 import { baseUrlEnergy } from "@/app/lib/constant"
 
-export async function current({ headquarterId, date_after, date_before, status, page} : { date_after?: string,  date_before?: string, panelId?: string, headquarterId?: string, status?: string, page?: string}) {
-  const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/current-imbalanced`, baseUrlEnergy)
+export async function current({ headquarterId, panelId, point, date_after, date_before, status, page }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, status?: string, page?: string, point: string }) {
+  const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/measurement_point/${point}/current-imbalanced`, baseUrlEnergy)
 
   if (date_after) url.searchParams.set('date_after', date_after)
   if (date_before) url.searchParams.set('date_before', date_before)
@@ -13,47 +13,60 @@ export async function current({ headquarterId, date_after, date_before, status, 
 
   const res = await fetchWithAuthEnergy(`${url.pathname}${url.search}`)
 
-  return res 
+  return res
 }
 
-export async function currentGraph({ headquarterId, date_after, date_before, status, page} : { date_after?: string,  date_before?: string, panelId?: string, headquarterId?: string, status?: string, page?: string}) {
+export async function currentGraph({ headquarterId, panelId, point, date_after, date_before, status, page }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, status?: string, page?: string, point: string }) {
 
-    const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/current-imbalanced/graph`, baseUrlEnergy)
-  
-    if (date_after) url.searchParams.set('date_after', date_after)
-    if (date_before) url.searchParams.set('date_before', date_before)
-    if (status) url.searchParams.set('status', status)
-    if (page) url.searchParams.set('page', page)
-  
-    const res = await fetchWithAuthEnergy(`${url.pathname}${url.search}`)
-  
-    return res 
-  }
+  const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/measurement_point/${point}/current-imbalanced/graph`, baseUrlEnergy)
 
-  export async function voltage({ headquarterId, date_after, date_before, status, page} : { date_after?: string,  date_before?: string, panelId?: string, headquarterId?: string, status?: string, page?: string}) {
+  if (date_after) url.searchParams.set('date_after', date_after)
+  if (date_before) url.searchParams.set('date_before', date_before)
+  if (status) url.searchParams.set('status', status)
+  if (page) url.searchParams.set('page', page)
 
-    const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/voltage-imbalanced`, baseUrlEnergy)
-  
-    if (date_after) url.searchParams.set('date_after', date_after)
-    if (date_before) url.searchParams.set('date_before', date_before)
-    if (status) url.searchParams.set('status', status)
-    if (page) url.searchParams.set('page', page)
-  
-    const res = await fetchWithAuthEnergy(`${url.pathname}${url.search}`)
-  
-    return res 
-  }
+  const res = await fetchWithAuthEnergy(`${url.pathname}${url.search}`)
+
+  return res
+}
+
+export async function voltage({ headquarterId, date_after, date_before, status, page, panelId, point }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, status?: string, page?: string, point?: string }) {
+
+  const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/measurement_point/${point}/voltage-imbalanced`, baseUrlEnergy)
+
+  if (date_after) url.searchParams.set('date_after', date_after)
+  if (date_before) url.searchParams.set('date_before', date_before)
+  if (status) url.searchParams.set('status', status)
+  if (page) url.searchParams.set('page', page)
+
+  const res = await fetchWithAuthEnergy(`${url.pathname}${url.search}`)
+
+  return res
+}
 
 
-  export async function voltageGraph({ headquarterId, date_after, date_before, status} : { date_after?: string,  date_before?: string, panelId?: string, headquarterId?: string, status?: string}) {
+export async function voltageGraph({ headquarterId, panelId, point, date_after, date_before, status }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, status?: string, point?: string }) {
 
-    const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/voltage-imbalanced/graph`, baseUrlEnergy)
-  
-    if (date_after) url.searchParams.set('date_after', date_after)
-    if (date_before) url.searchParams.set('date_before', date_before)
-    if (status) url.searchParams.set('status', status)
-  
-    const res = await fetchWithAuthEnergy(`${url.pathname}${url.search}`)
-  
-    return res 
-  }
+  const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/measurement_point/${point}/voltage-imbalanced/graph`, baseUrlEnergy)
+
+  if (date_after) url.searchParams.set('date_after', date_after)
+  if (date_before) url.searchParams.set('date_before', date_before)
+  if (status) url.searchParams.set('status', status)
+
+  const res = await fetchWithAuthEnergy(`${url.pathname}${url.search}`)
+
+  return res
+}
+
+
+export async function threeMostUnbalanced({ headquarterId }: { headquarterId?: string }) {
+
+  const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/most-three-unbalanced`, baseUrlEnergy)
+
+  const res = await fetchWithAuthEnergy(`${url.pathname}${url.search}`)
+
+  return res
+}
+
+
+

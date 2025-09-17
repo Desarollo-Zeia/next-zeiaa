@@ -17,35 +17,38 @@ const MONTHS = [
   { value: 'december', label: 'Diciembre' },
 ]
 
-interface MonthPickerProps {
+type MonthSelectProps = {
   value?: string
-  onChange?: (value: string) => void
-  disabledMonth?: string // para bloquear un mes específico
+  onChange: (value: string) => void,
+  isPending?: boolean,
+  firstMonth?: string,
+  secondMonth?: string,
+  disabled?: boolean,
 }
 
-export default function MonthPicker({ value, onChange, disabledMonth }: MonthPickerProps) {
+export default function MonthPicker({ value, onChange, isPending, firstMonth, secondMonth }: MonthSelectProps) {
+  console.log({ firstMonth, secondMonth })
   return (
-    <Select
-      value={value}
-      onValueChange={(val) => {
-        if (onChange) onChange(val)
-      }}
-    >
-      <SelectTrigger className="w-[180px] bg-[#00b0c7]">
-        <SelectValue placeholder="Meses" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectItem value="none">Ninguno</SelectItem>
-        {MONTHS.map((month) => (
-          <SelectItem
-            key={month.value}
-            value={month.value}
-            disabled={disabledMonth === month.value} // 🔒 bloquea el mes seleccionado en el otro picker
-          >
-            {month.label}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+    <div className='relative'>
+      <Select value={value} onValueChange={onChange}>
+        <SelectTrigger className="w-[180px] bg-[#00b0c7]">
+          <SelectValue placeholder="Meses" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="none">Ninguno</SelectItem>
+          {MONTHS.map((month) => (
+            <SelectItem key={month.value} value={month.value} disabled={month.value === firstMonth || month.value === secondMonth}>
+              {month.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
+      {isPending && (
+        <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50 w-[180px]">
+          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+        </div>
+      )}
+    </div>
   )
 }
