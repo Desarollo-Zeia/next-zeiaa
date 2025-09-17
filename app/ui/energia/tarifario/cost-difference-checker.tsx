@@ -4,6 +4,7 @@ import { Card } from '@/components/ui/card'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import React, { useTransition } from 'react'
 import MonthPicker from '../../filters/month-picker'
+import NoResultsFound from '../../no-result'
 
 export type CalculatorDifferenceResult = {
   month: string
@@ -97,38 +98,45 @@ export default function CostDifferenceChecker({ firstCalculatorResultMonthly, se
           secondMonth={secondMonth}
         />
         <Card className="p-4 flex flex-col gap-2 shadow-md justify-between">
-          <div className="flex flex-col gap-4">
-            <div className="flex justify-evenly gap-4">
-              <div className="flex flex-col justify-center items-center">
-                <p className='text-sm font-medium'>En punta</p>
-                <p className="text-center">25 KWh</p>
-              </div>
-              <div>
-                =
-              </div>
-              <div className="flex flex-col justify-center items-center">
-                <div className="flex flex-col justify-center items-center">
-                  <p className='text-sm font-medium'>En punta</p>
-                  <p className="text-center">25 KWh</p>
+          {
+            firstCalculatorResultMonthly?.detail ? (
+              <NoResultsFound message="No se encontraron lecturas para este mes." />
+            ) : (
+              <div className="flex flex-col gap-4">
+                <div className="flex justify-evenly gap-4">
+                  <div className="flex flex-col justify-center items-center">
+                    <p className='text-sm font-medium'>En punta</p>
+                    <p className="text-center">{firstCalculatorResultMonthly?.consumption?.peak.toFixed(2)} KWh</p>
+                  </div>
+                  <div>
+                    =
+                  </div>
+                  <div className="flex flex-col justify-center items-center">
+                    <div className="flex flex-col justify-center items-center">
+                      <p className='text-sm font-medium'>Soles</p>
+                      <p className="text-center">S/ {firstCalculatorResultMonthly?.cost?.peak.toFixed(2)}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex justify-evenly gap-4">
+                  <div className="flex flex-col justify-center items-center">
+                    <p className='text-sm font-medium'>Fuera punta</p>
+                    <p className="text-center">{firstCalculatorResultMonthly?.consumption?.off_peak.toFixed(2)} KWh</p>
+                  </div>
+                  <div>
+                    =
+                  </div>
+                  <div className="flex flex-col justify-center items-center">
+                    <div className="flex flex-col justify-center items-center">
+                      <p className='text-sm font-medium'>Soles</p>
+                      <p className="text-center">S/ {firstCalculatorResultMonthly?.cost?.off_peak.toFixed(2)} </p>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="flex justify-evenly gap-4">
-              <div className="flex flex-col justify-center items-center">
-                <p className='text-sm font-medium'>En punta</p>
-                <p className="text-center">25 KWh</p>
-              </div>
-              <div>
-                =
-              </div>
-              <div className="flex flex-col justify-center items-center">
-                <div className="flex flex-col justify-center items-center">
-                  <p className='text-sm font-medium'>En punta</p>
-                  <p className="text-center">25 KWh</p>
-                </div>
-              </div>
-            </div>
-          </div>
+            )
+          }
+
         </Card>
       </div>
       <div className="flex items-center px-6">
@@ -142,38 +150,44 @@ export default function CostDifferenceChecker({ firstCalculatorResultMonthly, se
           secondMonth={secondMonth}
         />
         <Card className="p-4 flex flex-col gap-2 shadow-md justify-between">
-          <div className="flex flex-col gap-4">
-            <div className="flex justify-evenly gap-4">
-              <div className="flex flex-col justify-center items-center">
-                <p className='text-sm font-medium'>En punta</p>
-                <p className="text-center">25 KWh</p>
-              </div>
-              <div>
-                =
-              </div>
-              <div className="flex flex-col justify-center items-center">
-                <div className="flex flex-col justify-center items-center">
-                  <p className='text-sm font-medium'>En punta</p>
-                  <p className="text-center">25 KWh</p>
+          {
+            secondCalculatorResultMonthly?.detail ? (
+              <NoResultsFound message="No se encontraron lecturas para este mes." />
+            ) : (
+              <div className="flex flex-col gap-4">
+                <div className="flex justify-evenly gap-4">
+                  <div className="flex flex-col justify-center items-center">
+                    <p className='text-sm font-medium'>En punta</p>
+                    <p className="text-center">{secondCalculatorResultMonthly?.consumption?.peak?.toFixed(2)} KWh</p>
+                  </div>
+                  <div>
+                    =
+                  </div>
+                  <div className="flex flex-col justify-center items-center">
+                    <div className="flex flex-col justify-center items-center">
+                      <p className='text-sm font-medium'>Soles</p>
+                      <p className="text-center">S/ {secondCalculatorResultMonthly?.cost?.peak?.toFixed(2)} </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex justify-evenly gap-4">
+                  <div className="flex flex-col justify-center items-center">
+                    <p className='text-sm font-medium'>Fuera de punta</p>
+                    <p className="text-center">{secondCalculatorResultMonthly?.consumption?.off_peak?.toFixed(2)} KWh</p>
+                  </div>
+                  <div>
+                    =
+                  </div>
+                  <div className="flex flex-col justify-center items-center">
+                    <div className="flex flex-col justify-center items-center">
+                      <p className='text-sm font-medium'>Soles</p>
+                      <p className="text-center">S/ {secondCalculatorResultMonthly?.cost?.off_peak?.toFixed(2)}</p>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="flex justify-evenly gap-4">
-              <div className="flex flex-col justify-center items-center">
-                <p className='text-sm font-medium'>En punta</p>
-                <p className="text-center">25 KWh</p>
-              </div>
-              <div>
-                =
-              </div>
-              <div className="flex flex-col justify-center items-center">
-                <div className="flex flex-col justify-center items-center">
-                  <p className='text-sm font-medium'>En punta</p>
-                  <p className="text-center">25 KWh</p>
-                </div>
-              </div>
-            </div>
-          </div>
+            )
+          }
         </Card>
       </div>
     </div>

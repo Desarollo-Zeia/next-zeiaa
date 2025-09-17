@@ -2,6 +2,8 @@
 import { getHeadquarters } from "@/app/sevices/energy/enterprise/data"
 import {
   consumptionCalculator, consumptionCalculatorMonthly,
+  consumptionInvoice,
+  consumptionTariff,
   // consumptionTariff
 } from "@/app/sevices/energy/tarifario/data"
 import { SearchParams } from "@/app/type"
@@ -10,6 +12,8 @@ import HeadquarterEnergyFilter from "@/app/ui/energia/filters/headquarter-energy
 // import ConsumeCalculator from "@/app/ui/energia/tarifario/consume-calculator"
 // import ConsumeCycle from "@/app/ui/energia/tarifario/consume-cycle"
 import CostDifferenceChecker from "@/app/ui/energia/tarifario/cost-difference-checker"
+import CycleClientInfoTable from "@/app/ui/energia/tarifario/cycle-clientinfo-table"
+import TariffTable from "@/app/ui/energia/tarifario/tariff-table"
 import { DatepickerRange } from "@/app/ui/filters/datepicker-range"
 import FiltersContainer from "@/app/ui/filters/filters-container"
 // import MonthFilter from "@/app/ui/filters/month-filter"
@@ -46,10 +50,10 @@ export default async function Page({ searchParams }: SearchParams) {
     date_before: formattedDateBefore,
   })
 
-  // const consumptionInvoicePromise = consumptionInvoice({
-  //   panelId: panel,
-  //   headquarterId: firstHeadquarter,
-  // })
+  const consumptionInvoicePromise = consumptionInvoice({
+    panelId: panel,
+    headquarterId: firstHeadquarter,
+  })
 
   const firstConsumptionCalculatorMonthlyPromise = consumptionCalculatorMonthly({
     headquarterId: firstHeadquarter,
@@ -61,24 +65,24 @@ export default async function Page({ searchParams }: SearchParams) {
     filter_month: secondmonth || '',
   })
 
-
-  // const consumptionTariffPromise = consumptionTariff({
-  //   panelId: panel,
-  //   headquarterId: firstHeadquarter,
-  // })
+  const consumptionTariffPromise = consumptionTariff({
+    panelId: panel,
+    headquarterId: firstHeadquarter,
+  })
 
   const [
     calculatorResult,
     firstCalculatorResultMonthly,
     secondCalculatorResultMonthly,
-    // tariffData,
+    invoiceResult,
+    tariffResult,
   ] = await Promise.all([
     consumptionCalculatorPromise,
     firstConsumptionCalculatorMonthlyPromise,
-    secondConsumptionCalculatorMonthlyPromise
+    secondConsumptionCalculatorMonthlyPromise,
+    consumptionInvoicePromise,
+    consumptionTariffPromise
   ])
-
-  console.log('Holaa', calculatorResult)
 
 
   return (
@@ -129,85 +133,6 @@ export default async function Page({ searchParams }: SearchParams) {
             )
         }
         {calculatorResult?.detail ? '' : <div> <h2>Calculadora de cosumo de energía</h2> </div>}
-        {/* <div className="flex justify-between">
-          <div className="flex-1">
-            <MonthPicker/>
-            <Card className="p-4 flex flex-col gap-2 shadow-md justify-between">
-              <div className="flex flex-col gap-4">
-                <div className="flex justify-evenly gap-4">
-                  <div className="flex flex-col justify-center items-center">
-                    <p className='text-sm font-medium'>En punta</p>
-                    <p className="text-center">25 KWh</p>
-                  </div>
-                  <div>
-                    =
-                  </div>
-                  <div className="flex flex-col justify-center items-center">
-                    <div className="flex flex-col justify-center items-center">
-                      <p className='text-sm font-medium'>En punta</p>
-                      <p className="text-center">25 KWh</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex justify-evenly gap-4">
-                  <div className="flex flex-col justify-center items-center">
-                    <p className='text-sm font-medium'>En punta</p>
-                    <p className="text-center">25 KWh</p>
-                  </div>
-                  <div>
-                    =
-                  </div>
-                  <div className="flex flex-col justify-center items-center">
-                    <div className="flex flex-col justify-center items-center">
-                      <p className='text-sm font-medium'>En punta</p>
-                      <p className="text-center">25 KWh</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </Card>
-          </div>
-          <div className="flex items-center px-6">
-            <p className="text-2xl">VS</p>
-          </div>
-          <div className="flex-1">
-            <MonthPicker/>
-            <Card className="p-4 flex flex-col gap-2 shadow-md justify-between">
-              <div className="flex flex-col gap-4">
-                <div className="flex justify-evenly gap-4">
-                  <div className="flex flex-col justify-center items-center">
-                    <p className='text-sm font-medium'>En punta</p>
-                    <p className="text-center">25 KWh</p>
-                  </div>
-                  <div>
-                    =
-                  </div>
-                  <div className="flex flex-col justify-center items-center">
-                    <div className="flex flex-col justify-center items-center">
-                      <p className='text-sm font-medium'>En punta</p>
-                      <p className="text-center">25 KWh</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex justify-evenly gap-4">
-                  <div className="flex flex-col justify-center items-center">
-                    <p className='text-sm font-medium'>En punta</p>
-                    <p className="text-center">25 KWh</p>
-                  </div>
-                  <div>
-                    =
-                  </div>
-                  <div className="flex flex-col justify-center items-center">
-                    <div className="flex flex-col justify-center items-center">
-                      <p className='text-sm font-medium'>En punta</p>
-                      <p className="text-center">25 KWh</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </Card>
-          </div>
-        </div> */}
         {
           calculatorResult?.detail ? (
             ''
@@ -215,9 +140,10 @@ export default async function Page({ searchParams }: SearchParams) {
             <CostDifferenceChecker firstCalculatorResultMonthly={firstCalculatorResultMonthly} secondCalculatorResultMonthly={secondCalculatorResultMonthly} />
           )
         }
-        {/* <div className="w-full shadow-md">
-          <TariffTable tariffData={tariffData}/>
-        </div> */}
+        <div className="w-full shadow-md">
+          <CycleClientInfoTable tariffData={invoiceResult} />
+          <TariffTable tariffData={tariffResult} />
+        </div>
 
       </div>
     </div>

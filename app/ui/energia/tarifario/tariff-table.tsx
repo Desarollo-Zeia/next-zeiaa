@@ -38,7 +38,7 @@ interface TariffData {
 
 }
 
-export default function TariffTable( { tariffData }: { tariffData: TariffData } ) {
+export default function TariffTable({ tariffData }: { tariffData: TariffData }) {
   const { billing_data, charges, total } = tariffData
 
   return (
@@ -71,7 +71,7 @@ export default function TariffTable( { tariffData }: { tariffData: TariffData } 
                       {charge.unit}
                     </TableCell>
                     <TableCell className="text-center">
-                      {charge.cargo}
+                      {charge.cargo.toFixed(2)}
                     </TableCell>
                     <TableCell className="text-center">
                       {charge.consumption.value.toFixed(2)}
@@ -87,7 +87,7 @@ export default function TariffTable( { tariffData }: { tariffData: TariffData } 
               <TableCell>
               </TableCell>
               <TableCell>
-              </TableCell>  
+              </TableCell>
               <TableCell className="text-center">
               </TableCell>
               <TableCell className="text-center text-white">
@@ -98,7 +98,7 @@ export default function TariffTable( { tariffData }: { tariffData: TariffData } 
               </TableCell>
             </TableRow>
           </TableBody>
-        </Table>  
+        </Table>
       </CardContent>
     </Card>
   )
