@@ -67,10 +67,6 @@ export default function BarChart({ readingsGraph, weekday, thresholds }: { readi
   const inferiorThreshold = weekday === '1,2,3,4,5' ? thresholds?.workdays.inferior : weekday === '6' ? thresholds?.saturday.inferior : thresholds?.sunday.inferior
   const superiorThreshold = weekday === '1,2,3,4,5' ? thresholds?.workdays.superior : weekday === '6' ? thresholds?.saturday.superior : thresholds?.sunday.superior
 
-  console.log({
-    inferiorThreshold,
-    superiorThreshold
-  })
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const dataPoints = readingsGraph?.map((item: any) => ({
