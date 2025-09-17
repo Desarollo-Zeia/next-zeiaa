@@ -22,7 +22,7 @@ export default function MostThreeUnbalanced({ title, frequency, cup, vup }: Moni
             <div className="space-y-0.5 text-xs text-muted-foreground">
               <div>Frecuencia: {frequency}</div>
               <div>
-                CUP: {cup} VUP: {vup}
+                CUF: {cup} VUF: {vup}
               </div>
             </div>
           </div>
