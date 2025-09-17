@@ -4,6 +4,7 @@ import { Line, LineChart, Tooltip, XAxis, YAxis } from "recharts"
 import { ChartContainer } from "@/components/ui/chart"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
+import NoResultsFound from "../../no-result"
 // TypeScript interfaces for the JSON data
 interface VoltageValues {
   Uab: number
@@ -92,8 +93,7 @@ export default function VoltageCharts({ voltageReadings }: { voltageReadings: Me
 
   if ("message" in voltageReadings) {
     // Caso cuando NO hay datos
-    console.log("Mensaje:", voltageReadings.message)
-    return <div>No hay datos disponibles</div>
+    return <NoResultsFound message={voltageReadings.message as string} />
   }
 
   const processedData = processData(voltageReadings)

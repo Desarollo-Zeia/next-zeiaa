@@ -96,7 +96,7 @@ export default async function page({ searchParams }: SearchParams) {
         <div>
 
         </div>
-        <div className="min-w-[350px] flex flex-col gap-2 pt-8">
+        <div className="min-w-[350px] flex flex-col items-center justify-center gap-2 pt-8">
           <h3>Top 3 equipos con mayor desbalance del día</h3>
           <MostThreeUnbalanced title={first.measurement_point_name} frequency={first.total_readings} cup={first.current_unbalanced} vup={first.voltage_unbalanced} />
           <MostThreeUnbalanced title={second.measurement_point_name} frequency={second.total_readings} cup={second.current_unbalanced} vup={second.voltage_unbalanced} />
