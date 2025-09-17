@@ -78,7 +78,7 @@ const processData = (data: MeasurementData[]): ProcessedDataPoint[] => {
       return {
         timestamp,
         id: item.id,
-        measurementPoint: item.measurement_point.name,
+        measurementPoint: item.device.name,
         channel: channel.channel,
         Ia: channel.values.Ia,
         Ib: channel.values.Ib,
