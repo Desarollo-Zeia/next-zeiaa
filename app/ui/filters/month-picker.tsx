@@ -27,7 +27,6 @@ type MonthSelectProps = {
 }
 
 export default function MonthPicker({ value, onChange, isPending, firstMonth, secondMonth }: MonthSelectProps) {
-  console.log({ firstMonth, secondMonth })
   return (
     <div className='relative'>
       <Select value={value} onValueChange={onChange}>

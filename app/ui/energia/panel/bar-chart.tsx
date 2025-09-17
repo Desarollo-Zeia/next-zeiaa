@@ -64,6 +64,14 @@ type VoltageByDay = {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function BarChart({ readingsGraph, weekday, thresholds }: { readingsGraph: any, weekday?: any, thresholds?: VoltageByDay }) {
 
+  const inferiorThreshold = weekday === '1,2,3,4,5' ? thresholds?.workdays.inferior : weekday === '6' ? thresholds?.saturday.inferior : thresholds?.sunday.inferior
+  const superiorThreshold = weekday === '1,2,3,4,5' ? thresholds?.workdays.superior : weekday === '6' ? thresholds?.saturday.superior : thresholds?.sunday.superior
+
+  console.log({
+    inferiorThreshold,
+    superiorThreshold
+  })
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const dataPoints = readingsGraph?.map((item: any) => ({
     x: new Date(item.first_reading), // Se convierte la fecha a objeto Date
@@ -211,8 +219,8 @@ export default function BarChart({ readingsGraph, weekday, thresholds }: { readi
           line1: {
             display: true,
             type: 'line',
-            yMin: weekday === '1,2,3,4,5' ? thresholds?.workdays.inferior : weekday === '6' ? thresholds?.saturday.inferior : thresholds?.sunday.inferior,
-            yMax: weekday === '1,2,3,4,5' ? thresholds?.workdays.inferior : weekday === '6' ? thresholds?.saturday.inferior : thresholds?.sunday.inferior,
+            yMin: inferiorThreshold,
+            yMax: inferiorThreshold,
             borderColor: '#59AC77',
             borderWidth: 2,
             borderDash: [5, 5],
@@ -220,14 +228,14 @@ export default function BarChart({ readingsGraph, weekday, thresholds }: { readi
               display: true,
               color: 'white',
               backgroundColor: '#59AC77',
-              content: [`${weekday === '1,2,3,4,5' ? thresholds?.workdays.inferior : weekday === '6' ? thresholds?.saturday.inferior : thresholds?.sunday.inferior} v`],
+              content: [`${inferiorThreshold} v`],
             }
           },
           line2: {
             display: true,
             type: 'line',
-            yMin: weekday === '1,2,3,4,5' ? thresholds?.workdays.superior : weekday === '6' ? thresholds?.saturday.superior : thresholds?.sunday.superior,
-            yMax: weekday === '1,2,3,4,5' ? thresholds?.workdays.superior : weekday === '6' ? thresholds?.saturday.superior : thresholds?.sunday.superior,
+            yMin: superiorThreshold,
+            yMax: superiorThreshold,
             borderColor: '#DC143C',
             borderWidth: 2,
             borderDash: [5, 5],
@@ -235,7 +243,7 @@ export default function BarChart({ readingsGraph, weekday, thresholds }: { readi
               display: true,
               color: 'white',
               backgroundColor: '#DC143C',
-              content: [`${weekday === '1,2,3,4,5' ? thresholds?.workdays.superior : weekday === '6' ? thresholds?.saturday.superior : thresholds?.sunday.superior} v`],
+              content: [`${superiorThreshold} v`],
               xAdjust: -80,
             }
           },

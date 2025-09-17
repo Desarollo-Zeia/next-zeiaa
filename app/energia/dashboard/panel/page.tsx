@@ -53,6 +53,7 @@ export default async function page({ searchParams }: SearchParams) {
 
   const measurementPoints = await getMeasurementPoints({ electricalpanelId: firstPanel })
 
+
   const firstPoint = point || measurementPoints?.results[0]?.measurement_points[0].id.toString()
 
   const dashboardTableReadings = await dashboardTable({ headquarterId: firstHeadquarter })
@@ -74,6 +75,9 @@ export default async function page({ searchParams }: SearchParams) {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   // const thresholds = dashboardTableReadings?.results.find((item : any) => item.id === Number(firstPoint))
+
+  // console.log(measurementPoints?.results[0]?.measurement_points.find((mp: any) => mp.id === Number(point))?.energy_thresholds?.thresholds_values)
+
 
   return (
     <div className="relative p-6 flex flex-col justify-center gap-8">
@@ -104,7 +108,7 @@ export default async function page({ searchParams }: SearchParams) {
           </div>
         </div>
         <div className='w-[80%] h-[740px] flex justify-center items-center m-auto'>
-          <BarChart readingsGraph={consumeGraphReadings} weekday={weekday} thresholds={measurementPoints.results[0].measurement_points[0].energy_thresholds.thresholds_values} />
+          <BarChart readingsGraph={consumeGraphReadings} weekday={weekday} thresholds={measurementPoints?.results[0]?.measurement_points.find((mp: any) => mp.id === Number(point))?.energy_thresholds?.thresholds_values} />
         </div>
       </div>
     </div>

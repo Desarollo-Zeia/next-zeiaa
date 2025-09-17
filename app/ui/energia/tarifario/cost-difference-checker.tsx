@@ -35,6 +35,22 @@ export type CalculatorDifferenceResult = {
   }
 }
 
+const monthMap: Record<number, string> = {
+  1: "january",
+  2: "february",
+  3: "march",
+  4: "april",
+  5: "may",
+  6: "june",
+  7: "july",
+  8: "august",
+  9: "september",
+  10: "october",
+  11: "november",
+  12: "december",
+}
+
+
 export default function CostDifferenceChecker({ firstCalculatorResultMonthly, secondCalculatorResultMonthly }: { firstCalculatorResultMonthly?: CalculatorDifferenceResult, secondCalculatorResultMonthly?: CalculatorDifferenceResult }) {
 
   const [isPending, startTransition] = useTransition()
@@ -42,14 +58,10 @@ export default function CostDifferenceChecker({ firstCalculatorResultMonthly, se
   const pathname = usePathname()
   const { replace } = useRouter()
 
-  console.log({
-    firstCalculatorResultMonthly,
-    secondCalculatorResultMonthly
-  })
+  const currentMonth = new Date().getMonth() + 1
 
-
-  const firstMonth = searchParams.get('firstmonth') || ''
-  const secondMonth = searchParams.get('secondmonth') || ''
+  const firstMonth = searchParams.get('firstmonth') || monthMap[currentMonth]
+  const secondMonth = searchParams.get('secondmonth') || monthMap[currentMonth]
 
   const handleFisrtMonthChange = (month: string) => {
     startTransition(() => {

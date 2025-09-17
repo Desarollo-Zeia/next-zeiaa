@@ -31,8 +31,26 @@ import { format } from "date-fns";
 
 export default async function Page({ searchParams }: SearchParams) {
 
+  const monthMap: Record<number, string> = {
+    1: "january",
+    2: "february",
+    3: "march",
+    4: "april",
+    5: "may",
+    6: "june",
+    7: "july",
+    8: "august",
+    9: "september",
+    10: "october",
+    11: "november",
+    12: "december",
+  }
 
-  const { headquarter, panel = '1', date_after = new Date(), date_before = new Date(), firstmonth, secondmonth } = await searchParams
+  const currentMonth = new Date().getMonth() + 1
+
+  const defaultMonth = monthMap[currentMonth]
+
+  const { headquarter, panel = '1', date_after = new Date(), date_before = new Date(), firstmonth = defaultMonth, secondmonth = defaultMonth } = await searchParams
 
   const formattedDateAfter = format(date_after, 'yyyy-MM-dd')
   const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
