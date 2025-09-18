@@ -93,7 +93,7 @@ interface Powers {
 //   return null
 // }
 
-export default function PowerUsageChart({ readings, group, powers } : { readings: PowerReading[], group?: string, powers: Powers[] }) {
+export default function PowerUsageChart({ readings, group, powers }: { readings: PowerReading[], group?: string, powers: Powers[] }) {
 
   const { power_contracted, power_max } = powers?.[0]
 
@@ -102,15 +102,15 @@ export default function PowerUsageChart({ readings, group, powers } : { readings
   const pathname = usePathname()
   const { replace } = useRouter()
 
-  const dataPoints = readings?.map((item : any ) => ({ // eslint-disable-line @typescript-eslint/no-explicit-any
-    x: new Date(item?.created_at),
+  const dataPoints = readings?.map((item: any) => ({ // eslint-disable-line @typescript-eslint/no-explicit-any
+    x: new Date(item?.created_at).toISOString(),
     y: item.values_per_channel?.[0].power,
   })) || []
 
   const handleGroupChange = (group: string) => {
     startTransition(() => {
       const newParams = new URLSearchParams(searchParams);
-      
+
       newParams.set('group_by', 'day');
 
       if (group) {
@@ -134,12 +134,12 @@ export default function PowerUsageChart({ readings, group, powers } : { readings
         borderColor: "#00b0c7",
         stepped: true,
         tension: 0,
-        pointRadius: 2, 
+        pointRadius: 2,
       },
     ],
   }
 
-  const options : any = { // eslint-disable-line @typescript-eslint/no-explicit-any
+  const options: any = { // eslint-disable-line @typescript-eslint/no-explicit-any
     interaction: {
       mode: 'nearest',
       axis: 'x',
@@ -149,18 +149,13 @@ export default function PowerUsageChart({ readings, group, powers } : { readings
     scales: {
       x: {
         type: "time",
-        time: {
-          unit: "day", // Puedes ajustar la unidad a 'hour', 'day', etc.
-          displayFormats: {
-            minute: "HH:mm",
-          },
-        },
+        time: { unit: "day" },
         title: {
           display: false,
           text: "Hora de Lectura",
         },
         grid: {
-          display: false,
+          display: true,
           tickLength: 50
         },
       },
@@ -170,17 +165,16 @@ export default function PowerUsageChart({ readings, group, powers } : { readings
           text: readings?.[0]?.unit,
         },
         grid: {
-          display: false,
+          display: true,
           tickLength: 50
         },
-        
+
         ticks: {
           display: true,
-          callback: function(val : any , index : any) { // eslint-disable-line @typescript-eslint/no-explicit-any 
+          callback: function (val: any) { // eslint-disable-line @typescript-eslint/no-explicit-any 
             // Hide every 2nd tick label
-            console.log({val, index})
+            return `${val} kW`
           },
-          color: 'red'
         }
       },
     },
@@ -225,7 +219,7 @@ export default function PowerUsageChart({ readings, group, powers } : { readings
           mode: "x", // "x", "y" o "xy"
         },
         zoom: {
-          
+
           wheel: {
             enabled: true,
             mode: "x",
@@ -277,7 +271,7 @@ export default function PowerUsageChart({ readings, group, powers } : { readings
           }
         }
       },
-      decimation: { 
+      decimation: {
         enabled: true,
         algorithm: 'lttb',
         samples: 20, // Aumenta este valor para conservar más detalles
@@ -309,9 +303,9 @@ export default function PowerUsageChart({ readings, group, powers } : { readings
       <div className="w-[80%] h-[740px] mx-auto flex justify-center items-center">
         {
           readings?.length > 0 ? (
-              <Line data={data} options={options}/>
+            <Line data={data} options={options} />
           ) : (
-            <NoResultFound/>
+            <NoResultFound />
           )
         }
       </div>

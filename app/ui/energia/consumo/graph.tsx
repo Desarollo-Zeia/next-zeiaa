@@ -61,7 +61,7 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by }: { read
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const dataPoints = readingsGraph?.map((item: any) => ({
-    x: new Date(item.first_reading), // Se convierte la fecha a objeto Date
+    x: new Date(item.first_reading).toISOString(),
     y: item.first_value,
 
   })) || []
@@ -121,25 +121,13 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by }: { read
     scales: {
       x: {
         type: "time",
-        time: {
-          unit: "day", // Puedes ajustar la unidad a 'hour', 'day', etc.
-          displayFormats: {
-            minute: "HH:mm",
-          },
-        },
-        // ticks: {
-        //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        //   callback: function (value: any) {
-        //     const date = new Date(value)
-        //     return format(date, "PP", { locale: es }) // Formato de fecha
-        //    }
-        // },
+        time: { unit: "day" },
         title: {
           display: false,
           text: "Hora de Lectura",
         },
         grid: {
-          display: false,
+          display: true,
           tickLength: 50
         },
 
@@ -150,7 +138,7 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by }: { read
           // text: readingsGraph[0]?.unit,
         },
         grid: {
-          display: false,
+          display: true,
           tickLength: 50
         },
         ticks: {
@@ -270,7 +258,7 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by }: { read
   }
 
   return (
-    <div className="flex-1 w-full h-lvh p-4 bg-white flex flex-col justify-center items-center relative">
+    <div className="flex-1 w-full min-h-full p-4 bg-white flex flex-col justify-center items-center relative">
       {
         readingsGraph?.length > 0 && (
           <ToggleGroup type="single" defaultValue={last_by || 'none'} value={last_by || 'none'} onValueChange={handleFrequency} aria-label="Frequency" className="flex gap-2 top-0 mt-4 absolute">
@@ -289,8 +277,8 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by }: { read
                           key={times.value}
                           value={times.value}
                           className={`w-[120px] h-[40px] ${times.value === last_by
-                              ? 'bg-[#00b0c7] text-white'
-                              : 'bg-gray-100 text-black'
+                            ? 'bg-[#00b0c7] text-white'
+                            : 'bg-gray-100 text-black'
                             } ${last_by === 'hour' && times.value === 'none' ? 'bg-[#00b0c7] text-white' : 'bg-gray-100 text-black'}`}
                         >
                           {
