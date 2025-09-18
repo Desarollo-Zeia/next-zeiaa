@@ -16,7 +16,10 @@ import MeasurementPointFilter from "@/app/ui/filters/measurement-points-filter"
 export default async function Page({ searchParams }: SearchParams) {
   // const { companies } = await getCompanyData()
 
-  const { headquarter, panel, date_after = new Date(), date_before = new Date(), unit = 'V', indicator = 'P', page = '1', last_by = 'minute', category = 'power', point } = await searchParams
+  const { headquarter, panel, date_after, date_before, unit = 'V', indicator = 'P', page = '1', last_by = 'minute', category = 'power', point } = await searchParams
+
+  const formattedDateAfter = date_after ? format(date_after, 'yyyy-MM-dd') : undefined
+  const formattedDateBefore = date_before ? format(date_before, 'yyyy-MM-dd') : undefined
 
   const headquarters = await getHeadquarters()
   const { results } = headquarters
@@ -31,8 +34,6 @@ export default async function Page({ searchParams }: SearchParams) {
 
   const firstPoint = point || measurementPoints?.results[0]?.measurement_points[0].id.toString()
 
-  const formattedDateAfter = format(date_after, 'yyyy-MM-dd')
-  const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
 
   // 4. Paralle­lizar las llamadas
 
@@ -74,9 +75,9 @@ export default async function Page({ searchParams }: SearchParams) {
         <PanelsFilterEnergy energyPanels={measurementPointsPanels.results} panel={firstPanel} />
         <MeasurementPointFilter measurementPoints={measurementPoints} point={firstPoint} />
         <DatepickerRange />
-        <DownloadExcel headquarterId={firstHeadquarter} point={firstPoint} panelId={firstPanel} date_after={format(date_after, 'yyyy-MM-dd')} date_before={format(date_before, 'yyyy-MM-dd')} unit={unit} />
+        <DownloadExcel headquarterId={firstHeadquarter} point={firstPoint} panelId={firstPanel} date_after={formattedDateAfter} date_before={formattedDateBefore} unit={unit} />
       </FiltersContainer>
-      <div className="flex">
+      <div className="flex items-center justify-center min-h-full">
         <MeasurementTable readings={readings} category={category} indicator={indicator} />
         <Graph readingsGraph={readingsGraph} category={category} indicator={indicator} last_by={last_by} />
       </div>

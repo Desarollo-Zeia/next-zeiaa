@@ -10,7 +10,7 @@ import {
   Tooltip,
   Legend,
   ArcElement,
-  Colors
+  Colors,
 } from "chart.js";
 import {
   Accordion,
@@ -18,6 +18,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import annotationPlugin from 'chartjs-plugin-annotation';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { DatepickerRange } from '../../filters/datepicker-range';
@@ -59,37 +60,37 @@ interface ElectricalPanelData {
   results: MeasurementPointResult[];
 }
 
-ChartJS.register(LineElement, PointElement, LinearScale, TimeScale, ArcElement, Tooltip, Legend, Colors)
+ChartJS.register(LineElement, PointElement, LinearScale, TimeScale, ArcElement, Tooltip, Legend, Colors, annotationPlugin)
 
-export default function ChartComponent({ electricalPanelData } : { electricalPanelData : ElectricalPanelData}) {
+export default function ChartComponent({ electricalPanelData }: { electricalPanelData: ElectricalPanelData }) {
 
-     const [isPending, startTransition] = useTransition()
-     const searchParams = useSearchParams()
-     const { replace } = useRouter()
-     const pathname = usePathname()
+  const [isPending, startTransition] = useTransition()
+  const searchParams = useSearchParams()
+  const { replace } = useRouter()
+  const pathname = usePathname()
 
-    const month = searchParams.get('this_month')
-    const week = searchParams.get('this_week')
+  const month = searchParams.get('this_month')
+  const week = searchParams.get('this_week')
 
-    const currentFrequncy = month ? 'month' : week ? 'week' : ''
+  const currentFrequncy = month ? 'month' : week ? 'week' : ''
 
-    const handleFrequencyChange = (frequency: string) => {
-      
-      startTransition(() => {
-          const params = new URLSearchParams(searchParams)
-              params.delete("date_after")
-              params.delete("date_before")
-          if (frequency === 'month') {
-              params.set("this_month", 'true')
-              params.delete("this_week")
-           } else {
-              params.set("this_week", 'true')
-              params.delete("this_month")
-           } 
-          
-          replace(`${pathname}?${params.toString()}`)
-      })
+  const handleFrequencyChange = (frequency: string) => {
+
+    startTransition(() => {
+      const params = new URLSearchParams(searchParams)
+      params.delete("date_after")
+      params.delete("date_before")
+      if (frequency === 'month') {
+        params.set("this_month", 'true')
+        params.delete("this_week")
+      } else {
+        params.set("this_week", 'true')
+        params.delete("this_month")
       }
+
+      replace(`${pathname}?${params.toString()}`)
+    })
+  }
 
   const graphData = {
     labels: electricalPanelData.results.slice(1).map(electrical => electrical.measurement_point_name),
@@ -98,10 +99,10 @@ export default function ChartComponent({ electricalPanelData } : { electricalPan
         label: '',
         data: electricalPanelData.results.slice(1).map(electrical => (electrical.consumption_percentage)),
         backgroundColor: [
-        '#BBDCE5',
-        '#D9C4B0',
-        '#F7A5A5'
-      ]
+          '#BBDCE5',
+          '#D9C4B0',
+          '#F7A5A5'
+        ]
       }
     ]
   }
@@ -117,43 +118,43 @@ export default function ChartComponent({ electricalPanelData } : { electricalPan
         <p className='text-balance'>Distribución de consumo en tiempo real</p>
       </div> */}
       <div className='relative'>
-            <DatepickerRange />
-            <ToggleGroup type="single" defaultValue='month' value={currentFrequncy}  onValueChange={handleFrequencyChange}>
-                <ToggleGroupItem value="month" className='shadow-md'>Este mes</ToggleGroupItem>
-                <ToggleGroupItem value="week" className='shadow-md'>Esta semana</ToggleGroupItem>
-            </ToggleGroup>
-            {isPending && (
-                <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
-                </div>
-            )}
+        <DatepickerRange />
+        <ToggleGroup type="single" defaultValue='month' value={currentFrequncy} onValueChange={handleFrequencyChange}>
+          <ToggleGroupItem value="month" className='shadow-md'>Este mes</ToggleGroupItem>
+          <ToggleGroupItem value="week" className='shadow-md'>Esta semana</ToggleGroupItem>
+        </ToggleGroup>
+        {isPending && (
+          <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50">
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+          </div>
+        )}
       </div>
       <Pie
-            options={
-              {
-              responsive: true,
-              plugins: {
-                legend: {
-                  display: false,
-                  position: 'top',
-                },
-                title: {
-                  display: true,
-                  text: 'Chart.js Pie Chart'
-                },
-                tooltip: {
-                  callbacks: {
-                    label: function(ctx) {
-                      return `${ctx.formattedValue}%`
-                    }
+        options={
+          {
+            responsive: true,
+            plugins: {
+              legend: {
+                display: false,
+                position: 'top',
+              },
+              title: {
+                display: false,
+                text: 'Chart.js Pie Chart'
+              },
+              tooltip: {
+                callbacks: {
+                  label: function (ctx) {
+                    return `${ctx.formattedValue}%`
                   }
                 }
               }
-              }  
             }
-            data={graphData}
+          }
+        }
+        data={graphData}
       />
-      <Accordion type="single" collapsible defaultValue='item-1'> 
+      <Accordion type="single" collapsible defaultValue='item-1'>
         <AccordionItem value="item-1">
           <AccordionTrigger className='bg-[#00b0c7] text-white rounded-lg'>
             <div className='flex justify-between gap-4 w-full px-4'>
@@ -165,10 +166,13 @@ export default function ChartComponent({ electricalPanelData } : { electricalPan
             {
               electricalPanelData.results.slice(1).map(electrical => {
                 return (
-                <div className='flex justify-between w-full px-4' key={electrical.measurement_point_name}>
-                  <p className='font-semibold flex items-center gap-1 '><div className='w-2 h-2 rounded-full bg-black'/>{electrical?.measurement_point_name}</p>
-                  <p className='mr-6'>{electrical?.consumption_percentage}%</p>
-                </div>
+                  <div className='flex justify-between w-full px-4' key={electrical.measurement_point_name}>
+                    <div className='font-semibold flex items-center gap-1 '>
+                      <div className='w-2 h-2 rounded-full bg-black' />
+                      <p>{electrical?.measurement_point_name}</p>
+                    </div>
+                    <p className='mr-6'>{electrical?.consumption_percentage}%</p>
+                  </div>
                 )
               })
             }

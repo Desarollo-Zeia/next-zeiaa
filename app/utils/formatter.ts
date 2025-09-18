@@ -1,3 +1,4 @@
+import { format } from "date-fns"
 
 export const INDICATOR_CONVERTED = {
   CO2: 'CO2',
@@ -8,7 +9,7 @@ export const INDICATOR_CONVERTED = {
   TEMPERATURE: 'Temperatura',
   TVOC: 'TVOC',
   PRESSURE: 'Presión'
- }
+}
 
 
 export const INDICATOR_UNIT_RAW = {
@@ -23,8 +24,8 @@ export const INDICATOR_UNIT_RAW = {
 }
 
 export const UNIT_CONVERTED = {
-  PPM: 'ppm' ,
-  MG_M3: 'mg/m³' ,
+  PPM: 'ppm',
+  MG_M3: 'mg/m³',
   UG_M3: 'µg/m³',
   PERCENT: '%',
   CELSIUS: '°C',
@@ -83,7 +84,7 @@ export const ELECTRIC_PARAMETERS = {
   Uc: { parameter: "Voltaje de fase T", unit: "V" },
   Uab: { parameter: "Voltaje entre RS", unit: "V" },
   Ubc: { parameter: "Voltaje entre ST", unit: "V" },
-  Uac: { parameter: "Voltaje entre RT", unit: "V" }, 
+  Uac: { parameter: "Voltaje entre RT", unit: "V" },
 
   Ia: { parameter: "Corriente de la fase R", unit: "A" },
   Ib: { parameter: "Corriente de la fase S", unit: "A" },
@@ -126,7 +127,7 @@ export const ELECTRIC_PARAMETERS = {
     parameter: "Distorsión armónica total en voltaje de la fase T",
     unit: "%",
   },
-  
+
   THDIa: {
     parameter: "Distorsión armónica total en corriente de la fase R",
     unit: "%",
@@ -222,7 +223,7 @@ export const UNIT_NAMES = {
   V: "Voltaje",
 
   A: "Corriente",
-  KW: "Potencia Activa",  
+  KW: "Potencia Activa",
   KVar: "Potencia Reactiva",
   KVA: "Potencia Aparente",
 
@@ -235,6 +236,8 @@ export const UNIT_NAMES = {
 
 export const UNIT_ORDER = ["V", "A", "KW", "KVar", "KVA", "KWh", "KVarh", "%", "Hz", "-"] as const
 
+
+export const START_DATE = format(new Date(), 'yyyy-MM-dd')
 
 export type Indicator = keyof typeof INDICATOR_UNIT_RAW;
 export type Unit = keyof typeof UNIT_CONVERTED

@@ -12,110 +12,110 @@ import { ELECTRIC_PARAMETERS } from "@/app/utils/formatter";
 
 
 interface Readings {
-    count: number;
-    next: string | null;
-    previous: string | null;
-    results: Reading[];
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: Reading[];
+}
+
+interface Reading {
+  created_at: string;
+  device: Device;
+  indicators: Indicators;
+}
+
+interface Device {
+  id: number;
+  name: string;
+  dev_eui: string;
+}
+
+interface Indicators {
+  id: number;
+  values: {
+    [key: string]: number
   }
-  
-  interface Reading {
-    created_at: string;
-    device: Device;
-    indicators: Indicators;
-  }
-  
-  interface Device {
-    id: number;
-    name: string;
-    dev_eui: string;
-  }
-  
-  interface Indicators {
-    id: number;
-    values: {
-      [key: string]: number
+}
+
+export default function MeasurementTable({ readings, category }: { readings: Readings, category?: string, indicator?: string }) {
+
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const [isPending, startTransition] = useTransition()
+
+  const indicatorsObject = readings.results?.[0]?.indicators?.values
+
+  const avaibleIndicators = [] as Array<string>
+
+  for (const key in indicatorsObject) {
+    if (indicatorsObject[key] !== null) {
+      avaibleIndicators.push(key)
     }
   }
-  
-  export default function MeasurementTable({ readings, category }: { readings: Readings, category?: string, indicator?: string }) {
 
-    const router = useRouter()
-    const pathname = usePathname()
-    const searchParams = useSearchParams()
-    const [isPending, startTransition] = useTransition() 
+  const handleIndicatorSelect = (indicator: string) => {
+    setSelectedIndicator(indicator)
+    startTransition(() => {
+      router.push(pathname + "?" + createQueryString("indicator", indicator), { scroll: false })
+    })
+  }
 
-    const indicatorsObject = readings.results?.[0]?.indicators?.values
+  const [selectedIndicator, setSelectedIndicator] = useState('')
 
-    const avaibleIndicators = [] as Array<string>
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams.toString())
+    params.delete('last_by');
 
-    for (const key in indicatorsObject) {
-       if (indicatorsObject[key] !== null) {
-        avaibleIndicators.push(key)
-       } 
-      }
+    if (avaibleIndicators.length > 0) {
 
-    const handleIndicatorSelect = (indicator: string) => {
-      setSelectedIndicator(indicator)
-      startTransition(() => {
-        router.push(pathname + "?" + createQueryString("indicator", indicator), { scroll: false })
-      })
+      setSelectedIndicator(avaibleIndicators[0])
+      params.delete('frequency');
+      router.push(pathname + "?" + createQueryString("indicator", avaibleIndicators[0]), { scroll: false })
     }
+  }, [category]);
 
-    const [selectedIndicator, setSelectedIndicator] = useState('')
-
-    useEffect(() => {
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
       const params = new URLSearchParams(searchParams.toString())
-        params.delete('last_by');
-      
-      if (avaibleIndicators.length > 0) {
-        
-        setSelectedIndicator(avaibleIndicators[0])
-        params.delete('frequency');
-        router.push(pathname + "?" + createQueryString("indicator", avaibleIndicators[0]), { scroll: false })
-      }
-    }, [category]);
+      params.set(name, value)
+      return params.toString()
+    },
+    [searchParams],
+  )
 
-    const createQueryString = useCallback(
-      (name: string, value: string) => {
-        const params = new URLSearchParams(searchParams.toString())
-        params.set(name, value)
-        return params.toString()
-      },
-      [searchParams],
-    )
+  const formatDateTime = (dateTimeString: string) => {
+    const date = new Date(dateTimeString)
 
-    const formatDateTime = (dateTimeString: string) => {
-        const date = new Date(dateTimeString)
-      
-        // Formatear la fecha como "Jueves, 12 de noviembre"
-        const options: Intl.DateTimeFormatOptions = {
-          weekday: "long",
-          day: "numeric",
-          month: "long"
-        }
-        let formattedDate = date.toLocaleDateString("es-ES", options)
-      
-        // Capitalizar la primera letra en caso de que no lo esté
-        formattedDate =
-          formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1)
-      
-        // Formatear la hora como HH:MM
-        const hours = date.getHours().toString().padStart(2, "0")
-        const minutes = date.getMinutes().toString().padStart(2, "0")
-        const formattedTime = `${hours}:${minutes}`
-      
-        return { date: formattedDate, time: formattedTime }
-      }
-  
-    return (
-      <Card className="flex-1">
-        <CardHeader>
-            <ElectricUnitFilter category={category}/>
-        </CardHeader>
-        <CardContent>
-          {
-             readings.count > 0 ? 
-             (
+    // Formatear la fecha como "Jueves, 12 de noviembre"
+    const options: Intl.DateTimeFormatOptions = {
+      weekday: "long",
+      day: "numeric",
+      month: "long"
+    }
+    let formattedDate = date.toLocaleDateString("es-ES", options)
+
+    // Capitalizar la primera letra en caso de que no lo esté
+    formattedDate =
+      formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1)
+
+    // Formatear la hora como HH:MM
+    const hours = date.getHours().toString().padStart(2, "0")
+    const minutes = date.getMinutes().toString().padStart(2, "0")
+    const formattedTime = `${hours}:${minutes}`
+
+    return { date: formattedDate, time: formattedTime }
+  }
+
+  return (
+    <Card className="flex-1">
+      <CardHeader>
+        <ElectricUnitFilter category={category} />
+      </CardHeader>
+      <CardContent>
+        {
+          readings.count > 0 ?
+            (
               <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
@@ -140,33 +140,32 @@ interface Readings {
                       } */}
                       {avaibleIndicators?.map((indicator, index) => {
                         return (
-                          <TableHead className={`cursor-pointer text-center ${selectedIndicator === indicator ? 'bg-[#00b0c7] opacity-70 text-white font-medium' : ''}`} 
-                            key={index}       
+                          <TableHead className={`cursor-pointer text-center ${selectedIndicator === indicator ? 'bg-[#00b0c7] opacity-70 text-white font-medium' : ''}`}
+                            key={index}
                             onClick={() => handleIndicatorSelect(indicator)}
-                            >
-                              {
-                                selectedIndicator === indicator && isPending ? 
+                          >
+                            {
+                              selectedIndicator === indicator && isPending ?
                                 (
                                   <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50">
                                     <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white">
                                     </div>
                                   </div>
                                 ) : (
-                                  ELECTRIC_PARAMETERS[indicator as keyof typeof ELECTRIC_PARAMETERS].parameter +  ' ' + `(${ELECTRIC_PARAMETERS[indicator as keyof typeof ELECTRIC_PARAMETERS].unit})`
+                                  ELECTRIC_PARAMETERS[indicator as keyof typeof ELECTRIC_PARAMETERS].parameter + ' ' + `(${ELECTRIC_PARAMETERS[indicator as keyof typeof ELECTRIC_PARAMETERS].unit})`
                                 )
-                              }
+                            }
                           </TableHead>
                         )
-                      } )}
+                      })}
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {readings?.results?.map((reading, readingIndex) => {
                       const { date, time } = formatDateTime(reading.created_at)
-      
+
                       // Obtenemos los valores de los indicadores para este reading
                       const indicatorValues = reading.indicators.values
-                      console.log('indicatorValues', indicatorValues)
 
                       return (
                         <TableRow key={readingIndex}>
@@ -180,18 +179,18 @@ interface Readings {
                         </TableRow>
                       )
                     })}
-                  </TableBody>  
+                  </TableBody>
                 </Table>
               </div>
-             ) : 
-             (
-              <NoResultsFound/>
-             )
-          }
-          
-        </CardContent>
-        { readings.count > 0 && <PaginationNumberComponent count={readings.count} itemsPerPage={10}/>}
-        
-      </Card>
-    )
-  }
+            ) :
+            (
+              <NoResultsFound />
+            )
+        }
+
+      </CardContent>
+      {readings.count > 0 && <PaginationNumberComponent count={readings.count} itemsPerPage={10} />}
+
+    </Card>
+  )
+}

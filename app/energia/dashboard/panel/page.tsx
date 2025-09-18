@@ -64,8 +64,8 @@ export default async function page({ searchParams }: SearchParams) {
     date_after: start,
     date_before: finish,
     headquarterId: firstHeadquarter,
-    panelId: firstPanel,
     indicador: 'EPpos',
+    panelId: firstPanel,
     point: firstPoint,
     // category,
     // unit,
@@ -82,6 +82,10 @@ export default async function page({ searchParams }: SearchParams) {
         <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} energy={firstHeadquarter} />
         {/* <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters?.[0].electrical_panels} /> */}
       </FiltersContainer>
+      {/* <div className='w-full h-8 bg-red-400 absolute top-0 left-0 flex justify-center items-center'>
+        <p>SIN ALERTAS: el sistema funciona con normalidad</p>
+        <p className='underline absolute right-0 pr-6 text-nowrap'>Historial de alertas</p>
+      </div> */}
       <div className='w-full flex gap-8 justify-between'>
         <ChartComponent electricalPanelData={dashboardPorcentageGraph} />
         <TableComponent readings={dashboardTableReadings} />
