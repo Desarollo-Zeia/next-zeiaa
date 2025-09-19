@@ -4,11 +4,11 @@ import { getEnergyMeasurementPointPanels, getHeadquarters } from "@/app/sevices/
 import { getMeasurementPoints } from "@/app/sevices/filters/data";
 import { SearchParams } from "@/app/type";
 // import { StatusAlert } from "@/app/ui/energia/desbalance/alert-balance";
-import CurrentCharts from "@/app/ui/energia/desbalance/current-chart";
+import CurrentChartCount from "@/app/ui/energia/desbalance/current-chart-count";
 // import { CurrentMeter } from "@/app/ui/energia/desbalance/current-meter";
 import { MetricSelector } from "@/app/ui/energia/desbalance/metric-selector";
 import MostThreeUnbalanced from "@/app/ui/energia/desbalance/most-three-unbalanced";
-import VoltageCharts from "@/app/ui/energia/desbalance/voltage-chart";
+import VoltageChartCount from "@/app/ui/energia/desbalance/voltage-chart-count";
 import HeadquarterEnergyFilter from "@/app/ui/energia/filters/headquarter-energy-filter";
 import PanelsFilterEnergy from "@/app/ui/energia/filters/panels-energy-filter";
 // import PanelsFilterEnergy from "@/app/ui/energia/filters/panels-energy-filter";
@@ -84,7 +84,7 @@ export default async function page({ searchParams }: SearchParams) {
   //   : [];
 
   return (
-    <div className="w-full">
+    <div className="w-full min-h-screen">
       <FiltersContainer>
         <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} energy={firstHeadquarter} />
         <PanelsFilterEnergy energyPanels={measurementPointsPanels.results} panel={firstPanel} />
@@ -92,11 +92,9 @@ export default async function page({ searchParams }: SearchParams) {
         {/* <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters[0].electrical_panels} /> */}
         <DatepickerRange />
       </FiltersContainer>
-      <div className="flex gap-4 mx-6">
-        <div>
+      <div className="flex flex-1 gap-4 mx-6">
 
-        </div>
-        <div className="min-w-[350px] flex flex-col items-center justify-center gap-2 pt-8">
+        <div className="min-h-full flex flex-col items-center justify-center gap-2 pt-8">
           <h3>Top 3 equipos con mayor desbalance del día</h3>
           <MostThreeUnbalanced title={first.measurement_point_name} frequency={first.total_readings} cup={first.current_unbalanced} vup={first.voltage_unbalanced} />
           <MostThreeUnbalanced title={second.measurement_point_name} frequency={second.total_readings} cup={second.current_unbalanced} vup={second.voltage_unbalanced} />
@@ -183,10 +181,13 @@ export default async function page({ searchParams }: SearchParams) {
           <div>
             <MetricSelector />
           </div>
-          <div>
+          <div className="flex justify-center items-center">
             {
-              metric === 'current' ? <CurrentCharts currentReadings={currentReadings} /> : <VoltageCharts voltageReadings={voltageReadings} />
+              metric === 'current' ? <CurrentChartCount currentReadings={currentReadings} /> : <VoltageChartCount voltageReadings={voltageReadings} />
             }
+            {/* {
+              metric === 'current' ? <CurrentCharts currentReadings={currentReadings} /> : <VoltageCharts voltageReadings={voltageReadings} />
+            } */}
           </div>
         </div>
       </div>
