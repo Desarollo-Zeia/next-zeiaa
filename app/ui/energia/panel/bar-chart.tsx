@@ -69,6 +69,7 @@ export default function BarChart({ readingsGraph, weekday, thresholds }: { readi
       },
     ],
   }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const options: any = {
     responsive: true,
@@ -76,14 +77,12 @@ export default function BarChart({ readingsGraph, weekday, thresholds }: { readi
       x: {
         type: "time",
         time: { unit: "day" },
-
       },
       y: {
         ticks: {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          callback: (val: any) => `${val.toFixed(2)} ${readingsGraph[0]?.unit || ''}`,
+          callback: (val: number) =>
+            `${val.toFixed(2)} ${readingsGraph[0]?.unit || ''}`,
         },
-
       },
     },
     plugins: {
@@ -103,7 +102,7 @@ export default function BarChart({ readingsGraph, weekday, thresholds }: { readi
               backgroundColor: '#59AC77',
               content: [`${superiorThreshold} KWh`],
               xAdjust: 80,
-            }
+            },
           } : undefined,
           superior: superiorThreshold ? {
             type: 'line',
@@ -118,7 +117,7 @@ export default function BarChart({ readingsGraph, weekday, thresholds }: { readi
               backgroundColor: '#DC143C',
               content: [`${superiorThreshold} KWh`],
               xAdjust: -80,
-            }
+            },
           } : undefined,
         },
       },
