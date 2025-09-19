@@ -100,7 +100,7 @@ export default function BarChart({ readingsGraph, weekday, thresholds }: { readi
               display: true,
               color: 'white',
               backgroundColor: '#59AC77',
-              content: [`${superiorThreshold} KWh`],
+              content: [`${inferiorThreshold} KWh`],
               xAdjust: 80,
             },
           } : undefined,
