@@ -94,88 +94,11 @@ export default async function page({ searchParams }: SearchParams) {
       </FiltersContainer>
       <div className="flex flex-1 gap-4 mx-6">
 
-        <div className="min-h-full flex flex-col items-center justify-center gap-2 pt-8">
+        <div className="min-h-full flex flex-1 flex-col items-center justify-center gap-2 pt-8">
           <h3>Top 3 equipos con mayor desbalance del día</h3>
           <MostThreeUnbalanced title={first.measurement_point_name} frequency={first.total_readings} cup={first.current_unbalanced} vup={first.voltage_unbalanced} />
           <MostThreeUnbalanced title={second.measurement_point_name} frequency={second.total_readings} cup={second.current_unbalanced} vup={second.voltage_unbalanced} />
           <MostThreeUnbalanced title={third.measurement_point_name} frequency={third.total_readings} cup={third.current_unbalanced} vup={third.voltage_unbalanced} />
-          {/* {
-            voltageLast && currentLast ?
-              (
-                <>
-                  {
-                    metric === 'current' ?
-                      (
-                        currentLast?.balance_status === 'Balanceado' ? (
-                          <StatusAlert title={`Carga balanceada`} description="Tu sistema está funcionando adecuadamente" variant="success" />
-                        ) : (
-                          <StatusAlert title={`Carga desbalanceada`} description="Tu sistema no está funcionando adecuadamente" variant="error" />
-                        )
-                      ) : (
-                        voltageLast?.balance_status === 'Balanceado' ? (
-                          <StatusAlert title={`Carga balanceada`} description="Tu sistema está funcionando adecuadamente" variant="success" />
-                        ) : (
-                          <StatusAlert title={`Carga desbalanceada`} description="Tu sistema no está funcionando adecuadamente" variant="error" />
-                        )
-                      )
-                  }
-                  <div className="flex flex-col gap-4">
-                    {
-                      metric === 'current' ? (
-                        <>
-                          <CurrentMeter
-                            label="Fase R"
-                            minValue={0.0}
-                            currentValue={lastCurrentReadingArray[0] as number}
-                            status={"normal"}
-                          />
-                          <CurrentMeter
-                            label="Fase S"
-                            minValue={0.0}
-                            currentValue={lastCurrentReadingArray[1] as number}
-                            status={"normal"}
-                          />
-                          <CurrentMeter
-                            label="Fase T"
-                            minValue={0.0}
-                            currentValue={lastCurrentReadingArray[2] as number}
-                            status={"normal"}
-                          />
-                        </>
-                      ) : (
-                        <>
-                          <CurrentMeter
-                            label="Fase R"
-                            minValue={0.0}
-                            currentValue={lastVoltageReadingArray[0] as number}
-                            status={"normal"}
-                            unit="V"
-                          />
-                          <CurrentMeter
-                            label="Fase S"
-                            minValue={0.0}
-                            currentValue={lastVoltageReadingArray[1] as number}
-                            status={"normal"}
-                            unit="V"
-                          />
-                          <CurrentMeter
-                            label="Fase T"
-                            minValue={0.0}
-                            currentValue={lastVoltageReadingArray[2] as number}
-                            status={"normal"}
-                            unit="V"
-                          />
-                        </>
-                      )
-                    }
-
-                  </div>
-                </>
-              ) : (
-                <NoResultFound />
-              )
-          } */}
-
         </div>
         <div className="flex-1 flex flex-col gap-2">
           <div>
