@@ -26,15 +26,15 @@ export default function CycleClientInfoTable({ tariffData }: { tariffData: Tarif
     const formattedDateBefore = format(new Date(tariffData?.billing_cycle_end), 'dd-MM-yyyy')
 
     return (
-        <Table>
+        <Table className='rounded-t-lg overflow-hidden'>
             <TableHeader>
-                <TableRow className="bg-cyan-500 hover:bg-cyan-500 border-b-0">
-                    <TableHead className="text-white font-medium bg-cyan-500 text-center">Empresa concesionaria</TableHead>
-                    <TableHead className="text-white font-medium bg-cyan-500 text-center">N° de Suministro</TableHead>
-                    <TableHead className="text-white font-medium bg-cyan-500 text-center">Días facturados</TableHead>
-                    <TableHead className="text-white font-medium bg-cyan-500 text-center">Ciclo de facturación</TableHead>
-                    <TableHead className="text-white font-medium bg-cyan-500 text-center">Potencia contratada</TableHead>
-                    <TableHead className="text-white font-medium bg-cyan-500 text-center">Tipo</TableHead>
+                <TableRow className="bg-[#01b7ca] hover:bg-[#01b7ca] border-b-0">
+                    <TableHead className="text-white font-medium bg-[#01b7ca] text-center">Empresa concesionaria</TableHead>
+                    <TableHead className="text-white font-medium bg-[#01b7ca] text-center">N° de Suministro</TableHead>
+                    <TableHead className="text-white font-medium bg-[#01b7ca] text-center">Días facturados</TableHead>
+                    <TableHead className="text-white font-medium bg-[#01b7ca] text-center">Ciclo de facturación</TableHead>
+                    <TableHead className="text-white font-medium bg-[#01b7ca] text-center">Potencia contratada</TableHead>
+                    <TableHead className="text-white font-medium bg-[#01b7ca] text-center">Tipo</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>

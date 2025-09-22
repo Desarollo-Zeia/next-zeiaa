@@ -160,10 +160,6 @@ export default function PowerUsageChart({ readings, group, powers }: { readings:
         },
       },
       y: {
-        title: {
-          display: true,
-          text: readings?.[0]?.unit,
-        },
         grid: {
           display: true,
           tickLength: 50
@@ -292,12 +288,13 @@ export default function PowerUsageChart({ readings, group, powers }: { readings:
               <span className="animate-spin h-4 w-4 border-2 border-primary border-t-transparent rounded-full"></span>
             </div>
           )}
-          <ToggleGroupItem value="day" aria-label="day">
-            <p>Día</p>
-          </ToggleGroupItem>
           <ToggleGroupItem value="minute" aria-label="minute">
             <p>Hora</p>
           </ToggleGroupItem>
+          <ToggleGroupItem value="day" aria-label="day">
+            <p>Día</p>
+          </ToggleGroupItem>
+
         </ToggleGroup>
       </div>
       <div className="w-[80%] h-[740px] mx-auto flex justify-center items-center">

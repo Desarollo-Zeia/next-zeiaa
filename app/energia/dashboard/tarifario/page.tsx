@@ -49,8 +49,9 @@ export default async function Page({ searchParams }: SearchParams) {
   const currentMonth = new Date().getMonth() + 1
 
   const defaultMonth = monthMap[currentMonth]
+  const startDefaultMonth = monthMap[currentMonth - 1]
 
-  const { headquarter, panel = '1', date_after = new Date(), date_before = new Date(), firstmonth = defaultMonth, secondmonth = defaultMonth } = await searchParams
+  const { headquarter, panel = '1', date_after = new Date(), date_before = new Date(), firstmonth = startDefaultMonth, secondmonth = defaultMonth } = await searchParams
 
   const formattedDateAfter = format(date_after, 'yyyy-MM-dd')
   const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
