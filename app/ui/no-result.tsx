@@ -14,7 +14,7 @@ export default function NoResultsFound({
   // actionHref = "/",
 }: NoResultsFoundProps) {
   return (
-    <div className="w-full flex flex-col items-center justify-center min-h-auto text-center px-4">
+    <div className="w-full h-full flex flex-col items-center justify-center min-h-auto text-center px-4">
       <MessageSquareX className="w-12 h-12 text-gray-400 mb-4" />
       <h2 className="text-lg font-semibold text-gray-900 mb-2">{message}</h2>
       <p className="text-gray-600 mb-6 max-w-md">{suggestion}</p>

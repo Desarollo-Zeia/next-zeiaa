@@ -18,8 +18,13 @@ export default async function Page({ searchParams }: SearchParams) {
 
   const { headquarter, panel, date_after, date_before, unit = 'V', indicator = 'P', page = '1', last_by = 'minute', category = 'power', point } = await searchParams
 
-  const formattedDateAfter = date_after ? format(date_after, 'yyyy-MM-dd') : undefined
-  const formattedDateBefore = date_before ? format(date_before, 'yyyy-MM-dd') : undefined
+  console.log({
+    date_after,
+    date_before
+  })
+
+  const formattedDateAfter = date_after ? format(new Date(), 'yyyy-MM-dd') : undefined
+  const formattedDateBefore = date_before ? format(new Date(), 'yyyy-MM-dd') : undefined
 
   const headquarters = await getHeadquarters()
   const { results } = headquarters

@@ -47,7 +47,7 @@ export default async function page({ searchParams }: SearchParams) {
         <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} energy={firstHeadquarter} />
         {/* <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters?.[0].electrical_panels} /> */}
         <DatepickerRange />
-        <DownloadExcelMonitoreo headquarterId={headquarter} panelId={panel} />
+        <DownloadExcelMonitoreo headquarterId={firstHeadquarter} panelId={panel} />
       </FiltersContainer>
       <div className="flex gap-4 mx-6">
         <div className="flex-1">
