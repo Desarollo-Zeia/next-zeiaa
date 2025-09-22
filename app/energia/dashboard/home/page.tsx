@@ -18,11 +18,6 @@ export default async function Page({ searchParams }: SearchParams) {
 
   const { headquarter, panel, date_after, date_before, unit = 'V', indicator = 'P', page = '1', last_by = 'minute', category = 'power', point } = await searchParams
 
-  console.log({
-    date_after,
-    date_before
-  })
-
   const formattedDateAfter = date_after ? format(new Date(), 'yyyy-MM-dd') : undefined
   const formattedDateBefore = date_before ? format(new Date(), 'yyyy-MM-dd') : undefined
 
@@ -38,9 +33,6 @@ export default async function Page({ searchParams }: SearchParams) {
   const measurementPoints = await getMeasurementPoints({ electricalpanelId: firstPanel })
 
   const firstPoint = point || measurementPoints?.results[0]?.measurement_points[0].id.toString()
-
-
-  // 4. Paralle­lizar las llamadas
 
   const [readings, readingsGraph] = await Promise.all([
     consume({
@@ -84,7 +76,7 @@ export default async function Page({ searchParams }: SearchParams) {
       </FiltersContainer>
       <div className="flex items-center justify-center min-h-full">
         <MeasurementTable readings={readings} category={category} indicator={indicator} />
-        <Graph readingsGraph={readingsGraph} category={category} indicator={indicator} last_by={last_by} />
+        <Graph readingsGraph={readingsGraph} category={category} indicator={indicator} last_by={last_by} readings={readings} />
       </div>
     </div>
   )

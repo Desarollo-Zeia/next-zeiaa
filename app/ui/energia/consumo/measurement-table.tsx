@@ -7,8 +7,9 @@ import ElectricUnitFilter from "../filters/unit-energy-filter";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState, useTransition } from "react";
 import PaginationNumberComponent from "../../pagination-number";
-import NoResultsFound from "../../no-result";
+// import NoResultsFound from "../../no-result";
 import { ELECTRIC_PARAMETERS } from "@/app/utils/formatter";
+import NoResultFound from "../../no-result-found";
 
 
 interface Readings {
@@ -112,85 +113,93 @@ export default function MeasurementTable({ readings, category }: { readings: Rea
       <CardHeader>
         <ElectricUnitFilter category={category} />
       </CardHeader>
-      <CardContent>
-        {
-          readings.count > 0 ?
-            (
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>
-                        <div className="flex items-center gap-2">
-                          <CalendarIcon className="h-4 w-4" />
-                          Fecha
-                        </div>
-                      </TableHead>
-                      <TableHead>
-                        <div className="flex items-center gap-2">
-                          <ClockIcon className="h-4 w-4" />
-                          Hora
-                        </div>
-                      </TableHead>
-                      {/* {
+      {
+        avaibleIndicators.length > 0 ? (
+          <>
+            <CardContent>
+              {
+                readings.count > 0 ?
+                  (
+                    <div className="overflow-x-auto">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>
+                              <div className="flex items-center gap-2">
+                                <CalendarIcon className="h-4 w-4" />
+                                Fecha
+                              </div>
+                            </TableHead>
+                            <TableHead>
+                              <div className="flex items-center gap-2">
+                                <ClockIcon className="h-4 w-4" />
+                                Hora
+                              </div>
+                            </TableHead>
+                            {/* {
                         isPending && 
                         <TableHead>
                           cargandoo...
                         </TableHead>
                       } */}
-                      {avaibleIndicators?.map((indicator, index) => {
-                        return (
-                          <TableHead className={`cursor-pointer text-center ${selectedIndicator === indicator ? 'bg-[#00b0c7] opacity-70 text-white font-medium' : ''}`}
-                            key={index}
-                            onClick={() => handleIndicatorSelect(indicator)}
-                          >
-                            {
-                              selectedIndicator === indicator && isPending ?
-                                (
-                                  <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50">
-                                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white">
-                                    </div>
-                                  </div>
-                                ) : (
-                                  ELECTRIC_PARAMETERS[indicator as keyof typeof ELECTRIC_PARAMETERS].parameter + ' ' + `(${ELECTRIC_PARAMETERS[indicator as keyof typeof ELECTRIC_PARAMETERS].unit})`
-                                )
-                            }
-                          </TableHead>
-                        )
-                      })}
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {readings?.results?.map((reading, readingIndex) => {
-                      const { date, time } = formatDateTime(reading.created_at)
+                            {avaibleIndicators?.map((indicator, index) => {
+                              return (
+                                <TableHead className={`cursor-pointer text-center ${selectedIndicator === indicator ? 'bg-[#00b0c7] opacity-70 text-white font-medium' : ''}`}
+                                  key={index}
+                                  onClick={() => handleIndicatorSelect(indicator)}
+                                >
+                                  {
+                                    selectedIndicator === indicator && isPending ?
+                                      (
+                                        <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50">
+                                          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white">
+                                          </div>
+                                        </div>
+                                      ) : (
+                                        ELECTRIC_PARAMETERS[indicator as keyof typeof ELECTRIC_PARAMETERS].parameter + ' ' + `(${ELECTRIC_PARAMETERS[indicator as keyof typeof ELECTRIC_PARAMETERS].unit})`
+                                      )
+                                  }
+                                </TableHead>
+                              )
+                            })}
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {readings?.results?.map((reading, readingIndex) => {
+                            const { date, time } = formatDateTime(reading.created_at)
 
-                      // Obtenemos los valores de los indicadores para este reading
-                      const indicatorValues = reading.indicators.values
+                            // Obtenemos los valores de los indicadores para este reading
+                            const indicatorValues = reading.indicators.values
 
-                      return (
-                        <TableRow key={readingIndex}>
-                          <TableCell className="text-nowrap">{date}</TableCell>
-                          <TableCell>{time}</TableCell>
-                          {avaibleIndicators?.map((header, headerIndex) => {
-                            return indicatorValues[header] === null ? <TableCell key={headerIndex}>-</TableCell> : (
-                              <TableCell className={`cursor-pointer text-center ${selectedIndicator === header ? 'bg-[#00b0c7] opacity-70 text-white font-medium' : ''}`} key={headerIndex}>{indicatorValues[header].toFixed(2)}</TableCell>
+                            return (
+                              <TableRow key={readingIndex}>
+                                <TableCell className="text-nowrap">{date}</TableCell>
+                                <TableCell>{time}</TableCell>
+                                {avaibleIndicators?.map((header, headerIndex) => {
+                                  return indicatorValues[header] === null ? <TableCell key={headerIndex}>0</TableCell> : (
+                                    <TableCell className={`cursor-pointer text-center ${selectedIndicator === header ? 'bg-[#00b0c7] opacity-70 text-white font-medium' : ''}`} key={headerIndex}>{indicatorValues[header].toFixed(2)}</TableCell>
+                                  )
+                                })}
+                              </TableRow>
                             )
                           })}
-                        </TableRow>
-                      )
-                    })}
-                  </TableBody>
-                </Table>
-              </div>
-            ) :
-            (
-              <NoResultsFound />
-            )
-        }
+                        </TableBody>
+                      </Table>
+                    </div>
+                  ) :
+                  (
+                    <></>
+                  )
+              }
 
-      </CardContent>
-      {readings.count > 0 && <PaginationNumberComponent count={readings.count} itemsPerPage={10} />}
+            </CardContent>
+            <PaginationNumberComponent count={readings.count} itemsPerPage={10} />
 
+          </>
+        ) : (
+          <NoResultFound />
+        )
+      }
     </Card>
   )
 }

@@ -16,7 +16,7 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { ELECTRIC_PARAMETERS } from "@/app/utils/formatter";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import DeviceReadingsChart from "./measurement-graph";
-import NoResultFound from "../../no-result-found";
+// import NoResultFound from "../../no-result-found";
 import annotationPlugin from 'chartjs-plugin-annotation';
 
 ChartJS.register(LineElement, PointElement, LinearScale, TimeScale, Tooltip, Legend, zoomPlugin, annotationPlugin)
@@ -28,12 +28,23 @@ const energyToggleArray = [
   { label: "Mes", value: "month" },
 ]
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const SimpleLineChart = ({ readingsGraph, category, indicator, last_by }: { readingsGraph: any, category: any, indicator: any, last_by: any }) => {
+const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings }: { readingsGraph: any, category: any, indicator: any, last_by: any, readings: any }) => {
+
 
   const [isPending, startTransition] = useTransition();
   const searchParams = useSearchParams();
   const pathname = usePathname()
   const { replace } = useRouter()
+
+  const indicatorsObject = readings?.results?.[0]?.indicators?.values
+
+  const avaibleIndicators = [] as Array<string>
+
+  for (const key in indicatorsObject) {
+    if (indicatorsObject[key] !== null) {
+      avaibleIndicators.push(key)
+    }
+  }
 
   const formatDateTime = (dateTimeString: string) => {
     const date = new Date(dateTimeString)
@@ -259,15 +270,16 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by }: { read
 
   return (
     <div className="flex-1 w-full min-h-full p-4 bg-white flex flex-col justify-center items-center relative">
+      <div className="pb-4 mb-4">
+        {avaibleIndicators?.length > 0 ? <h2 className="font-semibold text-xl">Gráfica de {ELECTRIC_PARAMETERS[indicator as keyof typeof ELECTRIC_PARAMETERS].parameter}</h2> : ''}
+      </div>
       {
         readingsGraph?.length > 0 && (
-          <ToggleGroup type="single" defaultValue={last_by || 'none'} value={last_by || 'none'} onValueChange={handleFrequency} aria-label="Frequency" className="flex gap-2 top-0 mt-4 absolute">
+          <ToggleGroup type="single" defaultValue={last_by || 'none'} value={last_by || 'none'} onValueChange={handleFrequency} aria-label="Frequency" className="flex gap-2 top-0 mt-4">
             {
               category !== 'energy' ?
                 (
-                  // <ToggleGroupItem value="hour" className={"w-[120px] h-[40px] bg-[#00b0c7] text-white"} disabled>
-                  //   Hora
-                  // </ToggleGroupItem>
+
                   <></>
                 ) : (
                   <>
@@ -304,11 +316,10 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by }: { read
         )
       }
 
-      {readingsGraph?.length > 0 && <h2 className="mb-4 font-semibold text-xl">Gráfica de {ELECTRIC_PARAMETERS[indicator as keyof typeof ELECTRIC_PARAMETERS].parameter}</h2>}
       <>
         {
-          readingsGraph?.length <= 0 ? (
-            <NoResultFound />
+          avaibleIndicators?.length === 0 ? (
+            <></>
           ) : (
             <>
               {
