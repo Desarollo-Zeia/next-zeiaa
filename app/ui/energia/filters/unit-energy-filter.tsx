@@ -21,10 +21,10 @@ export default function ElectricUnitFilter({ category = "power" }: { category?: 
   const handleUnitChange = (category: string) => {
     startTransition(() => {
       const newParams = new URLSearchParams(searchParams)
-     
+
 
       if (category === 'energy') {
-         newParams.set("last_by", 'hour')
+        newParams.set("last_by", 'hour')
       } else {
         newParams.delete("last_by")
       }
@@ -46,7 +46,7 @@ export default function ElectricUnitFilter({ category = "power" }: { category?: 
     <div className="relative">
       <Select onValueChange={handleUnitChange} defaultValue={category.toString()}>
         <SelectTrigger className="w-[240px] bg-[#00b0c7]">
-          <SelectValue placeholder={"Seleccionar unidad"} className="text-white font-bold"/>
+          <SelectValue placeholder={"Seleccionar unidad"} className="text-white font-bold" />
         </SelectTrigger>
         <SelectContent>
           {ELECTRIC_CATEGORYS.map((category) => (
@@ -58,7 +58,7 @@ export default function ElectricUnitFilter({ category = "power" }: { category?: 
       </Select>
 
       {isPending && (
-        <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50">
+        <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50 w-[240px]">
           <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
         </div>
       )}

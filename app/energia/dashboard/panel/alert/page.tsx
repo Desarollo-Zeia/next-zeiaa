@@ -48,18 +48,6 @@ const getAlertStatusColor = (status: string) => {
   }
 }
 
-const getAlertTypeDescription = (alertType: string, measurement: number) => {
-  switch (alertType) {
-    case "power_exceeded":
-      return `Superó el límite de potencia contratada (${measurement} kW)`
-    case "energy_consumption":
-      return `Consumo inusual alto en horas no laborables`
-    case "load_imbalance":
-      return `Desbalance de carga en la fase S`
-    default:
-      return `Alerta de ${alertType}`
-  }
-}
 
 export default async function page({ searchParams }: SearchParams) {
 
@@ -159,7 +147,7 @@ export default async function page({ searchParams }: SearchParams) {
                               </td>
                               <td className="py-4 px-4">
                                 <div className="max-w-xs">
-                                  {getAlertTypeDescription(alert.alert_threshold.alert_type, alert.reading.P)}
+                                  {alert.notes}
                                 </div>
                               </td>
                               <td className="py-4 px-4">

@@ -34,9 +34,6 @@ export default async function Page({ searchParams }: SearchParams) {
 
   const firstPoint = point || measurementPoints?.results[0]?.measurement_points[0].id.toString()
 
-
-  // 4. Paralle­lizar las llamadas
-
   const [readings, readingsGraph] = await Promise.all([
     consume({
       date_after: formattedDateAfter,
@@ -79,7 +76,7 @@ export default async function Page({ searchParams }: SearchParams) {
       </FiltersContainer>
       <div className="flex items-center justify-center min-h-full">
         <MeasurementTable readings={readings} category={category} indicator={indicator} />
-        <Graph readingsGraph={readingsGraph} category={category} indicator={indicator} last_by={last_by} />
+        <Graph readingsGraph={readingsGraph} category={category} indicator={indicator} last_by={last_by} readings={readings} />
       </div>
     </div>
   )

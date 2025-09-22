@@ -7,7 +7,7 @@ import ElectricUnitFilter from "../filters/unit-energy-filter";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState, useTransition } from "react";
 import PaginationNumberComponent from "../../pagination-number";
-import NoResultsFound from "../../no-result";
+// import NoResultsFound from "../../no-result";
 import { ELECTRIC_PARAMETERS } from "@/app/utils/formatter";
 import NoResultFound from "../../no-result-found";
 
@@ -188,7 +188,7 @@ export default function MeasurementTable({ readings, category }: { readings: Rea
                     </div>
                   ) :
                   (
-                    <NoResultsFound />
+                    <></>
                   )
               }
 
