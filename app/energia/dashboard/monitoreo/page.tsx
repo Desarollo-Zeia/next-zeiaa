@@ -11,11 +11,11 @@ import { DatepickerRange } from "@/app/ui/filters/datepicker-range";
 import FiltersContainer from "@/app/ui/filters/filters-container";
 import { format } from "date-fns";
 
-export default async function page({ searchParams } : SearchParams) {
+export default async function page({ searchParams }: SearchParams) {
 
-  const { headquarter , panel = '1',  date_after = new Date(), date_before = new Date(), group_by = 'day'} = await searchParams
+  const { headquarter, panel = '1', date_after = new Date(), date_before = new Date(), group_by = 'minute' } = await searchParams
 
-  const headquarters  = await getHeadquarters()
+  const headquarters = await getHeadquarters()
   const { results } = headquarters
   const firstHeadquarter = headquarter || results[0].id.toString()
 
@@ -39,20 +39,20 @@ export default async function page({ searchParams } : SearchParams) {
     })
   ])
 
-  const { electrical_panels } = headquarters?.results.find((hq : any ) => hq.id === Number(firstHeadquarter))  // eslint-disable-line @typescript-eslint/no-explicit-any
+  const { electrical_panels } = headquarters?.results.find((hq: any) => hq.id === Number(firstHeadquarter))  // eslint-disable-line @typescript-eslint/no-explicit-any
 
-  return (  
+  return (
     <div className="w-full">
       <FiltersContainer>
-        <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} energy={firstHeadquarter}/>
+        <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} energy={firstHeadquarter} />
         {/* <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters?.[0].electrical_panels} /> */}
         <DatepickerRange />
-        <DownloadExcelMonitoreo headquarterId={headquarter} panelId={panel}/>
+        <DownloadExcelMonitoreo headquarterId={headquarter} panelId={panel} />
       </FiltersContainer>
       <div className="flex gap-4 mx-6">
         <div className="flex-1">
-          <PowerUsageChart readings={monitoringGraphReadings} group={group_by} powers={results[0].powers}/>
-          <ExcessPower excessPowerData={monitoringLastThreeReadings} panel={electrical_panels[0]} powers={results[0].powers}/>
+          <PowerUsageChart readings={monitoringGraphReadings} group={group_by} powers={results[0].powers} />
+          <ExcessPower excessPowerData={monitoringLastThreeReadings} panel={electrical_panels[0]} powers={results[0].powers} />
         </div>
       </div>
     </div>

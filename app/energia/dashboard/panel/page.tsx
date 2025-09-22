@@ -1,6 +1,6 @@
 import { getEnergyMeasurementPointPanels } from '@/app/sevices/energy/enterprise/data'
 import { getHeadquarters, getMeasurementPoints } from '@/app/sevices/filters/data'
-import { consumeGraph, dashboardTable, porcentageGraph } from '@/app/sevices/panel/data'
+import { consumeGraph, dashboardTable, lastAlertToday, porcentageGraph } from '@/app/sevices/panel/data'
 import { SearchParams } from '@/app/type'
 import HeadquarterEnergyFilter from '@/app/ui/energia/filters/headquarter-energy-filter'
 import BarChart from '@/app/ui/energia/panel/bar-chart'
@@ -12,6 +12,7 @@ import MonthFilter from '@/app/ui/filters/month-filter'
 import PeriodPickerFilter from '@/app/ui/filters/period-picker-filter'
 import { format } from 'date-fns'
 import React from 'react'
+import { TriangleAlert } from 'lucide-react';
 
 const monthDateRanges: { [key: number]: string } = {
   1: "2025-01-01:2025-01-31",
@@ -56,7 +57,12 @@ export default async function page({ searchParams }: SearchParams) {
 
   const firstPoint = point || measurementPoints?.results[0]?.measurement_points[0].id.toString()
 
+
   const dashboardTableReadings = await dashboardTable({ headquarterId: firstHeadquarter })
+
+  const alertToday = await lastAlertToday()
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
   const dashboardPorcentageGraph = await porcentageGraph({ headquarterId: firstHeadquarter, this_month, this_week, date_after: formattedDateAfter, date_before: formattedDateBefore })
 
@@ -81,11 +87,26 @@ export default async function page({ searchParams }: SearchParams) {
       <FiltersContainer>
         <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} energy={firstHeadquarter} />
         {/* <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters?.[0].electrical_panels} /> */}
+        {/* <div className='relative flex items-center justify-center'>
+          <TriangleAlert className='h-8 w-8' />
+          <div className='absolute rounded-full bg-[#59ac77] h-6 w-6 flex items-center justify-center -top-2 -right-2 text-white text-sm p-[2px]'>
+            <p>32</p>
+          </div>
+        </div> */}
+        {/* < AlertTestSheet count={dashboardTableAlertsReadings.count} /> */}
       </FiltersContainer>
-      {/* <div className='w-full h-8 bg-red-400 absolute top-0 left-0 flex justify-center items-center'>
-        <p>SIN ALERTAS: el sistema funciona con normalidad</p>
-        <p className='underline absolute right-0 pr-6 text-nowrap'>Historial de alertas</p>
-      </div> */}
+      <div className='w-full h-8 bg-[#59ac77] absolute top-0 left-0 flex justify-center items-center'>
+        <p className='flex items-center justify-center gap-2 text-white'>
+          <span className='block'>
+            <TriangleAlert />
+          </span>
+          <span className='block'>
+            {alertToday?.detail}
+          </span>
+        </p>
+
+        <p className='underline absolute right-0 pr-6 text-nowrap text-white'>Historial de alertas</p>
+      </div>
       <div className='w-full flex gap-8 justify-between'>
         <ChartComponent electricalPanelData={dashboardPorcentageGraph} />
         <TableComponent readings={dashboardTableReadings} />

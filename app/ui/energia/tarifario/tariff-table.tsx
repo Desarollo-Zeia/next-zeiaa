@@ -42,7 +42,7 @@ export default function TariffTable({ tariffData }: { tariffData: TariffData }) 
   const { billing_data, charges, total } = tariffData
 
   return (
-    <Card className="w-full mx-auto overflow-hidden border-none shadow-lg relative">
+    <Card className="w-full mx-auto border-none shadow-lg relative">
       <CardHeader className="bg-[#01b7ca] py-6">
         <CardTitle className="text-white text-xl font-bold tracking-tight">
           BAJA TENSIÓN : TARIFA {billing_data?.billing_data_type}
