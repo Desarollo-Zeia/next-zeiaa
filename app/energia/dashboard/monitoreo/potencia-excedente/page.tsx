@@ -12,16 +12,16 @@ import { format } from "date-fns";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
-export default async function page({ searchParams } : SearchParams) {
+export default async function page({ searchParams }: SearchParams) {
 
 
-const { headquarter , panel = '1',  date_after = new Date(), date_before = new Date(), page = '1'} = await searchParams
+  const { headquarter, panel = '1', date_after = new Date(), date_before = new Date(), page = '1' } = await searchParams
 
-  const headquarters  = await getHeadquarters()
+  const headquarters = await getHeadquarters()
   const { results } = headquarters
   const firstHeadquarter = headquarter || results[0].id.toString()
 
-const exceededPowers = await exceeded({ headquarterId: firstHeadquarter, panelId: panel, date_after: format(date_after,"yyyy-MM-dd"), date_before: format(date_before,"yyyy-MM-dd"), page})
+  const exceededPowers = await exceeded({ headquarterId: firstHeadquarter, panelId: panel, date_after: format(date_after, "yyyy-MM-dd"), date_before: format(date_before, "yyyy-MM-dd"), page })
 
   return (
     <div className="w-full">
@@ -30,14 +30,14 @@ const exceededPowers = await exceeded({ headquarterId: firstHeadquarter, panelId
           className="bg-[#00b0c7] rounded-lg absolute top-1/2 left-6 p-2
             transform -translate-y-1/2 cursor-pointer text-white hover:bg-gray-100 hover:text-black"
         >
-          <ArrowLeft className="h-4 w-4 "/>
+          <ArrowLeft className="h-4 w-4 " />
         </Link>
-        <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} energy={firstHeadquarter}/>
+        <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} energy={firstHeadquarter} />
         {/* <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters[0].electrical_panels} /> */}
         <DatepickerRange />
-        <DownloadExcelMonitoreo headquarterId={headquarter} panelId={panel} />
+        <DownloadExcelMonitoreo headquarterId={firstHeadquarter} panelId={panel} />
       </FiltersContainer>
-      <PowerConsumptionTable exceeded={exceededPowers}/>
+      <PowerConsumptionTable exceeded={exceededPowers} />
     </div>
   )
 }

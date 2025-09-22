@@ -52,7 +52,7 @@ export async function consumeGraph({ headquarterId, panelId, date_after, date_be
 
 export async function dashboardTableAlerts({ headquarterId, date_after, date_before, unit, page, category, point }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, unit?: string, page?: string, category?: string, point?: string }) {
 
-  const url = new URL(`/api/v1/headquarter/${headquarterId}/measurement-point/60/historical-alerts`, baseUrlEnergy)
+  const url = new URL(`/api/v1/headquarter/${headquarterId}/measurement-point/${point}/historical-alerts`, baseUrlEnergy)
 
   if (date_after) url.searchParams.set('date_after', date_after)
   if (date_before) url.searchParams.set('date_before', date_before)

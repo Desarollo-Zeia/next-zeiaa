@@ -71,6 +71,7 @@ export function DatepickerRange({
         nextParams.set("date_after", fecha.from.toISOString())
         nextParams.delete("this_week")
         nextParams.delete("this_month")
+        nextParams.delete("page")
       } else {
         nextParams.delete("date_after")
       }
@@ -79,6 +80,7 @@ export function DatepickerRange({
         nextParams.set("date_before", fecha.to.toISOString())
         nextParams.delete("this_week")
         nextParams.delete("this_month")
+        nextParams.delete("page")
       } else {
         nextParams.delete("date_before")
       }

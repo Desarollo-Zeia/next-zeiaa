@@ -12,7 +12,7 @@ import MonthFilter from '@/app/ui/filters/month-filter'
 import PeriodPickerFilter from '@/app/ui/filters/period-picker-filter'
 import { format } from 'date-fns'
 import React from 'react'
-import { TriangleAlert } from 'lucide-react';
+import TodayAlertBanner from '@/app/ui/energia/panel/today-alert-banner'
 
 const monthDateRanges: { [key: number]: string } = {
   1: "2025-01-01:2025-01-31",
@@ -95,18 +95,7 @@ export default async function page({ searchParams }: SearchParams) {
         </div> */}
         {/* < AlertTestSheet count={dashboardTableAlertsReadings.count} /> */}
       </FiltersContainer>
-      <div className='w-full h-8 bg-[#59ac77] absolute top-0 left-0 flex justify-center items-center'>
-        <p className='flex items-center justify-center gap-2 text-white'>
-          <span className='block'>
-            <TriangleAlert />
-          </span>
-          <span className='block'>
-            {alertToday?.detail}
-          </span>
-        </p>
-
-        <p className='underline absolute right-0 pr-6 text-nowrap text-white'>Historial de alertas</p>
-      </div>
+      <TodayAlertBanner alertToday={alertToday} />
       <div className='w-full flex gap-8 justify-between'>
         <ChartComponent electricalPanelData={dashboardPorcentageGraph} />
         <TableComponent readings={dashboardTableReadings} />
