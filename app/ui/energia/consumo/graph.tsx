@@ -28,12 +28,25 @@ const energyToggleArray = [
   { label: "Mes", value: "month" },
 ]
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const SimpleLineChart = ({ readingsGraph, category, indicator, last_by }: { readingsGraph: any, category: any, indicator: any, last_by: any }) => {
+const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings }: { readingsGraph: any, category: any, indicator: any, last_by: any, readings: any }) => {
+
 
   const [isPending, startTransition] = useTransition();
   const searchParams = useSearchParams();
   const pathname = usePathname()
   const { replace } = useRouter()
+
+  const indicatorsObject = readings?.results?.[0]?.indicators?.values
+
+  const avaibleIndicators = [] as Array<string>
+
+  for (const key in indicatorsObject) {
+    if (indicatorsObject[key] !== null) {
+      avaibleIndicators.push(key)
+    }
+  }
+
+  console.log(avaibleIndicators?.length === 0)
 
   const formatDateTime = (dateTimeString: string) => {
     const date = new Date(dateTimeString)
@@ -304,10 +317,10 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by }: { read
         )
       }
 
-      {readingsGraph?.length > 0 && <h2 className="mb-4 font-semibold text-xl">Gráfica de {ELECTRIC_PARAMETERS[indicator as keyof typeof ELECTRIC_PARAMETERS].parameter}</h2>}
+      {avaibleIndicators?.length === 0 ? <h2 className="mb-4 font-semibold text-xl">Gráfica de {ELECTRIC_PARAMETERS[indicator as keyof typeof ELECTRIC_PARAMETERS].parameter}</h2> : ''}
       <>
         {
-          readingsGraph?.length <= 0 ? (
+          avaibleIndicators?.length === 0 ? (
             <NoResultFound />
           ) : (
             <>
