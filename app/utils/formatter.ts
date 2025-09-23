@@ -141,8 +141,8 @@ export const ELECTRIC_PARAMETERS = {
     unit: "%",
   },
 
-  EPpos: { parameter: "Consumo de energía activa", unit: "KWh" },
-  EPneg: { parameter: "Consumo de energía activa", unit: "KWh" },
+  EPpos: { parameter: "Consumo de energía activa entregada", unit: "KWh" },
+  EPneg: { parameter: "Consumo de energía activa recibida", unit: "KWh" },
   EQpos: {
     parameter: "Consumo de energía reactiva",
     unit: "KVarh",

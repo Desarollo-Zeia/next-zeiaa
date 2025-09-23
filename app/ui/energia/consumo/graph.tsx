@@ -18,6 +18,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import DeviceReadingsChart from "./measurement-graph";
 // import NoResultFound from "../../no-result-found";
 import annotationPlugin from 'chartjs-plugin-annotation';
+import NoResultsFound from "../../no-result";
 
 ChartJS.register(LineElement, PointElement, LinearScale, TimeScale, Tooltip, Legend, zoomPlugin, annotationPlugin)
 
@@ -71,11 +72,15 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
 
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const dataPoints = readingsGraph?.map((item: any) => ({
-    x: new Date(item.first_reading).toISOString(),
-    y: item.first_value,
-
-  })) || []
+  const dataPoints =
+    readingsGraph
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ?.filter((item: any) => item.first_value !== 0) // ❌ quita los que son 0
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .map((item: any) => ({
+        x: new Date(item.first_reading).toISOString(),
+        y: item.first_value,
+      })) || [];
 
   const handleFrequency = (frequency: string) => {
     startTransition(() => {
@@ -117,9 +122,10 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
         tension: 0,
         pointRadius: 2,
       },
-
     ],
   }
+
+
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const options: any = {
@@ -279,7 +285,6 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
             {
               category !== 'energy' ?
                 (
-
                   <></>
                 ) : (
                   <>
@@ -319,13 +324,20 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
       <>
         {
           avaibleIndicators?.length === 0 ? (
-            <></>
+            <NoResultsFound message="Aún no hay información disponible" />
           ) : (
             <>
               {
                 last_by === 'minute' ? (
                   <div className="w-full">
-                    <Line data={data} options={options} />
+                    {
+                      dataPoints.length > 0 ? (
+                        <Line data={data} options={options} />
+
+                      ) : (
+                        <NoResultsFound message="Aún no hay información disponible" />
+                      )
+                    }
                   </div>
                 ) : (
                   <DeviceReadingsChart data={readingsGraph} last_by={last_by} />

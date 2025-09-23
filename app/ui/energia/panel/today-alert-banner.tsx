@@ -45,7 +45,7 @@ export default function TodayAlertBanner({ alertToday }: { alertToday: Alert }) 
           <TriangleAlert />
         </span>
         <span className='block text-sm'>
-          {alertToday?.detail ? alertToday?.detail : 'Se ha detectado una alerta hoy'}
+          {alertToday?.detail ? alertToday?.detail : alertToday?.notes}
         </span>
       </p>
       <Link href={"/energia/dashboard/panel/alert"} className='underline absolute right-0 pr-6 text-nowrap text-white text-sm'>
