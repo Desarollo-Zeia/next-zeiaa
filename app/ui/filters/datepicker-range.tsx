@@ -62,16 +62,18 @@ export function DatepickerRange({
   const debounceRef = React.useRef<number>(0)
 
   React.useEffect(() => {
+    const nextParams = new URLSearchParams(searchParams as any)  // eslint-disable-line @typescript-eslint/no-explicit-any
+    if (fecha?.from || fecha?.to) {
+      nextParams.delete("page")
+    }
     window.clearTimeout(debounceRef.current)
 
     debounceRef.current = window.setTimeout(() => {
       // construimos params según fecha
-      const nextParams = new URLSearchParams(searchParams as any)  // eslint-disable-line @typescript-eslint/no-explicit-any
       if (fecha?.from) {
         nextParams.set("date_after", fecha.from.toISOString())
         nextParams.delete("this_week")
         nextParams.delete("this_month")
-        nextParams.delete("page")
       } else {
         nextParams.delete("date_after")
       }
@@ -80,7 +82,6 @@ export function DatepickerRange({
         nextParams.set("date_before", fecha.to.toISOString())
         nextParams.delete("this_week")
         nextParams.delete("this_month")
-        nextParams.delete("page")
       } else {
         nextParams.delete("date_before")
       }
@@ -100,7 +101,7 @@ export function DatepickerRange({
       window.clearTimeout(debounceRef.current)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fecha, pathname, replace, searchParams])
+  }, [fecha])
 
   return (
     <div className={cn("grid gap-2", className)}>

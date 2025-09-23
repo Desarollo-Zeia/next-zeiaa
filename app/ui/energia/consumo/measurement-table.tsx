@@ -50,10 +50,9 @@ export default function MeasurementTable({ readings, category }: { readings: Rea
   const avaibleIndicators = [] as Array<string>
 
   for (const key in indicatorsObject) {
-    if (indicatorsObject[key] !== null) {
-      avaibleIndicators.push(key)
-    }
+    avaibleIndicators.push(key)
   }
+
 
   const handleIndicatorSelect = (indicator: string) => {
     setSelectedIndicator(indicator)
@@ -114,7 +113,7 @@ export default function MeasurementTable({ readings, category }: { readings: Rea
         <ElectricUnitFilter category={category} />
       </CardHeader>
       {
-        avaibleIndicators.length > 0 ? (
+        readings.count > 0 ? (
           <>
             <CardContent>
               {
@@ -176,8 +175,11 @@ export default function MeasurementTable({ readings, category }: { readings: Rea
                                 <TableCell className="text-nowrap">{date}</TableCell>
                                 <TableCell>{time}</TableCell>
                                 {avaibleIndicators?.map((header, headerIndex) => {
-                                  return indicatorValues[header] === null ? <TableCell key={headerIndex}>0</TableCell> : (
-                                    <TableCell className={`cursor-pointer text-center ${selectedIndicator === header ? 'bg-[#00b0c7] opacity-70 text-white font-medium' : ''}`} key={headerIndex}>{indicatorValues[header].toFixed(2)}</TableCell>
+                                  const indicatorValue = indicatorValues[header] && indicatorValues[header].toFixed(2)
+                                  return (
+                                    <TableCell className={`cursor-pointer text-center ${selectedIndicator === header ? 'bg-[#00b0c7] opacity-70 text-white font-medium' : ''}`} key={headerIndex}>
+                                      {indicatorValue ?? 0}
+                                    </TableCell>
                                   )
                                 })}
                               </TableRow>
