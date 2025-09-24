@@ -57,14 +57,6 @@ export default async function Page({ searchParams }: SearchParams) {
     }),
   ])
 
-
-  // 5. Extraer sólo lo que necesitas de energyDetails
-  // const hq = energyDetails.energy_headquarters[0]
-  // const currentPanel  = hq.electrical_panels?.find(
-  //   (p: any ) => p.id === Number(panel) // eslint-disable-line @typescript-eslint/no-explicit-any
-  // )
-  // const currentPowers = hq.powers
-
   return (
     <div className="w-full">
       <FiltersContainer>

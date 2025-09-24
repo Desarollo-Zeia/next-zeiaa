@@ -141,8 +141,8 @@ export default async function page({ searchParams }: SearchParams) {
                         </td> */}
                               <td className="py-4 px-4">
                                 <div className="space-y-1">
-                                  <div className="font-medium text-md">{formatDate(alert.timestamp)}</div>
-                                  <div className="text-sm text-muted-foreground text-md">{formatTime(alert.timestamp)}</div>
+                                  <div className="font-medium text-md">{formatDate(alert.reading.created_at)}</div>
+                                  <div className="text-sm text-muted-foreground text-md">{formatTime(alert.reading.created_at)}</div>
                                 </div>
                               </td>
                               <td className="py-4 px-4">
