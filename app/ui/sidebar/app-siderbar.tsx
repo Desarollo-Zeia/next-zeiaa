@@ -34,20 +34,20 @@ export function AppSidebar() {
   useEffect(() => {
 
     const handleRequest = async () => {
-        try {
-          const res = await accountData()
-          const { results } = res 
-          const user = results[0]
-          const { email, last_name, energy_modules } = user
-          setUserInfo({ email, name: last_name, avatar: '' })
-          setEnergyModules(energy_modules)
-        } catch (error) {
-          console.log(error)
-        }
+      try {
+        const res = await accountData()
+        const { results } = res
+        const user = results[0]
+        const { email, last_name, energy_modules } = user
+        setUserInfo({ email, name: last_name, avatar: '' })
+        setEnergyModules(energy_modules)
+      } catch (error) {
+        console.log(error)
+      }
     }
     handleRequest()
 
-  }, [ ])
+  }, [])
 
   return (
     <Sidebar collapsible="icon">
@@ -64,7 +64,7 @@ export function AppSidebar() {
                   <SidebarMenuButton asChild data-active={pathname.includes(item.url) && 'true'} tooltip={item.name} disabled={item.is_active}>
                     <Link href={item.is_active === false ? "#" : item.url} className={item.is_active === false ? "pointer-events-none opacity-50 cursor-not-allowed" : ""}>
                       {/* <item.icon /> */}
-                      <Image src={item.icon} alt={item.icon} width={16} height={16}  className="w-4 h-4 text-white" priority/>
+                      <Image src={item.icon} alt={item.icon} width={16} height={16} className="w-4 h-4 text-white" priority />
                       <span>{item.name}</span>
                     </Link>
                   </SidebarMenuButton>

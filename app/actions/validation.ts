@@ -2,8 +2,8 @@
 import { redirect } from 'next/navigation'
 import { removeToken, setCompanyData, setToken } from '../lib/auth'
 import { baseUrl, baseUrlAmbiental, baseUrlEnergy } from '../lib/constant'
- 
-export async function actionOccupational(prevState: { message: string}, formData: FormData) {
+
+export async function actionOccupational(prevState: { message: string }, formData: FormData) {
 
   const email = formData.get('email') as string
   const password = formData.get('password') as string
@@ -20,7 +20,7 @@ export async function actionOccupational(prevState: { message: string}, formData
       await setToken(data.token)
     } else {
       await removeToken()
-      return { message: 'Error, valide correo o constraseña'}
+      return { message: 'Error, valide correo o constraseña' }
     }
   } catch (error) {
     console.error('Error:', error)
@@ -30,7 +30,7 @@ export async function actionOccupational(prevState: { message: string}, formData
 
 }
 
-export async function actionAmbiental(prevState: { message: string}, formData: FormData) {
+export async function actionAmbiental(prevState: { message: string }, formData: FormData) {
   const email = formData.get('email') as string
   const password = formData.get('password') as string
 
@@ -39,16 +39,16 @@ export async function actionAmbiental(prevState: { message: string}, formData: F
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
-    })  
+    })
 
     if (response.ok) {
-      
+
       const data = await response.json()
       console.log(data)
       await setToken(data.token)
     } else {
       await removeToken()
-      return { message: 'Error, valide correo o constraseña'}
+      return { message: 'Error, valide correo o constraseña' }
     }
   } catch (error) {
     console.error('Error:', error)
@@ -57,7 +57,7 @@ export async function actionAmbiental(prevState: { message: string}, formData: F
   redirect(`/ambiental/dashboard`)
 }
 
-export async function actionEnergy(prevState: { message: string}, formData: FormData) {
+export async function actionEnergy(prevState: { message: string }, formData: FormData) {
 
   const email = formData.get('email') as string
   const password = formData.get('password') as string
@@ -75,12 +75,12 @@ export async function actionEnergy(prevState: { message: string}, formData: Form
       await setCompanyData(data.user)
     } else {
       await removeToken()
-      return { message: 'Error, valide correo o constraseña'}
+      return { message: 'Error, valide correo o constraseña' }
     }
   } catch (error) {
     console.error('Error:', error)
   }
 
-  redirect(`/energia/dashboard/home`)
+  redirect(`/energia/dashboard/panel`)
 
 }
