@@ -31,9 +31,8 @@ const energyToggleArray = [
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings }: { readingsGraph: any, category: any, indicator: any, last_by: any, readings: any }) => {
 
-
-  const [isPending, startTransition] = useTransition();
-  const searchParams = useSearchParams();
+  const [isPending, startTransition] = useTransition()
+  const searchParams = useSearchParams()
   const pathname = usePathname()
   const { replace } = useRouter()
 
@@ -110,7 +109,6 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
     });
   };
 
-  // Estructura de los datos para el gráfico
   const data = {
     datasets: [
       {

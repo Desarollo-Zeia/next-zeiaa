@@ -13,6 +13,7 @@ import {
 } from "chart.js";
 import "chartjs-adapter-date-fns";
 import NoResultsFound from '../../no-result';
+import { formattedWithoutMonth } from '@/app/utils/func';
 
 ChartJS.register(
   CategoryScale,
@@ -54,10 +55,15 @@ export default function BarChart({ readingsGraph, weekday, thresholds }: { readi
 
   // 🔹 Normalizar fechas como ISO string -> determinista
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const dataPoints = readingsGraph?.map((item: any) => ({
-    x: new Date(item.first_reading).toISOString(),
-    y: item.difference,
-  })) || []
+  const dataPoints = readingsGraph?.map((item: any) => {
+    return (
+      {
+        x: item.first_reading,
+        y: item.difference,
+      }
+    )
+  }
+  ) || []
 
   const data = {
     datasets: [
@@ -75,8 +81,16 @@ export default function BarChart({ readingsGraph, weekday, thresholds }: { readi
     responsive: true,
     scales: {
       x: {
-        type: "time",
-        time: { unit: "day" },
+        type: "category",
+        // time: { unit: "day" },
+        ticks: {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          callback: function (value: any, index: any) {
+            const formattedDateX = formattedWithoutMonth(readingsGraph[index].first_reading)
+            return formattedDateX
+          }
+        }
+
       },
       y: {
         ticks: {

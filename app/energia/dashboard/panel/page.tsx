@@ -111,7 +111,7 @@ export default async function page({ searchParams }: SearchParams) {
               <MonthFilter />
             </div>
             <div className='flex justify-between items-center gap-4'>
-              <PeriodPickerFilter />
+              <PeriodPickerFilter weekday={weekday} />
               <div>
                 <MeasurementPointFilter measurementPoints={measurementPoints} point={firstPoint} />
               </div>
