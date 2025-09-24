@@ -79,14 +79,6 @@ export default async function page({ searchParams }: SearchParams) {
         <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} energy={firstHeadquarter} />
         <MeasurementPointFilter measurementPoints={measurementPoints} point={firstPoint} />
         <DatepickerRange />
-        {/* <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters?.[0].electrical_panels} /> */}
-        {/* <div className='relative flex items-center justify-center'>
-                <TriangleAlert className='h-8 w-8' />
-                <div className='absolute rounded-full bg-[#59ac77] h-6 w-6 flex items-center justify-center -top-2 -right-2 text-white text-sm p-[2px]'>
-                  <p>32</p>
-                </div>
-              </div> */}
-        {/* < AlertTestSheet count={dashboardTableAlertsReadings.count} /> */}
       </FiltersContainer>
       <div className='flex-1'>
         {
@@ -130,15 +122,9 @@ export default async function page({ searchParams }: SearchParams) {
                             <tr key={alert.id} className="border-b hover:bg-muted/50">
                               <td className="py-4 px-4">
                                 <div className="font-medium text-black text-md">
-                                  {/* {alert.alert_threshold.alert_type === "power_exceeded" && "Exceso de potencia"}
-                            {alert.alert_threshold.alert_type === "energy_consumption" && "Consumo energético"}
-                            {alert.alert_threshold.alert_type === "load_imbalance" && "Desequilibrio de carga"} */}
                                   {alert.alert_threshold.alert_type}
                                 </div>
                               </td>
-                              {/* <td className="py-4 px-4">
-                          <div className="font-medium">{alert.reading.device_name}</div>
-                        </td> */}
                               <td className="py-4 px-4">
                                 <div className="space-y-1">
                                   <div className="font-medium text-md">{formatDate(alert.reading.created_at)}</div>
