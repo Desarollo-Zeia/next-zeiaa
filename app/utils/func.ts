@@ -16,10 +16,10 @@ export const formattedDate = (date: string) => {
   // }
 
   // Sumar un día a la fecha analizada
-  const nextDay = addDays(parsedDate, 1);
+  // const nextDay = addDays(parsedDate, 1);
 
   // Formatear la fecha
-  return capitalizeFirstLetter(format(nextDay, "EEEE d 'de' MMMM", { locale: es }));
+  return capitalizeFirstLetter(format(parsedDate, "EEEE d 'de' MMMM", { locale: es }));
 };
 
 export const formattedWithoutMonth = (date: string) => {
@@ -32,10 +32,10 @@ export const formattedWithoutMonth = (date: string) => {
   // }
 
   // Sumar un día a la fecha analizada
-  const nextDay = addDays(parsedDate, 1);
+  // const nextDay = addDays(parsedDate, 1);
 
   // Formatear la fecha
-  return capitalizeFirstLetter(format(nextDay, "EEEE d", { locale: es }));
+  return capitalizeFirstLetter(format(parsedDate, "EEEE d", { locale: es }));
 };
 
 export const formattedDatePlusDay = (date: string) => {
