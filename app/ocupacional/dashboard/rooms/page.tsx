@@ -15,29 +15,27 @@ interface Room {
   name: string
   status: string
   is_activated: boolean,
-  devices: { dev_eui: string, id: number, type_sensor: string}[],
+  devices: { dev_eui: string, id: number, type_sensor: string }[],
   headquarter: { id: number, name: string }
 }
-  
-export default async function page({ searchParams } : SearchParams  ) {
 
-  const { search , status , headquarter, page , limit, offset } = await searchParams
+export default async function page({ searchParams }: SearchParams) {
+
+  const { search, status, headquarter, page, limit, offset } = await searchParams
   const headquarters = await getHeadquarters()
   const rooms = await roomsList({ search, status, headquarter, page, limit, offset })
-
-  console.log(rooms)
 
   return (
     <div>
       <FiltersContainer>
-        <RoomSearchFilter/>
-        <HeadquarterSelect headquarters={headquarters}/>
+        <RoomSearchFilter />
+        <HeadquarterSelect headquarters={headquarters} />
       </FiltersContainer>
       {
         rooms?.results.length > 0 ? (
           <section className={styles.roomCardsContainer}>
             {
-              rooms?.results.map((room: Room) => { 
+              rooms?.results.map((room: Room) => {
                 return (
                   <RoomStatusCard
                     key={room.id}
@@ -48,14 +46,15 @@ export default async function page({ searchParams } : SearchParams  ) {
                     devEUI={room.devices[0]?.dev_eui}
                     headquarter={room.headquarter.name}
                   />
-              )})
+                )
+              })
             }
           </section>
         ) : (
-          <NoResultFound/>
+          <NoResultFound />
         )
       }
-      { rooms?.count > 0 && <PaginationComponent count={rooms?.count} itemsPerPage={10}/>}
+      {rooms?.count > 0 && <PaginationComponent count={rooms?.count} itemsPerPage={10} />}
     </div>
   )
 }
