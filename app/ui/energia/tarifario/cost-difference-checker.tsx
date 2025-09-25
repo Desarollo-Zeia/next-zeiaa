@@ -5,6 +5,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import React, { useTransition } from 'react'
 import MonthPicker from '../../filters/month-picker'
 import NoResultsFound from '../../no-result'
+import { DollarSign, Zap } from 'lucide-react'
 
 export type CalculatorDifferenceResult = {
   month: string
@@ -109,50 +110,58 @@ export default function CostDifferenceChecker({ firstCalculatorResultMonthly, se
           firstMonth={firstMonth}
           secondMonth={secondMonth}
         />
-        <Card className="p-4 flex flex-col gap-2 shadow-md justify-center h-56 items-center text-xl">
+        <Card className="p-4 flex flex-col gap-2 shadow-md justify-center h-auto items-center text-xl">
           {
             firstCalculatorResultMonthly?.detail ? (
               <NoResultsFound message="No se encontraron lecturas para este mes." />
             ) : (
-              <div className="flex flex-col gap-4">
-                <div className="flex justify-evenly gap-4">
-                  <div className="flex flex-col justify-center items-center">
-                    <p className='text-sm font-medium'>En punta</p>
-                    <p className="text-center">{firstCalculatorResultMonthly?.consumption?.peak.toFixed(2)} KWh</p>
-                  </div>
-                  <div className='flex items-center'>
-                    =
-                  </div>
-                  <div className="flex flex-col justify-center items-center">
-                    <div className="flex flex-col justify-center items-center">
-                      <p className='text-sm font-medium'>Soles</p>
-                      <p className="text-center">S/ {firstCalculatorResultMonthly?.cost?.peak.toFixed(2)}</p>
+              <>
+                <div className="space-y-3 w-full">
+                  <h4 className="font-medium text-sm text-muted-foreground flex items-center gap-2">
+                    <Zap className="h-4 w-4" />
+                    Consumo de Energía
+                  </h4>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="bg-muted/50 p-3 rounded-lg">
+                      <p className="text-xs text-muted-foreground">En punta</p>
+                      <p className="text-lg font-semibold">{firstCalculatorResultMonthly?.consumption?.peak.toFixed(2)} kWh</p>
+                    </div>
+                    <div className="bg-muted/50 p-3 rounded-lg">
+                      <p className="text-xs text-muted-foreground">Fuera de punta</p>
+                      <p className="text-lg font-semibold">{firstCalculatorResultMonthly?.consumption?.off_peak.toFixed(2)} kWh</p>
                     </div>
                   </div>
+                  <div className="bg-[#00b0c7] p-3 rounded-lg border border-primary/20">
+                    <p className="text-xs text-white">Total</p>
+                    <p className="text-xl font-bold text-white">{firstCalculatorResultMonthly?.consumption?.total.toFixed(2)} kWh</p>
+                  </div>
                 </div>
-                <div className="flex justify-evenly gap-4">
-                  <div className="flex flex-col justify-center items-center">
-                    <p className='text-sm font-medium'>Fuera punta</p>
-                    <p className="text-center">{firstCalculatorResultMonthly?.consumption?.off_peak.toFixed(2)} KWh</p>
-                  </div>
-                  <div className='flex items-center'>
-                    =
-                  </div>
-                  <div className="flex flex-col justify-center items-center">
-                    <div className="flex flex-col justify-center items-center">
-                      <p className='text-sm font-medium'>Soles</p>
-                      <p className="text-center">S/ {firstCalculatorResultMonthly?.cost?.off_peak.toFixed(2)} </p>
+                <div className="space-y-3 w-full">
+                  <h4 className="font-medium text-sm text-muted-foreground flex items-center gap-2">
+                    <DollarSign className="h-4 w-4" />
+                    Costos
+                  </h4>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="bg-muted/50 p-3 rounded-lg">
+                      <p className="text-xs text-muted-foreground">En punta</p>
+                      <p className="text-lg font-semibold">S/{firstCalculatorResultMonthly?.cost?.peak.toFixed(2)}</p>
+                    </div>
+                    <div className="bg-muted/50 p-3 rounded-lg">
+                      <p className="text-xs text-muted-foreground">Fuera de punta</p>
+                      <p className="text-lg font-semibold">S/{firstCalculatorResultMonthly?.cost?.off_peak?.toFixed(2)}</p>
                     </div>
                   </div>
+                  <div className="bg-destructive/10 p-3 rounded-lg border border-destructive/20">
+                    <p className="text-xs text-muted-foreground">Total a pagar</p>
+                    <p className="text-xl font-bold text-destructive">S/{firstCalculatorResultMonthly?.cost?.total.toFixed(2)}</p>
+                  </div>
                 </div>
-              </div>
+              </>
+
             )
           }
 
         </Card>
-      </div>
-      <div className="flex items-center px-6">
-        <p className="text-2xl">VS</p>
       </div>
       <div className="flex-1">
         <MonthPicker onChange={handleSecondMonthChange}
@@ -161,43 +170,53 @@ export default function CostDifferenceChecker({ firstCalculatorResultMonthly, se
           firstMonth={firstMonth}
           secondMonth={secondMonth}
         />
-        <Card className="p-4 flex flex-col gap-2 shadow-md justify-center h-56 items-center text-xl">
+        <Card className="p-4 flex flex-col gap-2 shadow-md justify-center h-auto items-center text-xl">
           {
             secondCalculatorResultMonthly?.detail ? (
               <NoResultsFound message="No se encontraron lecturas para este mes." />
             ) : (
-              <div className="flex flex-col gap-4">
-                <div className="flex justify-evenly gap-4">
-                  <div className="flex flex-col justify-center items-center">
-                    <p className='text-sm font-medium'>En punta</p>
-                    <p className="text-center">{secondCalculatorResultMonthly?.consumption?.peak?.toFixed(2)} KWh</p>
-                  </div>
-                  <div className='flex items-center'>
-                    =
-                  </div>
-                  <div className="flex flex-col justify-center items-center">
-                    <div className="flex flex-col justify-center items-center">
-                      <p className='text-sm font-medium'>Soles</p>
-                      <p className="text-center">S/ {secondCalculatorResultMonthly?.cost?.peak?.toFixed(2)} </p>
+              <>
+                <div className="space-y-3 w-full">
+                  <h4 className="font-medium text-sm text-muted-foreground flex items-center gap-2">
+                    <Zap className="h-4 w-4" />
+                    Consumo de Energía
+                  </h4>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="bg-muted/50 p-3 rounded-lg">
+                      <p className="text-xs text-muted-foreground">En punta</p>
+                      <p className="text-lg font-semibold">{secondCalculatorResultMonthly?.consumption?.peak.toFixed(2)} kWh</p>
+                    </div>
+                    <div className="bg-muted/50 p-3 rounded-lg">
+                      <p className="text-xs text-muted-foreground">Fuera de punta</p>
+                      <p className="text-lg font-semibold">{secondCalculatorResultMonthly?.consumption?.off_peak.toFixed(2)} kWh</p>
                     </div>
                   </div>
+                  <div className="bg-[#00b0c7] p-3 rounded-lg border border-primary/20">
+                    <p className="text-xs text-white">Total</p>
+                    <p className="text-xl font-bold text-white">{secondCalculatorResultMonthly?.consumption?.total.toFixed(2)} kWh</p>
+                  </div>
                 </div>
-                <div className="flex justify-evenly gap-4">
-                  <div className="flex flex-col justify-center items-center">
-                    <p className='text-sm font-medium'>Fuera de punta</p>
-                    <p className="text-center">{secondCalculatorResultMonthly?.consumption?.off_peak?.toFixed(2)} KWh</p>
-                  </div>
-                  <div className='flex items-center'>
-                    =
-                  </div>
-                  <div className="flex flex-col justify-center items-center">
-                    <div className="flex flex-col justify-center items-center">
-                      <p className='text-sm font-medium'>Soles</p>
-                      <p className="text-center">S/ {secondCalculatorResultMonthly?.cost?.off_peak?.toFixed(2)}</p>
+                <div className="space-y-3 w-full">
+                  <h4 className="font-medium text-sm text-muted-foreground flex items-center gap-2">
+                    <DollarSign className="h-4 w-4" />
+                    Costos
+                  </h4>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="bg-muted/50 p-3 rounded-lg">
+                      <p className="text-xs text-muted-foreground">En punta</p>
+                      <p className="text-lg font-semibold">S/{secondCalculatorResultMonthly?.cost?.peak.toFixed(2)}</p>
+                    </div>
+                    <div className="bg-muted/50 p-3 rounded-lg">
+                      <p className="text-xs text-muted-foreground">Fuera de punta</p>
+                      <p className="text-lg font-semibold">S/{secondCalculatorResultMonthly?.cost?.off_peak?.toFixed(2)}</p>
                     </div>
                   </div>
+                  <div className="bg-destructive/10 p-3 rounded-lg border border-destructive/20">
+                    <p className="text-xs text-muted-foreground">Total a pagar</p>
+                    <p className="text-xl font-bold text-destructive">S/{secondCalculatorResultMonthly?.cost?.total.toFixed(2)}</p>
+                  </div>
                 </div>
-              </div>
+              </>
             )
           }
         </Card>

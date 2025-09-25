@@ -19,7 +19,6 @@ import FiltersContainer from "@/app/ui/filters/filters-container"
 // import MonthFilter from "@/app/ui/filters/month-filter"
 // import MonthPicker from "@/app/ui/filters/month-picker"
 import NoResultsFound from "@/app/ui/no-result"
-import { Card } from "@/components/ui/card"
 // import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 // import NoResultFound from "@/app/ui/no-result-found"
 // import { Card } from "@/components/ui/card"
@@ -116,42 +115,35 @@ export default async function Page({ searchParams }: SearchParams) {
             <NoResultsFound message="No hay datos de consumo" suggestion="Intente revisar otros módulos" />
           ) :
             (
-              <div className="w-full flex items-center justify-center gap-2">
-                {/* <Suspense fallback={<p>Cargando...</p>}>
-            <ConsumeCalculator consumptionCalculatorReadings={calculatorResult}/>
-          </Suspense> */}
-                <Card className="p-4 flex flex-col gap-2 shadow-md justify-between">
-                  <h3 className="font-semibold text-center text-base">Consumo del día</h3>
-                  <div className="flex flex-col gap-4">
-                    <div className="flex justify-between gap-4">
-                      <div className="flex flex-col justify-center items-center">
-                        <p className='text-sm font-medium'>Consumo energía en punta</p>
-                        <p className="text-center">{calculatorResult?.consumption?.peak.toFixed(2)} KWh</p>
-                      </div>
-                      <div className="flex flex-col justify-center items-center">
-                        <p className='text-sm font-medium'>Consumo energía fuera de punta</p>
-                        <p className="text-center">{calculatorResult?.consumption?.off_peak.toFixed(2)} KWh</p>
-                      </div>
-                    </div>
-                    <div className="flex justify-between gap-4">
-                      <div className="flex flex-col justify-center items-center">
-                        <p className='text-sm font-medium'>Consumo en soles en punta</p>
-                        <p className="text-center">S/ {calculatorResult?.cost?.peak.toFixed(2)}</p>
-                      </div>
-                      <div className="flex flex-col justify-center items-center">
-                        <p className='text-sm font-medium'>Consumo en soles fuera de punta</p>
-                        <p className="text-center">S/ {calculatorResult?.cost?.off_peak.toFixed(2)}</p>
-                      </div>
-                    </div>
+              <div className="mb-6 p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg border border-green-200">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <div className={`w-2 h-2 bg-green-500 rounded-full animate-pulse`} />
+                    <h3 className="font-semibold text-green-800">Consumo del día transcurrido</h3>
                   </div>
-                </Card>
-                {/* <Suspense fallback={<p>Cargando...</p>}>
-            <ConsumeCycle consumptionInvoiceReadings={invoiceResult}/>
-          </Suspense> */}
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  <div className="text-center">
+                    <p className="text-xs text-muted-foreground">Energía punta</p>
+                    <p className="text-lg font-bold">{calculatorResult?.consumption?.peak.toFixed(2)} kWh</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-xs text-muted-foreground">Energía fuera punta</p>
+                    <p className="text-lg font-bold">{calculatorResult?.consumption?.off_peak.toFixed(2)} kWh</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-xs text-muted-foreground">Costo punta</p>
+                    <p className="text-lg font-bold">S/ {calculatorResult?.cost?.peak.toFixed(2)}</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-xs text-muted-foreground">Costo fuera punta</p>
+                    <p className="text-lg font-bold">S/ {calculatorResult?.cost?.off_peak.toFixed(2)}</p>
+                  </div>
+                </div>
               </div>
             )
         }
-        {calculatorResult?.detail ? '' : <div> <h2>Calculadora de cosumo de energía</h2> </div>}
+        {calculatorResult?.detail ? '' : <div> <h2 className="text-lg font-semibold">Comparador de Facturación</h2> </div>}
         {
           calculatorResult?.detail ? (
             ''
