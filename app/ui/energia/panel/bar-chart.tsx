@@ -148,7 +148,6 @@ export default function BarChart({ readingsGraph, weekday, thresholds }: { readi
           }
         },
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-
       }
     },
   }

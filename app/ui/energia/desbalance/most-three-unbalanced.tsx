@@ -11,7 +11,7 @@ interface MonitoringCardProps {
 
 export default function MostThreeUnbalanced({ title, frequency, cup, vup }: MonitoringCardProps) {
   return (
-    <Card className="w-full max-w-sm bg-card border border-border shadow-sm">
+    <Card className="w-full max-w-lg bg-card border border-border shadow-sm">
       <CardContent className="p-4">
         <div className="flex items-start gap-3">
           <div className="flex-shrink-0 mt-0.5">

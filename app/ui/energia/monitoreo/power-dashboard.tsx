@@ -22,6 +22,7 @@ import {
   Legend,
 } from "chart.js"
 import annotationPlugin from 'chartjs-plugin-annotation';
+import { capitalizeFirstLetter } from "@/app/utils/func";
 
 ChartJS.register(LineElement, PointElement, LinearScale, TimeScale, Tooltip, Legend, zoomPlugin, annotationPlugin)
 
@@ -184,8 +185,9 @@ export default function PowerUsageChart({ readings, group, powers }: { readings:
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           title: function (tooltipItems: any) {
             // tooltipItems es un array de elementos (en este caso de un único punto)
-            const date = new Date(tooltipItems[0].parsed.x);
-            return format(date, "PP p", { locale: es });
+            const date = new Date(tooltipItems[0].parsed.x)
+            const dateFormatted = capitalizeFirstLetter(format(date, "EEEE d 'de' MMMM", { locale: es }))
+            return dateFormatted
           },
           // Personalización de la etiqueta del tooltip
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
