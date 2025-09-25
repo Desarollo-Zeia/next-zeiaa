@@ -14,7 +14,9 @@ import {
   TimeScale,
 } from "chart.js";
 import "chartjs-adapter-date-fns";
-
+import { capitalizeFirstLetter, formattedWithoutMonth } from '@/app/utils/func'
+import { es } from 'date-fns/locale'
+import { format } from 'date-fns';
 
 ChartJS.register(
   CategoryScale,
@@ -76,8 +78,18 @@ export default function CurrentChartCount({ currentReadings }: { currentReadings
     responsive: true,
     scales: {
       x: {
-        type: "time",
+        type: "category",
         time: { unit: "day" },
+        ticks: {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          callback: (value: any) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const date = new Date(results[value].date as any)
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const dateFormatted = formattedWithoutMonth(date as any)
+            return dateFormatted
+          }
+        }
 
       },
       y: {
@@ -89,6 +101,16 @@ export default function CurrentChartCount({ currentReadings }: { currentReadings
     },
     plugins: {
       legend: { display: false },
+      tooltip: {
+        callbacks: {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          title: function (tooltipItems: any) {
+            const date = new Date(tooltipItems[0].label)
+            const dateFormatted = capitalizeFirstLetter(format(date, "EEEE d 'de' MMMM", { locale: es }))
+            return dateFormatted
+          },
+        }
+      }
     },
 
   }
