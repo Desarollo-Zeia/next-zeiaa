@@ -13,7 +13,7 @@ import {
 } from "chart.js";
 import "chartjs-adapter-date-fns";
 import NoResultsFound from '../../no-result';
-import { formattedWithoutMonth } from '@/app/utils/func';
+import { formattedDate, formattedWithoutMonth } from '@/app/utils/func';
 
 ChartJS.register(
   CategoryScale,
@@ -135,6 +135,21 @@ export default function BarChart({ readingsGraph, weekday, thresholds }: { readi
           } : undefined,
         },
       },
+      tooltip: {
+        callbacks: {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          title: function (tooltipItems: any) {
+            const formattedDateX = formattedDate(tooltipItems[0].label)
+            return `${formattedDateX}`
+          },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          label: function (context: any) {
+            return `Consumo energético: ${context.formattedValue} kWh`
+          }
+        },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
+      }
     },
   }
 
