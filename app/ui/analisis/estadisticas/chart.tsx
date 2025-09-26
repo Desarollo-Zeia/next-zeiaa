@@ -25,9 +25,10 @@ import { Button } from "@/components/ui/button"
 import { GeneralRoomData, Indicator, Measurement, Unit } from "@/app/type"
 import { TimeRangeSlider } from "@/app/ui/filters/time-range-slider"
 import { usePathname } from "next/navigation"
+import zoomPlugin from "chartjs-plugin-zoom";
 
 
-Chart.register(Colors, annotationPlugin)
+Chart.register(Colors, annotationPlugin, zoomPlugin)
 
 
 type Readings = Record<string, Omit<Measurement, 'date'>>[];
@@ -144,6 +145,7 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
               <div className="text-xs font-medium mb-2">Umbrales:</div>
               <div className="flex flex-wrap gap-4">
                 {thresholds?.map((thresholdValue, index) => {
+                  console.log(thresholds)
                   const color = (() => {
                     const total = thresholds.length;
 
@@ -154,15 +156,12 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
 
                   return (
                     <div key={index} className="flex items-center gap-2">
-                      <div
-                        className="font-bold"
+                      <span
                         style={{
                           color,
-                          width: '24px'
-                        }}
-                      >
-                        ---
-                      </div>
+                          fontWeight: '8px',
+
+                        }}>--</span>
                       <span className="font-normal">
                         {thresholdValue} {UNIT_CONVERTED[unit]}
                       </span>
@@ -174,14 +173,12 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
           </div>
           <div className="flex items-center gap-4">
             {!toggleChart ? <TimeRangeSlider initialStart={start} initialEnd={end} /> : ''}
-
             <IndicatorToggle indicators={indicators} indicatorParam={indicator} />
           </div>
         </div>
       </CardHeader>
-      <CardContent className="relative">
+      <CardContent>
         <Button className="absolute right-0 mt-8 mr-10" onClick={() => setToggleChart((prev: boolean) => !prev)}>{toggleChart ? 'Mostrar en horas' : 'Mostrar en días'}</Button>
-
         <ChartContainer config={chartConfig} className="min-h-[420px] max-h-[480px] w-full">
           <Line
             data={{ datasets: toggleChart ? days(readings) : hours(readings) }}
@@ -380,24 +377,33 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
                       return `${capitalizeFirstLetter(formattedDate)}: ${ctx.formattedValue} ${UNIT_CONVERTED[unit]}`
                     }
                   }
-                }
+                },
+                zoom: {
+                  pan: {
+                    enabled: true,
+                    mode: "x", // "x", "y" o "xy"
+                  },
+                  zoom: {
+                    wheel: {
+                      enabled: true,
+                      speed: 0.1,
+                    },
+                    pinch: {
+                      enabled: true,
+                    },
+                    mode: "x",
+                  },
+                  limits: {
+                    y: { min: 'original', max: 'original' },
+                    x: { min: 'original', max: 'original' }
+                  }
+
+                },
               }
             }}
           />
         </ChartContainer>
       </CardContent>
-      {/* <CardFooter>
-        <div className="flex w-full items-start gap-2 text-sm"> 
-          <div className="grid gap-2">
-            <div className="flex items-center gap-2 font-medium leading-none">
-              Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-            </div>
-            <div className="flex items-center gap-2 leading-none text-muted-foreground">
-              Showing total visitors for the last 6 months
-            </div>
-          </div>
-        </div>
-      </CardFooter> */}
     </Card>
   )
 }
