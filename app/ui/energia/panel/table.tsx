@@ -24,7 +24,7 @@ interface PanelReadings {
   results: Reading[]
 }
 
-export default function TableComponent({ readings } : { readings : PanelReadings}) {
+export default function TableComponent({ readings }: { readings: PanelReadings }) {
 
 
   return (
@@ -38,9 +38,6 @@ export default function TableComponent({ readings } : { readings : PanelReadings
             </TableHead>
             <TableHead className='text-center'>
               Puntos de monitoreo
-            </TableHead>
-            <TableHead className='text-center'>
-              Referencia
             </TableHead>
             <TableHead className='text-center'>
               Llave
@@ -57,7 +54,10 @@ export default function TableComponent({ readings } : { readings : PanelReadings
             <TableHead className='text-center'>
               Ubicación
             </TableHead>
-          
+            <TableHead className='text-center'>
+              Referencia
+            </TableHead>
+
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -71,9 +71,7 @@ export default function TableComponent({ readings } : { readings : PanelReadings
                   <TableCell className='text-center'>
                     {reading.key}
                   </TableCell>
-                  <TableCell className='text-center'>
-                    {reading.location_reference}
-                  </TableCell>
+
                   <TableCell className='text-center'>
                     {reading.key}
                   </TableCell>
@@ -89,11 +87,14 @@ export default function TableComponent({ readings } : { readings : PanelReadings
                   <TableCell className='text-center'>
                     {reading.electrical_panel}
                   </TableCell>
+                  <TableCell className='text-center'>
+                    {reading.location_reference}
+                  </TableCell>
                 </TableRow>
               )
             })
           }
-         
+
         </TableBody>
       </Table>
     </div>
