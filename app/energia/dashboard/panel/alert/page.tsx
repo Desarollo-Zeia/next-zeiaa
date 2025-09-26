@@ -6,7 +6,7 @@ import { SearchParams } from '@/app/type'
 import { DatepickerRange } from '@/app/ui/filters/datepicker-range'
 import FiltersContainer from '@/app/ui/filters/filters-container'
 import MeasurementPointFilter from '@/app/ui/filters/measurement-points-filter'
-import { capitalizeFirstLetter } from '@/app/utils/func'
+import { capitalizeFirstLetter, formattedDateWithHour } from '@/app/utils/func'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { format } from 'date-fns'
@@ -24,16 +24,6 @@ const formatDate = (timestamp: string) => {
     year: "numeric",
   })
 }
-
-const formatTime = (timestamp: string) => {
-  const date = new Date(timestamp)
-  return date.toLocaleTimeString("es-ES", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
-  })
-}
-
 
 const getAlertStatusColor = (status: string) => {
   switch (status.toLowerCase()) {
@@ -71,7 +61,6 @@ export default async function page({ searchParams }: SearchParams) {
   const firstPoint = point || measurementPoints?.results[0]?.measurement_points[0].id.toString()
 
   const dashboardTableAlertsReadings = await dashboardTableAlerts({ headquarterId: firstHeadquarter, point: firstPoint, date_after: formattedDateAfter, date_before: formattedDateBefore, page })
-
 
   return (
     <div className="relative h-full p-6 flex flex-col justify-center gap-8">
@@ -128,7 +117,7 @@ export default async function page({ searchParams }: SearchParams) {
                               <td className="py-4 px-4">
                                 <div className="space-y-1">
                                   <div className="font-medium text-md">{formatDate(alert.reading.created_at)}</div>
-                                  <div className="text-sm text-muted-foreground text-md">{formatTime(alert.reading.created_at)}</div>
+                                  <div className="text-sm text-muted-foreground text-md">{formattedDateWithHour(alert.reading.created_at)}</div>
                                 </div>
                               </td>
                               <td className="py-4 px-4">

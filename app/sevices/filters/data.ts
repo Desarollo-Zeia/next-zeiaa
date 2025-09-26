@@ -14,7 +14,7 @@ export async function getHeadquartersOcupacional() {
 
 
 export async function getHeadquarters() {
-  return await fetchWithAuth('/api/v1/user/headquarters/')
+  return await fetchWithAuthEnergy('/api/v1/user/headquarters/')
 }
 
 export async function getHeadquartersAmbiental() {
