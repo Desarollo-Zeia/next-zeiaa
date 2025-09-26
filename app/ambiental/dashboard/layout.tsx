@@ -11,12 +11,12 @@ interface LayoutProps {
   children: React.ReactNode
 }
 
-export default async function Layout({ children } : LayoutProps) {
+export default async function Layout({ children }: LayoutProps) {
 
   const userData = await fetchWithAuthAmbiental('/enterprise/api/enterprise/detail/')
 
   const ambiental = {
-    dashboard: '/ambiental/dashboard',
+    rooms: '/ambiental/dashboard/rooms',
     monitoreo: '/ambiental/dashboard/monitoreo',
     analisis: {
       title: 'Análisis',
@@ -26,7 +26,7 @@ export default async function Layout({ children } : LayoutProps) {
         {
           title: 'Indicadores',
           url: '/ambiental/dashboard/analisis'
-        }, 
+        },
         // {
         //   title: 'Picos Históricos',
         //   url: '/ocupacional/dashboard/analisis/picoshistoricos'
@@ -43,7 +43,7 @@ export default async function Layout({ children } : LayoutProps) {
 
   return (
     <SidebarProvider >
-      <AppSidebar userData={userData} module={ambiental}/>
+      <AppSidebar userData={userData} module={ambiental} />
       <SidebarInset>
         <header className="flex justify-between h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
           <div className="flex items-center gap-2 px-4">
@@ -51,10 +51,10 @@ export default async function Layout({ children } : LayoutProps) {
             <Separator orientation="vertical" className="mr-2 h-4" />
           </div>
         </header>
-        { children }
+        {children}
       </SidebarInset>
     </SidebarProvider>
-    
- 
+
+
   )
 }
