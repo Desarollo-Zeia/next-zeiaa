@@ -62,7 +62,6 @@ export default async function page({ searchParams }: SearchParams) {
 
   const dashboardTableAlertsReadings = await dashboardTableAlerts({ headquarterId: firstHeadquarter, point: firstPoint, date_after: formattedDateAfter, date_before: formattedDateBefore, page })
 
-
   return (
     <div className="relative h-full p-6 flex flex-col justify-center gap-8">
       <FiltersContainer>
