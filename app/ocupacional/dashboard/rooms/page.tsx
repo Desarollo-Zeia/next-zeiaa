@@ -7,8 +7,9 @@ import NoResultFound from '@/app/ui/no-result-found'
 import PaginationComponent from '@/app/ui/pagination'
 import { roomsList } from '@/app/sevices/enterprise/data'
 import HeadquarterSelect from '@/app/ui/filters/headquarter-select'
-import { getHeadquarters } from '@/app/sevices/filters/data'
+import { getHeadquartersOcupacional } from '@/app/sevices/filters/data'
 import { SearchParams } from '@/app/type'
+import StatusSelect from '@/app/ui/filters/status-select'
 
 interface Room {
   id: number
@@ -22,14 +23,15 @@ interface Room {
 export default async function page({ searchParams }: SearchParams) {
 
   const { search, status, headquarter, page, limit, offset } = await searchParams
-  const headquarters = await getHeadquarters()
+  const headquarters = await getHeadquartersOcupacional()
   const rooms = await roomsList({ search, status, headquarter, page, limit, offset })
 
   return (
     <div>
       <FiltersContainer>
-        <RoomSearchFilter />
+        <StatusSelect />
         <HeadquarterSelect headquarters={headquarters} />
+        <RoomSearchFilter />
       </FiltersContainer>
       {
         rooms?.results.length > 0 ? (

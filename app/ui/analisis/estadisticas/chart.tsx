@@ -136,10 +136,14 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
   return (
     <Card>
       <CardHeader>
+        <div className="flex items-center justify-end gap-4">
+          {!toggleChart ? <TimeRangeSlider initialStart={start} initialEnd={end} /> : ''}
+          <IndicatorToggle indicators={indicators} indicatorParam={indicator} />
+        </div>
         <div className="flex items-center justify-between">
-
           <div className="flex flex-col">
-            <CardTitle>Estadísticas</CardTitle>
+            <CardTitle className="text-2xl">Gráfica de datos</CardTitle>
+            <p className="text-sm">Valores en tiempo real</p>
             <br />
             <div className="w-full">
               <div className="text-xs font-medium mb-2">Umbrales:</div>
@@ -171,14 +175,11 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-4">
-            {!toggleChart ? <TimeRangeSlider initialStart={start} initialEnd={end} /> : ''}
-            <IndicatorToggle indicators={indicators} indicatorParam={indicator} />
-          </div>
+          <Button className="absolute right-0 mt-8 mr-10" onClick={() => setToggleChart((prev: boolean) => !prev)}>{toggleChart ? 'Mostrar en horas' : 'Mostrar en días'}</Button>
         </div>
       </CardHeader>
       <CardContent>
-        <Button className="absolute right-0 mt-8 mr-10" onClick={() => setToggleChart((prev: boolean) => !prev)}>{toggleChart ? 'Mostrar en horas' : 'Mostrar en días'}</Button>
+
         <ChartContainer config={chartConfig} className="min-h-[420px] max-h-[480px] w-full">
           <Line
             data={{ datasets: toggleChart ? days(readings) : hours(readings) }}

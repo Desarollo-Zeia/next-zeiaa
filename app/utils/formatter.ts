@@ -58,6 +58,15 @@ export const STATUS_COLOR = {
   CRITICAL: 'text-red-500'
 }
 
+export const STATUS_COLOR_BG = {
+  MODERATE: 'bg-yellow-500',
+  UNHEALTHY: 'bg-orange-500',
+  DANGEROUS: 'bg-red-500',
+  GOOD: 'bg-green-500',
+  CRITICAL: 'bg-red-500'
+}
+
+
 export const INDICATOR_MEASUREMENT_TEXT = {
   CO2: "El CO2 es el indicador de riesgo de contagio y transmisión de virus para el COVID-19, regulado por el Minsa en su anexo 10. El CO2 indica el grado de ventilación que tiene un espacio, se estima que el 1 % del aire que se respira ya fue respirado por otra persona, las personas exhalan CO2 por lo que la acumulación de este gas es un buen indicador de la acumulación de aerosoles que podrían transmitir la COVID-19.",
   HUMIDITY: "Mide la cantidad de vapor de agua que contiene el aire, necesaria para evaluar nuestra comodidad térmica. Cuanto más alto sea el porcentaje, más calor tendremos; y cuando es bajo, hace más frío. También afecta la salud cuando está por debajo del mínimo y por encima del máximo, es decir, cuando el aire está muy seco, sentimos incomodidad al respirar. Y el exceso de humedad acelera la proliferación de microorganismos, que causan alergias.",
