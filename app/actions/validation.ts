@@ -26,7 +26,7 @@ export async function actionOccupational(prevState: { message: string }, formDat
     console.error('Error:', error)
   }
 
-  redirect(`/ocupacional/dashboard`)
+  redirect(`/ocupacional/dashboard/rooms`)
 
 }
 

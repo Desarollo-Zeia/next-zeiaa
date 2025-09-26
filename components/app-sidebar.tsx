@@ -27,7 +27,7 @@ type UserData = {
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   userData: UserData;
   module: {
-    dashboard: string,
+    rooms: string,
     monitoreo: string,
     covid?: string,
     alertas: string,
@@ -35,13 +35,13 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
       isActive: boolean,
       title: string,
       url: string,
-      items: { title: string, url: string}[]
+      items: { title: string, url: string }[]
     }
   } // Agrega userdata aquí
 }
 export function AppSidebar({ module, userData, ...props }: AppSidebarProps) {
 
-  const { name, acronym: email, logo: avatar  } = userData
+  const { name, acronym: email, logo: avatar } = userData
 
   const userinfo = {
     name: name || "",
@@ -57,12 +57,12 @@ export function AppSidebar({ module, userData, ...props }: AppSidebarProps) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain module={module} />
-        {/* <NavProjects projects={data.projects} /> */}  
+        {/* <NavProjects projects={data.projects} /> */}
       </SidebarContent>
       <SidebarFooter>
-        <Image src={ZeiaLogo} alt="logo" className="object-contain w-36 h-12 mx-auto mb-4"/>
+        <Image src={ZeiaLogo} alt="logo" className="object-contain w-36 h-12 mx-auto mb-4" />
       </SidebarFooter>
-      <SidebarRail/>
+      <SidebarRail />
     </Sidebar>
   )
 }
