@@ -42,6 +42,9 @@ export function TimeRangeSlider({ initialStart = "00:00", initialEnd = "23:00" }
       value={range}
       onValueChange={handleRangeChange}
     >
+      <div className="absolute w-full justify-center items-center">
+        <p className="text-center mb-12 text-sm opacity-40">Rango horario</p>
+      </div>
       <SliderPrimitive.Track className="relative h-2 w-full grow overflow-hidden rounded-full bg-secondary">
         <SliderPrimitive.Range className="absolute h-full bg-primary" />
       </SliderPrimitive.Track>

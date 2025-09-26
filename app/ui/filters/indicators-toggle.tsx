@@ -39,15 +39,15 @@ export default function IndicatorToggle({ indicators, indicatorParam }: Indicato
 
   return (
     <div className="relative">
-      <ToggleGroup 
-        type="single" 
-        onValueChange={handleValueChange} 
+      <ToggleGroup
+        type="single"
+        onValueChange={handleValueChange}
         value={indicatorParam}
         disabled={isPending}
-        className="justify-center relative"
+        className="justify-center relative rounded-sm p-2"
       >
         {indicators.map((indicator: { indicator: string, unit: string }) => (
-          <ToggleGroupItem 
+          <ToggleGroupItem
             key={indicator.indicator}
             value={indicator.indicator}
             aria-label={indicator.indicator}
@@ -58,7 +58,7 @@ export default function IndicatorToggle({ indicators, indicatorParam }: Indicato
           </ToggleGroupItem>
         ))}
       </ToggleGroup>
-      
+
       {isPending && (
         <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-50">
           <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#00b0c7]"></div>

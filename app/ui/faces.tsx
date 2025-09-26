@@ -17,78 +17,78 @@ import DangerousFaceDisabledFrame from '@/public/faces/disabled-faces/dangerousf
 import ModerateFaceDisabledFrame from '@/public/faces/disabled-faces/moderateface-frame-disabled.png'
 
 
-export function GoodFace({ width, height } : { width: number, height: number}) {
+export function GoodFace({ width, height }: { width: number, height: number }) {
   return (
-    <Image src={GoodFaceImage} alt="good-face" width={width} height={height} className="object-fit"/>
+    <Image src={GoodFaceImage} alt="good-face" width={width} height={height} className="object-fit" />
   )
 }
 
-export function GoodFaceFrame({ width, height } : { width: number, height: number}) {
+export function GoodFaceFrame({ width, height }: { width: number, height: number }) {
   return (
     <Image src={GoodFaceFrameImage} alt="good-face-frame" width={width} height={height} className="object-fit" />
   )
-} 
+}
 
 
-export function UnhealthyFace({ width, height } : { width: number, height: number}) {
+export function UnhealthyFace({ width, height }: { width: number, height: number }) {
   return (
-    <Image src={UnhealthyFaceImage} alt="unhealthy-face-frame" width={width} height={height} className="object-fit"/>
+    <Image src={UnhealthyFaceImage} alt="unhealthy-face-frame" width={width} height={height} className="object-fit" />
   )
 }
 
-export function UnhealthyFaceFrame({ width, height } : { width: number, height: number}) {
+export function UnhealthyFaceFrame({ width, height }: { width: number, height: number }) {
   return (
-    <Image src={UnhealthyFaceFrameImage} alt="unhealthy-face" width={width} height={height} className="object-fit"/>
-  )
-} 
-
-export function DangerousFace({ width, height } : { width: number, height: number}) {
-  return (
-    <Image src={DangerousFaceImage} alt="dangerous-face-frame" width={width} height={height} className="object-fit"/>
+    <Image src={UnhealthyFaceFrameImage} alt="unhealthy-face" width={width} height={height} className="object-fit" />
   )
 }
 
-export function DangerousFaceFrame({ width, height } : { width: number, height: number}) {
+export function DangerousFace({ width, height }: { width: number, height: number }) {
   return (
-    <Image src={DangerousFaceFrameImage} alt="dangerous-face" width={width} height={height} className="object-fit"/>
-  )
-} 
-
-export function ModerateFace({ width, height } : { width: number, height: number}) {
-  return (
-    <Image src={ModerateFaceImage} alt="moderate-face" width={width} height={height} className="object-fit"/>
+    <Image src={DangerousFaceImage} alt="dangerous-face-frame" width={width} height={height} className="object-fit" />
   )
 }
 
-export function ModerateFaceFrame({ width, height } : { width: number, height: number}) {
+export function DangerousFaceFrame({ width, height }: { width: number, height: number }) {
   return (
-    <Image src={ModerateFaceFrameImage} alt="moderate-face-frame" width={width} height={height} className="object-fit"/>
-  )
-} 
-
-export function GoodFaceDisabled({ width, height } : { width: number, height: number}) {
-  return (
-    <Image src={GoodFaceDisabledFrame} alt="good-face-disabled" width={width} height={height} className="object-fit"/>
+    <Image src={DangerousFaceFrameImage} alt="dangerous-face" width={width} height={height} className="object-fit" />
   )
 }
 
-export function ModerateFaceDisabled({ width, height } : { width: number, height: number}) {
+export function ModerateFace({ width, height }: { width: number, height: number }) {
   return (
-    <Image src={ModerateFaceDisabledFrame} alt="moderate-face-disabled" width={width} height={height} className="object-fit"/>
+    <Image src={ModerateFaceImage} alt="moderate-face" width={width} height={height} className="object-fit" />
   )
 }
 
-export function UnhealthyFaceDisabled({ width, height } : { width: number, height: number}) {
+export function ModerateFaceFrame({ width, height }: { width: number, height: number }) {
   return (
-    <Image src={UnhealthyFaceDisabledFrame} alt="unhealthy-face-disabled" width={width} height={height} className="object-fit"/>
+    <Image src={ModerateFaceFrameImage} alt="moderate-face-frame" width={width} height={height} className="object-fit" />
   )
- }
+}
 
- export function DangerousFaceDisabled({ width, height } : { width: number, height: number}) {
+export function GoodFaceDisabled({ width, height }: { width: number, height: number }) {
   return (
-    <Image src={DangerousFaceDisabledFrame} alt="dangerous-face-disabled" width={width} height={height} className="object-fit"/>
+    <Image src={GoodFaceDisabledFrame} alt="good-face-disabled" width={width} height={height} className="object-fit" />
   )
- }
+}
+
+export function ModerateFaceDisabled({ width, height }: { width: number, height: number }) {
+  return (
+    <Image src={ModerateFaceDisabledFrame} alt="moderate-face-disabled" width={width} height={height} className="object-fit" />
+  )
+}
+
+export function UnhealthyFaceDisabled({ width, height }: { width: number, height: number }) {
+  return (
+    <Image src={UnhealthyFaceDisabledFrame} alt="unhealthy-face-disabled" width={width} height={height} className="object-fit" />
+  )
+}
+
+export function DangerousFaceDisabled({ width, height }: { width: number, height: number }) {
+  return (
+    <Image src={DangerousFaceDisabledFrame} alt="dangerous-face-disabled" width={width} height={height} className="object-fit" />
+  )
+}
 
 
 
@@ -103,7 +103,7 @@ export const STATUS_FACE = {
   'UNHEALTHY': <UnhealthyFaceFrame width={72} height={72} />,
   'DANGEROUS': <DangerousFaceFrame width={72} height={72} />,
   'CRITICAL': <DangerousFaceFrame width={72} height={72} />
-} 
+}
 
 export const STATUS_FACE_DISABLED = {
   'GOOD': <GoodFaceDisabled width={72} height={72} />,
@@ -111,7 +111,7 @@ export const STATUS_FACE_DISABLED = {
   'UNHEALTHY': <UnhealthyFaceDisabled width={72} height={72} />,
   'DANGEROUS': <DangerousFaceDisabled width={72} height={72} />,
   'CRITICAL': <DangerousFaceDisabled width={72} height={72} />
-} 
+}
 
 
 

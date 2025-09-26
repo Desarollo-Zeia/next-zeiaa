@@ -8,9 +8,13 @@ export async function getRoomsAmbiental() {
   return await fetchWithAuthAmbiental('/enterprise/api/ambiental/enterprise/basic/point-list/')
 }
 
+export async function getHeadquartersOcupacional() {
+  return await fetchWithAuth('/enterprise/api/enterprise/basic/headquearter-list/')
+}
+
 
 export async function getHeadquarters() {
-  return await fetchWithAuthEnergy('/api/v1/user/headquarters/')
+  return await fetchWithAuth('/api/v1/user/headquarters/')
 }
 
 export async function getHeadquartersAmbiental() {
@@ -18,6 +22,6 @@ export async function getHeadquartersAmbiental() {
 }
 
 
-export async function getMeasurementPoints({ electricalpanelId } : { electricalpanelId: string }) {
+export async function getMeasurementPoints({ electricalpanelId }: { electricalpanelId: string }) {
   return await fetchWithAuthEnergy(`/api/v1/electrical-panel/${electricalpanelId}/devices/measurement-points/`)
 }

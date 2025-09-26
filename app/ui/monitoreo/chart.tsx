@@ -99,9 +99,11 @@ export default function ChartComponent({ results, generalRoomData, indicator, un
 
   return (
     <Card className="w-full max-w-4xl mx-auto">
-      <IndicatorToggle indicators={indicators} indicatorParam={indicator} />
       <CardHeader>
-        <CardTitle>Estadísticas</CardTitle>
+        <div className="flex justify-center items-center gap-2">
+          <CardTitle className="text-nowrap">Estadísticas en tiempo real</CardTitle>
+          <IndicatorToggle indicators={indicators} indicatorParam={indicator} />
+        </div>
         <br />
         <div className="w-full">
           <div className="text-xs font-medium mb-2">Umbrales:</div>
