@@ -9,7 +9,7 @@ import {
   ChartConfig,
   ChartContainer,
 } from "@/components/ui/chart"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import IndicatorToggle from "../../filters/indicators-toggle"
 import { UNIT_INDICATOR_THRESHOLD, UNIT_INDICATOR_THRESHOLD_AMBIENTAL_CHARTJS_EXLUSIVE_DICTIONARY_IM_SORRY_FOR_THE_NEXT_DEVELOPER } from "@/app/utils/threshold"
 import 'chart.js/auto';
@@ -31,7 +31,7 @@ import zoomPlugin from "chartjs-plugin-zoom";
 Chart.register(Colors, annotationPlugin, zoomPlugin)
 
 
-type Readings = Record<string, Omit<Measurement, 'date'>>[];
+type Readings = Record<string, Omit<Measurement, 'date'>[]>;
 
 type ChartComponentProps = {
   readings: Readings,
@@ -102,9 +102,31 @@ function days(readings: Readings) {
     }
   ]
 }
-
+// eslint-disable-next-line @next/next/no-assign-module-variable 
 
 export function ChartComponent({ readings, generalRoomData, indicator, unit, start, end }: ChartComponentProps) {
+
+  const [newReadings, setNewReadings] = useState<Readings>({})
+  const [selectedDate, setSelectedDate] = useState('')
+
+  const dates = Object.keys(readings)
+  const determinateReadings = Object.keys(newReadings).length > 0 ? newReadings : readings
+
+  useEffect(() => {
+    const readingsEntries = Object.entries(readings)
+    const readingsMap = new Map(readingsEntries)
+    readingsMap.forEach((value, key) => {
+      if (selectedDate === key) {
+        setNewReadings((prev) => (
+          {
+            ...prev,
+            [key]: value
+          }
+        ));
+      }
+    });
+  }, [selectedDate])
+
 
   const [toggleChart, setToggleChart] = useState<boolean>(false)
 
@@ -112,9 +134,6 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
   const pathname = usePathname()
   // eslint-disable-next-line @next/next/no-assign-module-variable
   const module = pathname.split('/')[1]
-
-
-  // Restaurar el scroll después del re-renderizado
 
   let thresholdPointer
   let thresholds: number[] = []
@@ -149,7 +168,6 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
               <div className="text-xs font-medium mb-2">Umbrales:</div>
               <div className="flex flex-wrap gap-4">
                 {thresholds?.map((thresholdValue, index) => {
-                  console.log(thresholds)
                   const color = (() => {
                     const total = thresholds.length;
 
@@ -182,7 +200,7 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
 
         <ChartContainer config={chartConfig} className="min-h-[420px] max-h-[480px] w-full">
           <Line
-            data={{ datasets: toggleChart ? days(readings) : hours(readings) }}
+            data={{ datasets: toggleChart ? days(determinateReadings) : hours(determinateReadings) }}
             options={{
               animation: false,
               parsing: false,
@@ -240,7 +258,7 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
                   forceOverride: true
                 },
                 legend: {
-                  display: !toggleChart ? true : false,
+                  display: false,
                   position: "bottom",
                   fullSize: false,       // Si quieres que no ocupe todo el ancho
                   rtl: false,
@@ -405,6 +423,50 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
           />
         </ChartContainer>
       </CardContent>
+      {
+        toggleChart ? (
+          <></>
+        ) : (
+          <Card>
+            <CardContent className="pt-6">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-semibold text-foreground">Leyenda</h3>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => setNewReadings({})}
+                    className="bg-slate-400 hover:bg-slate-500 text-white"
+                  >
+                    Mostrar todos
+                  </Button>
+                </div>
+
+                <div className="space-y-2 text-sm text-muted-foreground">
+                  <p>Selecciona los días que deseas comparar.</p>
+                  <p>También puedes cancelar la selección haciendo nuevamente en la fecha.</p>
+                </div>
+
+                <div className="space-y-2">
+                  {dates.map((date) => (
+                    <button
+                      key={date}
+                      onClick={() => setSelectedDate(date)}
+                      className={`w-full text-left px-3 py-2 rounded-md transition-colors hover:bg-muted/50 ${Object.hasOwn(newReadings, date) ? "bg-[#00b0c7] text-white" : "text-muted-foreground"
+                        }`}
+                    >
+                      <span className="flex items-center gap-2">
+                        {formattedDate(date)}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )
+      }
+
     </Card>
   )
 }
