@@ -15,14 +15,17 @@ export const formattedDate = (date: string) => {
   //   throw new Error("Invalid date format");
   // }
 
+
+
   // Sumar un día a la fecha analizada
-  // const nextDay = addDays(parsedDate, 1);
+  // const nextDay = addDays(parsedDate, 1)
 
   // Formatear la fecha
   return capitalizeFirstLetter(format(parsedDate, "EEEE d 'de' MMMM", { locale: es }));
 }
 
 export const formattedDateWithHour = (date: string) => {
+  console.log(date)
   // Parsear la cadena de fecha en un objeto Date
   const parsedDate = new Date(date);
 

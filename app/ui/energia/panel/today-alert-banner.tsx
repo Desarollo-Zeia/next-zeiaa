@@ -39,7 +39,6 @@ interface Alert {
 }
 
 export default function TodayAlertBanner({ alertToday }: { alertToday: Alert }) {
-  const formattedDay = formattedDateWithHour(alertToday?.timestamp as string)
   return (
     <div className={`w-full h-8 absolute top-0 left-0 flex justify-center items-center ${alertToday?.detail ? 'bg-[#16A34A]' : 'bg-[#DC2626]'}`}>
       <p className='flex items-center justify-center gap-2 text-white'>
@@ -47,7 +46,7 @@ export default function TodayAlertBanner({ alertToday }: { alertToday: Alert }) 
           <TriangleAlert />
         </span>
         <span className='block text-sm'>
-          {alertToday?.detail ? alertToday?.detail : `ALERTA a las ${formattedDay} - ${alertToday?.notes}`}
+          {alertToday?.timestamp && alertToday?.notes ? `ALERTA a las ${formattedDateWithHour(alertToday?.timestamp)} - ${alertToday?.notes}` : alertToday?.detail}
         </span>
       </p>
       <Link href={"/energia/dashboard/panel/alert"} className='underline absolute right-0 pr-6 text-nowrap text-white text-sm'>

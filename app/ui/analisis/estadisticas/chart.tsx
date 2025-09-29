@@ -106,14 +106,19 @@ function days(readings: Readings) {
 
 export function ChartComponent({ readings, generalRoomData, indicator, unit, start, end }: ChartComponentProps) {
 
+  // const [isPending, startTransition] = useTransition()
   const [newReadings, setNewReadings] = useState<Readings>({})
   const [selectedDate, setSelectedDate] = useState('')
+  const [toggleChart, setToggleChart] = useState<boolean>(false)
+
 
   const dates = Object.keys(readings)
   const determinateReadings = Object.keys(newReadings).length > 0 ? newReadings : readings
 
   useEffect(() => {
+    // startTransition(() => {
     const readingsEntries = Object.entries(readings)
+
     const readingsMap = new Map(readingsEntries)
     readingsMap.forEach((value, key) => {
       if (selectedDate === key) {
@@ -122,13 +127,18 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
             ...prev,
             [key]: value
           }
-        ));
+        ))
       }
-    });
-  }, [selectedDate])
+    })
+
+  }, [selectedDate, toggleChart])
 
 
-  const [toggleChart, setToggleChart] = useState<boolean>(false)
+  useEffect(() => {
+    console.log(selectedDate)
+
+  }, [selectedDate, newReadings])
+
 
   const { indicators_pollutants: indicators } = generalRoomData
   const pathname = usePathname()
@@ -196,9 +206,9 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
           <Button className="absolute right-0 mt-8 mr-10" onClick={() => setToggleChart((prev: boolean) => !prev)}>{toggleChart ? 'Mostrar en horas' : 'Mostrar en días'}</Button>
         </div>
       </CardHeader>
-      <CardContent>
-
-        <ChartContainer config={chartConfig} className="min-h-[420px] max-h-[480px] w-full">
+      <CardContent className="relative">
+        {/* {isPending && <div className="h-full w-full text-xl font-bold">Cargando...</div>} */}
+        <ChartContainer config={chartConfig}>
           <Line
             data={{ datasets: toggleChart ? days(determinateReadings) : hours(determinateReadings) }}
             options={{
@@ -423,50 +433,47 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
           />
         </ChartContainer>
       </CardContent>
-      {
-        toggleChart ? (
-          <></>
-        ) : (
-          <Card>
-            <CardContent className="pt-6">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold text-foreground">Leyenda</h3>
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    onClick={() => setNewReadings({})}
-                    className="bg-slate-400 hover:bg-slate-500 text-white"
-                  >
-                    Mostrar todos
-                  </Button>
-                </div>
+      <CardContent className="pt-6">
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-semibold text-foreground">Leyenda</h3>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => setNewReadings({})}
+              className="bg-slate-400 hover:bg-slate-500 text-white"
+            >
+              Mostrar todos
+            </Button>
+          </div>
 
-                <div className="space-y-2 text-sm text-muted-foreground">
-                  <p>Selecciona los días que deseas comparar.</p>
-                  <p>También puedes cancelar la selección haciendo nuevamente en la fecha.</p>
-                </div>
+          <div className="space-y-2 text-sm text-muted-foreground">
+            <p>Selecciona los días que deseas comparar.</p>
+            <p>También puedes cancelar la selección haciendo nuevamente en la fecha.</p>
+          </div>
 
-                <div className="space-y-2">
-                  {dates.map((date) => (
-                    <button
-                      key={date}
-                      onClick={() => setSelectedDate(date)}
-                      className={`w-full text-left px-3 py-2 rounded-md transition-colors hover:bg-muted/50 ${Object.hasOwn(newReadings, date) ? "bg-[#00b0c7] text-white" : "text-muted-foreground"
-                        }`}
-                    >
-                      <span className="flex items-center gap-2">
-                        {formattedDate(date)}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )
-      }
+          <div className="space-y-2">
+            {dates.map((date) => {
+              const formatted = parse(date, "yyyy-MM-dd", new Date())
+              const newDate = capitalizeFirstLetter(format(formatted, "EEEE d 'de' MMMM", { locale: es }))
+              return (
+                <button
+                  key={date}
+                  onClick={() => setSelectedDate(date)}
+                  className={`w-full text-left px-3 py-2 rounded-md transition-colors ${Object.hasOwn(newReadings, date) ? "bg-[#00b0c7] text-white hover:bg-[#00b0c7]" : "text-muted-foreground"
+                    }`}
+                >
+                  <span className="flex items-center gap-2">
+                    {newDate}
+                  </span>
+                </button>
+              )
+            }
 
+            )}
+          </div>
+        </div>
+      </CardContent>
     </Card>
   )
 }
