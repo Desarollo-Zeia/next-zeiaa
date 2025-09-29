@@ -279,7 +279,7 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
       </div>
       {
         readingsGraph?.length > 0 && (
-          <ToggleGroup type="single" defaultValue={last_by || 'none'} value={last_by || 'none'} onValueChange={handleFrequency} aria-label="Frequency" className="flex gap-2 top-0 mt-4">
+          <ToggleGroup type="single" value={last_by} onValueChange={handleFrequency} aria-label="Frequency" className="flex gap-2 top-0 mt-4">
             {
               category !== 'energy' ?
                 (

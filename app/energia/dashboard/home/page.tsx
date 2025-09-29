@@ -16,10 +16,10 @@ import MeasurementPointFilter from "@/app/ui/filters/measurement-points-filter"
 export default async function Page({ searchParams }: SearchParams) {
   // const { companies } = await getCompanyData()
 
-  const { headquarter, panel, date_after, date_before, unit = 'V', indicator = 'P', page = '1', last_by = 'minute', category = 'power', point } = await searchParams
+  const { headquarter, panel, date_after = new Date(), date_before = new Date(), unit = 'V', indicator = 'P', page = '1', last_by = 'minute', category = 'power', point } = await searchParams
 
-  const formattedDateAfter = date_after ? format(new Date(), 'yyyy-MM-dd') : undefined
-  const formattedDateBefore = date_before ? format(new Date(), 'yyyy-MM-dd') : undefined
+  const formattedDateAfter = format(date_after, 'yyyy-MM-dd')
+  const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
 
   const headquarters = await getHeadquarters()
   const { results } = headquarters
@@ -56,6 +56,7 @@ export default async function Page({ searchParams }: SearchParams) {
       last_by,
     }),
   ])
+
 
   return (
     <div className="w-full">
