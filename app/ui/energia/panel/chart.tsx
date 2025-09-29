@@ -164,9 +164,9 @@ export default function ChartComponent({ electricalPanelData }: { electricalPane
           </AccordionTrigger>
           <AccordionContent>
             {
-              electricalPanelData.results.slice(1).map(electrical => {
+              electricalPanelData?.results?.slice(1).map(electrical => {
                 return (
-                  <div className='flex justify-between w-full px-4' key={electrical.measurement_point_name}>
+                  <div className='flex justify-between w-full px-4' key={electrical?.measurement_point_name}>
                     <div className='font-semibold flex items-center gap-1 '>
                       <div className='w-2 h-2 rounded-full bg-black' />
                       <p>{electrical?.measurement_point_name}</p>
