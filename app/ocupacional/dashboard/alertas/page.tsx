@@ -8,28 +8,27 @@ import { DatepickerRange } from "@/app/ui/filters/datepicker-range";
 import FiltersContainer from "@/app/ui/filters/filters-container";
 import RoomSelect from "@/app/ui/filters/room-select";
 import StatusSelect from "@/app/ui/filters/status-select";
-import { format } from "date-fns";
 
-export default async function page({ searchParams } : SearchParams) {
+export default async function page({ searchParams }: SearchParams) {
 
-    const { first_room: firstRoom} = await detail()
-  
-    const { room, indicator = 'CO2', unit = 'PPM', date_after = new Date(), date_before = new Date(), page = '1', status } = await searchParams
-  
-    const currentFirstRoom = room ? room : firstRoom
-    
-    const rooms = await getRooms()
-    const readings = await alerts({ roomId: currentFirstRoom, indicator, unit, date_after: format(date_after,"yyyy-MM-dd"), date_before: format(date_before, "yyyy-MM-dd"), page, status})
-    const generalRoomData = await roomGeneralData({ roomId: currentFirstRoom})
+  const { first_room: firstRoom } = await detail()
+
+  const { room, indicator = 'CO2', unit = 'PPM', date_after, date_before, page = '1', status } = await searchParams
+
+  const currentFirstRoom = room ? room : firstRoom
+
+  const rooms = await getRooms()
+  const readings = await alerts({ roomId: currentFirstRoom, indicator, unit, date_after, date_before, page, status })
+  const generalRoomData = await roomGeneralData({ roomId: currentFirstRoom })
 
   return (
     <div>
-        <FiltersContainer>
-          <RoomSelect firstRoom={currentFirstRoom} rooms={rooms}/>
-          <StatusSelect/>
-          <DatepickerRange/>
-        </FiltersContainer>
-        <TableComponent data={readings.results} count={readings.count} generalRoomData={generalRoomData} indicator={indicator as Indicator} />
+      <FiltersContainer>
+        <RoomSelect firstRoom={currentFirstRoom} rooms={rooms} />
+        <StatusSelect />
+        <DatepickerRange />
+      </FiltersContainer>
+      <TableComponent data={readings.results} count={readings.count} generalRoomData={generalRoomData} indicator={indicator as Indicator} />
     </div>
   )
 }

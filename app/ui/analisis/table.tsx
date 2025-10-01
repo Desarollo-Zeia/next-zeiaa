@@ -19,6 +19,7 @@ import NoResultFound from "../no-result-found";
 import IndicatorThreshold from "../umbrales";
 import { useTransition } from 'react';
 import OrderingFilter from "../filters/ordering-filter";
+import { format } from "date-fns";
 // import { TimeRangeSlider } from "../filters/time-range-slider";
 
 type ModifiedMeasurement = Omit<Measurement, 'hour'> & {
@@ -36,13 +37,16 @@ type TableComponentProps = {
   count: number,
   indicator: Indicator,
   unit: Unit,
-  date_after: string,
-  date_before: string,
+  date_after?: string,
+  date_before?: string,
   room: string,
 
 }
 
 export default function TableComponent({ generalRoomData, readings, count, indicator, unit, room, date_before, date_after }: TableComponentProps) {
+
+  const newDateBefore = date_before ? format(date_before, "yyyy-MM-dd") : ''
+  const newDateAfter = date_after ? format(date_after, "yyyy-MM-dd") : ''
 
   const [isWhatMeasuredOpen, setIsWhatMeasuredOpen] = useState(false)
   const [isWhatCausesOpen, setIsWhatCausesOpen] = useState(false)
@@ -62,13 +66,6 @@ export default function TableComponent({ generalRoomData, readings, count, indic
     thresholdPointer = indicator
   }
 
-  // const lmpLevels = [
-  //   { range: `< ${UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.bottom} ${UNIT_CONVERTED[unit]}`, icon: <GoodFace width={24} height={24}/>, label: "Bueno", color: "text-green-600", obj: UNIT_INDICATOR_THRESHOLD[thresholdPointer] },
-  //   { range: `${UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.bottom} ${UNIT_CONVERTED[unit]} - ${UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.center} ${UNIT_CONVERTED[unit]}`, icon: <ModerateFace width={24} height={24}/>, label: "Moderado", color: "text-yellow-600", obj: UNIT_INDICATOR_THRESHOLD[thresholdPointer] },
-  //   { range: `${UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.center} ${UNIT_CONVERTED[unit]} - ${UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.top} ${UNIT_CONVERTED[unit]}`, icon: <UnhealthyFace width={24} height={24}/>, label: "Insalubre", color: "text-orange-600", obj: UNIT_INDICATOR_THRESHOLD[thresholdPointer] },
-  //   { range: `> ${UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.top} ${UNIT_CONVERTED[unit]}`, icon: <DangerousFace width={24} height={24}/>, label: "Peligroso", color: "text-red-600", obj: UNIT_INDICATOR_THRESHOLD[thresholdPointer] },
-  // ]
-
   if (module === 'ocupacional') {
     thresholds = Object.values(UNIT_INDICATOR_THRESHOLD[thresholdPointer])
   }
@@ -86,8 +83,8 @@ export default function TableComponent({ generalRoomData, readings, count, indic
             room,
             indicator,
             unit,
-            date_before,
-            date_after,
+            date_before: newDateBefore,
+            date_after: newDateAfter,
           });
         }
 
@@ -96,13 +93,13 @@ export default function TableComponent({ generalRoomData, readings, count, indic
             room,
             indicator,
             unit,
-            date_before,
-            date_after,
+            date_before: newDateBefore,
+            date_after: newDateAfter
           });
         }
 
         if (blob) {
-          saveAs(blob, `Reporte: ${date_after} - ${date_before}`);
+          saveAs(blob, `Reporte: ${newDateAfter} - ${newDateBefore}`);
         }
       } catch (error) {
         console.error('Error al descargar el reporte:', error);
