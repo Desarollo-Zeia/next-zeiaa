@@ -88,7 +88,7 @@ export default function ChartComponent({ electricalPanelData }: { electricalPane
         params.delete("this_month")
       }
 
-      replace(`${pathname}?${params.toString()}`)
+      replace(`${pathname}?${params.toString()}`, { scroll: false })
     })
   }
 
@@ -109,14 +109,6 @@ export default function ChartComponent({ electricalPanelData }: { electricalPane
 
   return (
     <div className='flex flex-col gap-4'>
-      {/* <div className='flex justify-end'>
-        <Button className='bg-gray-500 px-2 py-1 text-sm'>
-          Ver historial
-        </Button>
-      </div> */}
-      {/* <div>
-        <p className='text-balance'>Distribución de consumo en tiempo real</p>
-      </div> */}
       <div className='relative'>
         <DatepickerRange />
         <ToggleGroup type="single" defaultValue='month' value={currentFrequncy} onValueChange={handleFrequencyChange}>
