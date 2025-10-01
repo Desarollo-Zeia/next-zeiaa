@@ -9,7 +9,7 @@ import {
   ChartConfig,
   ChartContainer,
 } from "@/components/ui/chart"
-import { useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 import IndicatorToggle from "../../filters/indicators-toggle"
 import { UNIT_INDICATOR_THRESHOLD, UNIT_INDICATOR_THRESHOLD_AMBIENTAL_CHARTJS_EXLUSIVE_DICTIONARY_IM_SORRY_FOR_THE_NEXT_DEVELOPER } from "@/app/utils/threshold"
 import 'chart.js/auto';
@@ -108,37 +108,26 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
 
   // const [isPending, startTransition] = useTransition()
   const [newReadings, setNewReadings] = useState<Readings>({})
-  const [selectedDate, setSelectedDate] = useState('')
   const [toggleChart, setToggleChart] = useState<boolean>(false)
 
-
   const dates = Object.keys(readings)
-  const determinateReadings = Object.keys(newReadings).length > 0 ? newReadings : readings
 
-  useEffect(() => {
-    // startTransition(() => {
-    const readingsEntries = Object.entries(readings)
+  const chartRenderReadings = Object.keys(newReadings).length > 0 ? newReadings : readings
 
-    const readingsMap = new Map(readingsEntries)
-    readingsMap.forEach((value, key) => {
-      if (selectedDate === key) {
-        setNewReadings((prev) => (
-          {
-            ...prev,
-            [key]: value
-          }
-        ))
+  const handleSelectedDate = useCallback((date: string) => {
+    setNewReadings(prev => {
+      // Si la fecha ya existe en el objeto → la removemos
+      if (Object.hasOwn(prev, date)) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { [date]: _, ...rest } = prev
+        return rest
       }
+
+      // Si no existe → la agregamos
+      return { ...prev, [date]: readings[date] }
     })
 
-  }, [selectedDate, toggleChart])
-
-
-  useEffect(() => {
-    console.log(selectedDate)
-
-  }, [selectedDate, newReadings])
-
+  }, [readings])
 
   const { indicators_pollutants: indicators } = generalRoomData
   const pathname = usePathname()
@@ -184,19 +173,30 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
                     if (total === 1) return '#ff0000'; // Único umbral rojo
                     if (total === 2) return index === 0 ? '#ffd700' : '#ff0000'; // Amarillo/Rojo
                     return ['#ffd700', '#ffa500', '#ff0000'][index]; // Amarillo/Naranja/Rojo para 3
-                  })();
+                  })()
 
                   return (
-                    <div key={index} className="flex items-center gap-2">
-                      <span
-                        style={{
-                          color,
-                          fontWeight: '8px',
+                    <div key={index} className="flex flex-col justify-center items-center gap-2">
+                      <div className="flex gap-2">
+                        <span
+                          style={{
+                            color,
+                            fontWeight: '8px',
+                            display: 'block'
 
-                        }}>--</span>
-                      <span className="font-normal">
-                        {thresholdValue} {UNIT_CONVERTED[unit]}
-                      </span>
+                          }}>--</span> <p> {index === 0 ? 'Moderado' : index === 1 ? 'Insalubre' : 'Peligroso'} </p>
+                      </div>
+                      <div className="flex gap-2">
+                        <span
+                          style={{
+                            color,
+                            fontWeight: '8px',
+
+                          }}>--</span>
+                        <span className="font-normal">
+                          {thresholdValue} {UNIT_CONVERTED[unit]}
+                        </span>
+                      </div>
                     </div>
                   );
                 })}
@@ -210,7 +210,7 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
         {/* {isPending && <div className="h-full w-full text-xl font-bold">Cargando...</div>} */}
         <ChartContainer config={chartConfig}>
           <Line
-            data={{ datasets: toggleChart ? days(determinateReadings) : hours(determinateReadings) }}
+            data={{ datasets: toggleChart ? days(chartRenderReadings) : hours(chartRenderReadings) }}
             options={{
               animation: false,
               parsing: false,
@@ -459,7 +459,7 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
               return (
                 <button
                   key={date}
-                  onClick={() => setSelectedDate(date)}
+                  onClick={() => handleSelectedDate(date)}
                   className={`w-full text-left px-3 py-2 rounded-md transition-colors ${Object.hasOwn(newReadings, date) ? "bg-[#00b0c7] text-white hover:bg-[#00b0c7]" : "text-muted-foreground"
                     }`}
                 >
