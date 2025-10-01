@@ -86,14 +86,6 @@ export default async function page({ searchParams }: SearchParams) {
     <div className="relative p-6 flex flex-col justify-center gap-8">
       <FiltersContainer>
         <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} energy={firstHeadquarter} />
-        {/* <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters?.[0].electrical_panels} /> */}
-        {/* <div className='relative flex items-center justify-center'>
-          <TriangleAlert className='h-8 w-8' />
-          <div className='absolute rounded-full bg-[#59ac77] h-6 w-6 flex items-center justify-center -top-2 -right-2 text-white text-sm p-[2px]'>
-            <p>32</p>
-          </div>
-        </div> */}
-        {/* < AlertTestSheet count={dashboardTableAlertsReadings.count} /> */}
       </FiltersContainer>
       <TodayAlertBanner alertToday={alertToday} />
       <div className='w-full flex gap-8 justify-between'>
