@@ -101,7 +101,7 @@ export default function CostDifferenceChecker({ firstCalculatorResultMonthly, se
   }
 
   return (
-    <div className="flex justify-between">
+    <div className="flex justify-between gap-4">
       <div className="flex-1">
         <MonthPicker
           onChange={handleFisrtMonthChange}
