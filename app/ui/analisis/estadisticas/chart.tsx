@@ -400,11 +400,13 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
                         label: (ctx) => {
                           const label = ctx.dataset.label as string
                           if (toggleChart) {
+                            if (!ctx.label) return 'Fecha no disponible'
                             const date = parse(ctx.label, 'MMM dd, yyyy, h:mm:ss a', new Date())
                             const formattedDate = format(date, 'EEEE, dd \'de\' MMMM \'de\' yyyy', { locale: es });
                             return capitalizeFirstLetter(formattedDate)
                           }
 
+                          if (!label) return 'Fecha no disponible'
                           const date = parse(label, 'yyyy-MM-dd', new Date())
                           const formattedDate = format(date, 'EEEE, dd \'de\' MMMM \'de\' yyyy', { locale: es })
                           return `${capitalizeFirstLetter(formattedDate)}: ${ctx.formattedValue} ${UNIT_CONVERTED[unit]}`

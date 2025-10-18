@@ -1,0 +1,1239 @@
+{
+  "timestamp": "2025-10-18T04:06:11.570Z",
+  "totalFiles": 154,
+  "totalIssues": 173,
+  "highPriorityIssues": 130,
+  "issuesByType": {
+    "chainedAccess": 13,
+    "unsafeArrayAccess": 56,
+    "unsafeObjectAccess": 12,
+    "unsafeHourAccess": 18,
+    "unsafePropertyAccess": 72,
+    "unsafeParse": 2
+  },
+  "details": {
+    "chainedAccess": [
+      {
+        "file": "app\\providers.tsx",
+        "line": 14,
+        "type": "chainedAccess",
+        "code": "api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://us.i.posthog.com',",
+        "match": "us.i.posthog.com"
+      },
+      {
+        "file": "app\\ui\\energia\\tarifario\\tariff-table.tsx",
+        "line": 77,
+        "type": "chainedAccess",
+        "code": "{charge.consumption.value.toFixed(2)}",
+        "match": "charge.consumption.value.toFixed"
+      },
+      {
+        "file": "app\\ui\\energia\\tarifario\\tarifario-chart.tsx",
+        "line": 163,
+        "type": "chainedAccess",
+        "code": "label += `S/ ${context.parsed.y.toFixed(2)}`;",
+        "match": "context.parsed.y.toFixed"
+      },
+      {
+        "file": "app\\ui\\energia\\tarifario\\consumption-chart.tsx",
+        "line": 171,
+        "type": "chainedAccess",
+        "code": "label += `${context.parsed.y.toFixed(2)} kWh`;",
+        "match": "context.parsed.y.toFixed"
+      },
+      {
+        "file": "app\\ui\\energia\\monitoreo\\power-dashboard.tsx",
+        "line": 200,
+        "type": "chainedAccess",
+        "code": "label += context.parsed.y.toFixed(2) + ' ' + readings?.[0]?.unit;",
+        "match": "context.parsed.y.toFixed"
+      },
+      {
+        "file": "app\\ui\\energia\\consumo\\graph.tsx",
+        "line": 190,
+        "type": "chainedAccess",
+        "code": "label += context.parsed.y.toFixed(2) + ' ' + readingsGraph[0]?.unit;",
+        "match": "context.parsed.y.toFixed"
+      },
+      {
+        "file": "app\\ui\\analisis\\estadisticas\\chart.tsx",
+        "line": 309,
+        "type": "chainedAccess",
+        "code": "const allVisible = chart.data.datasets.every(",
+        "match": "chart.data.datasets.every"
+      },
+      {
+        "file": "app\\ui\\analisis\\estadisticas\\chart.tsx",
+        "line": 315,
+        "type": "chainedAccess",
+        "code": "chart.data.datasets.forEach((_, index) => {",
+        "match": "chart.data.datasets.forEach"
+      },
+      {
+        "file": "app\\ui\\analisis\\estadisticas\\chart.tsx",
+        "line": 324,
+        "type": "chainedAccess",
+        "code": "const visibleCount = chart.data.datasets.filter(",
+        "match": "chart.data.datasets.filter"
+      },
+      {
+        "file": "app\\ui\\analisis\\estadisticas\\chart.tsx",
+        "line": 329,
+        "type": "chainedAccess",
+        "code": "chart.data.datasets.forEach((_, index) => {",
+        "match": "chart.data.datasets.forEach"
+      },
+      {
+        "file": "app\\lib\\constant.ts",
+        "line": 1,
+        "type": "chainedAccess",
+        "code": "export const baseUrl = 'https://api.zeia.com.pe'",
+        "match": "api.zeia.com.pe"
+      },
+      {
+        "file": "app\\lib\\constant.ts",
+        "line": 2,
+        "type": "chainedAccess",
+        "code": "export const baseUrlAmbiental = 'https://apiambiental.zeia.com.pe'",
+        "match": "apiambiental.zeia.com.pe"
+      },
+      {
+        "file": "app\\lib\\constant.ts",
+        "line": 3,
+        "type": "chainedAccess",
+        "code": "export const baseUrlEnergy = 'https://api.energy.zeia.com.pe'",
+        "match": "api.energy.zeia.com"
+      }
+    ],
+    "unsafeArrayAccess": [
+      {
+        "file": "app\\ui\\umbrales.tsx",
+        "line": 48,
+        "type": "unsafeArrayAccess",
+        "code": "texto: `< ${thresholds[0]}`,",
+        "match": "thresholds[0]"
+      },
+      {
+        "file": "app\\ui\\umbrales.tsx",
+        "line": 49,
+        "type": "unsafeArrayAccess",
+        "code": "...etiquetas[0]",
+        "match": "etiquetas[0]"
+      },
+      {
+        "file": "app\\ui\\sidebar\\app-siderbar.tsx",
+        "line": 40,
+        "type": "unsafeArrayAccess",
+        "code": "const user = results[0]",
+        "match": "results[0]"
+      },
+      {
+        "file": "app\\ui\\filters\\time-range-slider.tsx",
+        "line": 26,
+        "type": "unsafeArrayAccess",
+        "code": "params.set(\"start\", formatTime(debouncedRange[0]))",
+        "match": "debouncedRange[0]"
+      },
+      {
+        "file": "app\\ui\\energia\\tarifario\\tarifario-chart.tsx",
+        "line": 45,
+        "type": "unsafeArrayAccess",
+        "code": "const data = payload[0].payload",
+        "match": "payload[0]"
+      },
+      {
+        "file": "app\\ui\\energia\\tarifario\\tarifario-chart.tsx",
+        "line": 152,
+        "type": "unsafeArrayAccess",
+        "code": "const date = new Date(tooltipItems[0].parsed.x);",
+        "match": "tooltipItems[0]"
+      },
+      {
+        "file": "app\\ui\\energia\\tarifario\\consumption-chart.tsx",
+        "line": 50,
+        "type": "unsafeArrayAccess",
+        "code": "const data = payload[0].payload",
+        "match": "payload[0]"
+      },
+      {
+        "file": "app\\ui\\energia\\tarifario\\consumption-chart.tsx",
+        "line": 160,
+        "type": "unsafeArrayAccess",
+        "code": "const date = new Date(tooltipItems[0].parsed.x);",
+        "match": "tooltipItems[0]"
+      },
+      {
+        "file": "app\\ui\\energia\\panel\\bar-chart.tsx",
+        "line": 142,
+        "type": "unsafeArrayAccess",
+        "code": "const formattedDateX = formattedDate(tooltipItems[0].label)",
+        "match": "tooltipItems[0]"
+      },
+      {
+        "file": "app\\ui\\energia\\monitoreo\\power-dashboard.tsx",
+        "line": 83,
+        "type": "unsafeArrayAccess",
+        "code": "//           <span className=\"font-medium\">{payload[0].value} kW</span>",
+        "match": "payload[0]"
+      },
+      {
+        "file": "app\\ui\\energia\\monitoreo\\power-dashboard.tsx",
+        "line": 188,
+        "type": "unsafeArrayAccess",
+        "code": "const date = new Date(tooltipItems[0].parsed.x)",
+        "match": "tooltipItems[0]"
+      },
+      {
+        "file": "app\\ui\\energia\\distorsion\\voltage-current.tsx",
+        "line": 39,
+        "type": "unsafeArrayAccess",
+        "code": "const data = payload[0].payload",
+        "match": "payload[0]"
+      },
+      {
+        "file": "app\\ui\\energia\\distorsion\\current-chart.tsx",
+        "line": 58,
+        "type": "unsafeArrayAccess",
+        "code": "const data = payload[0].payload",
+        "match": "payload[0]"
+      },
+      {
+        "file": "app\\ui\\energia\\desbalance\\voltage-chart.tsx",
+        "line": 57,
+        "type": "unsafeArrayAccess",
+        "code": "const iaValue = payload[0].value",
+        "match": "payload[0]"
+      },
+      {
+        "file": "app\\ui\\energia\\desbalance\\voltage-chart.tsx",
+        "line": 58,
+        "type": "unsafeArrayAccess",
+        "code": "const date = new Date(payload[0].payload.timestamp)",
+        "match": "payload[0]"
+      },
+      {
+        "file": "app\\ui\\energia\\desbalance\\voltage-chart.tsx",
+        "line": 59,
+        "type": "unsafeArrayAccess",
+        "code": "const dataKey = payload[0].dataKey",
+        "match": "payload[0]"
+      },
+      {
+        "file": "app\\ui\\energia\\desbalance\\voltage-chart.tsx",
+        "line": 77,
+        "type": "unsafeArrayAccess",
+        "code": "const channel = item.values_per_channel[0]",
+        "match": "values_per_channel[0]"
+      },
+      {
+        "file": "app\\ui\\energia\\desbalance\\current-chart.tsx",
+        "line": 55,
+        "type": "unsafeArrayAccess",
+        "code": "const iaValue = payload[0].value",
+        "match": "payload[0]"
+      },
+      {
+        "file": "app\\ui\\energia\\desbalance\\current-chart.tsx",
+        "line": 56,
+        "type": "unsafeArrayAccess",
+        "code": "const date = new Date(payload[0].payload.timestamp)",
+        "match": "payload[0]"
+      },
+      {
+        "file": "app\\ui\\energia\\desbalance\\current-chart.tsx",
+        "line": 57,
+        "type": "unsafeArrayAccess",
+        "code": "const dataKey = payload[0].dataKey",
+        "match": "payload[0]"
+      },
+      {
+        "file": "app\\ui\\energia\\desbalance\\current-chart.tsx",
+        "line": 77,
+        "type": "unsafeArrayAccess",
+        "code": "const channel = item.values_per_channel[0]",
+        "match": "values_per_channel[0]"
+      },
+      {
+        "file": "app\\ui\\energia\\desbalance\\current-chart-count.tsx",
+        "line": 108,
+        "type": "unsafeArrayAccess",
+        "code": "const date = new Date(tooltipItems[0].label)",
+        "match": "tooltipItems[0]"
+      },
+      {
+        "file": "app\\ui\\energia\\consumo\\measurement-table.tsx",
+        "line": 72,
+        "type": "unsafeArrayAccess",
+        "code": "setSelectedIndicator(avaibleIndicators[0])",
+        "match": "avaibleIndicators[0]"
+      },
+      {
+        "file": "app\\ui\\energia\\consumo\\measurement-table.tsx",
+        "line": 74,
+        "type": "unsafeArrayAccess",
+        "code": "router.push(pathname + \"?\" + createQueryString(\"indicator\", avaibleIndicators[0]), { scroll: false })",
+        "match": "avaibleIndicators[0]"
+      },
+      {
+        "file": "app\\ui\\energia\\consumo\\measurement-graph.tsx",
+        "line": 36,
+        "type": "unsafeArrayAccess",
+        "code": "const dataLastBy = payload[0].payload.last_by",
+        "match": "payload[0]"
+      },
+      {
+        "file": "app\\ui\\energia\\consumo\\measurement-graph.tsx",
+        "line": 37,
+        "type": "unsafeArrayAccess",
+        "code": "const data = payload[0].payload.originalData",
+        "match": "payload[0]"
+      },
+      {
+        "file": "app\\ui\\energia\\consumo\\graph.tsx",
+        "line": 178,
+        "type": "unsafeArrayAccess",
+        "code": "// const date = new Date(tooltipItems[0].parsed.x);",
+        "match": "tooltipItems[0]"
+      },
+      {
+        "file": "app\\ui\\energia\\consumo\\graph.tsx",
+        "line": 179,
+        "type": "unsafeArrayAccess",
+        "code": "const { date, time } = formatDateTime(tooltipItems[0].parsed.x)",
+        "match": "tooltipItems[0]"
+      },
+      {
+        "file": "app\\ui\\covid\\table.tsx",
+        "line": 74,
+        "type": "unsafeArrayAccess",
+        "code": "<p>{baselines[0].value}</p>",
+        "match": "baselines[0]"
+      },
+      {
+        "file": "app\\ui\\covid\\table.tsx",
+        "line": 78,
+        "type": "unsafeArrayAccess",
+        "code": "<p>{baselines[0].time}</p>",
+        "match": "baselines[0]"
+      },
+      {
+        "file": "app\\ui\\covid\\detail\\table.tsx",
+        "line": 74,
+        "type": "unsafeArrayAccess",
+        "code": "<p>{baselines[0].value}</p>",
+        "match": "baselines[0]"
+      },
+      {
+        "file": "app\\ui\\covid\\detail\\table.tsx",
+        "line": 78,
+        "type": "unsafeArrayAccess",
+        "code": "<p>{baselines[0].time}</p>",
+        "match": "baselines[0]"
+      },
+      {
+        "file": "app\\ui\\analisis\\estadisticas\\chart.tsx",
+        "line": 398,
+        "type": "unsafeArrayAccess",
+        "code": "return ctx[0].label.split(',')[2]",
+        "match": "ctx[0]"
+      },
+      {
+        "file": "app\\energia\\dashboard\\tarifario\\page.tsx",
+        "line": 60,
+        "type": "unsafeArrayAccess",
+        "code": "const firstHeadquarter = headquarter || results[0].id.toString()",
+        "match": "results[0]"
+      },
+      {
+        "file": "app\\energia\\dashboard\\tarifario\\historial-consumo\\page.tsx",
+        "line": 25,
+        "type": "unsafeArrayAccess",
+        "code": "const firstHeadquarter = headquarter || results[0].id.toString()",
+        "match": "results[0]"
+      },
+      {
+        "file": "app\\energia\\dashboard\\panel\\page.tsx",
+        "line": 49,
+        "type": "unsafeArrayAccess",
+        "code": "const firstHeadquarter = headquarter || results[0].id.toString()",
+        "match": "results[0]"
+      },
+      {
+        "file": "app\\energia\\dashboard\\panel\\page.tsx",
+        "line": 58,
+        "type": "unsafeArrayAccess",
+        "code": "const firstPoint = point || measurementPoints?.results[0]?.measurement_points[0].id.toString()",
+        "match": "measurement_points[0]"
+      },
+      {
+        "file": "app\\energia\\dashboard\\panel\\alert\\page.tsx",
+        "line": 52,
+        "type": "unsafeArrayAccess",
+        "code": "const firstHeadquarter = headquarter || results[0].id.toString()",
+        "match": "results[0]"
+      },
+      {
+        "file": "app\\energia\\dashboard\\panel\\alert\\page.tsx",
+        "line": 61,
+        "type": "unsafeArrayAccess",
+        "code": "const firstPoint = point || measurementPoints?.results[0]?.measurement_points[0].id.toString()",
+        "match": "measurement_points[0]"
+      },
+      {
+        "file": "app\\energia\\dashboard\\monitoreo\\page.tsx",
+        "line": 20,
+        "type": "unsafeArrayAccess",
+        "code": "const firstHeadquarter = headquarter || results[0].id.toString()",
+        "match": "results[0]"
+      },
+      {
+        "file": "app\\energia\\dashboard\\monitoreo\\page.tsx",
+        "line": 54,
+        "type": "unsafeArrayAccess",
+        "code": "<PowerUsageChart readings={monitoringGraphReadings} group={group_by} powers={results[0].powers} />",
+        "match": "results[0]"
+      },
+      {
+        "file": "app\\energia\\dashboard\\monitoreo\\page.tsx",
+        "line": 55,
+        "type": "unsafeArrayAccess",
+        "code": "<ExcessPower excessPowerData={monitoringLastThreeReadings} panel={electrical_panels[0]} powers={results[0].powers} />",
+        "match": "electrical_panels[0]"
+      },
+      {
+        "file": "app\\energia\\dashboard\\monitoreo\\page.tsx",
+        "line": 55,
+        "type": "unsafeArrayAccess",
+        "code": "<ExcessPower excessPowerData={monitoringLastThreeReadings} panel={electrical_panels[0]} powers={results[0].powers} />",
+        "match": "results[0]"
+      },
+      {
+        "file": "app\\energia\\dashboard\\monitoreo\\potencia-excedente\\page.tsx",
+        "line": 22,
+        "type": "unsafeArrayAccess",
+        "code": "const firstHeadquarter = headquarter || results[0].id.toString()",
+        "match": "results[0]"
+      },
+      {
+        "file": "app\\energia\\dashboard\\monitoreo\\potencia-excedente\\page.tsx",
+        "line": 36,
+        "type": "unsafeArrayAccess",
+        "code": "{/* <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters[0].electrical_panels} /> */}",
+        "match": "energy_headquarters[0]"
+      },
+      {
+        "file": "app\\energia\\dashboard\\home\\page.tsx",
+        "line": 27,
+        "type": "unsafeArrayAccess",
+        "code": "const firstHeadquarter = headquarter || results[0].id.toString()",
+        "match": "results[0]"
+      },
+      {
+        "file": "app\\energia\\dashboard\\home\\page.tsx",
+        "line": 35,
+        "type": "unsafeArrayAccess",
+        "code": "const firstPoint = point || measurementPoints?.results[0]?.measurement_points[0].id.toString()",
+        "match": "measurement_points[0]"
+      },
+      {
+        "file": "app\\energia\\dashboard\\distorsion\\page.tsx",
+        "line": 27,
+        "type": "unsafeArrayAccess",
+        "code": "const firstHeadquarter = headquarter || results[0].id.toString()",
+        "match": "results[0]"
+      },
+      {
+        "file": "app\\energia\\dashboard\\distorsion\\page.tsx",
+        "line": 35,
+        "type": "unsafeArrayAccess",
+        "code": "{/* <PanelsFilterEnergy energyPanels={  energyDetails.energy_headquarters[0].electrical_panels} /> */}",
+        "match": "energy_headquarters[0]"
+      },
+      {
+        "file": "app\\energia\\dashboard\\distorsion\\detail\\page.tsx",
+        "line": 25,
+        "type": "unsafeArrayAccess",
+        "code": "const firstHeadquarter = headquarter || results[0].id",
+        "match": "results[0]"
+      },
+      {
+        "file": "app\\energia\\dashboard\\distorsion\\detail\\page.tsx",
+        "line": 39,
+        "type": "unsafeArrayAccess",
+        "code": "{/* <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters[0].electrical_panels} /> */}",
+        "match": "energy_headquarters[0]"
+      },
+      {
+        "file": "app\\energia\\dashboard\\desbalance\\page.tsx",
+        "line": 24,
+        "type": "unsafeArrayAccess",
+        "code": "const firstHeadquarter = headquarter || results[0].id",
+        "match": "results[0]"
+      },
+      {
+        "file": "app\\energia\\dashboard\\desbalance\\page.tsx",
+        "line": 32,
+        "type": "unsafeArrayAccess",
+        "code": "const firstPoint = point || measurementPoints?.results[0]?.measurement_points[0].id.toString()",
+        "match": "measurement_points[0]"
+      },
+      {
+        "file": "app\\energia\\dashboard\\desbalance\\page.tsx",
+        "line": 61,
+        "type": "unsafeArrayAccess",
+        "code": "{/* <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters[0].electrical_panels} /> */}",
+        "match": "energy_headquarters[0]"
+      },
+      {
+        "file": "app\\energia\\dashboard\\desbalance\\alerta\\page.tsx",
+        "line": 24,
+        "type": "unsafeArrayAccess",
+        "code": "const firstHeadquarter = headquarter || results[0].id",
+        "match": "results[0]"
+      },
+      {
+        "file": "app\\energia\\dashboard\\desbalance\\alerta\\page.tsx",
+        "line": 32,
+        "type": "unsafeArrayAccess",
+        "code": "const firstPoint = point || measurementPoints?.results[0]?.measurement_points[0].id.toString()",
+        "match": "measurement_points[0]"
+      }
+    ],
+    "unsafeObjectAccess": [
+      {
+        "file": "app\\ui\\umbrales.tsx",
+        "line": 49,
+        "type": "unsafeObjectAccess",
+        "code": "...etiquetas[0]",
+        "match": ".etiquetas[0]"
+      },
+      {
+        "file": "app\\ui\\energia\\desbalance\\voltage-chart.tsx",
+        "line": 77,
+        "type": "unsafeObjectAccess",
+        "code": "const channel = item.values_per_channel[0]",
+        "match": ".values_per_channel[0]"
+      },
+      {
+        "file": "app\\ui\\energia\\desbalance\\current-chart.tsx",
+        "line": 77,
+        "type": "unsafeObjectAccess",
+        "code": "const channel = item.values_per_channel[0]",
+        "match": ".values_per_channel[0]"
+      },
+      {
+        "file": "app\\energia\\dashboard\\panel\\page.tsx",
+        "line": 58,
+        "type": "unsafeObjectAccess",
+        "code": "const firstPoint = point || measurementPoints?.results[0]?.measurement_points[0].id.toString()",
+        "match": ".measurement_points[0]"
+      },
+      {
+        "file": "app\\energia\\dashboard\\panel\\alert\\page.tsx",
+        "line": 61,
+        "type": "unsafeObjectAccess",
+        "code": "const firstPoint = point || measurementPoints?.results[0]?.measurement_points[0].id.toString()",
+        "match": ".measurement_points[0]"
+      },
+      {
+        "file": "app\\energia\\dashboard\\monitoreo\\potencia-excedente\\page.tsx",
+        "line": 36,
+        "type": "unsafeObjectAccess",
+        "code": "{/* <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters[0].electrical_panels} /> */}",
+        "match": ".energy_headquarters[0]"
+      },
+      {
+        "file": "app\\energia\\dashboard\\home\\page.tsx",
+        "line": 35,
+        "type": "unsafeObjectAccess",
+        "code": "const firstPoint = point || measurementPoints?.results[0]?.measurement_points[0].id.toString()",
+        "match": ".measurement_points[0]"
+      },
+      {
+        "file": "app\\energia\\dashboard\\distorsion\\page.tsx",
+        "line": 35,
+        "type": "unsafeObjectAccess",
+        "code": "{/* <PanelsFilterEnergy energyPanels={  energyDetails.energy_headquarters[0].electrical_panels} /> */}",
+        "match": ".energy_headquarters[0]"
+      },
+      {
+        "file": "app\\energia\\dashboard\\distorsion\\detail\\page.tsx",
+        "line": 39,
+        "type": "unsafeObjectAccess",
+        "code": "{/* <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters[0].electrical_panels} /> */}",
+        "match": ".energy_headquarters[0]"
+      },
+      {
+        "file": "app\\energia\\dashboard\\desbalance\\page.tsx",
+        "line": 32,
+        "type": "unsafeObjectAccess",
+        "code": "const firstPoint = point || measurementPoints?.results[0]?.measurement_points[0].id.toString()",
+        "match": ".measurement_points[0]"
+      },
+      {
+        "file": "app\\energia\\dashboard\\desbalance\\page.tsx",
+        "line": 61,
+        "type": "unsafeObjectAccess",
+        "code": "{/* <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters[0].electrical_panels} /> */}",
+        "match": ".energy_headquarters[0]"
+      },
+      {
+        "file": "app\\energia\\dashboard\\desbalance\\alerta\\page.tsx",
+        "line": 32,
+        "type": "unsafeObjectAccess",
+        "code": "const firstPoint = point || measurementPoints?.results[0]?.measurement_points[0].id.toString()",
+        "match": ".measurement_points[0]"
+      }
+    ],
+    "unsafeHourAccess": [
+      {
+        "file": "app\\ui\\picos\\table.tsx",
+        "line": 63,
+        "type": "unsafeHourAccess",
+        "code": "<span className=\"text-sm\">{reading.hour.toLowerCase()}</span>",
+        "match": ".hour"
+      },
+      {
+        "file": "app\\ui\\picos\\table.tsx",
+        "line": 101,
+        "type": "unsafeHourAccess",
+        "code": "<TableCell>{indicator.hour.toLowerCase()}</TableCell>",
+        "match": ".hour"
+      },
+      {
+        "file": "app\\ui\\monitoreo\\table.tsx",
+        "line": 71,
+        "type": "unsafeHourAccess",
+        "code": "<TableCell className=\"font-normal\">{indicator.hours.toLocaleLowerCase()}</TableCell>",
+        "match": ".hour"
+      },
+      {
+        "file": "app\\ui\\covid\\detail\\table.tsx",
+        "line": 196,
+        "type": "unsafeHourAccess",
+        "code": "<TableCell >{indicator.hour}</TableCell>",
+        "match": ".hour"
+      },
+      {
+        "file": "app\\ui\\analisis\\table.tsx",
+        "line": 199,
+        "type": "unsafeHourAccess",
+        "code": "<TableCell>{indicator.hours.toLocaleLowerCase()}</TableCell>",
+        "match": ".hour"
+      },
+      {
+        "file": "app\\ui\\analisis\\estadisticas\\chart.tsx",
+        "line": 63,
+        "type": "unsafeHourAccess",
+        "code": "if (readings[i][e]?.hour) {",
+        "match": ".hour"
+      },
+      {
+        "file": "app\\ui\\analisis\\estadisticas\\chart.tsx",
+        "line": 64,
+        "type": "unsafeHourAccess",
+        "code": "const aaa = parse(readings[i][e].hour, 'HH:mm', new Date())",
+        "match": ".hour"
+      },
+      {
+        "file": "app\\ui\\analisis\\estadisticas\\chart.tsx",
+        "line": 89,
+        "type": "unsafeHourAccess",
+        "code": "if (readings[i][e]?.hour) {",
+        "match": ".hour"
+      },
+      {
+        "file": "app\\ui\\analisis\\estadisticas\\chart.tsx",
+        "line": 90,
+        "type": "unsafeHourAccess",
+        "code": "const dateTemplate = `${i} ${readings[i][e].hour}`",
+        "match": ".hour"
+      },
+      {
+        "file": "app\\ui\\alertas\\table.tsx",
+        "line": 56,
+        "type": "unsafeHourAccess",
+        "code": "<TableCell >{indicator.hours.toLowerCase()}</TableCell>",
+        "match": ".hour"
+      },
+      {
+        "file": "app\\ocupacional\\dashboard\\monitoreo\\page.tsx",
+        "line": 47,
+        "type": "unsafeHourAccess",
+        "code": "const [aHours] = a.hours ? a.hours.split(' ') : ['00:00']",
+        "match": ".hour"
+      },
+      {
+        "file": "app\\ocupacional\\dashboard\\monitoreo\\page.tsx",
+        "line": 47,
+        "type": "unsafeHourAccess",
+        "code": "const [aHours] = a.hours ? a.hours.split(' ') : ['00:00']",
+        "match": ".hour"
+      },
+      {
+        "file": "app\\ocupacional\\dashboard\\monitoreo\\page.tsx",
+        "line": 48,
+        "type": "unsafeHourAccess",
+        "code": "const [bHours] = b.hours ? b.hours.split(' ') : ['00:00']",
+        "match": ".hour"
+      },
+      {
+        "file": "app\\ocupacional\\dashboard\\monitoreo\\page.tsx",
+        "line": 48,
+        "type": "unsafeHourAccess",
+        "code": "const [bHours] = b.hours ? b.hours.split(' ') : ['00:00']",
+        "match": ".hour"
+      },
+      {
+        "file": "app\\ambiental\\dashboard\\monitoreo\\page.tsx",
+        "line": 46,
+        "type": "unsafeHourAccess",
+        "code": "const [aHours] = a.hours ? a.hours.split(' ') : ['00:00'];",
+        "match": ".hour"
+      },
+      {
+        "file": "app\\ambiental\\dashboard\\monitoreo\\page.tsx",
+        "line": 46,
+        "type": "unsafeHourAccess",
+        "code": "const [aHours] = a.hours ? a.hours.split(' ') : ['00:00'];",
+        "match": ".hour"
+      },
+      {
+        "file": "app\\ambiental\\dashboard\\monitoreo\\page.tsx",
+        "line": 47,
+        "type": "unsafeHourAccess",
+        "code": "const [bHours] = b.hours ? b.hours.split(' ') : ['00:00'];",
+        "match": ".hour"
+      },
+      {
+        "file": "app\\ambiental\\dashboard\\monitoreo\\page.tsx",
+        "line": 47,
+        "type": "unsafeHourAccess",
+        "code": "const [bHours] = b.hours ? b.hours.split(' ') : ['00:00'];",
+        "match": ".hour"
+      }
+    ],
+    "unsafePropertyAccess": [
+      {
+        "file": "app\\ui\\energia\\tarifario\\tarifario-chart.tsx",
+        "line": 45,
+        "type": "unsafePropertyAccess",
+        "code": "const data = payload[0].payload",
+        "match": "payload[0].payload"
+      },
+      {
+        "file": "app\\ui\\energia\\tarifario\\tarifario-chart.tsx",
+        "line": 152,
+        "type": "unsafePropertyAccess",
+        "code": "const date = new Date(tooltipItems[0].parsed.x);",
+        "match": "tooltipItems[0].parsed"
+      },
+      {
+        "file": "app\\ui\\energia\\tarifario\\consumption-chart.tsx",
+        "line": 50,
+        "type": "unsafePropertyAccess",
+        "code": "const data = payload[0].payload",
+        "match": "payload[0].payload"
+      },
+      {
+        "file": "app\\ui\\energia\\tarifario\\consumption-chart.tsx",
+        "line": 160,
+        "type": "unsafePropertyAccess",
+        "code": "const date = new Date(tooltipItems[0].parsed.x);",
+        "match": "tooltipItems[0].parsed"
+      },
+      {
+        "file": "app\\ui\\energia\\panel\\bar-chart.tsx",
+        "line": 89,
+        "type": "unsafePropertyAccess",
+        "code": "const formattedDateX = formattedWithoutMonth(readingsGraph[index].first_reading)",
+        "match": "readingsGraph[index].first_reading"
+      },
+      {
+        "file": "app\\ui\\energia\\panel\\bar-chart.tsx",
+        "line": 142,
+        "type": "unsafePropertyAccess",
+        "code": "const formattedDateX = formattedDate(tooltipItems[0].label)",
+        "match": "tooltipItems[0].label"
+      },
+      {
+        "file": "app\\ui\\energia\\monitoreo\\power-dashboard.tsx",
+        "line": 83,
+        "type": "unsafePropertyAccess",
+        "code": "//           <span className=\"font-medium\">{payload[0].value} kW</span>",
+        "match": "payload[0].value"
+      },
+      {
+        "file": "app\\ui\\energia\\monitoreo\\power-dashboard.tsx",
+        "line": 188,
+        "type": "unsafePropertyAccess",
+        "code": "const date = new Date(tooltipItems[0].parsed.x)",
+        "match": "tooltipItems[0].parsed"
+      },
+      {
+        "file": "app\\ui\\energia\\distorsion\\voltage-current.tsx",
+        "line": 39,
+        "type": "unsafePropertyAccess",
+        "code": "const data = payload[0].payload",
+        "match": "payload[0].payload"
+      },
+      {
+        "file": "app\\ui\\energia\\distorsion\\current-chart.tsx",
+        "line": 58,
+        "type": "unsafePropertyAccess",
+        "code": "const data = payload[0].payload",
+        "match": "payload[0].payload"
+      },
+      {
+        "file": "app\\ui\\energia\\desbalance\\voltage-chart.tsx",
+        "line": 57,
+        "type": "unsafePropertyAccess",
+        "code": "const iaValue = payload[0].value",
+        "match": "payload[0].value"
+      },
+      {
+        "file": "app\\ui\\energia\\desbalance\\voltage-chart.tsx",
+        "line": 58,
+        "type": "unsafePropertyAccess",
+        "code": "const date = new Date(payload[0].payload.timestamp)",
+        "match": "payload[0].payload"
+      },
+      {
+        "file": "app\\ui\\energia\\desbalance\\voltage-chart.tsx",
+        "line": 59,
+        "type": "unsafePropertyAccess",
+        "code": "const dataKey = payload[0].dataKey",
+        "match": "payload[0].dataKey"
+      },
+      {
+        "file": "app\\ui\\energia\\desbalance\\current-chart.tsx",
+        "line": 55,
+        "type": "unsafePropertyAccess",
+        "code": "const iaValue = payload[0].value",
+        "match": "payload[0].value"
+      },
+      {
+        "file": "app\\ui\\energia\\desbalance\\current-chart.tsx",
+        "line": 56,
+        "type": "unsafePropertyAccess",
+        "code": "const date = new Date(payload[0].payload.timestamp)",
+        "match": "payload[0].payload"
+      },
+      {
+        "file": "app\\ui\\energia\\desbalance\\current-chart.tsx",
+        "line": 57,
+        "type": "unsafePropertyAccess",
+        "code": "const dataKey = payload[0].dataKey",
+        "match": "payload[0].dataKey"
+      },
+      {
+        "file": "app\\ui\\energia\\desbalance\\current-chart-count.tsx",
+        "line": 87,
+        "type": "unsafePropertyAccess",
+        "code": "const date = new Date(results[value].date as any)",
+        "match": "results[value].date"
+      },
+      {
+        "file": "app\\ui\\energia\\desbalance\\current-chart-count.tsx",
+        "line": 108,
+        "type": "unsafePropertyAccess",
+        "code": "const date = new Date(tooltipItems[0].label)",
+        "match": "tooltipItems[0].label"
+      },
+      {
+        "file": "app\\ui\\energia\\consumo\\measurement-table.tsx",
+        "line": 178,
+        "type": "unsafePropertyAccess",
+        "code": "const indicatorValue = indicatorValues[header] && indicatorValues[header].toFixed(2)",
+        "match": "indicatorValues[header].toFixed"
+      },
+      {
+        "file": "app\\ui\\energia\\consumo\\measurement-graph.tsx",
+        "line": 36,
+        "type": "unsafePropertyAccess",
+        "code": "const dataLastBy = payload[0].payload.last_by",
+        "match": "payload[0].payload"
+      },
+      {
+        "file": "app\\ui\\energia\\consumo\\measurement-graph.tsx",
+        "line": 37,
+        "type": "unsafePropertyAccess",
+        "code": "const data = payload[0].payload.originalData",
+        "match": "payload[0].payload"
+      },
+      {
+        "file": "app\\ui\\energia\\consumo\\graph.tsx",
+        "line": 178,
+        "type": "unsafePropertyAccess",
+        "code": "// const date = new Date(tooltipItems[0].parsed.x);",
+        "match": "tooltipItems[0].parsed"
+      },
+      {
+        "file": "app\\ui\\energia\\consumo\\graph.tsx",
+        "line": 179,
+        "type": "unsafePropertyAccess",
+        "code": "const { date, time } = formatDateTime(tooltipItems[0].parsed.x)",
+        "match": "tooltipItems[0].parsed"
+      },
+      {
+        "file": "app\\ui\\covid\\table.tsx",
+        "line": 74,
+        "type": "unsafePropertyAccess",
+        "code": "<p>{baselines[0].value}</p>",
+        "match": "baselines[0].value"
+      },
+      {
+        "file": "app\\ui\\covid\\table.tsx",
+        "line": 78,
+        "type": "unsafePropertyAccess",
+        "code": "<p>{baselines[0].time}</p>",
+        "match": "baselines[0].time"
+      },
+      {
+        "file": "app\\ui\\covid\\table.tsx",
+        "line": 84,
+        "type": "unsafePropertyAccess",
+        "code": "<p>{baselines[1].value}</p>",
+        "match": "baselines[1].value"
+      },
+      {
+        "file": "app\\ui\\covid\\table.tsx",
+        "line": 88,
+        "type": "unsafePropertyAccess",
+        "code": "<p>{baselines[1].time}</p>",
+        "match": "baselines[1].time"
+      },
+      {
+        "file": "app\\ui\\covid\\table.tsx",
+        "line": 93,
+        "type": "unsafePropertyAccess",
+        "code": "<div className={`w-4 h-4 rounded-full ${baselines[1].risk && RISK_COLOR[baselines[1].risk as Risk]}`}></div>",
+        "match": "baselines[1].risk"
+      },
+      {
+        "file": "app\\ui\\covid\\table.tsx",
+        "line": 93,
+        "type": "unsafePropertyAccess",
+        "code": "<div className={`w-4 h-4 rounded-full ${baselines[1].risk && RISK_COLOR[baselines[1].risk as Risk]}`}></div>",
+        "match": "baselines[1].risk"
+      },
+      {
+        "file": "app\\ui\\covid\\table.tsx",
+        "line": 94,
+        "type": "unsafePropertyAccess",
+        "code": "<p>{RISK[baselines[1].risk as Risk]}</p>",
+        "match": "baselines[1].risk"
+      },
+      {
+        "file": "app\\ui\\covid\\table.tsx",
+        "line": 101,
+        "type": "unsafePropertyAccess",
+        "code": "<p>{baselines[2].value}</p>",
+        "match": "baselines[2].value"
+      },
+      {
+        "file": "app\\ui\\covid\\table.tsx",
+        "line": 105,
+        "type": "unsafePropertyAccess",
+        "code": "<p>{baselines[2].time}</p>",
+        "match": "baselines[2].time"
+      },
+      {
+        "file": "app\\ui\\covid\\table.tsx",
+        "line": 110,
+        "type": "unsafePropertyAccess",
+        "code": "<div className={`w-4 h-4 rounded-full ${RISK_COLOR[baselines[2].risk as Risk]}`}></div>",
+        "match": "baselines[2].risk"
+      },
+      {
+        "file": "app\\ui\\covid\\table.tsx",
+        "line": 111,
+        "type": "unsafePropertyAccess",
+        "code": "<p>{RISK[baselines[2].risk as Risk]}</p>",
+        "match": "baselines[2].risk"
+      },
+      {
+        "file": "app\\ui\\covid\\detail\\table.tsx",
+        "line": 74,
+        "type": "unsafePropertyAccess",
+        "code": "<p>{baselines[0].value}</p>",
+        "match": "baselines[0].value"
+      },
+      {
+        "file": "app\\ui\\covid\\detail\\table.tsx",
+        "line": 78,
+        "type": "unsafePropertyAccess",
+        "code": "<p>{baselines[0].time}</p>",
+        "match": "baselines[0].time"
+      },
+      {
+        "file": "app\\ui\\covid\\detail\\table.tsx",
+        "line": 84,
+        "type": "unsafePropertyAccess",
+        "code": "<p>{baselines[1].value}</p>",
+        "match": "baselines[1].value"
+      },
+      {
+        "file": "app\\ui\\covid\\detail\\table.tsx",
+        "line": 88,
+        "type": "unsafePropertyAccess",
+        "code": "<p>{baselines[1].time}</p>",
+        "match": "baselines[1].time"
+      },
+      {
+        "file": "app\\ui\\covid\\detail\\table.tsx",
+        "line": 93,
+        "type": "unsafePropertyAccess",
+        "code": "<div className={`w-4 h-4 rounded-full ${baselines[1].risk && RISK_COLOR[baselines[1].risk as Risk]}`}></div>",
+        "match": "baselines[1].risk"
+      },
+      {
+        "file": "app\\ui\\covid\\detail\\table.tsx",
+        "line": 93,
+        "type": "unsafePropertyAccess",
+        "code": "<div className={`w-4 h-4 rounded-full ${baselines[1].risk && RISK_COLOR[baselines[1].risk as Risk]}`}></div>",
+        "match": "baselines[1].risk"
+      },
+      {
+        "file": "app\\ui\\covid\\detail\\table.tsx",
+        "line": 94,
+        "type": "unsafePropertyAccess",
+        "code": "<p>{RISK[baselines[1].risk as Risk]}</p>",
+        "match": "baselines[1].risk"
+      },
+      {
+        "file": "app\\ui\\covid\\detail\\table.tsx",
+        "line": 101,
+        "type": "unsafePropertyAccess",
+        "code": "<p>{baselines[2].value}</p>",
+        "match": "baselines[2].value"
+      },
+      {
+        "file": "app\\ui\\covid\\detail\\table.tsx",
+        "line": 105,
+        "type": "unsafePropertyAccess",
+        "code": "<p>{baselines[2].time}</p>",
+        "match": "baselines[2].time"
+      },
+      {
+        "file": "app\\ui\\covid\\detail\\table.tsx",
+        "line": 110,
+        "type": "unsafePropertyAccess",
+        "code": "<div className={`w-4 h-4 rounded-full ${RISK_COLOR[baselines[2].risk as Risk]}`}></div>",
+        "match": "baselines[2].risk"
+      },
+      {
+        "file": "app\\ui\\covid\\detail\\table.tsx",
+        "line": 111,
+        "type": "unsafePropertyAccess",
+        "code": "<p>{RISK[baselines[2].risk as Risk]}</p>",
+        "match": "baselines[2].risk"
+      },
+      {
+        "file": "app\\ui\\analisis\\table.tsx",
+        "line": 142,
+        "type": "unsafePropertyAccess",
+        "code": "{INDICATOR_CONSEQUENCES_TEXT[indicator].map((consequence, i) => (",
+        "match": "INDICATOR_CONSEQUENCES_TEXT[indicator].map"
+      },
+      {
+        "file": "app\\ui\\analisis\\estadisticas\\chart.tsx",
+        "line": 350,
+        "type": "unsafePropertyAccess",
+        "code": "//   content: [`${UNIT_INDICATOR_THRESHOLD[thresholdPointer].bottom} ${UNIT_CONVERTED[thresholdPointer]}`],",
+        "match": "UNIT_INDICATOR_THRESHOLD[thresholdPointer].bottom"
+      },
+      {
+        "file": "app\\ui\\analisis\\estadisticas\\chart.tsx",
+        "line": 365,
+        "type": "unsafePropertyAccess",
+        "code": "//   content: [`${UNIT_INDICATOR_THRESHOLD[thresholdPointer].center} ${UNIT_CONVERTED[thresholdPointer]}`],",
+        "match": "UNIT_INDICATOR_THRESHOLD[thresholdPointer].center"
+      },
+      {
+        "file": "app\\ui\\analisis\\estadisticas\\chart.tsx",
+        "line": 379,
+        "type": "unsafePropertyAccess",
+        "code": "//   content: [`${UNIT_INDICATOR_THRESHOLD[thresholdPointer].top} ${UNIT_CONVERTED[thresholdPointer]}`],",
+        "match": "UNIT_INDICATOR_THRESHOLD[thresholdPointer].top"
+      },
+      {
+        "file": "app\\ui\\analisis\\estadisticas\\chart.tsx",
+        "line": 398,
+        "type": "unsafePropertyAccess",
+        "code": "return ctx[0].label.split(',')[2]",
+        "match": "ctx[0].label"
+      },
+      {
+        "file": "app\\energia\\dashboard\\tarifario\\page.tsx",
+        "line": 60,
+        "type": "unsafePropertyAccess",
+        "code": "const firstHeadquarter = headquarter || results[0].id.toString()",
+        "match": "results[0].id"
+      },
+      {
+        "file": "app\\energia\\dashboard\\tarifario\\historial-consumo\\page.tsx",
+        "line": 25,
+        "type": "unsafePropertyAccess",
+        "code": "const firstHeadquarter = headquarter || results[0].id.toString()",
+        "match": "results[0].id"
+      },
+      {
+        "file": "app\\energia\\dashboard\\panel\\page.tsx",
+        "line": 49,
+        "type": "unsafePropertyAccess",
+        "code": "const firstHeadquarter = headquarter || results[0].id.toString()",
+        "match": "results[0].id"
+      },
+      {
+        "file": "app\\energia\\dashboard\\panel\\page.tsx",
+        "line": 58,
+        "type": "unsafePropertyAccess",
+        "code": "const firstPoint = point || measurementPoints?.results[0]?.measurement_points[0].id.toString()",
+        "match": "measurement_points[0].id"
+      },
+      {
+        "file": "app\\energia\\dashboard\\panel\\alert\\page.tsx",
+        "line": 52,
+        "type": "unsafePropertyAccess",
+        "code": "const firstHeadquarter = headquarter || results[0].id.toString()",
+        "match": "results[0].id"
+      },
+      {
+        "file": "app\\energia\\dashboard\\panel\\alert\\page.tsx",
+        "line": 61,
+        "type": "unsafePropertyAccess",
+        "code": "const firstPoint = point || measurementPoints?.results[0]?.measurement_points[0].id.toString()",
+        "match": "measurement_points[0].id"
+      },
+      {
+        "file": "app\\energia\\dashboard\\monitoreo\\page.tsx",
+        "line": 20,
+        "type": "unsafePropertyAccess",
+        "code": "const firstHeadquarter = headquarter || results[0].id.toString()",
+        "match": "results[0].id"
+      },
+      {
+        "file": "app\\energia\\dashboard\\monitoreo\\page.tsx",
+        "line": 54,
+        "type": "unsafePropertyAccess",
+        "code": "<PowerUsageChart readings={monitoringGraphReadings} group={group_by} powers={results[0].powers} />",
+        "match": "results[0].powers"
+      },
+      {
+        "file": "app\\energia\\dashboard\\monitoreo\\page.tsx",
+        "line": 55,
+        "type": "unsafePropertyAccess",
+        "code": "<ExcessPower excessPowerData={monitoringLastThreeReadings} panel={electrical_panels[0]} powers={results[0].powers} />",
+        "match": "results[0].powers"
+      },
+      {
+        "file": "app\\energia\\dashboard\\monitoreo\\potencia-excedente\\page.tsx",
+        "line": 22,
+        "type": "unsafePropertyAccess",
+        "code": "const firstHeadquarter = headquarter || results[0].id.toString()",
+        "match": "results[0].id"
+      },
+      {
+        "file": "app\\energia\\dashboard\\monitoreo\\potencia-excedente\\page.tsx",
+        "line": 36,
+        "type": "unsafePropertyAccess",
+        "code": "{/* <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters[0].electrical_panels} /> */}",
+        "match": "energy_headquarters[0].electrical_panels"
+      },
+      {
+        "file": "app\\energia\\dashboard\\home\\page.tsx",
+        "line": 27,
+        "type": "unsafePropertyAccess",
+        "code": "const firstHeadquarter = headquarter || results[0].id.toString()",
+        "match": "results[0].id"
+      },
+      {
+        "file": "app\\energia\\dashboard\\home\\page.tsx",
+        "line": 35,
+        "type": "unsafePropertyAccess",
+        "code": "const firstPoint = point || measurementPoints?.results[0]?.measurement_points[0].id.toString()",
+        "match": "measurement_points[0].id"
+      },
+      {
+        "file": "app\\energia\\dashboard\\distorsion\\page.tsx",
+        "line": 27,
+        "type": "unsafePropertyAccess",
+        "code": "const firstHeadquarter = headquarter || results[0].id.toString()",
+        "match": "results[0].id"
+      },
+      {
+        "file": "app\\energia\\dashboard\\distorsion\\page.tsx",
+        "line": 35,
+        "type": "unsafePropertyAccess",
+        "code": "{/* <PanelsFilterEnergy energyPanels={  energyDetails.energy_headquarters[0].electrical_panels} /> */}",
+        "match": "energy_headquarters[0].electrical_panels"
+      },
+      {
+        "file": "app\\energia\\dashboard\\distorsion\\detail\\page.tsx",
+        "line": 25,
+        "type": "unsafePropertyAccess",
+        "code": "const firstHeadquarter = headquarter || results[0].id",
+        "match": "results[0].id"
+      },
+      {
+        "file": "app\\energia\\dashboard\\distorsion\\detail\\page.tsx",
+        "line": 39,
+        "type": "unsafePropertyAccess",
+        "code": "{/* <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters[0].electrical_panels} /> */}",
+        "match": "energy_headquarters[0].electrical_panels"
+      },
+      {
+        "file": "app\\energia\\dashboard\\desbalance\\page.tsx",
+        "line": 24,
+        "type": "unsafePropertyAccess",
+        "code": "const firstHeadquarter = headquarter || results[0].id",
+        "match": "results[0].id"
+      },
+      {
+        "file": "app\\energia\\dashboard\\desbalance\\page.tsx",
+        "line": 32,
+        "type": "unsafePropertyAccess",
+        "code": "const firstPoint = point || measurementPoints?.results[0]?.measurement_points[0].id.toString()",
+        "match": "measurement_points[0].id"
+      },
+      {
+        "file": "app\\energia\\dashboard\\desbalance\\page.tsx",
+        "line": 61,
+        "type": "unsafePropertyAccess",
+        "code": "{/* <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters[0].electrical_panels} /> */}",
+        "match": "energy_headquarters[0].electrical_panels"
+      },
+      {
+        "file": "app\\energia\\dashboard\\desbalance\\alerta\\page.tsx",
+        "line": 24,
+        "type": "unsafePropertyAccess",
+        "code": "const firstHeadquarter = headquarter || results[0].id",
+        "match": "results[0].id"
+      },
+      {
+        "file": "app\\energia\\dashboard\\desbalance\\alerta\\page.tsx",
+        "line": 32,
+        "type": "unsafePropertyAccess",
+        "code": "const firstPoint = point || measurementPoints?.results[0]?.measurement_points[0].id.toString()",
+        "match": "measurement_points[0].id"
+      }
+    ],
+    "unsafeParse": [
+      {
+        "file": "app\\ui\\analisis\\estadisticas\\chart.tsx",
+        "line": 64,
+        "type": "unsafeParse",
+        "code": "const aaa = parse(readings[i][e].hour, 'HH:mm', new Date())",
+        "match": "parse(readings[i][e].hour,"
+      },
+      {
+        "file": "app\\ui\\analisis\\estadisticas\\chart.tsx",
+        "line": 403,
+        "type": "unsafeParse",
+        "code": "const date = parse(ctx.label, 'MMM dd, yyyy, h:mm:ss a', new Date())",
+        "match": "parse(ctx.label,"
+      }
+    ]
+  }
+}
