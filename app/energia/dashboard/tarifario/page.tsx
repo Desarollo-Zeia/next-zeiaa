@@ -57,7 +57,11 @@ export default async function Page({ searchParams }: SearchParams) {
 
   const headquarters = await getHeadquarters()
   const { results } = headquarters
-  const firstHeadquarter = headquarter || results[0].id.toString()
+  const firstHeadquarter = headquarter || results?.[0]?.id?.toString() || ''
+
+  if (!firstHeadquarter) {
+    return <div>No hay sede disponible</div>
+  }
   // Fetch energy details first as it's needed for filters
 
 

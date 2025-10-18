@@ -42,7 +42,11 @@ interface DataPoint {
     }
   
     // Extract data from the first payload item
-    const data = payload[0].payload
+    const data = payload[0]?.payload
+    
+    if (!data) {
+      return null
+    }
 
     return (
       <div className="bg-white dark:bg-gray-800 p-3 border rounded-lg shadow-sm">
@@ -149,7 +153,14 @@ export default function TarifarioChart({ data, group_by } : { data: DataPoint[],
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 title: function (tooltipItems: any) {
                   // tooltipItems es un array de elementos (en este caso de un único punto)
-                  const date = new Date(tooltipItems[0].parsed.x);
+                  if (!tooltipItems || tooltipItems.length === 0) {
+                    return 'Sin fecha'
+                  }
+                  const parsed = tooltipItems[0]?.parsed
+                  if (!parsed?.x) {
+                    return 'Sin fecha'
+                  }
+                  const date = new Date(parsed.x);
                   return format(date, "PP p", { locale: es });
                 },
                 // Personalización de la etiqueta del tooltip

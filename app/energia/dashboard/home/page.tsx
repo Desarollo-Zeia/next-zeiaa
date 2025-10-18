@@ -24,15 +24,27 @@ export default async function Page({ searchParams }: SearchParams) {
   const headquarters = await getHeadquarters()
   const { results } = headquarters
 
-  const firstHeadquarter = headquarter || results[0].id.toString()
+  const firstHeadquarter = headquarter || results?.[0]?.id?.toString() || ''
+
+  if (!firstHeadquarter) {
+    return <div>No hay sede disponible</div>
+  }
 
   const measurementPointsPanels = await getEnergyMeasurementPointPanels({ headquarterId: firstHeadquarter })
 
-  const firstPanel = panel || measurementPointsPanels?.results[0]?.id.toString()
+  const firstPanel = panel || measurementPointsPanels?.results?.[0]?.id?.toString() || ''
+
+  if (!firstPanel) {
+    return <div>No hay paneles disponibles</div>
+  }
 
   const measurementPoints = await getMeasurementPoints({ electricalpanelId: firstPanel })
 
-  const firstPoint = point || measurementPoints?.results[0]?.measurement_points[0].id.toString()
+  const firstPoint = point || measurementPoints?.results?.[0]?.measurement_points?.[0]?.id?.toString() || ''
+
+  if (!firstPoint) {
+    return <div>No hay puntos de medición disponibles</div>
+  }
 
   const [readings, readingsGraph] = await Promise.all([
     consume({

@@ -18,6 +18,12 @@ export default async function page({ searchParams }: SearchParams) {
   const readings = await readingsGraph({ roomId: currentFirstRoom, indicator, unit, date_after, date_before, hour_after: start, hour_before: end })
   const generalRoomData = await roomGeneralData({ roomId: currentFirstRoom })
 
+  console.log({
+    rooms,
+    readings,
+    generalRoomData
+  })
+
   return (
     <div>
       <FiltersContainer>
