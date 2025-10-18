@@ -30,7 +30,7 @@ export function setupErrorMonitoring() {
   })
 
   // React Error Boundary fallback
-  window.addEventListener('react-error-boundary', (event: any) => {
+  window.addEventListener('react-error-boundary', (event: CustomEvent) => {
     console.error('React Error Boundary:', event.detail)
     
     if (window.posthog) {

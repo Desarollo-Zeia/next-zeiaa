@@ -6,8 +6,7 @@ const nextConfig = {
         optimizeCss: true,
     },
     
-    // Compilation optimizations
-    swcMinify: true,
+    // Compilation optimizations (swcMinify is default in Next.js 15)
     
     // Image optimization
     images: {

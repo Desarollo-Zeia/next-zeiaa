@@ -27,12 +27,18 @@ jobs:
     
     - name: Comment PR
       if: failure()
+      continue-on-error: true
       uses: actions/github-script@v7
       with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          github.rest.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: '❌ Los checks de calidad han fallado. Por favor revisa los errores antes de hacer merge.'
-          })
+          try {
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '❌ Los checks de calidad han fallado. Por favor revisa los errores antes de hacer merge.'
+            });
+          } catch (error) {
+            console.log('No se pudo comentar en el PR:', error.message);
+          }

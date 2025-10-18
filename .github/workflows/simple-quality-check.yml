@@ -1,0 +1,51 @@
+name: Quality Check (Simple)
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  quality-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run quality checks
+      run: |
+        echo "🔍 Ejecutando checks de calidad..."
+        
+        echo "📝 Verificando tipos..."
+        npm run type-check
+        
+        echo "🧹 Ejecutando linter..."
+        npm run lint
+        
+        echo "🧪 Ejecutando tests..."
+        npm run test:ci
+        
+        echo "🏗️ Verificando build..."
+        npm run build
+        
+        echo "✅ Todos los checks pasaron exitosamente!"
+
+    - name: Build summary
+      if: always()
+      run: |
+        if [ $? -eq 0 ]; then
+          echo "✅ **Quality Check PASSED** - Todos los checks se ejecutaron correctamente" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "❌ **Quality Check FAILED** - Revisa los errores en los logs" >> $GITHUB_STEP_SUMMARY
+        fi

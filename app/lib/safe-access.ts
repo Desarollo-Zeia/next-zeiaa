@@ -16,7 +16,7 @@ export function safePropertyAccess<T, K extends keyof T>(
 }
 
 export function safeStringAccess(
-  obj: any,
+  obj: Record<string, unknown>,
   path: string,
   fallback: string = ''
 ): string {
@@ -29,16 +29,18 @@ export function safeStringAccess(
 }
 
 // Specific helpers for common patterns
-export function getFirstHeadquarter(results: any[], fallback?: string): string {
-  return safeStringAccess(safeFirstItem(results), 'id', fallback || '')
+export function getFirstHeadquarter(results: Array<{id: string | number}>, fallback?: string): string {
+  const first = safeFirstItem(results)
+  return first?.id?.toString() || fallback || ''
 }
 
-export function getFirstPanel(results: any[], fallback?: string): string {
-  return safeStringAccess(safeFirstItem(results?.results), 'id', fallback || '')
+export function getFirstPanel(results: {results?: Array<{id: string | number}>}, fallback?: string): string {
+  const first = safeFirstItem(results?.results)
+  return first?.id?.toString() || fallback || ''
 }
 
-export function getFirstMeasurementPoint(results: any[], fallback?: string): string {
+export function getFirstMeasurementPoint(results: {results?: Array<{measurement_points?: Array<{id: string | number}>}>}, fallback?: string): string {
   const firstResult = safeFirstItem(results?.results)
   const firstPoint = safeFirstItem(firstResult?.measurement_points)
-  return safeStringAccess(firstPoint, 'id', fallback || '')
+  return firstPoint?.id?.toString() || fallback || ''
 }
