@@ -1,4 +1,4 @@
-import { detail, roomsList } from "@/app/sevices/enterprise/data"
+import { roomsList } from "@/app/sevices/enterprise/data"
 import { getRooms } from "@/app/sevices/filters/data"
 import { readingsData, roomGeneralData, roomLastData } from "@/app/sevices/readings/data"
 import { Indicator, SearchParams, Unit } from "@/app/type"
@@ -29,11 +29,12 @@ export default async function page({ searchParams }: SearchParams) {
 
   const { room, indicator = 'CO2', unit = 'PPM' } = await searchParams
 
-  const { first_room: firstRoom } = await detail()
-
-  const currentFirstRoom = room ? room : firstRoom
-
   const rooms = await getRooms()
+
+
+  const firstRoom = rooms.find((room: any) => room.is_activated === true)  // eslint-disable-line @typescript-eslint/no-explicit-any
+
+  const currentFirstRoom = room ? room : firstRoom.id
   const data = await roomLastData({ roomId: currentFirstRoom })
   const roomsListReadings = await roomsList({ limit: '50' })
   const { results } = await readingsData({ roomId: currentFirstRoom, indicator, unit })
@@ -62,7 +63,7 @@ export default async function page({ searchParams }: SearchParams) {
   return (
     <div>
       <FiltersContainer>
-        <RoomSelect firstRoom={firstRoom} rooms={rooms} />
+        <RoomSelect firstRoom={currentFirstRoom} rooms={rooms} />
       </FiltersContainer>
       <TableComponent data={data} name={name} devUI={devUI} room={currentFirstRoom} status={status} />
       <br />

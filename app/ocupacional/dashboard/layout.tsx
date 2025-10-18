@@ -27,10 +27,10 @@ export default async function Layout({ children }: LayoutProps) {
           title: 'Indicadores',
           url: '/ocupacional/dashboard/analisis/indicadores'
         },
-        // {
-        //   title: 'Picos Históricos',
-        //   url: '/ocupacional/dashboard/analisis/picoshistoricos'
-        // },
+        {
+          title: 'Picos Históricos',
+          url: '/ocupacional/dashboard/analisis/picoshistoricos'
+        },
         {
           title: 'Estadísticas',
           url: '/ocupacional/dashboard/analisis/estadisticas'
