@@ -60,12 +60,14 @@ function hours(readings: Readings) {
   for (const i in readings) {
     const data = []
     for (let e = 0; e < Object.keys(readings[i]).length; e++) {
-      const aaa = parse(readings[i][e].hour, 'HH:mm', new Date())
-      const milliseconds = getTime(aaa);
-      data.push({
-        x: milliseconds,
-        y: readings[i][e].value
-      })
+      if (readings[i][e]?.hour) {
+        const aaa = parse(readings[i][e].hour, 'HH:mm', new Date())
+        const milliseconds = getTime(aaa);
+        data.push({
+          x: milliseconds,
+          y: readings[i][e].value
+        })
+      }
     }
     dataRecopilationFromAllDays.push({
       data,
@@ -84,13 +86,15 @@ function days(readings: Readings) {
   const dataRecopilationFromAllDays = []
   for (const i in readings) {
     for (let e = 0; e < Object.keys(readings[i]).length; e++) {
-      const dateTemplate = `${i} ${readings[i][e].hour}`
-      const date = parse(dateTemplate, 'yyyy-MM-dd HH:mm', new Date())
-      const milliseconds = getTime(date);
-      dataRecopilationFromAllDays.push({
-        x: milliseconds,
-        y: readings[i][e].value
-      })
+      if (readings[i][e]?.hour) {
+        const dateTemplate = `${i} ${readings[i][e].hour}`
+        const date = parse(dateTemplate, 'yyyy-MM-dd HH:mm', new Date())
+        const milliseconds = getTime(date);
+        dataRecopilationFromAllDays.push({
+          x: milliseconds,
+          y: readings[i][e].value
+        })
+      }
     }
   }
 
@@ -110,8 +114,6 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
   // const [isPending, startTransition] = useTransition()
   const [newReadings, setNewReadings] = useState<Readings>({})
   const [toggleChart, setToggleChart] = useState<boolean>(false)
-
-  console.log(toggleChart)
 
   const dates = Object.keys(readings)
 
