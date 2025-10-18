@@ -1,0 +1,36 @@
+name: Pre-commit checks
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+    
+    - name: Install pnpm
+      run: npm install -g pnpm
+    
+    - name: Install dependencies
+      run: pnpm install --frozen-lockfile
+    
+    - name: Quality Check
+      run: pnpm run quality-check
+    
+    - name: Comment PR
+      if: failure()
+      uses: actions/github-script@v7
+      with:
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: '❌ Los checks de calidad han fallado. Por favor revisa los errores antes de hacer merge.'
+          })
