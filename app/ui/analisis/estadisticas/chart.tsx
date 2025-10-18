@@ -108,7 +108,6 @@ function days(readings: Readings) {
   ]
 }
 // eslint-disable-next-line @next/next/no-assign-module-variable 
-
 export function ChartComponent({ readings, generalRoomData, indicator, unit, start, end }: ChartComponentProps) {
 
   // const [isPending, startTransition] = useTransition()
