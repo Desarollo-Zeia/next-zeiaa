@@ -3,7 +3,7 @@
 const nextConfig = {
     // Performance optimizations
     experimental: {
-        optimizeCss: true,
+        optimizeCss: false,
     },
     
     // Compilation optimizations (swcMinify is default in Next.js 15)

@@ -21,7 +21,12 @@ export function safeStringAccess(
   fallback: string = ''
 ): string {
   try {
-    const result = path.split('.').reduce((current, key) => current?.[key], obj)
+    const result = path.split('.').reduce((current: unknown, key) => {
+      if (current && typeof current === 'object' && key in current) {
+        return (current as Record<string, unknown>)[key]
+      }
+      return undefined
+    }, obj)
     return result?.toString() || fallback
   } catch {
     return fallback

@@ -1,3 +1,12 @@
+// Type declarations
+declare global {
+  interface Window {
+    posthog?: {
+      capture: (event: string, properties?: Record<string, unknown>) => void
+    }
+  }
+}
+
 // Client-side error monitoring
 export function setupErrorMonitoring() {
   if (typeof window === 'undefined') return
@@ -30,13 +39,14 @@ export function setupErrorMonitoring() {
   })
 
   // React Error Boundary fallback
-  window.addEventListener('react-error-boundary', (event: CustomEvent) => {
-    console.error('React Error Boundary:', event.detail)
+  window.addEventListener('react-error-boundary', (event: Event) => {
+    const customEvent = event as CustomEvent
+    console.error('React Error Boundary:', customEvent.detail)
     
     if (window.posthog) {
       window.posthog.capture('react_error_boundary', {
-        error: event.detail.error?.message,
-        componentStack: event.detail.errorInfo?.componentStack,
+        error: customEvent.detail.error?.message,
+        componentStack: customEvent.detail.errorInfo?.componentStack,
       })
     }
   })
