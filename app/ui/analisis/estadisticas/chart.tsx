@@ -217,6 +217,7 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
                   animation: false,
                   parsing: false,
                   responsive: true,
+                  maintainAspectRatio: true,
                   interaction: {
                     mode: 'nearest',
                     axis: 'x',
@@ -439,7 +440,6 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
           )
         }
         {/* {isPending && <div className="h-full w-full text-xl font-bold">Cargando...</div>} */}
-        3
       </CardContent>
       <div>
 
