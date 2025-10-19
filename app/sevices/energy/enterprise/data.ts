@@ -1,11 +1,11 @@
 'use server'
 import { fetchWithAuthEnergy } from "@/app/lib/api"
 
-export async function getHeadquarters() {
+import { cache } from 'react'
 
+export const getHeadquarters = cache(async () => {
   return await fetchWithAuthEnergy(`/api/v1/user/headquarters/`)
-
-}
+})
 
 export async function getEnergyMeasurementPointPanels({ headquarterId } : { headquarterId : string}) {
 
