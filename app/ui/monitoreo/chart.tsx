@@ -100,7 +100,7 @@ export default function ChartComponent({ results, generalRoomData, indicator, un
   return (
     <Card className="w-full max-w-4xl mx-auto">
       <CardHeader>
-        <div className="flex justify-center items-center gap-2">
+        <div className="flex justify-between items-center gap-2">
           <CardTitle className="text-nowrap">Estadísticas en tiempo real</CardTitle>
           <IndicatorToggle indicators={indicators} indicatorParam={indicator} />
         </div>
