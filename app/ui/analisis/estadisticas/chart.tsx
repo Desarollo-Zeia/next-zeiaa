@@ -448,7 +448,7 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
             <CardContent className="pt-6">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold text-foreground">Leyenda</h3>
+                  <h3 className="text-lg font-semibold text-foreground">Filtro por días</h3>
                   <Button
                     variant="secondary"
                     size="sm"
@@ -460,11 +460,11 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
                 </div>
 
                 <div className="space-y-2 text-sm text-muted-foreground">
-                  <p>Selecciona los días que deseas comparar.</p>
-                  <p>También puedes cancelar la selección haciendo nuevamente en la fecha.</p>
+                  <p>Selecciona los días específicos que necesitas visualizar en la gráfica:</p>
+                  <p>Presiona 1 vez para seleccionar y 2 veces para cancelar selección.</p>
                 </div>
 
-                <div className="space-y-2">
+                <div className="space-y-2 max-h-60 overflow-y-auto">
                   {dates.map((date) => {
                     const formatted = parse(date, "yyyy-MM-dd", new Date())
                     const newDate = capitalizeFirstLetter(format(formatted, "EEEE d 'de' MMMM", { locale: es }))

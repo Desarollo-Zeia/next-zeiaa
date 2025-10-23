@@ -1,20 +1,57 @@
 'use server'
 import { fetchWithAuthEnergy } from "@/app/lib/api"
+import { unstable_cache } from 'next/cache'
+import { CACHE_DURATION, CACHE_TAGS, generateCacheKey } from "@/app/lib/cache"
+import { getToken } from "@/app/lib/auth"
 
-import { cache } from 'react'
+const _getHeadquartersCached = unstable_cache(
+  async (token: string) => {
+    return await fetchWithAuthEnergy(`/api/v1/user/headquarters/`, {}, token)
+  },
+  ['energy-headquarters'],
+  {
+    tags: [CACHE_TAGS.ENERGY, CACHE_TAGS.HEADQUARTERS, CACHE_TAGS.ENTERPRISE],
+    revalidate: CACHE_DURATION.STATIC, // 1 hour - headquarters rarely change
+  }
+)
 
-export const getHeadquarters = cache(async () => {
-  return await fetchWithAuthEnergy(`/api/v1/user/headquarters/`)
-})
-
-export async function getEnergyMeasurementPointPanels({ headquarterId } : { headquarterId : string}) {
-
-  return await fetchWithAuthEnergy(`/api/v1/headquarter/${headquarterId}/measurement-points/`)
-
+export async function getHeadquarters() {
+  const token = await getToken()
+  if (!token) throw new Error('No auth token')
+  return _getHeadquartersCached(token)
 }
 
+const _getEnergyMeasurementPointPanelsCached = unstable_cache(
+  async (token: string, headquarterId: string) => {
+    return await fetchWithAuthEnergy(`/api/v1/headquarter/${headquarterId}/measurement-points/`, {}, token)
+  },
+  ['energy-measurement-point-panels'],
+  {
+    tags: [CACHE_TAGS.ENERGY, CACHE_TAGS.PANELS, CACHE_TAGS.ENTERPRISE],
+    revalidate: CACHE_DURATION.STATIC, // 1 hour - panels configuration rarely changes
+  }
+)
+
+export async function getEnergyMeasurementPointPanels({ headquarterId }: { headquarterId: string }) {
+  const token = await getToken()
+  if (!token) throw new Error('No auth token')
+  return _getEnergyMeasurementPointPanelsCached(token, headquarterId)
+}
+
+const _getEnergyCompanyDetailsCached = unstable_cache(
+  async (token: string) => {
+    return await fetchWithAuthEnergy(`/api/v1/enterprises/1/`, {}, token)
+  },
+  ['energy-company-details'],
+  {
+    tags: [CACHE_TAGS.ENERGY, CACHE_TAGS.ENTERPRISE],
+    revalidate: CACHE_DURATION.STATIC, // 1 hour - company details are static
+  }
+)
 
 export async function getEnergyCompanyDetails() {
-  return await fetchWithAuthEnergy(`/api/v1/enterprises/1/`)
+  const token = await getToken()
+  if (!token) throw new Error('No auth token')
+  return _getEnergyCompanyDetailsCached(token)
 }
 

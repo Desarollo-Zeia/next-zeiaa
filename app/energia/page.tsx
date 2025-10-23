@@ -1,6 +1,6 @@
 "use client"
 
-import { Eye, EyeOff, Lock, SendToBack, User } from "lucide-react"
+import { Eye, EyeOff, Lock, SendToBack, User, Loader2 } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useState } from "react"
@@ -9,7 +9,17 @@ import { actionEnergy } from "../actions/validation"
 
 export default function Page() {
   const [showPassword, setShowPassword] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const [state, formAction] = useActionState(actionEnergy, { message: "" })
+
+  const handleSubmit = async (formData: FormData) => {
+    setIsLoading(true)
+    try {
+      await formAction(formData)
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   return (
     <main className="relative min-h-screen bg-[#ebeef1]">
@@ -52,7 +62,7 @@ export default function Page() {
               </Link>
             </div>
 
-            <form className="mt-8 space-y-6" action={formAction}>
+            <form className="mt-8 space-y-6" action={handleSubmit}>
               <div className="space-y-4">
                 <div className="group relative">
                   <div className="flex items-center rounded-lg border border-gray-200 bg-gray-50 transition-all duration-300 focus-within:border-[rgb(0,183,202)] focus-within:ring-4 focus-within:ring-[rgb(0,183,202)]/10">
@@ -92,9 +102,17 @@ export default function Page() {
 
               <button
                 type="submit"
-                className="relative w-full overflow-hidden rounded-lg bg-gradient-to-r from-[rgb(0,183,202)] to-[rgb(0,186,167)] p-3 text-sm font-medium text-white shadow-lg transition-all hover:scale-[1.02] hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[rgb(0,183,202)] focus:ring-offset-2"
+                disabled={isLoading}
+                className="relative w-full overflow-hidden rounded-lg bg-gradient-to-r from-[rgb(0,183,202)] to-[rgb(0,186,167)] p-3 text-sm font-medium text-white shadow-lg transition-all hover:scale-[1.02] hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[rgb(0,183,202)] focus:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
-                Ingresar
+                {isLoading ? (
+                  <div className="flex items-center justify-center">
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Iniciando sesión...
+                  </div>
+                ) : (
+                  "Ingresar"
+                )}
               </button>
             </form>
           </div>
