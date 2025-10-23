@@ -22,7 +22,7 @@ export const CACHE_TAGS = {
 } as const
 
 // Helper function to create cached functions with consistent naming
-export function createCachedFunction<T extends any[], R>(
+export function createCachedFunction<T extends unknown[], R>(
   fn: (...args: T) => Promise<R>,
   keyPrefix: string,
   tags: string[],
@@ -39,7 +39,7 @@ export function createCachedFunction<T extends any[], R>(
 }
 
 // Helper to generate cache keys based on parameters
-export function generateCacheKey(prefix: string, params: Record<string, any>): string {
+export function generateCacheKey(prefix: string, params: Record<string, unknown>): string {
   const sortedParams = Object.keys(params)
     .sort()
     .map(key => `${key}:${params[key]}`)
