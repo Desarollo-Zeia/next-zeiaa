@@ -71,7 +71,9 @@ export default function TableComponent( { generalRoomData, readings, indicator} 
           </CardContent>
             </>
           ) : (
-            <NoResultsFound message="No se encontraron salas contaminadas"/>
+            <div className="flex items-center justify-center min-h-[300px] px-16">
+              <NoResultsFound message="No se encontraron salas contaminadas"/>
+            </div>
           )
         }
       </Card>
@@ -111,7 +113,9 @@ export default function TableComponent( { generalRoomData, readings, indicator} 
             </Table>
           </CardContent>
           ) : (
-            <NoResultFound/>
+            <CardContent className="flex items-center justify-center min-h-[400px] shadow-sm border-t border-gray-100">
+              <NoResultFound/>
+            </CardContent>
           )
         }
         { readings.count > 0 && <PaginationNumberComponent count={readings.count} itemsPerPage={10}/> }

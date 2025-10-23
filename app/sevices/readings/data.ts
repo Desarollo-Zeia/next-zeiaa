@@ -1,16 +1,45 @@
 'use server'
 import { fetchWithAuth, fetchWithAuthAmbiental } from "@/app/lib/api"
 import { baseUrl } from "@/app/lib/constant"
+import { unstable_cache } from 'next/cache'
+import { CACHE_DURATION, CACHE_TAGS } from "@/app/lib/cache"
+import { getToken } from "@/app/lib/auth"
 
+
+const _roomLastDataCached = unstable_cache(
+  async (token: string, roomId: string | number) => {
+    const res = await fetchWithAuth(`/readings/api/room/${roomId}/general/last`, {}, token)
+    return res
+  },
+  ['ocupacional-room-last-data'],
+  {
+    tags: [CACHE_TAGS.OCUPACIONAL, CACHE_TAGS.READINGS],
+    revalidate: CACHE_DURATION.DYNAMIC, // 1 minute - last readings change frequently
+  }
+)
 
 export async function roomLastData({ roomId }: { roomId: string | number }) {
-  const res = await fetchWithAuth(`/readings/api/room/${roomId}/general/last`)
-  return res
+  const token = await getToken()
+  if (!token) throw new Error('No auth token')
+  return _roomLastDataCached(token, roomId)
 }
 
+const _roomLastDataAmbientalCached = unstable_cache(
+  async (token: string, roomId: string | number) => {
+    const res = await fetchWithAuthAmbiental(`/readings/api/ambiental/point/${roomId}/general/last`, {}, token)
+    return res
+  },
+  ['ambiental-room-last-data'],
+  {
+    tags: [CACHE_TAGS.AMBIENTAL, CACHE_TAGS.READINGS],
+    revalidate: CACHE_DURATION.DYNAMIC, // 1 minute - last readings change frequently
+  }
+)
+
 export async function roomLastDataAmbiental({ roomId }: { roomId: string | number }) {
-  const res = await fetchWithAuthAmbiental(`/readings/api/ambiental/point/${roomId}/general/last`)
-  return res
+  const token = await getToken()
+  if (!token) throw new Error('No auth token')
+  return _roomLastDataAmbientalCached(token, roomId)
 }
 
 export async function readingsData({ roomId, indicator = 'CO2', unit = 'PPM', date_after, date_before, page, status, hour_before, hour_after, ordering }: { roomId: string | number, indicator: string, unit: string, date_after?: string, date_before?: string, page?: string, status?: string, hour_before?: string, hour_after?: string, ordering?: string }) {
@@ -66,37 +95,60 @@ export async function readingsPeaks({ roomId, indicator = 'CO2', unit = 'PPM', d
   return res
 }
 
+const _readingsGraphCached = unstable_cache(
+  async (token: string, roomId: string | number, indicator: string, unit: string, date_after?: string, date_before?: string, hour_before?: string, hour_after?: string) => {
+    const url = new URL(`/readings/api/room/${roomId}/indicator/graph`, baseUrl)
+
+    if (indicator) url.searchParams.set('indicator', indicator)
+    if (unit) url.searchParams.set('unit', unit)
+    if (date_after) url.searchParams.set('date_after', date_after)
+    if (date_before) url.searchParams.set('date_before', date_before)
+    if (hour_before) url.searchParams.set('hour_before', hour_before)
+    if (hour_after) url.searchParams.set('hour_after', hour_after)
+
+    const res = await fetchWithAuth(`${url.pathname}${url.search}`, {}, token)
+
+    return res
+  },
+  ['ocupacional-readings-graph'],
+  {
+    tags: [CACHE_TAGS.OCUPACIONAL, CACHE_TAGS.READINGS],
+    revalidate: CACHE_DURATION.MEDIUM, // 5 minutes - graphs can be cached longer
+  }
+)
+
 export async function readingsGraph({ roomId, indicator, unit, date_after, date_before, hour_before, hour_after }: { roomId: string | number, indicator: string, unit: string, date_after?: string, date_before?: string, hour_before: string, hour_after: string }) {
-
-  const url = new URL(`/readings/api/room/${roomId}/indicator/graph`, baseUrl)
-
-  if (indicator) url.searchParams.set('indicator', indicator)
-  if (unit) url.searchParams.set('unit', unit)
-  if (date_after) url.searchParams.set('date_after', date_after)
-  if (date_before) url.searchParams.set('date_before', date_before)
-  if (hour_before) url.searchParams.set('hour_before', hour_before)
-  if (hour_after) url.searchParams.set('hour_after', hour_after)
-
-
-  const res = await fetchWithAuth(`${url.pathname}${url.search}`)
-
-  return res
+  const token = await getToken()
+  if (!token) throw new Error('No auth token')
+  return _readingsGraphCached(token, roomId, indicator, unit, date_after, date_before, hour_before, hour_after)
 }
 
+const _readingsGraphAmbientalCached = unstable_cache(
+  async (token: string, roomId: string | number, indicator: string, unit: string, date_after?: string, date_before?: string, hour_after?: string, hour_before?: string) => {
+    const url = new URL(`/readings/api/ambiental/point/${roomId}/indicator/graph`, baseUrl)
+
+    if (indicator) url.searchParams.set('indicator', indicator)
+    if (unit) url.searchParams.set('unit', unit)
+    if (date_after) url.searchParams.set('date_after', date_after)
+    if (date_before) url.searchParams.set('date_before', date_before)
+    if (hour_before) url.searchParams.set('hour_before', hour_before)
+    if (hour_after) url.searchParams.set('hour_after', hour_after)
+
+    const res = await fetchWithAuthAmbiental(`${url.pathname}${url.search}`, {}, token)
+
+    return res
+  },
+  ['ambiental-readings-graph'],
+  {
+    tags: [CACHE_TAGS.AMBIENTAL, CACHE_TAGS.READINGS],
+    revalidate: CACHE_DURATION.MEDIUM, // 5 minutes - graphs can be cached longer
+  }
+)
+
 export async function readingsGraphAmbiental({ roomId, indicator, unit, date_after, date_before, hour_before, hour_after }: { roomId: string | number, indicator: string, unit: string, date_after?: string, date_before?: string, hour_after: string, hour_before: string }) {
-
-  const url = new URL(`/readings/api/ambiental/point/${roomId}/indicator/graph`, baseUrl)
-
-  if (indicator) url.searchParams.set('indicator', indicator)
-  if (unit) url.searchParams.set('unit', unit)
-  if (date_after) url.searchParams.set('date_after', date_after)
-  if (date_before) url.searchParams.set('date_before', date_before)
-  if (hour_before) url.searchParams.set('hour_before', hour_before)
-  if (hour_after) url.searchParams.set('hour_after', hour_after)
-
-  const res = await fetchWithAuthAmbiental(`${url.pathname}${url.search}`)
-
-  return res
+  const token = await getToken()
+  if (!token) throw new Error('No auth token')
+  return _readingsGraphAmbientalCached(token, roomId, indicator, unit, date_after, date_before, hour_after, hour_before)
 }
 
 
