@@ -3,7 +3,7 @@ import { fetchWithAuthEnergy } from "@/app/lib/api"
 import { baseUrlEnergy } from "@/app/lib/constant"
 import { START_DATE } from "@/app/utils/formatter"
 import { unstable_cache } from 'next/cache'
-import { CACHE_DURATION, CACHE_TAGS, generateCacheKey } from "@/app/lib/cache"
+import { CACHE_DURATION, CACHE_TAGS } from "@/app/lib/cache"
 import { getToken } from "@/app/lib/auth"
 
 const _consumeCached = unstable_cache(
