@@ -3,9 +3,10 @@ import { fetchWithAuth, fetchWithAuthAmbiental } from "@/app/lib/api"
 import { baseUrl, baseUrlAmbiental } from "@/app/lib/constant"
 import { unstable_cache } from 'next/cache'
 import { CACHE_DURATION, CACHE_TAGS } from "@/app/lib/cache"
+import { getToken } from "@/app/lib/auth"
 
-export const alerts = unstable_cache(
-  async ({ roomId, indicator, unit, date_after, date_before, page, status } : { roomId : string | number, indicator: string, unit: string, date_after?: string,  date_before?: string, page: string, status?: string}) => {
+const _alertsCached = unstable_cache(
+  async (token: string, roomId: string | number, indicator: string, unit: string, page: string, date_after?: string, date_before?: string, status?: string) => {
     const url = new URL(`/alerts/api/room/${roomId}/alerts`, baseUrl)
 
     if (indicator) url.searchParams.set('indicator', indicator)
@@ -15,7 +16,7 @@ export const alerts = unstable_cache(
     if (page) url.searchParams.set('page', page)
     if (status) url.searchParams.set('status', status)
 
-    const res = await fetchWithAuth(`${url.pathname}${url.search}`)
+    const res = await fetchWithAuth(`${url.pathname}${url.search}`, {}, token)
 
     return res 
   },
@@ -26,8 +27,14 @@ export const alerts = unstable_cache(
   }
 )
 
-export const alertsAmbiental = unstable_cache(
-  async ({ roomId, indicator, unit, date_after, date_before, page, status } : { roomId : string | number, indicator: string, unit: string, date_after?: string,  date_before?: string, page: string, status?: string}) => {
+export async function alerts({ roomId, indicator, unit, date_after, date_before, page, status } : { roomId : string | number, indicator: string, unit: string, date_after?: string,  date_before?: string, page: string, status?: string}) {
+  const token = await getToken()
+  if (!token) throw new Error('No auth token')
+  return _alertsCached(token, roomId, indicator, unit, page, date_after, date_before, status)
+}
+
+const _alertsAmbientalCached = unstable_cache(
+  async (token: string, roomId: string | number, indicator: string, unit: string, page: string, date_after?: string, date_before?: string, status?: string) => {
     const url = new URL(`/alerts/api/ambiental/point/${roomId}/alerts/`, baseUrlAmbiental)
 
     if (indicator) url.searchParams.set('indicator', indicator)
@@ -37,7 +44,7 @@ export const alertsAmbiental = unstable_cache(
     if (page) url.searchParams.set('page', page)
     if (status) url.searchParams.set('status', status)
 
-    const res = await fetchWithAuthAmbiental(`${url.pathname}${url.search}`)
+    const res = await fetchWithAuthAmbiental(`${url.pathname}${url.search}`, {}, token)
 
     return res 
   },
@@ -47,3 +54,9 @@ export const alertsAmbiental = unstable_cache(
     revalidate: CACHE_DURATION.CRITICAL, // 30 seconds - alerts are critical
   }
 )
+
+export async function alertsAmbiental({ roomId, indicator, unit, date_after, date_before, page, status } : { roomId : string | number, indicator: string, unit: string, date_after?: string,  date_before?: string, page: string, status?: string}) {
+  const token = await getToken()
+  if (!token) throw new Error('No auth token')
+  return _alertsAmbientalCached(token, roomId, indicator, unit, page, date_after, date_before, status)
+}
