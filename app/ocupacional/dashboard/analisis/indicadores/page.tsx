@@ -11,7 +11,7 @@ import { format } from "date-fns";
 
 export default async function page({ searchParams }: SearchParams) {
 
-  const { room, indicator = 'CO2', unit = 'PPM', date_after = new Date(), date_before = new Date(), page, status, start, end, ordering } = await searchParams
+  const { room, indicator = 'CO2', unit = 'PPM', date_after = new Date(), date_before = new Date(), page = '1', status, start, end, ordering } = await searchParams
 
   const formattedDateAfter = format(date_after, 'yyyy-MM-dd')
   const formattedDateBefore = format(date_before, 'yyyy-MM-dd')

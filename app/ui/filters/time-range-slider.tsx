@@ -25,7 +25,6 @@ export function TimeRangeSlider({ initialStart = "00:00", initialEnd = "23:00" }
     const params = new URLSearchParams(searchParams)
     params.set("start", formatTime(debouncedRange[0]))
     params.set("end", formatTime(debouncedRange[1]))
-    params.set("page", '1')
     router.push(`?${params.toString()}`, { scroll: false })
   }, [debouncedRange, router, searchParams])
 

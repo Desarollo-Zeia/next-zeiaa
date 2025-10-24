@@ -12,7 +12,6 @@ import { INDICATOR_CONVERTED, UNIT_CONVERTED } from "@/app/utils/formatter"
 import { Indicator, Unit } from "@/app/type"
 import { formattedDate, formattedDatePlusDay } from "@/app/utils/func"
 import { usePathname, useRouter } from "next/navigation"
-import { STATUS_FACE } from "../faces"
 import NoResultFound from "../no-result-found"
 
 interface IndicatorStructure {
@@ -32,7 +31,7 @@ interface TableComponentProps {
   status: string
 }
 
-export default function TableComponent({ data, room, status }: TableComponentProps) {
+export default function TableComponent({ data, room }: TableComponentProps) {
 
   const router = useRouter()
   const pathname = usePathname()
@@ -44,7 +43,7 @@ export default function TableComponent({ data, room, status }: TableComponentPro
     <Card className="w-full max-w-4xl">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-2xl font-bold">Resumen de indicadores<br /><span className="text-sm font-normal text-gray-500">Datos por agente, en tiempo real</span></CardTitle>
-        {STATUS_FACE[status as keyof typeof STATUS_FACE]}
+        {/* {STATUS_FACE[status as keyof typeof STATUS_FACE]} */}
       </CardHeader>
       {
         filterData.length === 0 ? (
@@ -54,7 +53,7 @@ export default function TableComponent({ data, room, status }: TableComponentPro
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[100px]">Estado</TableHead>
+                  {/* <TableHead className="w-[100px]">Estado</TableHead> */}
                   <TableHead className="w-[100px]">Indicador</TableHead>
                   <TableHead>Fecha</TableHead>
                   <TableHead>Hora</TableHead>
@@ -70,7 +69,7 @@ export default function TableComponent({ data, room, status }: TableComponentPro
                         // router.replace(`${newPath}/analisis?indicator=${indicator.indicator}&unit=${indicator.unit}`)
                       } className="cursor-pointer"
                       >
-                        <TableCell className="font-normal"><div className="w-4 h-4 rounded-full bg-yellow-400"></div></TableCell>
+                        {/* <TableCell className="font-normal"><div className="w-4 h-4 rounded-full bg-yellow-400"></div></TableCell> */}
                         <TableCell className="font-normal">{INDICATOR_CONVERTED[indicator.indicator as Indicator]}</TableCell>
                         <TableCell className="font-normal">{formattedDate(indicator.date)}</TableCell>
                         <TableCell className="font-normal">{indicator.hours.toLocaleLowerCase()}</TableCell>
