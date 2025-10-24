@@ -11,7 +11,7 @@ import {
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useTransition } from "react"
 
-export default function PaginationNumberComponent({ count, itemsPerPage } : { count: number, itemsPerPage: number}) {
+export default function PaginationNumberComponent({ count, itemsPerPage }: { count: number, itemsPerPage: number }) {
 
   const searchParams = useSearchParams()
   const pathname = usePathname()
@@ -24,7 +24,7 @@ export default function PaginationNumberComponent({ count, itemsPerPage } : { co
   const totalPages = Math.ceil(count / itemsPerPage)
 
   const handlePageChange = (page: number) => {
-
+    console.log(page)
     const params = new URLSearchParams(searchParams)
     startTransition(() => {
       if (page === 0) {
@@ -39,7 +39,7 @@ export default function PaginationNumberComponent({ count, itemsPerPage } : { co
   }
 
   const pageNumbers = []
-  
+
   for (let i = 1; i <= totalPages; i++) {
     if (
       i === 1 ||
@@ -57,31 +57,31 @@ export default function PaginationNumberComponent({ count, itemsPerPage } : { co
 
   return (
     <div className="flex flex-col items-center space-y-2 md:flex-col md:justify-start md:items-start md:space-y-0 p-4 relative">
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious 
-                href="#" 
-                onClick={(e) => {
-                  e.preventDefault()
-                  if (Number(page) > 1) handlePageChange(Number(page) - 1)
-                }}
-              />
-            </PaginationItem>
-            
-            {pageNumbers.map((pageNumber, index) => (
-              <PaginationItem key={index}>
-                {pageNumber === '...' ? (
-                  <PaginationEllipsis />
+      <Pagination>
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious
+              href="#"
+              onClick={(e) => {
+                e.preventDefault()
+                if (Number(page) > 1) handlePageChange(Number(page) - 1)
+              }}
+            />
+          </PaginationItem>
+
+          {pageNumbers.map((pageNumber, index) => (
+            <PaginationItem key={index}>
+              {pageNumber === '...' ? (
+                <PaginationEllipsis />
+              ) : (
+                isPending ? (
+                  <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-50">
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#00b0c7]"></div>
+                  </div>
                 ) : (
-                  isPending ? (
-                    <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-50">
-                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#00b0c7]"></div>
-                    </div>
-                  ) : (
-                    
-                  <PaginationLink 
-                    href="#" 
+
+                  <PaginationLink
+                    href="#"
                     isActive={Number(page) === pageNumber}
                     onClick={(e) => {
                       e.preventDefault()
@@ -90,25 +90,25 @@ export default function PaginationNumberComponent({ count, itemsPerPage } : { co
                   >
                     {pageNumber}
                   </PaginationLink>
-                  )
-                )}
-              </PaginationItem>
-            ))}
-            
-            <PaginationItem>
-              <PaginationNext 
-                href="#" 
-                onClick={(e) => {
-                  e.preventDefault()
-                  if (Number(page) < totalPages) handlePageChange(Number(page) + 1)
-                }}
-              />
+                )
+              )}
             </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-        <p className="text-sm text-gray-600 text-nowrap text-left ml-4">
-          Mostrando del {startIndex} al {endIndex} de {count}
-        </p>
+          ))}
+
+          <PaginationItem>
+            <PaginationNext
+              href="#"
+              onClick={(e) => {
+                e.preventDefault()
+                if (Number(page) < totalPages) handlePageChange(Number(page) + 1)
+              }}
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
+      <p className="text-sm text-gray-600 text-nowrap text-left ml-4">
+        Mostrando del {startIndex} al {endIndex} de {count}
+      </p>
     </div>
   )
 }
