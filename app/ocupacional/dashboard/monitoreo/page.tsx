@@ -30,8 +30,6 @@ export default async function page({ searchParams }: SearchParams) {
   const { room, indicator = 'CO2', unit = 'PPM' } = await searchParams
 
   const rooms = await getRooms()
-
-
   const firstRoom = rooms.find((room: any) => room.is_activated === true)  // eslint-disable-line @typescript-eslint/no-explicit-any
 
   const currentFirstRoom = room ? room : firstRoom.id
@@ -65,9 +63,10 @@ export default async function page({ searchParams }: SearchParams) {
       <FiltersContainer>
         <RoomSelect firstRoom={currentFirstRoom} rooms={rooms} />
       </FiltersContainer>
-      <TableComponent data={data} name={name} devUI={devUI} room={currentFirstRoom} status={status} />
-      <br />
-      <ChartComponent results={sortResults(results)} generalRoomData={generalRoomData} indicator={indicator as Indicator} unit={unit as Unit} />
+      <div className="flex gap-4 mx-2">
+        <TableComponent data={data} name={name} devUI={devUI} room={currentFirstRoom} status={status} />
+        <ChartComponent results={sortResults(results)} generalRoomData={generalRoomData} indicator={indicator as Indicator} unit={unit as Unit} />
+      </div>
     </div>
   )
 }

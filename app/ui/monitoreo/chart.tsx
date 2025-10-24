@@ -3,7 +3,6 @@ import IndicatorToggle from "../filters/indicators-toggle";
 import { CartesianGrid, Line, LineChart, ReferenceLine, XAxis, YAxis } from "recharts"
 import {
   Card,
-  CardContent,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -17,6 +16,7 @@ import { UNIT_CONVERTED } from "@/app/utils/formatter";
 import { UNIT_INDICATOR_THRESHOLD, UNIT_INDICATOR_THRESHOLD_AMBIENTAL } from "@/app/utils/threshold";
 import { Indicator, Unit } from "@/app/type";
 import { usePathname } from "next/navigation";
+import NoResultFound from "../no-result-found";
 
 interface IndicatorStructure {
   indicator: string,
@@ -98,110 +98,115 @@ export default function ChartComponent({ results, generalRoomData, indicator, un
   const domaninY = thresholds[thresholds.length - 1] * 1.4
 
   return (
-    <Card className="w-full max-w-4xl mx-auto">
+    <Card className="w-full max-w-4xl">
       <CardHeader>
         <div className="flex justify-between items-center gap-2">
-          <CardTitle className="text-nowrap">Estadísticas en tiempo real</CardTitle>
+          <CardTitle className="text-balance text-lg">Estadísticas en tiempo real</CardTitle>
           <IndicatorToggle indicators={indicators} indicatorParam={indicator} />
         </div>
         <br />
-        <div className="w-full">
-          <div className="text-xs font-medium mb-2">Umbrales:</div>
-          <div className="flex flex-wrap gap-4">
-            {thresholds?.map((thresholdValue, index) => {
-              const color = (() => {
-                const total = thresholds.length;
+        {
+          results.length !== 0 && (
+            <div className="w-full">
+              <div className="text-xs font-medium mb-2">Umbrales:</div>
+              <div className="flex flex-wrap gap-4">
+                {thresholds?.map((thresholdValue, index) => {
+                  const color = (() => {
+                    const total = thresholds.length;
 
-                if (total === 1) return '#ff0000'; // Único umbral rojo
-                if (total === 2) return index === 0 ? '#ffd700' : '#ff0000'; // Amarillo/Rojo
-                return ['#ffd700', '#ffa500', '#ff0000'][index]; // Amarillo/Naranja/Rojo para 3
-              })()
+                    if (total === 1) return '#ff0000'; // Único umbral rojo
+                    if (total === 2) return index === 0 ? '#ffd700' : '#ff0000'; // Amarillo/Rojo
+                    return ['#ffd700', '#ffa500', '#ff0000'][index]; // Amarillo/Naranja/Rojo para 3
+                  })()
 
-              return (
-                <div key={index} className="flex flex-col justify-center items-center gap-2">
-                  <div className="flex gap-2">
-                    <span
-                      style={{
-                        color,
-                        fontWeight: '8px',
-                        display: 'block'
+                  return (
+                    <div key={index} className="flex flex-col justify-center items-center gap-2">
+                      <div className="flex gap-2">
+                        <span
+                          style={{
+                            color,
+                            fontWeight: '8px',
+                            display: 'block'
 
-                      }}>--</span> <p> {index === 0 ? 'Moderado' : index === 1 ? 'Insalubre' : 'Peligroso'} </p>
-                  </div>
-                  <div className="flex gap-2">
-                    <span
-                      style={{
-                        color,
-                        fontWeight: '8px',
+                          }}>--</span> <p> {index === 0 ? 'Moderado' : index === 1 ? 'Insalubre' : 'Peligroso'} </p>
+                      </div>
+                      <div className="flex gap-2">
+                        <span
+                          style={{
+                            color,
+                            fontWeight: '8px',
 
-                      }}>--</span>
-                    <span className="font-normal">
-                      {thresholdValue} {UNIT_CONVERTED[unit]}
-                    </span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
+                          }}>--</span>
+                        <span className="font-normal">
+                          {thresholdValue} {UNIT_CONVERTED[unit]}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )
+        }
+
       </CardHeader>
-      <CardContent>
-        <ChartContainer config={chartConfig}>
-          <LineChart
-            accessibilityLayer
-            data={results}
-            margin={{
-              left: 12,
-              right: 12,
-            }}
-          >
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="hours"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
+      {
+        results.length === 0 ? (
+          <NoResultFound />
+        ) : (
+          <ChartContainer config={chartConfig}>
+            <LineChart
+              accessibilityLayer
+              data={results}
+              margin={{
+                left: 12,
+                right: 12,
+              }}
+            >
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="hours"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+              />
+              <YAxis
+                tickLine={false}
+                axisLine={false}
+                hide={false}
+                tickMargin={8}
+                dataKey="value"
+                domain={[0, Math.round(domaninY)]}
+                tickFormatter={(a) => `${a} ${UNIT_CONVERTED[unit]}`}
+              />
+              <ChartTooltip
+                cursor={false}
+                content={<ChartTooltipContent hideLabel />}
+              />
+              {
+                thresholds?.map((threshold: number, i: number) => (
+                  <ReferenceLine
+                    key={`${threshold}-${i}`}
+                    y={threshold}
+                    stroke={getStrokeColor(i)}
+                    strokeWidth={2}
+                    strokeDasharray="3 3"
+                    isFront={true}
+                  />
+                ))
+              }
+              <Line
+                dataKey="value"
+                type="natural"
+                stroke="var(--color-desktop)"
+                strokeWidth={2}
+                dot={false}
+              />
+            </LineChart>
+          </ChartContainer>
+        )
+      }
 
-            />
-            <YAxis
-              tickLine={false}
-              axisLine={false}
-              hide={false}
-              tickMargin={8}
-              dataKey="value"
-              domain={[0, Math.round(domaninY)]}
-              tickFormatter={(a) => `${a} ${UNIT_CONVERTED[unit]}`}
-            />
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent hideLabel />}
-            />
-            {
-              thresholds?.map((threshold: number, i: number) => (
-                <ReferenceLine
-                  key={`${threshold}-${i}`}
-                  y={threshold}
-                  stroke={getStrokeColor(i)}
-                  strokeWidth={2}
-                  strokeDasharray="3 3"
-                  isFront={true}
-                />
-              ))
-            }
-            {/* <ThresholdLines thresholds={thresholds}/> */}
-            {/* <ReferenceLine y={UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.bottom} stroke="yellow" strokeWidth={2} strokeDasharray="3 3" isFront={true}/>
-                <ReferenceLine y={UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.center} stroke="orange" strokeWidth={2} strokeDasharray="3 3" isFront={true}/>
-                <ReferenceLine y={UNIT_INDICATOR_THRESHOLD[thresholdPointer]?.top} stroke="red" strokeWidth={2} strokeDasharray="3 3" isFront={true}/> */}
-            <Line
-              dataKey="value"
-              type="natural"
-              stroke="var(--color-desktop)"
-              strokeWidth={2}
-              dot={false}
-            />
-          </LineChart>
-        </ChartContainer>
-      </CardContent>
 
     </Card>
   )

@@ -2,16 +2,16 @@ import { unstable_cache, revalidateTag } from 'next/cache'
 
 // Cache durations in seconds
 export const CACHE_DURATION = {
-  STATIC: 3600,    // 1 hour - for headquarters, panels, etc.
-  MEDIUM: 300,     // 5 minutes - for daily stats, reports
-  DYNAMIC: 60,     // 1 minute - for readings, real-time data
-  CRITICAL: 30,    // 30 seconds - for alerts, urgent data
+  STATIC: 3600,
+  MEDIUM: 300,
+  DYNAMIC: 60,
+  CRITICAL: 30,
 } as const
 
 // Cache tags for organized invalidation
 export const CACHE_TAGS = {
   ENERGY: 'energy-data',
-  AMBIENTAL: 'ambiental-data', 
+  AMBIENTAL: 'ambiental-data',
   OCUPACIONAL: 'ocupacional-data',
   ENTERPRISE: 'enterprise-data',
   FILTERS: 'filters-data',
@@ -44,7 +44,7 @@ export function generateCacheKey(prefix: string, params: Record<string, unknown>
     .sort()
     .map(key => `${key}:${params[key]}`)
     .join('-')
-  
+
   return `${prefix}-${sortedParams}`
 }
 

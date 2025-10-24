@@ -48,6 +48,7 @@ export default function IndicatorToggle({ indicators, indicatorParam }: Indicato
       >
         {indicators.map((indicator: { indicator: string, unit: string }) => (
           <ToggleGroupItem
+            className="border"
             key={indicator.indicator}
             value={indicator.indicator}
             aria-label={indicator.indicator}

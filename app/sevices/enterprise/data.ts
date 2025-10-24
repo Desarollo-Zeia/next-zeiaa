@@ -5,17 +5,17 @@ import { RoomList } from "./type"
 
 export async function detail() {
   const res = await fetchWithAuth('/enterprise/api/enterprise/detail/')
-  
-  return res 
+
+  return res
 }
 
 export async function detailAmbiental() {
   const res = await fetchWithAuthAmbiental('/enterprise/api/enterprise/detail/')
-  
-  return res 
+
+  return res
 }
 
-export async function roomsList({ search, status, headquarter, page, limit, offset} : RoomList) {
+export async function roomsList({ search, status, headquarter, page, limit, offset }: RoomList) {
 
   const url = new URL('/enterprise/api/enterprise/room-list/', baseUrl)
 
@@ -30,7 +30,7 @@ export async function roomsList({ search, status, headquarter, page, limit, offs
   return res
 }
 
-export async function roomsListAmbiental({ search, status, headquarter, page, limit, offset} : RoomList) {
+export async function roomsListAmbiental({ search, status, headquarter, page, limit, offset }: RoomList) {
 
   const url = new URL('enterprise/api/ambiental/enterprise/point-list/', baseUrl)
 
