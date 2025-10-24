@@ -76,19 +76,19 @@ export default function Home() {
             </div>
 
             {/* Services Grid */}
-            <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-2">
               <ModuleCard
                 image="/co2service.png"
-                name="Monitoreo de Agentes Contaminantes"
-                description="Asegura un ambiente saludable controlando CO2, TVOC, HCHO, PM y luz en espacios interiores."
+                name="Monitoreo Ambiental"
+                description="Por definir."
                 route="/ocupacional"
               />
-              <ModuleCard
+              {/* <ModuleCard
                 image="/monitoreoservice.png"
                 name="Monitoreo Ambiental"
                 description="Control avanzado de gases y agentes ambientales como PM, Cloro, Amoniaco entre otros, contribuyendo a disminuir la contaminación ambiental."
                 route="/ambiental"
-              />
+              /> */}
               <ModuleCard
                 image="/energiaservice.png"
                 name="Monitoreo Energético"

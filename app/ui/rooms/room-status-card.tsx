@@ -1,6 +1,6 @@
 'use client'
 import { Status } from "@/app/type"
-import { STATUS_COLOR, STATUS_TO_SPANISH } from "@/app/utils/formatter"
+// import { STATUS_COLOR, STATUS_TO_SPANISH } from "@/app/utils/formatter"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import Link from "next/link"
@@ -8,12 +8,12 @@ import { usePathname } from 'next/navigation'
 import { STATUS_FACE, STATUS_FACE_DISABLED } from "../faces"
 
 type Props = {
-    name: string,
-    status: string,
-    isActivated: boolean,
-    room: number,
-    devEUI: string,
-    headquarter: string
+  name: string,
+  status: string,
+  isActivated: boolean,
+  room: number,
+  devEUI: string,
+  headquarter: string
 }
 
 export default function RoomStatusCard(
@@ -24,22 +24,24 @@ export default function RoomStatusCard(
     room,
     devEUI,
     headquarter
-  } : Props
+  }: Props
 ) {
 
   const pathname = usePathname()
 
+  const [, s, t, ,] = pathname.split('/')
+
   return (
     <Card className="max-w-xs shadow-lg">
-      <CardContent className="p-6"> 
+      <CardContent className="p-6">
         {/* Top Section */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-2">
-            {isActivated ?  STATUS_FACE[status as Status] : STATUS_FACE_DISABLED[status as Status]}
+            {isActivated ? STATUS_FACE[status as Status] : STATUS_FACE_DISABLED[status as Status]}
           </div>
           <div className="flex flex-col">
-            <span className="font-semibold capitalize block text-balance text-right">{ name }</span>
-            <span className={`text-sm text-right font-semibold block ${isActivated ? STATUS_COLOR[status as Status] : 'text-gray-400'}`}>{ STATUS_TO_SPANISH[status as Status] }</span>
+            <span className="font-semibold capitalize block text-balance text-right">{name}</span>
+            {/* <span className={`text-sm text-right font-semibold block ${isActivated ? STATUS_COLOR[status as Status] : 'text-gray-400'}`}>{STATUS_TO_SPANISH[status as Status]}</span> */}
           </div>
         </div>
 
@@ -60,22 +62,22 @@ export default function RoomStatusCard(
 
         {/* Bottom Section */}
         <div className="text-sm text-muted-foreground mb-4">
-          { headquarter }
+          {headquarter}
         </div>
       </CardContent>
       <CardFooter>
-        <Link 
+        <Link
           className="w-full"
           href={{
-            pathname: `${pathname}/monitoreo`,
+            pathname: `/${s}/${t}/monitoreo`,
             query: {
               room,
               devEUI
             }
           }}
-          >
-          <Button className="w-full" >  
-              Ir a detalles de la sala
+        >
+          <Button className="w-full" >
+            Ir a detalles de la sala
           </Button>
         </Link>
       </CardFooter>

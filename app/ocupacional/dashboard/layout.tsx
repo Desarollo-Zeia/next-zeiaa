@@ -37,7 +37,7 @@ export default async function Layout({ children }: LayoutProps) {
         }
       ]
     },
-    covid: '/ocupacional/dashboard/covid',
+    // covid: '/ocupacional/dashboard/covid',
     alertas: '/ocupacional/dashboard/alertas'
   }
 

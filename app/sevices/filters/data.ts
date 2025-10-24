@@ -11,7 +11,7 @@ const _getRoomsCached = unstable_cache(
   ['ocupacional-rooms'],
   {
     tags: [CACHE_TAGS.OCUPACIONAL, CACHE_TAGS.FILTERS],
-    revalidate: CACHE_DURATION.STATIC, // 1 hour - room list rarely changes
+    revalidate: CACHE_DURATION.CRITICAL,
   }
 )
 
