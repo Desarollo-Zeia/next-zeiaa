@@ -146,10 +146,7 @@ export function DatepickerRange({
             onSelect={setFecha}
             numberOfMonths={2}
             locale={es}
-            classNames={{
-              day_range_start: "bg-[#00b0c7] text-primary-foreground",
-              day_range_end: "bg-[#00b0c7] text-primary-foreground",
-            }}
+            className="rounded-lg border shadow-sm"
           />
         </PopoverContent>
       </Popover>

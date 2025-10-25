@@ -398,13 +398,16 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
                         },
                         label: (ctx) => {
                           const label = ctx.dataset.label as string
+
                           if (toggleChart) {
                             const date = parse(ctx.label, 'MMM dd, yyyy, h:mm:ss a', new Date())
+                            console.log(date)
                             const formattedDate = format(date, 'EEEE, dd \'de\' MMMM \'de\' yyyy', { locale: es });
                             return capitalizeFirstLetter(formattedDate)
                           }
 
                           const date = parse(label, 'yyyy-MM-dd', new Date())
+                          console.log(date)
                           const formattedDate = format(date, 'EEEE, dd \'de\' MMMM \'de\' yyyy', { locale: es })
                           return `${capitalizeFirstLetter(formattedDate)}: ${ctx.formattedValue} ${UNIT_CONVERTED[unit]}`
                         }

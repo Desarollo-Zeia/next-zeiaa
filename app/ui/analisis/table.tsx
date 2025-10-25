@@ -199,9 +199,9 @@ export default function TableComponent({ generalRoomData, readings, count, indic
                           <TableCell>{indicator.hours.toLocaleLowerCase()}</TableCell>
                           <TableCell>{indicator.value}</TableCell>
                           <TableCell>{UNIT_CONVERTED[indicator.unit]}</TableCell>
-                          <div className="flex items-center justify-center">
+                          <div className="flex items-center justify-center gap-2">
                             <div className={`${STATUS_COLOR_BG[indicator.status]} w-2 h-2 rounded-full`} />
-                            <TableCell>{STATUS_TO_SPANISH[indicator.status]}</TableCell>
+                            <p>{STATUS_TO_SPANISH[indicator.status]}</p>
                           </div>
                         </TableRow>
                       )

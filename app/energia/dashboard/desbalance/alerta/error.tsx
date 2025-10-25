@@ -2,7 +2,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 
 export default function Error({
   error,
@@ -11,7 +11,10 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  const router = useRouter();
+  const router = useRouter()
+  const pathname = usePathname()
+
+  console.log(pathname)
 
   useEffect(() => {
     // Log el error para debugging (opcional)

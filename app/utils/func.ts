@@ -1,4 +1,4 @@
-import { addDays, format } from "date-fns"
+import { addDays, format, parse } from "date-fns"
 import { es } from 'date-fns/locale'
 
 export const capitalizeFirstLetter = (str: string) => {
@@ -8,7 +8,7 @@ export const capitalizeFirstLetter = (str: string) => {
 
 export const formattedDate = (date: string) => {
   // Parsear la cadena de fecha en un objeto Date
-  const parsedDate = new Date(date);
+  const parsedDate = parse(date, 'yyyy-MM-dd', new Date())
 
   // Verificar si la fecha es válida
   // if (isNaN(parsedDate.getTime())) {
