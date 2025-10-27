@@ -62,6 +62,8 @@ const chartConfig = {
 
 export default function ChartComponent({ results, generalRoomData, indicator, unit }: ChartComponentProps) {
 
+  console.log(results)
+
   const { indicators_pollutants: indicators } = generalRoomData
   const pathname = usePathname()
   // eslint-disable-next-line @next/next/no-assign-module-variable
@@ -181,7 +183,7 @@ export default function ChartComponent({ results, generalRoomData, indicator, un
               />
               <ChartTooltip
                 cursor={false}
-                content={<ChartTooltipContent hideLabel />}
+                content={<ChartTooltipContent />}
               />
               {
                 thresholds?.map((threshold: number, i: number) => (
