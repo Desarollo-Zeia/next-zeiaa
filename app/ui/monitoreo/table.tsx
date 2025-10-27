@@ -10,8 +10,7 @@ import {
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { INDICATOR_CONVERTED, UNIT_CONVERTED } from "@/app/utils/formatter"
 import { Indicator, Unit } from "@/app/type"
-import { formattedDate, formattedDatePlusDay } from "@/app/utils/func"
-import { usePathname, useRouter } from "next/navigation"
+import { formattedDate } from "@/app/utils/func"
 import NoResultFound from "../no-result-found"
 
 interface IndicatorStructure {
@@ -27,15 +26,12 @@ interface TableComponentProps {
   data: IndicatorStructure[],
   name: string,
   devUI: string,
-  room: string,
+  room?: string,
   status: string
 }
 
-export default function TableComponent({ data, room }: TableComponentProps) {
+export default function TableComponent({ data }: TableComponentProps) {
 
-  const router = useRouter()
-  const pathname = usePathname()
-  const newPath = pathname.split('/').slice(0, 3).join('/')
 
   const filterData = data.filter((item: IndicatorStructure) => item.indicator !== 'PIR' && item.indicator !== 'LUX')
 
@@ -64,11 +60,7 @@ export default function TableComponent({ data, room }: TableComponentProps) {
                 {
                   filterData?.map((indicator, i) => {
                     return (
-                      <TableRow key={i} onClick={() =>
-                        router.replace(`${newPath}/analisis?indicator=${indicator.indicator}&unit=${indicator.unit}&room=${room}&date_after=${new Date(formattedDatePlusDay(indicator.date))}&date_before=${new Date(formattedDatePlusDay(indicator.date))}`)
-                        // router.replace(`${newPath}/analisis?indicator=${indicator.indicator}&unit=${indicator.unit}`)
-                      } className="cursor-pointer"
-                      >
+                      <TableRow key={i}>
                         {/* <TableCell className="font-normal"><div className="w-4 h-4 rounded-full bg-yellow-400"></div></TableCell> */}
                         <TableCell className="font-normal">{INDICATOR_CONVERTED[indicator.indicator as Indicator]}</TableCell>
                         <TableCell className="font-normal">{formattedDate(indicator.date)}</TableCell>
