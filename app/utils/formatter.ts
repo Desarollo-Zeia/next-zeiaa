@@ -58,6 +58,14 @@ export const STATUS_COLOR = {
   CRITICAL: 'text-red-500'
 }
 
+export const STATUS_COLOR_THRESHOLD = {
+  MODERATE: 'yellow',
+  UNHEALTHY: 'orange',
+  DANGEROUS: 'red',
+  GOOD: 'green',
+  CRITICAL: 'red'
+}
+
 export const STATUS_COLOR_BG = {
   MODERATE: 'bg-yellow-500',
   UNHEALTHY: 'bg-orange-500',

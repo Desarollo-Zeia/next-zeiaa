@@ -12,7 +12,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-import { UNIT_CONVERTED } from "@/app/utils/formatter";
+import { STATUS_COLOR_THRESHOLD, UNIT_CONVERTED } from "@/app/utils/formatter";
 import { UNIT_INDICATOR_THRESHOLD, UNIT_INDICATOR_THRESHOLD_AMBIENTAL } from "@/app/utils/threshold";
 import { Indicator, Unit } from "@/app/type";
 import { usePathname } from "next/navigation";
@@ -42,14 +42,16 @@ interface RoomDataStructure {
   }
   indicators_activated: IndicatorToogle[],
   indicators_pollutants: IndicatorToogle[],
-  is_activated: boolean
+  is_activated: boolean,
+  thresholds: any // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 interface ChartComponentProps {
   results: IndicatorStructure[]
   generalRoomData: RoomDataStructure
   indicator: Indicator,
-  unit: Unit
+  unit: Unit,
+  thresholds: any // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 const chartConfig = {
@@ -62,15 +64,15 @@ const chartConfig = {
 
 export default function ChartComponent({ results, generalRoomData, indicator, unit }: ChartComponentProps) {
 
-  console.log(results)
-
-  const { indicators_pollutants: indicators } = generalRoomData
+  const { indicators_pollutants: indicators, thresholds } = generalRoomData
   const pathname = usePathname()
+
+  console.log(thresholds)
   // eslint-disable-next-line @next/next/no-assign-module-variable
   const module = pathname.split('/')[1]
 
   let thresholdPointer
-  let thresholds: number[] = []
+  let thresholdss: number[] = []
 
   if (indicator === 'TVOC') {
     thresholdPointer = unit as Extract<Unit, 'PPB' | 'ICA'>
@@ -79,25 +81,28 @@ export default function ChartComponent({ results, generalRoomData, indicator, un
   }
 
   if (module === 'ocupacional') {
-    thresholds = Object.values(UNIT_INDICATOR_THRESHOLD[thresholdPointer] || {}).filter(Boolean);
+    thresholdss = Object.values(UNIT_INDICATOR_THRESHOLD[thresholdPointer] || {}).filter(Boolean);
   }
 
   if (module === 'ambiental') {
-    thresholds = Object.values(UNIT_INDICATOR_THRESHOLD_AMBIENTAL[thresholdPointer] || {}).filter(Boolean);
+    thresholdss = Object.values(UNIT_INDICATOR_THRESHOLD_AMBIENTAL[thresholdPointer] || {}).filter(Boolean);
   }
 
-  const getStrokeColor = (index: number) => {
-    const thresholdCount = thresholds?.length || 0;
+  // const getStrokeColor = (index: number) => {
+  //   const thresholdCount = thresholdss?.length || 0;
 
-    if (thresholdCount === 1) return '#ff0000'; // Único umbral
-    if (thresholdCount === 2) return index === 0 ? '#ffd700' : '#ff0000'; // Moderado/Peligroso
-    if (thresholdCount === 3) { // Moderado/Insalubre/Peligroso
-      return ['#ffd700', '#ffa500', '#ff0000'][index];
-    }
-    return '#000'; // Caso por defecto
-  }
+  //   if (thresholdCount === 1) return '#ff0000'; // Único umbral
+  //   if (thresholdCount === 2) return index === 0 ? '#ffd700' : '#ff0000'; // Moderado/Peligroso
+  //   if (thresholdCount === 3) { // Moderado/Insalubre/Peligroso
+  //     return ['#ffd700', '#ffa500', '#ff0000'][index];
+  //   }
+  //   return '#000'; // Caso por defecto
+  // }
 
-  const domaninY = thresholds[thresholds.length - 1] * 1.4
+  const domaninY = thresholdss[thresholdss.length - 1] * 1.4
+
+  const th = thresholds[indicator].levels
+
 
   return (
     <Card className="w-full max-w-4xl">
@@ -112,7 +117,7 @@ export default function ChartComponent({ results, generalRoomData, indicator, un
             <div className="w-full">
               <div className="text-xs font-medium mb-2">Umbrales:</div>
               <div className="flex flex-wrap gap-4">
-                {thresholds?.map((thresholdValue, index) => {
+                {thresholdss?.map((thresholdValue, index) => {
                   const color = (() => {
                     const total = thresholds.length;
 
@@ -178,7 +183,7 @@ export default function ChartComponent({ results, generalRoomData, indicator, un
                 hide={false}
                 tickMargin={8}
                 dataKey="value"
-                domain={[0, Math.round(domaninY)]}
+                domain={[0, domaninY]}
                 tickFormatter={(a) => `${a} ${UNIT_CONVERTED[unit]}`}
               />
               <ChartTooltip
@@ -186,11 +191,12 @@ export default function ChartComponent({ results, generalRoomData, indicator, un
                 content={<ChartTooltipContent />}
               />
               {
-                thresholds?.map((threshold: number, i: number) => (
+
+                th?.map((threshold: any, i: number) => ( // eslint-disable-line @typescript-eslint/no-explicit-any
                   <ReferenceLine
-                    key={`${threshold}-${i}`}
-                    y={threshold}
-                    stroke={getStrokeColor(i)}
+                    key={`${threshold.level}-${i}`}
+                    y={threshold.value}
+                    stroke={STATUS_COLOR_THRESHOLD[threshold.level as keyof typeof STATUS_COLOR_THRESHOLD]}
                     strokeWidth={2}
                     strokeDasharray="3 3"
                     isFront={true}
