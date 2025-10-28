@@ -65,7 +65,7 @@ export default async function page({ searchParams }: SearchParams) {
       </FiltersContainer>
       <div className="flex gap-4 mx-2">
         <TableComponent data={data} name={name} devUI={devUI} room={currentFirstRoom} status={status} />
-        <ChartComponent results={sortResults(results)} generalRoomData={generalRoomData} indicator={indicator as Indicator} unit={unit as Unit} />
+        <ChartComponent results={sortResults(results)} generalRoomData={generalRoomData} indicator={indicator as Indicator} unit={unit as Unit} thresholds={generalRoomData.thresholds} />
       </div>
     </div>
   )

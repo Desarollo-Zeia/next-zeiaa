@@ -1,11 +1,12 @@
 'use client'
-import { Status } from "@/app/type"
+// import { Status } from "@/app/type"
 // import { STATUS_COLOR, STATUS_TO_SPANISH } from "@/app/utils/formatter"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import Link from "next/link"
 import { usePathname } from 'next/navigation'
-import { STATUS_FACE, STATUS_FACE_DISABLED } from "../faces"
+// import { STATUS_FACE, STATUS_FACE_DISABLED } from "../faces"
+import { PlugZap, Unplug } from "lucide-react"
 
 type Props = {
   name: string,
@@ -19,7 +20,7 @@ type Props = {
 export default function RoomStatusCard(
   {
     name,
-    status,
+    // status,
     isActivated,
     room,
     devEUI,
@@ -37,7 +38,9 @@ export default function RoomStatusCard(
         {/* Top Section */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-2">
-            {isActivated ? STATUS_FACE[status as Status] : STATUS_FACE_DISABLED[status as Status]}
+            {isActivated ? <PlugZap size={40} className="text-green-400" /> : <Unplug size={40} className="text-red-400" />}
+            {/* <Image src={'/zeia-burguer.png'} height={40} width={40} alt="logo" className="ze" /> */}
+
           </div>
           <div className="flex flex-col">
             <span className="font-semibold capitalize block text-balance text-right">{name}</span>
@@ -56,6 +59,10 @@ export default function RoomStatusCard(
             <div className="flex items-center gap-2">
               <p className="text-sm">{isActivated ? 'Conectado' : 'Desconectado'}</p>
               {/* { isActivated ? <div className={styles.blinkingcircleGreen}/> : <div className={styles.blinkingcircleRed}/>} */}
+              <div className={`relative w-3 h-3 rounded-full ${isActivated ? 'bg-green-400' : 'bg-red-400'
+                }`} style={{
+                  animation: 'blink 1.5s ease-in-out infinite'
+                }}></div>
             </div>
           </div>
         </div>

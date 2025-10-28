@@ -9,7 +9,7 @@ import { roomsList } from '@/app/sevices/enterprise/data'
 import HeadquarterSelect from '@/app/ui/filters/headquarter-select'
 import { getHeadquartersOcupacional } from '@/app/sevices/filters/data'
 import { SearchParams } from '@/app/type'
-import StatusSelect from '@/app/ui/filters/status-select'
+// import StatusSelect from '@/app/ui/filters/status-select'
 
 interface Room {
   id: number
@@ -29,7 +29,7 @@ export default async function page({ searchParams }: SearchParams) {
   return (
     <div>
       <FiltersContainer>
-        <StatusSelect />
+        {/* <StatusSelect /> */}
         <HeadquarterSelect headquarters={headquarters} />
         <RoomSearchFilter />
       </FiltersContainer>

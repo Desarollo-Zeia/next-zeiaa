@@ -57,7 +57,7 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           {/* Logo */}
           <div className="py-8">
-            <Image src="/logozeia.png" width={120} height={80} className="h-12 w-auto" alt="Logo zeia" priority />
+            <Image src="/zeia-logo-first.png" width={120} height={80} className="h-12 w-auto bg-gradient-to-r from-[rgb(0,183,202)] via-[rgb(0,186,167)] to-[rgb(0,193,83)] bg-clip-text text-transparent bg-black" alt="Logo zeia" priority />
           </div>
 
           {/* Hero Section */}
@@ -80,7 +80,7 @@ export default function Home() {
               <ModuleCard
                 image="/co2service.png"
                 name="Monitoreo Ambiental"
-                description="Por definir."
+                description="Mide temperatura, humedad y CO₂ para mantener espacios saludables y confortables."
                 route="/ocupacional"
               />
               {/* <ModuleCard
