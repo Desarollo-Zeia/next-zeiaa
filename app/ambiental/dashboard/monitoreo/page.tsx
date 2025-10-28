@@ -64,7 +64,7 @@ export default async function page({ searchParams }: SearchParams) {
       </FiltersContainer>
       <TableComponent data={data} name={name} devUI={devUI} room={currentFirstRoom} status={'GOOD'} />
       <br />
-      <ChartComponent results={sortResults(results)} generalRoomData={generalRoomData} indicator={indicator as Indicator} unit={unit as Unit} />
+      <ChartComponent results={sortResults(results)} generalRoomData={generalRoomData} indicator={indicator as Indicator} unit={unit as Unit} thresholds={generalRoomData.thresholds} />
     </div>
   )
 }

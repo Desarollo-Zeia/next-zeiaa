@@ -67,7 +67,6 @@ export default function ChartComponent({ results, generalRoomData, indicator, un
   const { indicators_pollutants: indicators, thresholds } = generalRoomData
   const pathname = usePathname()
 
-  console.log(thresholds)
   // eslint-disable-next-line @next/next/no-assign-module-variable
   const module = pathname.split('/')[1]
 
