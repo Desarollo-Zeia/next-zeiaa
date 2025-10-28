@@ -98,10 +98,9 @@ export default function ChartComponent({ results, generalRoomData, indicator, un
   //   return '#000'; // Caso por defecto
   // }
 
-  const domaninY = thresholdss[thresholdss.length - 1] * 1.4
+  const [{ value: domaninY }] = thresholds[indicator].levels.slice(-1)
 
   const th = thresholds[indicator].levels
-
 
   return (
     <Card className="w-full max-w-4xl">
