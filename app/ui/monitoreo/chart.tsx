@@ -12,10 +12,10 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-import { STATUS_COLOR_THRESHOLD, UNIT_CONVERTED } from "@/app/utils/formatter";
-import { UNIT_INDICATOR_THRESHOLD, UNIT_INDICATOR_THRESHOLD_AMBIENTAL } from "@/app/utils/threshold";
+import { STATUS_COLOR, STATUS_COLOR_THRESHOLD, STATUS_TO_SPANISH, UNIT_CONVERTED } from "@/app/utils/formatter";
+// import { UNIT_INDICATOR_THRESHOLD, UNIT_INDICATOR_THRESHOLD_AMBIENTAL } from "@/app/utils/threshold";
 import { Indicator, Unit } from "@/app/type";
-import { usePathname } from "next/navigation";
+// import { usePathname } from "next/navigation";
 import NoResultFound from "../no-result-found";
 
 interface IndicatorStructure {
@@ -65,27 +65,27 @@ const chartConfig = {
 export default function ChartComponent({ results, generalRoomData, indicator, unit }: ChartComponentProps) {
 
   const { indicators_pollutants: indicators, thresholds } = generalRoomData
-  const pathname = usePathname()
+  // const pathname = usePathname()
 
   // eslint-disable-next-line @next/next/no-assign-module-variable
-  const module = pathname.split('/')[1]
+  // const module = pathname.split('/')[1]
 
-  let thresholdPointer
-  let thresholdss: number[] = []
+  // let thresholdPointer
+  // let thresholdss: number[] = []
 
-  if (indicator === 'TVOC') {
-    thresholdPointer = unit as Extract<Unit, 'PPB' | 'ICA'>
-  } else {
-    thresholdPointer = indicator
-  }
+  // if (indicator === 'TVOC') {
+  //   thresholdPointer = unit as Extract<Unit, 'PPB' | 'ICA'>
+  // } else {
+  //   thresholdPointer = indicator
+  // }
 
-  if (module === 'ocupacional') {
-    thresholdss = Object.values(UNIT_INDICATOR_THRESHOLD[thresholdPointer] || {}).filter(Boolean);
-  }
+  // if (module === 'ocupacional') {
+  //   thresholdss = Object.values(UNIT_INDICATOR_THRESHOLD[thresholdPointer] || {}).filter(Boolean);
+  // }
 
-  if (module === 'ambiental') {
-    thresholdss = Object.values(UNIT_INDICATOR_THRESHOLD_AMBIENTAL[thresholdPointer] || {}).filter(Boolean);
-  }
+  // if (module === 'ambiental') {
+  //   thresholdss = Object.values(UNIT_INDICATOR_THRESHOLD_AMBIENTAL[thresholdPointer] || {}).filter(Boolean);
+  // }
 
   // const getStrokeColor = (index: number) => {
   //   const thresholdCount = thresholdss?.length || 0;
@@ -114,7 +114,7 @@ export default function ChartComponent({ results, generalRoomData, indicator, un
           results.length !== 0 && (
             <div className="w-full">
               <div className="text-xs font-medium mb-2">Umbrales:</div>
-              <div className="flex flex-wrap gap-4">
+              {/* <div className="flex flex-wrap gap-4">
                 {thresholdss?.map((thresholdValue, index) => {
                   const color = (() => {
                     const total = thresholds.length;
@@ -149,6 +149,18 @@ export default function ChartComponent({ results, generalRoomData, indicator, un
                     </div>
                   );
                 })}
+              </div> */}
+              <div className="flex flex-wrap gap-4">
+                {th?.map((threshold: any, i: any) => {  // eslint-disable-line @typescript-eslint/no-explicit-any
+                  return (
+                    <div key={i}>
+                      <div>
+                        <p className={`${STATUS_COLOR[threshold.level as keyof typeof STATUS_COLOR]}`}>-- {STATUS_TO_SPANISH[threshold.level as keyof typeof STATUS_TO_SPANISH]}</p>
+                        <p>{threshold.value} {UNIT_CONVERTED[unit]}</p>
+                      </div>
+                    </div>
+                  )
+                })}
               </div>
             </div>
           )
@@ -181,7 +193,7 @@ export default function ChartComponent({ results, generalRoomData, indicator, un
                 hide={false}
                 tickMargin={8}
                 dataKey="value"
-                domain={[0, domaninY]}
+                domain={[0, domaninY * 1.4]}
                 tickFormatter={(a) => `${a} ${UNIT_CONVERTED[unit]}`}
               />
               <ChartTooltip

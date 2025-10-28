@@ -35,4 +35,5 @@ export type GeneralRoomData = {
   is_activated: boolean,
   name: string,
   status: Status,
+  thresholds: any // eslint-disable-line @typescript-eslint/no-explicit-any
 }

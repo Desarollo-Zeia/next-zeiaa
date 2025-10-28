@@ -9,22 +9,20 @@ import {
   ChartConfig,
   ChartContainer,
 } from "@/components/ui/chart"
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import IndicatorToggle from "../../filters/indicators-toggle"
-import { UNIT_INDICATOR_THRESHOLD, UNIT_INDICATOR_THRESHOLD_AMBIENTAL_CHARTJS_EXLUSIVE_DICTIONARY_IM_SORRY_FOR_THE_NEXT_DEVELOPER } from "@/app/utils/threshold"
 import 'chart.js/auto';
 import { Line } from 'react-chartjs-2'
 import { Chart, Colors } from 'chart.js/auto'
 import { format, getTime, parse } from "date-fns"
 import 'chartjs-adapter-date-fns';
 import annotationPlugin from 'chartjs-plugin-annotation';
-import { UNIT_CONVERTED } from "@/app/utils/formatter"
+import { STATUS_COLOR, STATUS_TO_SPANISH, UNIT_CONVERTED } from "@/app/utils/formatter"
 import { es } from 'date-fns/locale';
 import { capitalizeFirstLetter, formattedDate } from "@/app/utils/func"
 import { Button } from "@/components/ui/button"
 import { GeneralRoomData, Indicator, Measurement, Unit } from "@/app/type"
 import { TimeRangeSlider } from "@/app/ui/filters/time-range-slider"
-import { usePathname } from "next/navigation"
 import zoomPlugin from "chartjs-plugin-zoom";
 import NoResultsFound from "../../no-result"
 
@@ -112,6 +110,7 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
   // const [isPending, startTransition] = useTransition()
   const [newReadings, setNewReadings] = useState<Readings>({})
   const [toggleChart, setToggleChart] = useState<boolean>(false)
+  const [annotationsObj, setAnnotationsObj] = useState<any>({}) // eslint-disable-line @typescript-eslint/no-explicit-any
 
   const dates = Object.keys(readings)
 
@@ -130,27 +129,28 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
 
   }, [readings])
 
-  const { indicators_pollutants: indicators } = generalRoomData
-  const pathname = usePathname()
+  const { indicators_pollutants: indicators, thresholds } = generalRoomData
   // eslint-disable-next-line @next/next/no-assign-module-variable
-  const module = pathname.split('/')[1]
 
-  let thresholdPointer
-  let thresholds: number[] = []
+  const th = thresholds[indicator].levels
 
-  if (indicator === 'TVOC') {
-    thresholdPointer = unit as Extract<Unit, 'PPB' | 'ICA'>
-  } else {
-    thresholdPointer = indicator
-  }
+  useEffect(() => {
+    const newAnnotations: any = {}; // eslint-disable-line @typescript-eslint/no-explicit-any
 
-  if (module === 'ocupacional') {
-    thresholds = Object.values(UNIT_INDICATOR_THRESHOLD[thresholdPointer] || {}).filter(Boolean);
-  }
+    for (let i = 0; i < th.length; i++) {
+      newAnnotations[`line${i + 1}`] = {
+        type: 'line',
+        yMin: th[i].value,
+        yMax: th[i].value,
+        borderColor: STATUS_COLOR[th[i].level as keyof typeof STATUS_COLOR],
+        borderWidth: 2,
+        borderDash: [5, 5]
+      };
+    }
 
-  if (module === 'ambiental') {
-    thresholds = Object.values(UNIT_INDICATOR_THRESHOLD_AMBIENTAL_CHARTJS_EXLUSIVE_DICTIONARY_IM_SORRY_FOR_THE_NEXT_DEVELOPER[thresholdPointer] || {}).filter(Boolean);
-  }
+    setAnnotationsObj(newAnnotations); // Setear todo de una vez
+
+  }, [indicator, th]) // Añade th a las dependencias
 
   return (
     <Card>
@@ -167,39 +167,15 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
             <div className="w-full">
               <div className="text-xs font-medium mb-2">Umbrales:</div>
               <div className="flex flex-wrap gap-4">
-                {thresholds?.map((thresholdValue, index) => {
-                  const color = (() => {
-                    const total = thresholds.length;
-
-                    if (total === 1) return '#ff0000'; // Único umbral rojo
-                    if (total === 2) return index === 0 ? '#ffd700' : '#ff0000'; // Amarillo/Rojo
-                    return ['#ffd700', '#ffa500', '#ff0000'][index]; // Amarillo/Naranja/Rojo para 3
-                  })()
-
+                {th?.map((threshold: any, i: any) => {  // eslint-disable-line @typescript-eslint/no-explicit-any
                   return (
-                    <div key={index} className="flex flex-col justify-center items-center gap-2">
-                      <div className="flex gap-2">
-                        <span
-                          style={{
-                            color,
-                            fontWeight: '8px',
-                            display: 'block'
-
-                          }}>--</span> <p> {index === 0 ? 'Moderado' : index === 1 ? 'Insalubre' : 'Peligroso'} </p>
-                      </div>
-                      <div className="flex gap-2">
-                        <span
-                          style={{
-                            color,
-                            fontWeight: '8px',
-
-                          }}>--</span>
-                        <span className="font-normal">
-                          {thresholdValue} {UNIT_CONVERTED[unit]}
-                        </span>
+                    <div key={i}>
+                      <div>
+                        <p className={`${STATUS_COLOR[threshold.level as keyof typeof STATUS_COLOR]}`}>-- {STATUS_TO_SPANISH[threshold.level as keyof typeof STATUS_TO_SPANISH]}</p>
+                        <p>{threshold.value} {UNIT_CONVERTED[unit]}</p>
                       </div>
                     </div>
-                  );
+                  )
                 })}
               </div>
             </div>
@@ -334,54 +310,7 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
                         chart.update();
                       }
                     },
-                    annotation: {
-                      annotations: {
-                        line1: {
-                          type: 'line',
-                          yMin: UNIT_INDICATOR_THRESHOLD_AMBIENTAL_CHARTJS_EXLUSIVE_DICTIONARY_IM_SORRY_FOR_THE_NEXT_DEVELOPER[thresholdPointer]?.bottom,
-                          yMax: UNIT_INDICATOR_THRESHOLD_AMBIENTAL_CHARTJS_EXLUSIVE_DICTIONARY_IM_SORRY_FOR_THE_NEXT_DEVELOPER[thresholdPointer]?.bottom,
-                          borderColor: '#d9c308',
-                          borderWidth: 2,
-                          borderDash: [5, 5],
-                          display: UNIT_INDICATOR_THRESHOLD_AMBIENTAL_CHARTJS_EXLUSIVE_DICTIONARY_IM_SORRY_FOR_THE_NEXT_DEVELOPER[thresholdPointer]?.bottom !== 0,
-                          // label: {
-                          //   display: true,
-                          //   content: [`${UNIT_INDICATOR_THRESHOLD[thresholdPointer].bottom} ${UNIT_CONVERTED[thresholdPointer]}`],
-                          //   color: 'white',
-                          //   backgroundColor: '#d9c308'
-                          // }
-                        },
-                        line2: {
-                          type: 'line',
-                          yMin: UNIT_INDICATOR_THRESHOLD_AMBIENTAL_CHARTJS_EXLUSIVE_DICTIONARY_IM_SORRY_FOR_THE_NEXT_DEVELOPER[thresholdPointer]?.center,
-                          yMax: UNIT_INDICATOR_THRESHOLD_AMBIENTAL_CHARTJS_EXLUSIVE_DICTIONARY_IM_SORRY_FOR_THE_NEXT_DEVELOPER[thresholdPointer]?.center,
-                          borderColor: 'orange',
-                          borderWidth: 2,
-                          borderDash: [5, 5],
-                          display: UNIT_INDICATOR_THRESHOLD_AMBIENTAL_CHARTJS_EXLUSIVE_DICTIONARY_IM_SORRY_FOR_THE_NEXT_DEVELOPER[thresholdPointer]?.center !== 0,
-                          // label: {
-                          //   display: true,
-                          //   content: [`${UNIT_INDICATOR_THRESHOLD[thresholdPointer].center} ${UNIT_CONVERTED[thresholdPointer]}`],
-                          //   color: 'white',
-                          //   backgroundColor: 'orange'
-                          // }
-                        },
-                        line3: {
-                          type: 'line',
-                          yMin: UNIT_INDICATOR_THRESHOLD_AMBIENTAL_CHARTJS_EXLUSIVE_DICTIONARY_IM_SORRY_FOR_THE_NEXT_DEVELOPER[thresholdPointer]?.top * 1.05,
-                          yMax: UNIT_INDICATOR_THRESHOLD_AMBIENTAL_CHARTJS_EXLUSIVE_DICTIONARY_IM_SORRY_FOR_THE_NEXT_DEVELOPER[thresholdPointer]?.top * 1.05,
-                          borderColor: 'red',
-                          borderWidth: 2,
-                          borderDash: [5, 5],
-                          // label: {
-                          //   display: true,
-                          //   content: [`${UNIT_INDICATOR_THRESHOLD[thresholdPointer].top} ${UNIT_CONVERTED[thresholdPointer]}`],
-                          //   color: 'white',
-                          //   backgroundColor: 'red'
-                          // }
-                        }
-                      }
-                    },
+                    annotation: annotationsObj,
                     decimation: {
                       enabled: true,
                       algorithm: 'lttb',
