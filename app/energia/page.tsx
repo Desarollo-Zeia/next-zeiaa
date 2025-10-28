@@ -38,7 +38,7 @@ export default function Page() {
 
       {/* Logo */}
       <div className="absolute left-0 top-0 p-8">
-        <Image src="/logozeia.png" width={120} height={80} className="h-12 w-auto" alt="Logo zeia" priority />
+        <Image src="/zeia-logo-first.png" width={120} height={80} className="h-12 w-auto" alt="Logo zeia" priority />
       </div>
 
       {/* Login Form */}
