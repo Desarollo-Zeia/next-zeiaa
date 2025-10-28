@@ -47,7 +47,7 @@ export const STATUS_TO_SPANISH = {
   UNHEALTHY: 'Insalubre',
   DANGEROUS: 'Peligroso',
   GOOD: 'Bueno',
-  CRITICAL: 'Peligroso'
+  CRITICAL: 'Crítico'
 }
 
 export const STATUS_COLOR = {

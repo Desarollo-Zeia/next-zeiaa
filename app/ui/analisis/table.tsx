@@ -10,7 +10,6 @@ import PaginationNumberComponent from '../pagination-number';
 import { readinsgExcel, readinsgExcelAmbiental } from '@/app/sevices/readings/data';
 import Image from "next/image";
 import ExcelIconGreen from "@/public/icons/excel.png"
-import { UNIT_INDICATOR_THRESHOLD, UNIT_INDICATOR_THRESHOLD_AMBIENTAL } from "@/app/utils/threshold";
 import { INDICATOR_CONSEQUENCES_TEXT, INDICATOR_CONVERTED, INDICATOR_MEASUREMENT_TEXT, STATUS_COLOR_BG, STATUS_TO_SPANISH, UNIT_CONVERTED } from "@/app/utils/formatter";
 import { GeneralRoomData, Indicator, Measurement, Unit } from "@/app/type";
 import { formattedDate } from "@/app/utils/func";
@@ -32,7 +31,7 @@ type TableComponentProps = {
     count: number,
     next: string,
     previous: string | null,
-    results: ModifiedMeasurement[],
+    results: ModifiedMeasurement[], // eslint-disable-line @typescript-eslint/no-explicit-any
   },
   count: number,
   indicator: Indicator,
@@ -55,24 +54,10 @@ export default function TableComponent({ generalRoomData, readings, count, indic
   // eslint-disable-next-line @next/next/no-assign-module-variable
   const module = pathname.split('/')[1]
 
-  const { indicators_activated: indicators } = generalRoomData
+  const { indicators_activated: indicators, thresholds } = generalRoomData
 
-  let thresholdPointer
-  let thresholds
 
-  if (indicator === 'TVOC') {
-    thresholdPointer = unit as Extract<Unit, 'PPB' | 'ICA'>
-  } else {
-    thresholdPointer = indicator
-  }
-
-  if (module === 'ocupacional') {
-    thresholds = Object.values(UNIT_INDICATOR_THRESHOLD[thresholdPointer])
-  }
-
-  if (module === 'ambiental') {
-    thresholds = Object.values(UNIT_INDICATOR_THRESHOLD_AMBIENTAL[thresholdPointer])
-  }
+  const th = thresholds[indicator].levels
 
   const handleExcelDownload = async () => {
     startTransition(async () => {
@@ -114,7 +99,7 @@ export default function TableComponent({ generalRoomData, readings, count, indic
           <CardTitle className="text-2xl font-bold text-center">Límite Máximo Permisible (LMP)</CardTitle>
         </CardHeader>
         <CardContent>
-          <IndicatorThreshold thresholds={thresholds} unit={unit} />
+          <IndicatorThreshold thresholds={th} unit={unit} />
           <div className="mt-6 flex justify-center space-x-4">
             <Dialog open={isWhatMeasuredOpen} onOpenChange={setIsWhatMeasuredOpen}>
               <DialogTrigger asChild>
