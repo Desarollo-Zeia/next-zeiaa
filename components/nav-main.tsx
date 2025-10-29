@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/sidebar"
 import Link from "next/link"
 import { usePathname } from 'next/navigation'
+import { useRoom } from "@/app/utils/func"
 
 
 
@@ -39,6 +40,10 @@ export function NavMain({
 }) {
 
   const pathname = usePathname()
+
+  const { roomId } = useRoom()
+
+  console.log(roomId)
 
   return (
     <SidebarGroup>
@@ -83,7 +88,10 @@ export function NavMain({
                 {module.analisis.items?.map((subItem) => (
                   <SidebarMenuSubItem key={subItem.title}>
                     <SidebarMenuSubButton asChild data-active={pathname.includes(subItem.url) && 'true'}>
-                      <Link href={subItem.url} prefetch>
+                      <Link href={{
+                        pathname: subItem.url,
+                        query: roomId ? { room: roomId } : {}
+                      }} prefetch>
                         <span>{subItem.title}</span>
                       </Link>
                     </SidebarMenuSubButton>

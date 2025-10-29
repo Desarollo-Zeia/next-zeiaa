@@ -25,7 +25,7 @@ interface Room {
   headquarter: { id: number, name: string }
 }
 
-export default async function page({ searchParams }: SearchParams) {
+export default async function Page({ searchParams }: SearchParams) {
 
   const { room, indicator = 'CO2', unit = 'PPM' } = await searchParams
 

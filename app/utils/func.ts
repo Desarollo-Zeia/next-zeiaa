@@ -1,5 +1,16 @@
 import { addDays, format, parse } from "date-fns"
 import { es } from 'date-fns/locale'
+import { create } from "zustand"
+
+interface RoomState {
+  roomId: string
+  changeRoom: (roomId: string) => void
+}
+
+export const useRoom = create<RoomState>((set) => ({
+  roomId: '',
+  changeRoom: (roomId: string) => set({ roomId }),
+}))
 
 export const capitalizeFirstLetter = (str: string) => {
   if (!str) return str; // Verifica si la cadena está vacía
