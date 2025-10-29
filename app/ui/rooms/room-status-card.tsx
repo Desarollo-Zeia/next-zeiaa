@@ -4,6 +4,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import Link from "next/link"
 import { usePathname } from 'next/navigation'
 import { PlugZap, Unplug } from "lucide-react"
+import { useRoom } from "@/app/utils/func"
 
 type Props = {
   name: string,
@@ -26,6 +27,8 @@ export default function RoomStatusCard(
 ) {
 
   const pathname = usePathname()
+
+  const { changeRoom } = useRoom()
 
   const [, s, t, ,] = pathname.split('/')
 
@@ -79,6 +82,7 @@ export default function RoomStatusCard(
               devEUI
             }
           }}
+          onClick={() => changeRoom(room.toString())}
         >
           <Button className="w-full" >
             Ir a detalles de la sala
