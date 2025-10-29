@@ -24,7 +24,7 @@ export function TimeRangeSlider({ initialStart = "00:00", initialEnd = "23:59" }
   React.useEffect(() => {
     const params = new URLSearchParams(searchParams)
     params.set("start", formatTime(debouncedRange[0]))
-    params.set("end", formatTime(debouncedRange[1]))
+    params.set("end", formatSecondTime(debouncedRange[1]))
     router.push(`?${params.toString()}`, { scroll: false })
   }, [debouncedRange, router, searchParams])
 
@@ -69,7 +69,16 @@ function hoursFromMidnight(time: string): number {
 }
 
 function formatTime(hours: number) {
+  // console.log({ hours })
   const date = addHours(startOfDay(new Date()), hours)
+  const result = format(date, "HH:00")
+  console.log({ result })
   return format(date, "HH:00")
 }
+
+function formatSecondTime(hours: number) {
+  const date = addHours(startOfDay(new Date()), hours)
+  return format(date, "HH:59")
+}
+
 
