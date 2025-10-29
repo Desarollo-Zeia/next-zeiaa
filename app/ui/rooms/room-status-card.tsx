@@ -1,11 +1,8 @@
 'use client'
-// import { Status } from "@/app/type"
-// import { STATUS_COLOR, STATUS_TO_SPANISH } from "@/app/utils/formatter"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import Link from "next/link"
 import { usePathname } from 'next/navigation'
-// import { STATUS_FACE, STATUS_FACE_DISABLED } from "../faces"
 import { PlugZap, Unplug } from "lucide-react"
 
 type Props = {

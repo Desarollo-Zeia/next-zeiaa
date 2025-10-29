@@ -1,7 +1,8 @@
 'use client'
+import { useRoom } from "@/app/utils/func";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
-import { useTransition } from 'react';
+import { useEffect, useTransition } from 'react'
 
 interface Room {
   id: number
@@ -14,37 +15,35 @@ interface Room {
 }
 
 export default function RoomSelect({ rooms, firstRoom }: { rooms: Room[], firstRoom: string }) {
-  const [isPending, startTransition] = useTransition();
-  const searchParams = useSearchParams();
-  const currentRoom = searchParams.get('room') as string;
-  const pathname = usePathname();
-  const { replace } = useRouter();
+  const [isPending, startTransition] = useTransition()
+  const searchParams = useSearchParams()
+  const pathname = usePathname()
+  const { replace } = useRouter()
 
-  const handleRoomChange = (room: string) => {
+  const { changeRoom, roomId } = useRoom()
+
+
+  useEffect(() => {
+    const newParams = new URLSearchParams(searchParams);
+    changeRoom(firstRoom)
     startTransition(() => {
-      const newParams = new URLSearchParams(searchParams);
 
       newParams.set('indicator', 'CO2')
       newParams.set('unit', 'PPM')
       newParams.set('page', '1')
 
-      if (room) {
-        newParams.set('room', room)
-      }
-
-      if (room === 'none') {
-        newParams.delete('room')
-      }
+      newParams.set('room', roomId)
 
       replace(`${pathname}?${newParams.toString()}`, { scroll: false })
     });
-  }
+
+  }, [roomId])
 
   return (
     <div className="relative">
       <Select
-        onValueChange={handleRoomChange}
-        value={currentRoom ? currentRoom : firstRoom.toString()}
+        onValueChange={changeRoom}
+        value={roomId.toString()}
         disabled={isPending}
       >
         <SelectTrigger className="w-[240px] bg-[#00b0c7]">

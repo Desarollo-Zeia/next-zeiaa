@@ -20,6 +20,7 @@ interface Room {
   headquarter: { id: number, name: string }
 }
 
+
 export default async function page({ searchParams }: SearchParams) {
 
   const { search, status, headquarter, page, limit, offset } = await searchParams
