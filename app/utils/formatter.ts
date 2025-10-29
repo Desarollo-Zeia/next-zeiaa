@@ -66,6 +66,14 @@ export const STATUS_COLOR_THRESHOLD = {
   CRITICAL: 'red'
 }
 
+export const STATUS_COLOR_THRESHOLD_CHART = {
+  MODERATE: '#FCD34D',    // yellow más suave
+  UNHEALTHY: '#FB923C',   // orange
+  DANGEROUS: '#EF4444',   // red
+  GOOD: '#10B981',        // green
+  CRITICAL: '#DC2626'     // red más oscuro
+}
+
 export const STATUS_COLOR_BG = {
   MODERATE: 'bg-yellow-500',
   UNHEALTHY: 'bg-orange-500',

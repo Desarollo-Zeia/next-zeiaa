@@ -17,7 +17,7 @@ import { Chart, Colors } from 'chart.js/auto'
 import { format, getTime, parse } from "date-fns"
 import 'chartjs-adapter-date-fns';
 import annotationPlugin from 'chartjs-plugin-annotation';
-import { STATUS_COLOR, STATUS_TO_SPANISH, UNIT_CONVERTED } from "@/app/utils/formatter"
+import { STATUS_COLOR, STATUS_COLOR_THRESHOLD_CHART, STATUS_TO_SPANISH, UNIT_CONVERTED } from "@/app/utils/formatter"
 import { es } from 'date-fns/locale';
 import { capitalizeFirstLetter, formattedDate } from "@/app/utils/func"
 import { Button } from "@/components/ui/button"
@@ -110,7 +110,7 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
   // const [isPending, startTransition] = useTransition()
   const [newReadings, setNewReadings] = useState<Readings>({})
   const [toggleChart, setToggleChart] = useState<boolean>(false)
-  const [annotationsObj, setAnnotationsObj] = useState<any>({}) // eslint-disable-line @typescript-eslint/no-explicit-any
+  const [annotations, setAnnotations] = useState<any>({}) // eslint-disable-line @typescript-eslint/no-explicit-any
 
   const dates = Object.keys(readings)
 
@@ -142,13 +142,13 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
         type: 'line',
         yMin: th[i].value,
         yMax: th[i].value,
-        borderColor: STATUS_COLOR[th[i].level as keyof typeof STATUS_COLOR],
+        borderColor: STATUS_COLOR_THRESHOLD_CHART[th[i].level as keyof typeof STATUS_COLOR_THRESHOLD_CHART],
         borderWidth: 2,
         borderDash: [5, 5]
       };
     }
 
-    setAnnotationsObj(newAnnotations); // Setear todo de una vez
+    setAnnotations(newAnnotations); // Setear todo de una vez
 
   }, [indicator, th]) // Añade th a las dependencias
 
@@ -310,7 +310,9 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
                         chart.update();
                       }
                     },
-                    annotation: annotationsObj,
+                    annotation: {
+                      annotations
+                    },
                     decimation: {
                       enabled: true,
                       algorithm: 'lttb',
@@ -330,13 +332,11 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
 
                           if (toggleChart) {
                             const date = parse(ctx.label, 'MMM dd, yyyy, h:mm:ss a', new Date())
-                            console.log(date)
                             const formattedDate = format(date, 'EEEE, dd \'de\' MMMM \'de\' yyyy', { locale: es });
                             return capitalizeFirstLetter(formattedDate)
                           }
 
                           const date = parse(label, 'yyyy-MM-dd', new Date())
-                          console.log(date)
                           const formattedDate = format(date, 'EEEE, dd \'de\' MMMM \'de\' yyyy', { locale: es })
                           return `${capitalizeFirstLetter(formattedDate)}: ${ctx.formattedValue} ${UNIT_CONVERTED[unit]}`
                         }
