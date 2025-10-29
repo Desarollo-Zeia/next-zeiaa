@@ -25,7 +25,7 @@ export default function RoomSelect({ rooms, firstRoom }: { rooms: Room[], firstR
 
   useEffect(() => {
     const newParams = new URLSearchParams(searchParams);
-    changeRoom(firstRoom)
+    if (!roomId) return changeRoom(firstRoom)
     startTransition(() => {
 
       newParams.set('indicator', 'CO2')
