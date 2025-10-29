@@ -102,6 +102,8 @@ export default function ChartComponent({ results, generalRoomData, indicator, un
 
   const th = thresholds[indicator].levels
 
+  console.log(results)
+
   return (
     <Card className="w-full max-w-4xl">
       <CardHeader>
