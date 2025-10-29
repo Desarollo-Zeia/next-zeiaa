@@ -53,7 +53,6 @@ export default function RoomSelect({ rooms, firstRoom }: { rooms: Room[], firstR
           />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value='none'>Sin sala</SelectItem>
           {rooms?.map((room: Room) => (
             <SelectItem
               key={room.id}

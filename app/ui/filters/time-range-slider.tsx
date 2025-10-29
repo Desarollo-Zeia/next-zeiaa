@@ -11,7 +11,7 @@ interface TimeRangeSliderProps {
   initialEnd?: string
 }
 
-export function TimeRangeSlider({ initialStart = "00:00", initialEnd = "23:00" }: TimeRangeSliderProps) {
+export function TimeRangeSlider({ initialStart = "00:00", initialEnd = "23:59" }: TimeRangeSliderProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
 
