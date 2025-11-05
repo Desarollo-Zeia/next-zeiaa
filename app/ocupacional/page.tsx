@@ -12,8 +12,6 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [state, formAction] = useActionState(actionOccupational, { message: "" })
 
-  console.log(isLoading)
-
   const handleSubmit = async (formData: FormData) => {
     setIsLoading(true)
     try {
@@ -99,7 +97,9 @@ export default function Page() {
                   </div>
                 </div>
               </div>
+
               {state.message && <p className="text-center text-sm text-red-500">{state.message}</p>}
+
               <button
                 type="submit"
                 disabled={isLoading}

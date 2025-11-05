@@ -43,8 +43,6 @@ export function NavMain({
 
   const { roomId } = useRoom()
 
-  console.log(roomId)
-
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Módulos</SidebarGroupLabel>
