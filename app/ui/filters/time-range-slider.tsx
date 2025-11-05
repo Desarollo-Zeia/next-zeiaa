@@ -71,8 +71,6 @@ function hoursFromMidnight(time: string): number {
 function formatTime(hours: number) {
   // console.log({ hours })
   const date = addHours(startOfDay(new Date()), hours)
-  const result = format(date, "HH:00")
-  console.log({ result })
   return format(date, "HH:00")
 }
 

@@ -102,8 +102,6 @@ export default function ChartComponent({ results, generalRoomData, indicator, un
 
   const th = thresholds[indicator].levels
 
-  console.log(results)
-
   return (
     <Card className="w-full max-w-4xl">
       <CardHeader>
@@ -141,10 +139,7 @@ export default function ChartComponent({ results, generalRoomData, indicator, un
             <LineChart
               accessibilityLayer
               data={results}
-              margin={{
-                left: 12,
-                right: 12,
-              }}
+              margin={{ top: 20, right: 0, left: 0, bottom: 0 }}
             >
               <CartesianGrid vertical={false} />
               <XAxis
@@ -161,6 +156,7 @@ export default function ChartComponent({ results, generalRoomData, indicator, un
                 dataKey="value"
                 domain={[0, domaninY * 1.4]}
                 tickFormatter={(a) => `${a} ${UNIT_CONVERTED[unit]}`}
+                style={{ paddingTop: '40px' }}
               />
               <ChartTooltip
                 cursor={false}

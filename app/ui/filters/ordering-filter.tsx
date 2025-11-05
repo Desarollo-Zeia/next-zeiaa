@@ -40,8 +40,8 @@ export default function OrderingFilter() {
         </SelectTrigger>
         <SelectContent>
           <SelectItem value='none'>Indeterminado</SelectItem>
-          <SelectItem value='ASC'>Ascendentemente </SelectItem>
-          <SelectItem value='DESC'>Desacendentemente</SelectItem>
+          <SelectItem value='ASC'>De menor a mayor </SelectItem>
+          <SelectItem value='DESC'>De mayor a menor</SelectItem>
         </SelectContent>
       </Select>
 

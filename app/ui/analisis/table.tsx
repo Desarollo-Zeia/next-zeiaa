@@ -18,7 +18,7 @@ import NoResultFound from "../no-result-found";
 import IndicatorThreshold from "../umbrales";
 import { useTransition } from 'react';
 import OrderingFilter from "../filters/ordering-filter";
-import { format } from "date-fns";
+import { format, parse } from "date-fns";
 // import { TimeRangeSlider } from "../filters/time-range-slider";
 
 type ModifiedMeasurement = Omit<Measurement, 'hour'> & {
@@ -44,8 +44,12 @@ type TableComponentProps = {
 
 export default function TableComponent({ generalRoomData, readings, count, indicator, unit, room, date_before, date_after }: TableComponentProps) {
 
-  const newDateBefore = date_before ? format(date_before, "yyyy-MM-dd") : ''
-  const newDateAfter = date_after ? format(date_after, "yyyy-MM-dd") : ''
+  const newDateBefore = parse(date_before as string, "yyyy-MM-dd", new Date()) ?? ''
+  const newDateAfter = parse(date_after as string, "yyyy-MM-dd", new Date()) ?? ''
+
+
+  const DbFormat = format(newDateBefore, 'yyyy-MM-dd')
+  const DaFormat = format(newDateAfter, 'yyyy-MM-dd')
 
   const [isWhatMeasuredOpen, setIsWhatMeasuredOpen] = useState(false)
   const [isWhatCausesOpen, setIsWhatCausesOpen] = useState(false)
@@ -68,8 +72,8 @@ export default function TableComponent({ generalRoomData, readings, count, indic
             room,
             indicator,
             unit,
-            date_before: newDateBefore,
-            date_after: newDateAfter,
+            date_before: DbFormat,
+            date_after: DaFormat,
           });
         }
 
@@ -78,13 +82,13 @@ export default function TableComponent({ generalRoomData, readings, count, indic
             room,
             indicator,
             unit,
-            date_before: newDateBefore,
-            date_after: newDateAfter
+            date_before: DbFormat,
+            date_after: DaFormat
           });
         }
 
         if (blob) {
-          saveAs(blob, `Reporte: ${newDateAfter} - ${newDateBefore}`);
+          saveAs(blob, `Reporte: ${DbFormat} - ${DaFormat}`);
         }
       } catch (error) {
         console.error('Error al descargar el reporte:', error);
