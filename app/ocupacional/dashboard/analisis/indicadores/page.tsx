@@ -10,9 +10,6 @@ import { TimeRangeSlider } from "@/app/ui/filters/time-range-slider";
 import { format } from "date-fns";
 
 export default async function page({ searchParams }: SearchParams) {
-  throw new Error('Este es un error forzado');
-
-  return <div>Content</div>;
 
   const { room, indicator = 'CO2', unit = 'PPM', date_after = new Date(), date_before = new Date(), page = '1', status, start, end, ordering } = await searchParams
 
