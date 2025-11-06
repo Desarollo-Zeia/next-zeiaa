@@ -25,7 +25,9 @@ export default function TableComponent({ generalRoomData, readings, indicator }:
     UNHEALTHY: "bg-orange-600",
     DANGEROUS: "bg-red-600",
     CRITICAL: "bg-red-600",
-    MODERATE: "bg-yellow-600"
+    MODERATE: "bg-yellow-600",
+    MIN: "bg-green-600",
+    MAX: "bg-red-600",
   }
 
   return (

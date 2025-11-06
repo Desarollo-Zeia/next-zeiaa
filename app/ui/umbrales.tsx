@@ -11,6 +11,8 @@ const STATUS_FACES = {
   UNHEALTHY: <UnhealthyFace width={15} height={15} />,
   DANGEROUS: <DangerousFace width={15} height={15} />,
   CRITICAL: <DangerousFace width={15} height={15} />,
+  MIN: <GoodFace width={15} height={15} />,
+  MAX: <DangerousFace width={15} height={15} />,
 
 }
 
@@ -20,9 +22,6 @@ type Thresholds = {
 }
 
 const IndicatorThreshold = ({ thresholds, unit }: { thresholds: Thresholds[], unit: string }) => {
-
-
-
 
   return (
     <div className="space-y-4">

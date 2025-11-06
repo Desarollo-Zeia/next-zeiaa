@@ -47,7 +47,9 @@ export const STATUS_TO_SPANISH = {
   UNHEALTHY: 'Insalubre',
   DANGEROUS: 'Peligroso',
   GOOD: 'Bueno',
-  CRITICAL: 'Crítico'
+  CRITICAL: 'Crítico',
+  MIN: 'Mínimo máximo permitido',
+  MAX: 'Máximo permitido'
 }
 
 export const STATUS_COLOR = {
@@ -55,7 +57,9 @@ export const STATUS_COLOR = {
   UNHEALTHY: 'text-orange-500',
   DANGEROUS: 'text-red-500',
   GOOD: 'text-green-500',
-  CRITICAL: 'text-red-500'
+  CRITICAL: 'text-red-500',
+  MIN: 'text-green-500',
+  MAX: 'text-red-500'
 }
 
 export const STATUS_COLOR_THRESHOLD = {
@@ -63,7 +67,9 @@ export const STATUS_COLOR_THRESHOLD = {
   UNHEALTHY: 'orange',
   DANGEROUS: 'red',
   GOOD: 'green',
-  CRITICAL: 'red'
+  CRITICAL: 'red',
+  MIN: 'text-green-500',
+  MAX: 'text-red-500'
 }
 
 export const STATUS_COLOR_THRESHOLD_CHART = {
@@ -71,7 +77,9 @@ export const STATUS_COLOR_THRESHOLD_CHART = {
   UNHEALTHY: '#FB923C',   // orange
   DANGEROUS: '#EF4444',   // red
   GOOD: '#10B981',        // green
-  CRITICAL: '#DC2626'     // red más oscuro
+  CRITICAL: '#DC2626',     // red más oscuro
+  MIN: '#10B981',
+  MAX: '#DC2626'
 }
 
 export const STATUS_COLOR_BG = {
@@ -79,7 +87,9 @@ export const STATUS_COLOR_BG = {
   UNHEALTHY: 'bg-orange-500',
   DANGEROUS: 'bg-red-500',
   GOOD: 'bg-green-500',
-  CRITICAL: 'bg-red-500'
+  CRITICAL: 'bg-red-500',
+  MIN: 'bg-green-500',
+  MAX: 'bg-red-500'
 }
 
 
