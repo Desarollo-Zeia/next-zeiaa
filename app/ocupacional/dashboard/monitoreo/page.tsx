@@ -51,7 +51,7 @@ export default async function Page({ searchParams }: SearchParams) {
 
       return timeA.getTime() - timeB.getTime()
     });
-  };
+  }
 
   const generalRoomData = await roomGeneralData({ roomId: currentFirstRoom })
 
