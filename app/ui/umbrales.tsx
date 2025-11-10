@@ -6,13 +6,15 @@ type Level = 'DANGEROUS' | 'UNHEALTHY' | 'MODERATE' | 'GOOD' | 'CRITICAL'
 
 
 const STATUS_FACES = {
-  GOOD: <GoodFace width={15} height={15} />,
-  MODERATE: <ModerateFace width={15} height={15} />,
-  UNHEALTHY: <UnhealthyFace width={15} height={15} />,
-  DANGEROUS: <DangerousFace width={15} height={15} />,
-  CRITICAL: <DangerousFace width={15} height={15} />,
-  MIN: <GoodFace width={15} height={15} />,
-  MAX: <DangerousFace width={15} height={15} />,
+  GOOD: <GoodFace width={20} height={20} />,
+  MODERATE: <ModerateFace width={20} height={20} />,
+  UNHEALTHY: <UnhealthyFace width={20} height={20} />,
+  DANGEROUS: <DangerousFace width={20} height={20} />,
+  CRITICAL: <DangerousFace width={20} height={20} />,
+  TEMP_MIN: <ModerateFace width={20} height={20} />,
+  TEMP_MAX: <DangerousFace width={20} height={20} />,
+  HUMIDITY_MIN: <ModerateFace width={20} height={20} />,
+  HUMIDITY_MAX: <DangerousFace width={20} height={20} />,
 
 }
 
