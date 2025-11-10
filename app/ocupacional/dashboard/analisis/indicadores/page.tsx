@@ -23,11 +23,12 @@ export default async function page({ searchParams }: SearchParams) {
   const generalRoomData = await roomGeneralData({ roomId: currentFirstRoom })
   const readings = await readingsData({ roomId: currentFirstRoom, indicator, unit, date_after: formattedDateAfter, date_before: formattedDateBefore, page, status, hour_after: start, hour_before: end, ordering })
 
+  const thresholdsFilters = generalRoomData?.thresholds_filter[indicator]
   return (
     <div>
       <FiltersContainer>
         <RoomSelect firstRoom={currentFirstRoom} rooms={rooms} />
-        <StatusSelect />
+        <StatusSelect status_filter={thresholdsFilters} />
         <TimeRangeSlider />
         <DatepickerRange />
       </FiltersContainer>
