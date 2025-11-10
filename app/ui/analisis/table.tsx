@@ -94,7 +94,9 @@ export default function TableComponent({ generalRoomData, readings, count, indic
         console.error('Error al descargar el reporte:', error);
       }
     });
-  };
+  }
+
+  console.log(th)
 
   return (
     <div className='flex gap-4 mx-8'>

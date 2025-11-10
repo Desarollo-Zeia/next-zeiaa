@@ -50,8 +50,8 @@ export const STATUS_TO_SPANISH = {
   CRITICAL: 'Crítico',
   HUMIDITY_MIN: 'Mínimo máximo permitido',
   HUMIDITY_MAX: 'Máximo permitido',
-  TEMPERATURE_MIN: 'Mínimo máximo permitido',
-  TEMPERATURE_MAX: 'Máximo permitido',
+  TEMP_MIN: 'Mínimo máximo permitido',
+  TEMP_MAX: 'Máximo permitido',
 }
 
 export const STATUS_COLOR = {
@@ -62,8 +62,8 @@ export const STATUS_COLOR = {
   CRITICAL: 'text-red-500',
   HUMIDITY_MIN: 'Mínimo máximo permitido',
   HUMIDITY_MAX: 'Máximo permitido',
-  TEMPERATURE_MIN: 'Mínimo máximo permitido',
-  TEMPERATURE_MAX: 'Máximo permitido',
+  TEMP_MIN: 'Mínimo máximo permitido',
+  TEMP_MAX: 'Máximo permitido',
 }
 
 export const STATUS_COLOR_THRESHOLD = {
@@ -74,8 +74,8 @@ export const STATUS_COLOR_THRESHOLD = {
   CRITICAL: 'red',
   HUMIDITY_MIN: 'green',
   HUMIDITY_MAX: 'red',
-  TEMPERATURE_MIN: 'green',
-  TEMPERATURE_MAX: 'red'
+  TEMP_MIN: 'green',
+  TEMP_MAX: 'red'
 }
 
 export const STATUS_COLOR_THRESHOLD_CHART = {
@@ -86,8 +86,8 @@ export const STATUS_COLOR_THRESHOLD_CHART = {
   CRITICAL: '#DC2626',     // red más oscuro
   HUMIDITY_MIN: '#10B981',
   HUMIDITY_MAX: '#DC2626',
-  TEMPERATURE_MIN: '#10B981',
-  TEMPERATURE_MAX: '#DC2626'
+  TEMP_MIN: '#10B981',
+  TEMP_MAX: '#DC2626'
 }
 
 export const STATUS_COLOR_BG = {
@@ -98,8 +98,8 @@ export const STATUS_COLOR_BG = {
   CRITICAL: 'bg-red-500',
   HUMIDITY_MIN: 'bg-green-500',
   HUMIDITY_MAX: 'bg-red-500',
-  TEMPERATURE_MIN: 'bg-green-500',
-  TEMPERATURE_MAX: 'bg-red-500',
+  TEMP_MIN: 'bg-green-500',
+  TEMP_MAX: 'bg-red-500',
 }
 
 
