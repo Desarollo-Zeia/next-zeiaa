@@ -209,9 +209,6 @@ export async function riskReached({ roomId, date }: { roomId?: string | number, 
 }
 
 
-
-
-
 export async function roomGeneralData({ roomId }: { roomId: string | number }) {
   const res = await fetchWithAuth(`/enterprise/api/room/${roomId}/`)
   return res

@@ -65,38 +65,6 @@ const chartConfig = {
 export default function ChartComponent({ results, generalRoomData, indicator, unit }: ChartComponentProps) {
 
   const { indicators_pollutants: indicators, thresholds } = generalRoomData
-  // const pathname = usePathname()
-
-  // eslint-disable-next-line @next/next/no-assign-module-variable
-  // const module = pathname.split('/')[1]
-
-  // let thresholdPointer
-  // let thresholdss: number[] = []
-
-  // if (indicator === 'TVOC') {
-  //   thresholdPointer = unit as Extract<Unit, 'PPB' | 'ICA'>
-  // } else {
-  //   thresholdPointer = indicator
-  // }
-
-  // if (module === 'ocupacional') {
-  //   thresholdss = Object.values(UNIT_INDICATOR_THRESHOLD[thresholdPointer] || {}).filter(Boolean);
-  // }
-
-  // if (module === 'ambiental') {
-  //   thresholdss = Object.values(UNIT_INDICATOR_THRESHOLD_AMBIENTAL[thresholdPointer] || {}).filter(Boolean);
-  // }
-
-  // const getStrokeColor = (index: number) => {
-  //   const thresholdCount = thresholdss?.length || 0;
-
-  //   if (thresholdCount === 1) return '#ff0000'; // Único umbral
-  //   if (thresholdCount === 2) return index === 0 ? '#ffd700' : '#ff0000'; // Moderado/Peligroso
-  //   if (thresholdCount === 3) { // Moderado/Insalubre/Peligroso
-  //     return ['#ffd700', '#ffa500', '#ff0000'][index];
-  //   }
-  //   return '#000'; // Caso por defecto
-  // }
 
   const [{ value: domaninY }] = thresholds[indicator].levels.slice(-1)
 
