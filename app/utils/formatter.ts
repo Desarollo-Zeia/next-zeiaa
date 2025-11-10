@@ -60,21 +60,21 @@ export const STATUS_COLOR = {
   DANGEROUS: 'text-red-500',
   GOOD: 'text-green-500',
   CRITICAL: 'text-red-500',
-  HUMIDITY_MIN: 'Mínimo máximo permitido',
-  HUMIDITY_MAX: 'Máximo permitido',
-  TEMP_MIN: 'Mínimo máximo permitido',
-  TEMP_MAX: 'Máximo permitido',
+  HUMIDITY_MIN: 'text-yellow-500',
+  HUMIDITY_MAX: 'text-red-500',
+  TEMP_MIN: 'text-yellow-500',
+  TEMP_MAX: 'text-red-500',
 }
 
 export const STATUS_COLOR_THRESHOLD = {
-  MODERATE: 'yellow',
+  MODERATE: '#FCD34D',
   UNHEALTHY: 'orange',
   DANGEROUS: 'red',
   GOOD: 'green',
   CRITICAL: 'red',
-  HUMIDITY_MIN: 'green',
+  HUMIDITY_MIN: '#FCD34D',
   HUMIDITY_MAX: 'red',
-  TEMP_MIN: 'green',
+  TEMP_MIN: '#FCD34D',
   TEMP_MAX: 'red'
 }
 
@@ -84,9 +84,9 @@ export const STATUS_COLOR_THRESHOLD_CHART = {
   DANGEROUS: '#EF4444',   // red
   GOOD: '#10B981',        // green
   CRITICAL: '#DC2626',     // red más oscuro
-  HUMIDITY_MIN: '#10B981',
+  HUMIDITY_MIN: '#FCD34D',
   HUMIDITY_MAX: '#DC2626',
-  TEMP_MIN: '#10B981',
+  TEMP_MIN: '#FCD34D',
   TEMP_MAX: '#DC2626'
 }
 
