@@ -18,16 +18,11 @@ const _alertsCached = unstable_cache(
 
     const res = await fetchWithAuth(`${url.pathname}${url.search}`, {}, token)
 
-    return res 
+    return res
   },
-  ['ocupacional-alerts'],
-  {
-    tags: [CACHE_TAGS.OCUPACIONAL, CACHE_TAGS.ALERTS],
-    revalidate: CACHE_DURATION.CRITICAL, // 30 seconds - alerts are critical
-  }
 )
 
-export async function alerts({ roomId, indicator, unit, date_after, date_before, page, status } : { roomId : string | number, indicator: string, unit: string, date_after?: string,  date_before?: string, page: string, status?: string}) {
+export async function alerts({ roomId, indicator, unit, date_after, date_before, page, status }: { roomId: string | number, indicator: string, unit: string, date_after?: string, date_before?: string, page: string, status?: string }) {
   const token = await getToken()
   if (!token) throw new Error('No auth token')
   return _alertsCached(token, roomId, indicator, unit, page, date_after, date_before, status)
@@ -46,7 +41,7 @@ const _alertsAmbientalCached = unstable_cache(
 
     const res = await fetchWithAuthAmbiental(`${url.pathname}${url.search}`, {}, token)
 
-    return res 
+    return res
   },
   ['ambiental-alerts'],
   {
@@ -55,7 +50,7 @@ const _alertsAmbientalCached = unstable_cache(
   }
 )
 
-export async function alertsAmbiental({ roomId, indicator, unit, date_after, date_before, page, status } : { roomId : string | number, indicator: string, unit: string, date_after?: string,  date_before?: string, page: string, status?: string}) {
+export async function alertsAmbiental({ roomId, indicator, unit, date_after, date_before, page, status }: { roomId: string | number, indicator: string, unit: string, date_after?: string, date_before?: string, page: string, status?: string }) {
   const token = await getToken()
   if (!token) throw new Error('No auth token')
   return _alertsAmbientalCached(token, roomId, indicator, unit, page, date_after, date_before, status)
