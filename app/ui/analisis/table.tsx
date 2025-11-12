@@ -186,14 +186,14 @@ export default function TableComponent({ generalRoomData, readings, count, indic
                       readings.results?.map((indicator, i) =>
                       (
                         <TableRow key={i}>
-                          <TableCell>{formattedDate(indicator.date)}</TableCell>
+                          <TableCell className="text-nowrap">{formattedDate(indicator.date)}</TableCell>
                           <TableCell>{indicator.hours.toLocaleLowerCase()}</TableCell>
                           <TableCell>{indicator.value}</TableCell>
                           <TableCell>{UNIT_CONVERTED[indicator.unit]}</TableCell>
-                          <div className="flex items-center justify-center gap-2">
-                            <div className={`${STATUS_COLOR_BG[indicator.status]} w-2 h-2 rounded-full`} />
-                            <p>{STATUS_TO_SPANISH[indicator.status]}</p>
-                          </div>
+                          <TableCell className="align-middle relative text-center">
+                            <div className={`${STATUS_COLOR_BG[indicator.status]} w-2 h-2 rounded-full absolute align-middle mt-[5px]`} />
+                            <p className="text-center ml-2">{STATUS_TO_SPANISH[indicator.status]}</p>
+                          </TableCell>
                         </TableRow>
                       )
                       )
