@@ -187,7 +187,7 @@ export default function TableComponent({ generalRoomData, readings, count, indic
                       (
                         <TableRow key={i}>
                           <TableCell className="text-nowrap">{formattedDate(indicator.date)}</TableCell>
-                          <TableCell>{indicator.hours.toLocaleLowerCase()}</TableCell>
+                          <TableCell  >{indicator.hours.toLocaleLowerCase()}</TableCell>
                           <TableCell>{indicator.value}</TableCell>
                           <TableCell>{UNIT_CONVERTED[indicator.unit]}</TableCell>
                           <TableCell className="align-middle relative text-center">
