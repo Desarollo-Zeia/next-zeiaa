@@ -1,7 +1,9 @@
+'use client'
 import { ArrowRight } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import type { Module } from "./lib/definitions"
+import posthog from "posthog-js"
 
 function ModuleCard({ image, name, description, route }: Module) {
   return (
@@ -28,6 +30,7 @@ function ModuleCard({ image, name, description, route }: Module) {
       <Link
         href={route}
         className="group/link mt-6 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[rgb(0,183,202)] to-[rgb(0,186,167)] px-4 py-2 text-sm font-medium text-white transition-all hover:translate-x-1"
+        onClick={() => posthog.capture('test_event')}
       >
         Ingresar
         <ArrowRight className="h-4 w-4" />
