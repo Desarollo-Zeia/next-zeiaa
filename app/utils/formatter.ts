@@ -48,9 +48,9 @@ export const STATUS_TO_SPANISH = {
   DANGEROUS: 'Peligroso',
   GOOD: 'Bueno',
   CRITICAL: 'Crítico',
-  HUMIDITY_MIN: 'Mínimo máximo permitido',
+  HUMIDITY_MIN: 'Mínimo permitido',
   HUMIDITY_MAX: 'Máximo permitido',
-  TEMP_MIN: 'Mínimo máximo permitido',
+  TEMP_MIN: 'Mínimo permitido',
   TEMP_MAX: 'Máximo permitido',
 }
 
@@ -96,9 +96,9 @@ export const STATUS_COLOR_BG = {
   DANGEROUS: 'bg-red-500',
   GOOD: 'bg-green-500',
   CRITICAL: 'bg-red-500',
-  HUMIDITY_MIN: 'bg-green-500',
+  HUMIDITY_MIN: 'bg-yellow-500',
   HUMIDITY_MAX: 'bg-red-500',
-  TEMP_MIN: 'bg-green-500',
+  TEMP_MIN: 'bg-yellow-500',
   TEMP_MAX: 'bg-red-500',
 }
 
