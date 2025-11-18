@@ -156,7 +156,7 @@ export default function TableComponent({ generalRoomData, readings, count, indic
               disabled={isPending}
             >
               <Image src={ExcelIconGreen} width={16} height={16} alt="excel-image" />
-              Excel General
+              Exportar Salas
               {
                 isPending && (
                   <div className="absolute inset-0 flex items-center justify-center">
