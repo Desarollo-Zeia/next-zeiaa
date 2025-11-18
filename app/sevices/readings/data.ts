@@ -220,7 +220,7 @@ export async function roomGeneralDataAmbiental({ roomId }: { roomId: string | nu
 }
 
 export async function readinsgExcel({
-  room,
+  // room,
   indicator = 'CO2',
   unit = 'PPM',
   date_after,
@@ -232,7 +232,7 @@ export async function readinsgExcel({
   date_after?: string;
   date_before?: string;
 }) {
-  const url = new URL(`/readings/api/room/${room}/indicator/report`, baseUrl);
+  const url = new URL(`/readings/api/headquarter/49/room/indicator/report/all-rooms`, baseUrl);
 
   if (indicator) url.searchParams.set('indicator', indicator);
   if (unit) url.searchParams.set('unit', unit);
