@@ -66,9 +66,9 @@ export default function ChartComponent({ results, generalRoomData, indicator, un
 
   const { indicators_pollutants: indicators, thresholds } = generalRoomData
 
-  const [{ value: domaninY }] = thresholds[indicator].levels.slice(-1)
+  const [{ value: domaninY } = {}] = thresholds?.[indicator]?.levels?.slice(-1) ?? [];
 
-  const th = thresholds[indicator].levels
+  const th = thresholds?.[indicator]?.levels;
 
   return (
     <Card className="w-full max-w-4xl">
@@ -131,7 +131,6 @@ export default function ChartComponent({ results, generalRoomData, indicator, un
                 content={<ChartTooltipContent />}
               />
               {
-
                 th?.map((threshold: any, i: number) => ( // eslint-disable-line @typescript-eslint/no-explicit-any
                   <ReferenceLine
                     key={`${threshold.level}-${i}`}
@@ -142,6 +141,7 @@ export default function ChartComponent({ results, generalRoomData, indicator, un
                     isFront={true}
                   />
                 ))
+
               }
               <Line
                 dataKey="value"
