@@ -39,8 +39,8 @@ export default function TableComponent({ data }: TableComponentProps) {
   const router = useRouter()
 
   return (
-    <Card className="w-full max-w-4xl">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+    <Card className="w-full max-w-xl">
+      <CardHeader className="flex items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-2xl font-bold">Resumen de indicadores<br /><span className="text-sm font-normal text-gray-500">Datos por agente, en tiempo real</span></CardTitle>
       </CardHeader>
       {
