@@ -20,10 +20,13 @@ export default async function page({ searchParams }: SearchParams) {
   const firstRoom = rooms.find((room: any) => room.is_activated === true)  // eslint-disable-line @typescript-eslint/no-explicit-any
 
   const currentFirstRoom = room ? room : firstRoom.id
+
+  console.log(currentFirstRoom)
   const generalRoomData = await roomGeneralData({ roomId: currentFirstRoom })
   const readings = await readingsData({ roomId: currentFirstRoom, indicator, unit, date_after: formattedDateAfter, date_before: formattedDateBefore, page, status, hour_after: start, hour_before: end, ordering })
 
   const thresholdsFilters = generalRoomData?.thresholds_filter[indicator]
+
   return (
     <div>
       <FiltersContainer>

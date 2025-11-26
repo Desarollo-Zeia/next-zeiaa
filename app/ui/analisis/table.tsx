@@ -96,8 +96,8 @@ export default function TableComponent({ generalRoomData, readings, count, indic
     });
   }
 
-  console.log(th)
 
+  console.log(indicators)
   return (
     <div className='flex gap-4 mx-8'>
       <Card className="shadow-md" >
