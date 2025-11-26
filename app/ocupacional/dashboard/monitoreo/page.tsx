@@ -53,6 +53,8 @@ export default async function Page({ searchParams }: SearchParams) {
     });
   }
 
+
+
   const generalRoomData = await roomGeneralData({ roomId: currentFirstRoom })
 
   const devUI = generalRoomData?.devices[0]?.dev_eui
