@@ -21,54 +21,56 @@ type TableComponentProps = {
   indicator: Indicator
 }
 
-export default function TableComponent({ data, count, generalRoomData, indicator } : TableComponentProps) {
+export default function TableComponent({ data, count, generalRoomData, indicator }: TableComponentProps) {
 
   const { indicators_pollutants: indicators } = generalRoomData
 
+  const avaibleIndicatorsForAlerts = indicators.filter(th => th.indicator !== 'TVOC' && th.indicator !== 'PM10' && th.indicator !== 'PM2_5' && th.indicator !== 'HCHO')
+
   return (
     <Card className="w-full max-w-6xl mx-auto">
-    {/* <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+      {/* <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
       <CardTitle className="text-2xl font-bold">Sala de Conferencias A <br /> <span className="text-sm font-normal text-gray-500">Último datos recibidos</span></CardTitle>
       <Image src='https://utfs.io/f/y8yAFIxNrCH6xltOgtMQNWRFGe0pAcYU5bZ6nSwJOCPqIh4g' alt="face" width={64} height={64} className="object-fit"/>
     </CardHeader> */}
-    <CardHeader className="flex flex-row items-center justify-end space-y-0 pb-2">
-      <IndicatorToggle indicators={indicators} indicatorParam={indicator}/>
-    </CardHeader>
-    {
-      count > 0 ? (
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead >Fecha</TableHead>
-                <TableHead >Hora</TableHead>
-                <TableHead>Valor</TableHead>
-                <TableHead>Unidad</TableHead>
-                <TableHead>Estado</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
+      <CardHeader className="flex flex-row items-center justify-end space-y-0 pb-2">
+        <IndicatorToggle indicators={avaibleIndicatorsForAlerts} indicatorParam={indicator} />
+      </CardHeader>
+      {
+        count > 0 ? (
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead >Fecha</TableHead>
+                  <TableHead >Hora</TableHead>
+                  <TableHead>Valor</TableHead>
+                  <TableHead>Unidad</TableHead>
+                  <TableHead>Estado</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {
-                  data?.map((indicator, i) => 
-                    ( 
-                      <TableRow key={i}>
-                        <TableCell >{formattedDate(indicator.date)}</TableCell>
-                        <TableCell >{indicator.hours.toLowerCase()}</TableCell>
-                        <TableCell>{indicator.value}</TableCell>
-                        <TableCell>{UNIT_CONVERTED[indicator.unit]}</TableCell>
-                        <TableCell >{STATUS_TO_SPANISH[indicator.level as Status]}</TableCell>
-                      </TableRow>
-                    )
+                  data?.map((indicator, i) =>
+                  (
+                    <TableRow key={i}>
+                      <TableCell >{formattedDate(indicator.date)}</TableCell>
+                      <TableCell >{indicator.hours.toLowerCase()}</TableCell>
+                      <TableCell>{indicator.value}</TableCell>
+                      <TableCell>{UNIT_CONVERTED[indicator.unit]}</TableCell>
+                      <TableCell >{STATUS_TO_SPANISH[indicator.level as Status]}</TableCell>
+                    </TableRow>
+                  )
                   )
                 }
-            </TableBody>
-          </Table>
-        </CardContent>
-      ) : (
-        <NoResultFound/>
-      )
-    }
-    { count > 0 && <PaginationNumberComponent count={count} itemsPerPage={10}/> }
+              </TableBody>
+            </Table>
+          </CardContent>
+        ) : (
+          <NoResultFound />
+        )
+      }
+      {count > 0 && <PaginationNumberComponent count={count} itemsPerPage={10} />}
     </Card>
   )
 }

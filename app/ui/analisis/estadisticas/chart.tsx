@@ -132,12 +132,12 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
   const { indicators_pollutants: indicators, thresholds } = generalRoomData
   // eslint-disable-next-line @next/next/no-assign-module-variable
 
-  const th = thresholds[indicator].levels
+  const th = thresholds?.[indicator]?.levels;
 
   useEffect(() => {
     const newAnnotations: any = {}; // eslint-disable-line @typescript-eslint/no-explicit-any
 
-    for (let i = 0; i < th.length; i++) {
+    for (let i = 0; i < th?.length; i++) {
       newAnnotations[`line${i + 1}`] = {
         type: 'line',
         yMin: th[i].value,

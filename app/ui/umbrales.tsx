@@ -27,15 +27,22 @@ const IndicatorThreshold = ({ thresholds, unit }: { thresholds: Thresholds[], un
 
   return (
     <div className="space-y-4">
-      {thresholds.map((threshold, index) => (
-        <div key={index} className={`flex items-center space-x-4 p-2 rounded-lg bg-gray-100`}>
-          <div className={`${STATUS_COLOR[threshold.level]}`}>{STATUS_FACES[threshold.level]}</div>
-          <div>
-            <p className="font-semibold">{STATUS_TO_SPANISH[threshold.level]}</p>
-            <p className="text-sm text-gray-600"> {'>'} {threshold.value} {UNIT_CONVERTED[unit as Unit]}</p>
-          </div>
-        </div>
-      ))}
+      {
+        thresholds?.length > 0 ? (
+          thresholds?.map((threshold, index) => (
+            <div key={index} className={`flex items-center space-x-4 p-2 rounded-lg bg-gray-100`}>
+              <div className={`${STATUS_COLOR[threshold.level]}`}>{STATUS_FACES[threshold.level]}</div>
+              <div>
+                <p className="font-semibold">{STATUS_TO_SPANISH[threshold.level]}</p>
+                <p className="text-sm text-gray-600"> {'>'} {threshold.value} {UNIT_CONVERTED[unit as Unit]}</p>
+              </div>
+            </div>
+          ))
+        ) : (
+          <p className='text-center'>No se encuentraron umbrales</p>
+        )
+      }
+
     </div>
   )
 }
