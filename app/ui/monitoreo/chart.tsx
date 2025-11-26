@@ -71,7 +71,7 @@ export default function ChartComponent({ results, generalRoomData, indicator, un
   const th = thresholds?.[indicator]?.levels;
 
   return (
-    <Card className="w-full max-w-4xl">
+    <Card className="w-full flex-1">
       <CardHeader>
         <div className="flex justify-between items-center gap-2">
           <CardTitle className="text-balance text-lg">Estadísticas en tiempo real</CardTitle>
@@ -120,11 +120,10 @@ export default function ChartComponent({ results, generalRoomData, indicator, un
                 tickLine={false}
                 axisLine={false}
                 hide={false}
-                tickMargin={8}
+                tickMargin={0}
                 dataKey="value"
                 domain={[0, domaninY * 1.4]}
                 tickFormatter={(a) => `${a} ${UNIT_CONVERTED[unit]}`}
-                style={{ paddingTop: '40px' }}
               />
               <ChartTooltip
                 cursor={false}
