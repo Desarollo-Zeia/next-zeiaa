@@ -232,7 +232,7 @@ export async function readinsgExcel({
   date_after?: string;
   date_before?: string;
 }) {
-  const url = new URL(`/readings/api/headquarter/49/room/indicator/report/all-rooms`, baseUrl);
+  const url = new URL(`/readings/api/headquarter/49/room/indicator/report/all-rooms?frequency=hourly`, baseUrl);
 
   if (indicator) url.searchParams.set('indicator', indicator);
   if (unit) url.searchParams.set('unit', unit);
