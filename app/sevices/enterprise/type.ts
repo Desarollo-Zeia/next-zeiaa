@@ -4,5 +4,6 @@ export interface RoomList {
   status?: string,
   page?: string,
   limit?: string,
-  offset?: string
+  offset?: string,
+  token?: string
 }

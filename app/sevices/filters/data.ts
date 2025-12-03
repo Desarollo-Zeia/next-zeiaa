@@ -4,21 +4,10 @@ import { unstable_cache } from 'next/cache'
 import { CACHE_DURATION, CACHE_TAGS } from "@/app/lib/cache"
 import { getToken } from "@/app/lib/auth"
 
-const _getRoomsCached = unstable_cache(
-  async (token: string) => {
-    return await fetchWithAuth('/enterprise/api/enterprise/basic/room-list/', {}, token)
-  },
-  ['ocupacional-rooms'],
-  {
-    tags: [CACHE_TAGS.OCUPACIONAL, CACHE_TAGS.FILTERS],
-    revalidate: CACHE_DURATION.CRITICAL,
-  }
-)
+export async function getRooms(token: string) {
 
-export async function getRooms() {
-  const token = await getToken()
-  if (!token) throw new Error('No auth token')
-  return _getRoomsCached(token)
+  const res = await fetchWithAuth('/enterprise/api/enterprise/basic/room-list/', {}, token)
+  return res
 }
 
 const _getRoomsAmbientalCached = unstable_cache(
