@@ -1,19 +1,19 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl; 
+export function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl;
   const authToken = request.cookies.get('authToken')?.value;
 
   if (pathname === '/ocupacional') {
     const response = NextResponse.next();
-    response.cookies.delete('authToken'); 
+    response.cookies.delete('authToken');
     return response;
   }
 
   if (pathname === '/ambiental') {
     const response = NextResponse.next();
-    response.cookies.delete('authToken'); 
+    response.cookies.delete('authToken');
     return response;
   }
 

@@ -6,22 +6,21 @@ import { CACHE_DURATION, CACHE_TAGS } from "@/app/lib/cache"
 import { getToken } from "@/app/lib/auth"
 
 
-const _roomLastDataCached = unstable_cache(
-  async (token: string, roomId: string | number) => {
-    const res = await fetchWithAuth(`/readings/api/room/${roomId}/general/last`, {}, token)
-    return res
-  },
-  ['ocupacional-room-last-data'],
-  {
-    tags: [CACHE_TAGS.OCUPACIONAL, CACHE_TAGS.READINGS],
-    revalidate: CACHE_DURATION.DYNAMIC, // 1 minute - last readings change frequently
-  }
-)
+// const _roomLastDataCached = unstable_cache(
+//   async (token: string, roomId: string | number) => {
+//     const res = await fetchWithAuth(`/readings/api/room/${roomId}/general/last`, {}, token)
+//     return res
+//   },
+//   ['ocupacional-room-last-data'],
+//   {
+//     tags: [CACHE_TAGS.OCUPACIONAL, CACHE_TAGS.READINGS],
+//     revalidate: CACHE_DURATION.DYNAMIC, // 1 minute - last readings change frequently
+//   }
+// )
 
-export async function roomLastData({ roomId }: { roomId: string | number }) {
-  const token = await getToken()
-  if (!token) throw new Error('No auth token')
-  return _roomLastDataCached(token, roomId)
+export async function roomLastData({ roomId, token }: { roomId: string | number, token: string }) {
+  const res = await fetchWithAuth(`/readings/api/room/${roomId}/general/last`, {}, token)
+  return res
 }
 
 const _roomLastDataAmbientalCached = unstable_cache(
@@ -209,8 +208,8 @@ export async function riskReached({ roomId, date }: { roomId?: string | number, 
 }
 
 
-export async function roomGeneralData({ roomId }: { roomId: string | number }) {
-  const res = await fetchWithAuth(`/enterprise/api/room/${roomId}/`)
+export async function roomGeneralData({ roomId, token }: { roomId: string | number, token: string }) {
+  const res = await fetchWithAuth(`/enterprise/api/room/${roomId}/`, {}, token)
   return res
 }
 

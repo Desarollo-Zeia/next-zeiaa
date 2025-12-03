@@ -15,7 +15,7 @@ export async function detailAmbiental() {
   return res
 }
 
-export async function roomsList({ search, status, headquarter, page, limit, offset }: RoomList) {
+export async function roomsList({ search, status, headquarter, page, limit, offset, token }: RoomList) {
 
   const url = new URL('/enterprise/api/enterprise/room-list/', baseUrl)
 
@@ -26,7 +26,7 @@ export async function roomsList({ search, status, headquarter, page, limit, offs
   if (limit) url.searchParams.set('limit', limit)
   if (offset) url.searchParams.set('offset', offset)
 
-  const res = await fetchWithAuth(`${url.pathname}${url.search}`)
+  const res = await fetchWithAuth(`${url.pathname}${url.search}`, {}, token)
   return res
 }
 

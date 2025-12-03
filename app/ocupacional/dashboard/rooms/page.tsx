@@ -1,6 +1,5 @@
 import RoomStatusCard from '@/app/ui/rooms/room-status-card'
-import React from 'react'
-import styles from '/app/ui/home.module.css'
+import styles from '@/app/ui/home.module.css'
 import RoomSearchFilter from '@/app/ui/filters/search'
 import FiltersContainer from '@/app/ui/filters/filters-container'
 import NoResultFound from '@/app/ui/no-result-found'
@@ -9,6 +8,8 @@ import { roomsList } from '@/app/sevices/enterprise/data'
 import HeadquarterSelect from '@/app/ui/filters/headquarter-select'
 import { getHeadquartersOcupacional } from '@/app/sevices/filters/data'
 import { SearchParams } from '@/app/type'
+import { getToken } from '@/app/lib/auth'
+import { cacheLife } from 'next/cache'
 // import StatusSelect from '@/app/ui/filters/status-select'
 
 interface Room {
@@ -21,11 +22,25 @@ interface Room {
 }
 
 
+async function GetRoomsList({ search, status, headquarter, page, limit, offset, token }: any) {
+  'use cache'
+  cacheLife('minutes')
+  const rooms = await roomsList({ search, status, headquarter, page, limit, offset, token })
+
+  return rooms
+}
+
+
 export default async function page({ searchParams }: SearchParams) {
 
+
   const { search, status, headquarter, page, limit, offset } = await searchParams
+
+  const authToken = await getToken()
+
+  const getRoomsList = await GetRoomsList({ search, status, headquarter, page, limit, offset, token: authToken })
+
   const headquarters = await getHeadquartersOcupacional()
-  const rooms = await roomsList({ search, status, headquarter, page, limit, offset })
 
   return (
     <div>
@@ -35,10 +50,10 @@ export default async function page({ searchParams }: SearchParams) {
         <RoomSearchFilter />
       </FiltersContainer>
       {
-        rooms?.results.length > 0 ? (
+        getRoomsList?.results.length > 0 ? (
           <section className={styles.roomCardsContainer}>
             {
-              rooms?.results.map((room: Room) => {
+              getRoomsList?.results.map((room: Room) => {
                 return (
                   <RoomStatusCard
                     key={room.id}
@@ -57,7 +72,7 @@ export default async function page({ searchParams }: SearchParams) {
           <NoResultFound />
         )
       }
-      {rooms?.count > 0 && <PaginationComponent count={rooms?.count} itemsPerPage={10} />}
+      {getRoomsList?.count > 0 && <PaginationComponent count={getRoomsList?.count} itemsPerPage={10} />}
     </div>
   )
 }

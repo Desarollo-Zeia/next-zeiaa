@@ -4,7 +4,6 @@ import { baseUrl, baseUrlAmbiental, baseUrlEnergy } from "./constant"
 export async function fetchWithAuth(url: string, options: RequestInit = {}, token?: string) {
   const authToken = token || await getToken()
 
-
   const headers = new Headers(options.headers)
   headers.set('Authorization', `token ${authToken}`)
 

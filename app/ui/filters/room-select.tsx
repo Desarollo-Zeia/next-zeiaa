@@ -1,8 +1,7 @@
 'use client'
-import { useRoom } from "@/app/utils/func";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
-import { useEffect, useTransition } from 'react'
+import { useTransition } from 'react'
 
 interface Room {
   id: number
@@ -20,30 +19,27 @@ export default function RoomSelect({ rooms, firstRoom }: { rooms: Room[], firstR
   const pathname = usePathname()
   const { replace } = useRouter()
 
-  const { changeRoom, roomId } = useRoom()
+  const currentRoomId = searchParams.get('room') ?? firstRoom
 
+  const handleRoomChange = (newRoomId: string) => {
+    if (newRoomId === currentRoomId) return;
 
-  useEffect(() => {
-    const newParams = new URLSearchParams(searchParams);
-    if (!roomId) return changeRoom(firstRoom)
     startTransition(() => {
+      const newParams = new URLSearchParams(searchParams.toString())
 
-      newParams.set('indicator', 'CO2')
-      newParams.set('unit', 'PPM')
+      newParams.set('room', newRoomId)
+
       newParams.set('page', '1')
-
-      newParams.set('room', roomId)
 
       replace(`${pathname}?${newParams.toString()}`, { scroll: false })
     });
-
-  }, [roomId])
+  }
 
   return (
     <div className="relative">
       <Select
-        onValueChange={changeRoom}
-        value={roomId.toString()}
+        onValueChange={handleRoomChange}
+        value={currentRoomId.toString()}
         disabled={isPending}
       >
         <SelectTrigger className="w-[240px] bg-[#00b0c7]">
