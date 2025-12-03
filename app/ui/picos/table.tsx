@@ -18,8 +18,6 @@ type TableComponentProps = {
 export default function TableComponent({ generalRoomData, readings, indicator }: TableComponentProps) {
 
   const { indicators_pollutants: indicators } = generalRoomData
-
-
   const colorByLever = {
     GOOD: "bg-green-600",
     UNHEALTHY: "bg-orange-600",
@@ -120,7 +118,6 @@ export default function TableComponent({ generalRoomData, readings, indicator }:
         {readings.count > 0 && <PaginationNumberComponent count={readings.count} itemsPerPage={10} />}
 
       </Card>
-
     </div>
   )
 }

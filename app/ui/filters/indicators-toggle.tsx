@@ -4,7 +4,7 @@ import { Indicator } from "@/app/type";
 import { INDICATOR_CONVERTED, INDICATOR_UNIT_RAW } from "@/app/utils/formatter";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
-import { useTransition } from 'react';
+import { useEffect, useTransition } from 'react';
 
 interface IndicatorToggleProps {
   indicators: { indicator: string, unit: string }[]
@@ -14,8 +14,10 @@ interface IndicatorToggleProps {
 export default function IndicatorToggle({ indicators, indicatorParam }: IndicatorToggleProps) {
   const [isPending, startTransition] = useTransition();
   const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const { replace } = useRouter();
+  const pathname = usePathname()
+  const { replace } = useRouter()
+
+  const currentIndicator = indicatorParam ?? indicators[0].indicator
 
   const handleValueChange = (value: Indicator) => {
     startTransition(() => {
@@ -42,7 +44,7 @@ export default function IndicatorToggle({ indicators, indicatorParam }: Indicato
       <ToggleGroup
         type="single"
         onValueChange={handleValueChange}
-        value={indicatorParam}
+        value={currentIndicator}
         disabled={isPending}
         className="justify-center relative rounded-sm p-2"
       >
@@ -52,7 +54,7 @@ export default function IndicatorToggle({ indicators, indicatorParam }: Indicato
             key={indicator.indicator}
             value={indicator.indicator}
             aria-label={indicator.indicator}
-            disabled={indicator.indicator === indicatorParam}
+            disabled={indicator.indicator === currentIndicator}
 
           >
             {INDICATOR_CONVERTED[indicator.indicator as Indicator]}
