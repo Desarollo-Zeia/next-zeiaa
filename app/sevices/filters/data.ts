@@ -4,7 +4,7 @@ import { unstable_cache } from 'next/cache'
 import { CACHE_DURATION, CACHE_TAGS } from "@/app/lib/cache"
 import { getToken } from "@/app/lib/auth"
 
-export async function getRooms(token: string) {
+export async function getRooms(token?: string) {
 
   const res = await fetchWithAuth('/enterprise/api/enterprise/basic/room-list/', {}, token)
   return res

@@ -41,7 +41,7 @@ export async function roomLastDataAmbiental({ roomId }: { roomId: string | numbe
   return _roomLastDataAmbientalCached(token, roomId)
 }
 
-export async function readingsData({ roomId, indicator = 'CO2', unit = 'PPM', date_after, date_before, page, status, hour_before, hour_after, ordering }: { roomId: string | number, indicator: string, unit: string, date_after?: string, date_before?: string, page?: string, status?: string, hour_before?: string, hour_after?: string, ordering?: string }) {
+export async function readingsData({ roomId, indicator = 'CO2', unit = 'PPM', date_after, date_before, page, status, hour_before, hour_after, ordering, token }: { roomId: string | number, indicator?: string, unit?: string, date_after?: string, date_before?: string, page?: string, status?: string, hour_before?: string, hour_after?: string, ordering?: string, token?: string }) {
 
   const url = new URL(`/readings/api/room/${roomId}/indicator`, baseUrl)
 
@@ -55,7 +55,7 @@ export async function readingsData({ roomId, indicator = 'CO2', unit = 'PPM', da
   if (hour_after) url.searchParams.set('hour_after', hour_after)
   if (ordering) url.searchParams.set('ordering', ordering)
 
-  const res = await fetchWithAuth(`${url.pathname}${url.search}`)
+  const res = await fetchWithAuth(`${url.pathname}${url.search}`, {}, token)
 
   return res
 }
@@ -78,7 +78,7 @@ export async function readingsDataAmbiental({ roomId, indicator = 'CO2', unit = 
   return res
 }
 
-export async function readingsPeaks({ roomId, indicator = 'CO2', unit = 'PPM', date_after, date_before, page, status }: { roomId: string | number, indicator: string, unit: string, date_after?: string, date_before?: string, page?: string, status?: string }) {
+export async function readingsPeaks({ roomId, indicator = 'CO2', unit = 'PPM', date_after, date_before, page, status, token }: { roomId: string | number, indicator: string, unit: string, date_after?: string, date_before?: string, page?: string, status?: string, token?: string }) {
 
   const url = new URL(`/readings/api/room/${roomId}/indicator/metrics/high/history?indicator=CO2&unit=PPM&page=1&date_after=2023-01-03`, baseUrl)
 
@@ -89,7 +89,7 @@ export async function readingsPeaks({ roomId, indicator = 'CO2', unit = 'PPM', d
   if (status) url.searchParams.set('status', status)
   if (page) url.searchParams.set('page', page)
 
-  const res = await fetchWithAuth(`${url.pathname}${url.search}`)
+  const res = await fetchWithAuth(`${url.pathname}${url.search}`, {}, token)
 
   return res
 }
@@ -116,10 +116,19 @@ const _readingsGraphCached = unstable_cache(
   }
 )
 
-export async function readingsGraph({ roomId, indicator, unit, date_after, date_before, hour_before, hour_after }: { roomId: string | number, indicator: string, unit: string, date_after?: string, date_before?: string, hour_before: string, hour_after: string }) {
-  const token = await getToken()
-  if (!token) throw new Error('No auth token')
-  return _readingsGraphCached(token, roomId, indicator, unit, date_after, date_before, hour_before, hour_after)
+export async function readingsGraph({ roomId, indicator, unit, date_after, date_before, hour_before, hour_after, token }: { roomId: string | number, indicator: string, unit: string, date_after?: string, date_before?: string, hour_before: string, hour_after: string, token?: string }) {
+  const url = new URL(`/readings/api/room/${roomId}/indicator/graph`, baseUrl)
+
+  if (indicator) url.searchParams.set('indicator', indicator)
+  if (unit) url.searchParams.set('unit', unit)
+  if (date_after) url.searchParams.set('date_after', date_after)
+  if (date_before) url.searchParams.set('date_before', date_before)
+  if (hour_before) url.searchParams.set('hour_before', hour_before)
+  if (hour_after) url.searchParams.set('hour_after', hour_after)
+
+  const res = await fetchWithAuth(`${url.pathname}${url.search}`, {}, token)
+
+  return res
 }
 
 const _readingsGraphAmbientalCached = unstable_cache(
@@ -208,7 +217,7 @@ export async function riskReached({ roomId, date }: { roomId?: string | number, 
 }
 
 
-export async function roomGeneralData({ roomId, token }: { roomId: string | number, token: string }) {
+export async function roomGeneralData({ roomId, token }: { roomId: string | number, token?: string }) {
   const res = await fetchWithAuth(`/enterprise/api/room/${roomId}/`, {}, token)
   return res
 }

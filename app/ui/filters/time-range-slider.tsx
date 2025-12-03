@@ -26,7 +26,7 @@ export function TimeRangeSlider({ initialStart = "00:00", initialEnd = "23:59" }
     params.set("start", formatTime(debouncedRange[0]))
     params.set("end", formatSecondTime(debouncedRange[1]))
     router.push(`?${params.toString()}`, { scroll: false })
-  }, [debouncedRange, router, searchParams])
+  }, [debouncedRange])
 
   const handleRangeChange = (newRange: number[]) => {
     setRange(newRange)

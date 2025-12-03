@@ -10,7 +10,7 @@ import PaginationNumberComponent from '../pagination-number';
 import { readinsgExcel, readinsgExcelAmbiental } from '@/app/sevices/readings/data';
 import Image from "next/image";
 import ExcelIconGreen from "@/public/icons/excel.png"
-import { INDICATOR_CONSEQUENCES_TEXT, INDICATOR_CONVERTED, INDICATOR_MEASUREMENT_TEXT, STATUS_COLOR_BG, STATUS_TO_SPANISH, UNIT_CONVERTED } from "@/app/utils/formatter";
+import { INDICATOR_CONSEQUENCES_TEXT, INDICATOR_CONVERTED, INDICATOR_MEASUREMENT_TEXT, STATUS_COLOR, STATUS_COLOR_BG, STATUS_TO_SPANISH, UNIT_CONVERTED } from "@/app/utils/formatter";
 import { GeneralRoomData, Indicator, Measurement, Unit } from "@/app/type";
 import { formattedDate } from "@/app/utils/func";
 import { usePathname } from "next/navigation";
@@ -96,8 +96,6 @@ export default function TableComponent({ generalRoomData, readings, count, indic
     });
   }
 
-
-  console.log(indicators)
   return (
     <div className='flex gap-4 mx-8'>
       <Card className="shadow-md" >
@@ -130,7 +128,7 @@ export default function TableComponent({ generalRoomData, readings, count, indic
                   <DialogTitle>¿Qué ocasiona?</DialogTitle>
                   <DialogDescription>
                     Niveles elevados de {INDICATOR_CONVERTED[indicator]} pueden causar:
-                    {INDICATOR_CONSEQUENCES_TEXT[indicator].map((consequence, i) => (
+                    {INDICATOR_CONSEQUENCES_TEXT[indicator]?.map((consequence, i) => (
                       <p key={i} className="text-gray-600">- {consequence}</p>
                     ))}
                     Es importante mantener una buena ventilación para prevenir la acumulación de {INDICATOR_CONVERTED[indicator]}.
@@ -192,7 +190,7 @@ export default function TableComponent({ generalRoomData, readings, count, indic
                           <TableCell>{UNIT_CONVERTED[indicator.unit]}</TableCell>
                           <TableCell className="align-middle relative text-center">
                             <div className={`${STATUS_COLOR_BG[indicator.status]} w-2 h-2 rounded-full absolute align-middle mt-[5px]`} />
-                            <p className="text-center ml-2">{STATUS_TO_SPANISH[indicator.status]}</p>
+                            <p className={`text-center ml-2 ${STATUS_COLOR[indicator.status]}`}>{STATUS_TO_SPANISH[indicator.status]}</p>
                           </TableCell>
                         </TableRow>
                       )
