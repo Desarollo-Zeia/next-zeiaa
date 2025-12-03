@@ -15,10 +15,8 @@ const _getHeadquartersCached = unstable_cache(
   }
 )
 
-export async function getHeadquarters() {
-  const token = await getToken()
-  if (!token) throw new Error('No auth token')
-  return _getHeadquartersCached(token)
+export async function getHeadquarters(token: string) {
+  return await fetchWithAuthEnergy(`/api/v1/user/headquarters/`, {}, token)
 }
 
 const _getEnergyMeasurementPointPanelsCached = unstable_cache(
@@ -32,10 +30,9 @@ const _getEnergyMeasurementPointPanelsCached = unstable_cache(
   }
 )
 
-export async function getEnergyMeasurementPointPanels({ headquarterId }: { headquarterId: string }) {
-  const token = await getToken()
-  if (!token) throw new Error('No auth token')
-  return _getEnergyMeasurementPointPanelsCached(token, headquarterId)
+export async function getEnergyMeasurementPointPanels({ headquarterId, token }: { headquarterId: string, token: string }) {
+  return await fetchWithAuthEnergy(`/api/v1/headquarter/${headquarterId}/measurement-points/`, {}, token)
+
 }
 
 const _getEnergyCompanyDetailsCached = unstable_cache(

@@ -14,11 +14,21 @@ import FiltersContainer from "@/app/ui/filters/filters-container"
 // import NoResultFound from "@/app/ui/no-result-found"
 // import { Card } from "@/components/ui/card"
 import { format } from "date-fns";
+import { cacheLife } from "next/cache"
+import { getToken } from "@/app/lib/auth"
 // import TariffTable from "@/app/ui/energia/tarifario/tariff-table"
 // import { BadgeAlert } from "lucide-react"
 
+async function GetHeadquarters(token: string) {
+  'use cache'
+  cacheLife('minutes')
+  return await getHeadquarters(token)
+}
 
 export default async function Page({ searchParams }: SearchParams) {
+
+  const authToken = await getToken()
+
 
   const monthMap: Record<number, string> = {
     1: "january",
@@ -49,7 +59,7 @@ export default async function Page({ searchParams }: SearchParams) {
   const formattedDateAfter = format(date_after, 'yyyy-MM-dd')
   const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
 
-  const headquarters = await getHeadquarters()
+  const headquarters = await GetHeadquarters(authToken!)
   const { results } = headquarters
   const firstHeadquarter = headquarter || results[0].id.toString()
 

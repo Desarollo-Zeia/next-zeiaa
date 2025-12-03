@@ -55,10 +55,8 @@ const _getHeadquartersCached = unstable_cache(
   }
 )
 
-export async function getHeadquarters() {
-  const token = await getToken()
-  if (!token) throw new Error('No auth token')
-  return _getHeadquartersCached(token)
+export async function getHeadquarters(token: string) {
+  return await fetchWithAuthEnergy('/api/v1/user/headquarters/', {}, token)
 }
 
 const _getHeadquartersAmbientalCached = unstable_cache(
@@ -89,8 +87,7 @@ const _getMeasurementPointsCached = unstable_cache(
   }
 )
 
-export async function getMeasurementPoints({ electricalpanelId }: { electricalpanelId: string }) {
-  const token = await getToken()
-  if (!token) throw new Error('No auth token')
-  return _getMeasurementPointsCached(token, electricalpanelId)
+export async function getMeasurementPoints({ electricalpanelId, token }: { electricalpanelId: string, token: string }) {
+  return await fetchWithAuthEnergy(`/api/v1/electrical-panel/${electricalpanelId}/devices/measurement-points/`, {}, token)
+
 }

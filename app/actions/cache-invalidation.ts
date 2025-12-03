@@ -1,6 +1,6 @@
 'use server'
 
-import { 
+import {
   invalidateEnergyCache,
   invalidateAmbientalCache,
   invalidateOcupacionalCache,
