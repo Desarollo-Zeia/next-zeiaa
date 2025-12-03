@@ -13,6 +13,8 @@ import PeriodPickerFilter from '@/app/ui/filters/period-picker-filter'
 import { format } from 'date-fns'
 import React from 'react'
 import TodayAlertBanner from '@/app/ui/energia/panel/today-alert-banner'
+import { cacheLife } from 'next/cache'
+import { getToken } from '@/app/lib/auth'
 
 const monthDateRanges: { [key: number]: string } = {
   1: "2025-01-01:2025-01-31",
@@ -29,10 +31,45 @@ const monthDateRanges: { [key: number]: string } = {
   12: "2025-12-01:2025-12-31",
 }
 
+async function GetHeadquarters(token: string) {
+  'use cache'
+  cacheLife('hours')
+  return await getHeadquarters(token)
+}
+
+async function GetMeasurementPointsPanels({ token, headquarterId }: { token: string, headquarterId: string }) {
+  'use cache'
+  return await getEnergyMeasurementPointPanels({ headquarterId, token })
+}
+
+async function GetMeasurementPoints({ electricalpanelId, token }: { electricalpanelId: string, token: string }) {
+  'use cache'
+  return await getMeasurementPoints({ electricalpanelId, token })
+}
+
+async function GetDashboardTable({ headquarterId, date_after, date_before, unit, page, category, point, token }: { headquarterId: string, date_after?: string, date_before?: string, unit?: string, page?: string, category?: string, point?: string, token: string }) {
+  'use cache'
+  cacheLife('minutes')
+  return await dashboardTable({ headquarterId, date_after, date_before, unit, page, category, point, token })
+}
+
+
+async function GetPorcentageGraph({ headquarterId, this_week, this_month, date_after, date_before, token }: { headquarterId: string, this_week?: string, this_month?: string, date_after?: string, date_before?: string, token: string }) {
+  'use cache'
+  return await porcentageGraph({ headquarterId, this_week, this_month, date_after, date_before, token })
+}
+
+async function GetConsumeGraph({ date_after, date_before, headquarterId, indicador, panelId, point, category, unit, last_by, weekday, token }: { date_after?: string, date_before?: string, headquarterId: string, indicador: string, panelId: string, point: string, category?: string, unit?: string, last_by: string, weekday: string, token: string }) {
+  'use cache'
+  cacheLife('minutes')
+  return await consumeGraph({ date_after, date_before, headquarterId, indicador, panelId, point, category, unit, last_by, weekday, token })
+}
+
 export default async function page({ searchParams }: SearchParams) {
 
-
   const { headquarter, panel, point, weekday = '1,2,3,4,5', date_start, date_end, date_after, date_before, this_month, this_week } = await searchParams
+
+  const authToken = await getToken()
 
   const currentMonthNumber = monthDateRanges[new Date().getMonth() + 1]
   const [defaultStart, defaultFinish] = currentMonthNumber.split(":")
@@ -43,30 +80,30 @@ export default async function page({ searchParams }: SearchParams) {
   const start = date_start || defaultStart;
   const finish = date_end || defaultFinish;
 
-  const headquarters = await getHeadquarters()
+  const headquarters = await GetHeadquarters(authToken!)
 
   const { results } = headquarters
   const firstHeadquarter = headquarter || results[0].id.toString()
 
-  const measurementPointsPanels = await getEnergyMeasurementPointPanels({ headquarterId: firstHeadquarter })
+  const measurementPointsPanels = await GetMeasurementPointsPanels({ headquarterId: firstHeadquarter, token: authToken! })
 
   const firstPanel = panel || measurementPointsPanels?.results[0]?.id.toString()
 
-  const measurementPoints = await getMeasurementPoints({ electricalpanelId: firstPanel })
+  const measurementPoints = await GetMeasurementPoints({ electricalpanelId: firstPanel, token: authToken! })
 
 
   const firstPoint = point || measurementPoints?.results[0]?.measurement_points[0].id.toString()
 
 
-  const dashboardTableReadings = await dashboardTable({ headquarterId: firstHeadquarter })
+  const dashboardTableReadings = await GetDashboardTable({ headquarterId: firstHeadquarter, token: authToken!, date_after: formattedDateAfter, date_before: formattedDateBefore, point: firstPoint, page: '1' })
 
-  const alertToday = await lastAlertToday()
+  const alertToday = await lastAlertToday(authToken!)
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
-  const dashboardPorcentageGraph = await porcentageGraph({ headquarterId: firstHeadquarter, this_month, this_week, date_after: formattedDateAfter, date_before: formattedDateBefore })
+  const dashboardPorcentageGraph = await GetPorcentageGraph({ headquarterId: firstHeadquarter, this_month, this_week, date_after: formattedDateAfter, date_before: formattedDateBefore, token: authToken! })
 
-  const consumeGraphReadings = await consumeGraph({
+  const consumeGraphReadings = await GetConsumeGraph({
     date_after: start,
     date_before: finish,
     headquarterId: firstHeadquarter,
@@ -76,7 +113,8 @@ export default async function page({ searchParams }: SearchParams) {
     // category,
     // unit,
     last_by: 'day',
-    weekday
+    weekday,
+    token: authToken!
   })
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

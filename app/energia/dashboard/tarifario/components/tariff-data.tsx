@@ -8,6 +8,8 @@ import CostDifferenceChecker from "@/app/ui/energia/tarifario/cost-difference-ch
 import CycleClientInfoTable from "@/app/ui/energia/tarifario/cycle-clientinfo-table"
 import TariffTable from "@/app/ui/energia/tarifario/tariff-table"
 import NoResultsFound from "@/app/ui/no-result"
+import { cacheLife } from "next/cache"
+import { getToken } from "@/app/lib/auth"
 
 interface TariffDataProps {
   headquarterId: string
@@ -18,14 +20,45 @@ interface TariffDataProps {
   secondmonth: string
 }
 
-async function TariffDataContent({ 
-  headquarterId, 
-  panel, 
-  formattedDateAfter, 
-  formattedDateBefore, 
-  firstmonth, 
-  secondmonth 
+async function GetConsumptionCalculator({ headquarterId, date_after, date_before, token }: { headquarterId: string, date_after: string, date_before: string, token?: string }) {
+  'use cache'
+  return await consumptionCalculator({ headquarterId, date_after, date_before, token })
+}
+
+async function GetConsumptionCalculatorMonthly({ headquarterId, filter_month, token }: { headquarterId: string, filter_month: string, token?: string }) {
+  'use cache'
+  return await consumptionCalculatorMonthly({ headquarterId, filter_month, token })
+}
+
+async function GetSecondConsumptionCalculatorMonthly({ headquarterId, filter_month, token }: { headquarterId: string, filter_month: string, token?: string }) {
+  'use cache'
+  return await consumptionCalculatorMonthly({ headquarterId, filter_month, token })
+}
+
+async function GetConsumptionInvoice({ headquarterId, token }: { headquarterId: string, token?: string }) {
+  'use cache'
+  cacheLife('minutes')
+  return await consumptionInvoice({ headquarterId, token })
+}
+
+async function GetConsumptionTariff({ headquarterId, token }: { headquarterId: string, token?: string }) {
+  'use cache'
+  cacheLife('minutes')
+
+  return await consumptionTariff({ headquarterId, token })
+}
+
+async function TariffDataContent({
+  headquarterId,
+  panel,
+  formattedDateAfter,
+  formattedDateBefore,
+  firstmonth,
+  secondmonth
 }: TariffDataProps) {
+
+  const authToken = await getToken()
+
   const [
     calculatorResult,
     firstCalculatorResultMonthly,
@@ -33,27 +66,29 @@ async function TariffDataContent({
     invoiceResult,
     tariffResult,
   ] = await Promise.all([
-    consumptionCalculator({
-      panelId: panel,
+    GetConsumptionCalculator({
       headquarterId,
       date_after: formattedDateAfter,
       date_before: formattedDateBefore,
+      token: authToken!
     }),
-    consumptionCalculatorMonthly({
+    GetConsumptionCalculatorMonthly({
       headquarterId,
       filter_month: firstmonth || '',
+      token: authToken!
     }),
-    consumptionCalculatorMonthly({
+    GetSecondConsumptionCalculatorMonthly({
       headquarterId,
       filter_month: secondmonth || '',
+      token: authToken!
     }),
-    consumptionInvoice({
-      panelId: panel,
+    GetConsumptionInvoice({
       headquarterId,
+      token: authToken!
     }),
-    consumptionTariff({
-      panelId: panel,
+    GetConsumptionTariff({
       headquarterId,
+      token: authToken!
     })
   ])
 
@@ -89,19 +124,19 @@ async function TariffDataContent({
           </div>
         </div>
       )}
-      
+
       {!calculatorResult?.detail && (
         <>
           <div>
             <h2 className="text-lg font-semibold">Comparador de Facturación</h2>
           </div>
-          <CostDifferenceChecker 
-            firstCalculatorResultMonthly={firstCalculatorResultMonthly} 
-            secondCalculatorResultMonthly={secondCalculatorResultMonthly} 
+          <CostDifferenceChecker
+            firstCalculatorResultMonthly={firstCalculatorResultMonthly}
+            secondCalculatorResultMonthly={secondCalculatorResultMonthly}
           />
         </>
       )}
-      
+
       <div className="w-full shadow-md">
         <CycleClientInfoTable tariffData={invoiceResult} />
         <TariffTable tariffData={tariffResult} />

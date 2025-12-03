@@ -1,4 +1,5 @@
 // import { getCompanyData } from "@/app/lib/auth";
+import { getToken } from "@/app/lib/auth";
 import { getHeadquarters } from "@/app/sevices/energy/enterprise/data";
 import { exceeded } from "@/app/sevices/energy/monitoreo/data";
 import { SearchParams } from "@/app/type";
@@ -10,18 +11,34 @@ import { DatepickerRange } from "@/app/ui/filters/datepicker-range";
 import FiltersContainer from "@/app/ui/filters/filters-container";
 import { format } from "date-fns";
 import { ArrowLeft } from "lucide-react";
+import { cacheLife } from "next/cache";
 import Link from "next/link";
+
+async function GetHeadquarters(token: string) {
+  'use cache'
+  cacheLife('hours')
+  return await getHeadquarters(token)
+}
+
+async function GetExceededPowers({ headquarterId, panelId, date_after, date_before, page, token }: { headquarterId: string, panelId: string, date_after: string, date_before: string, page: string, token: string }) {
+  'use cache'
+  cacheLife('minutes')
+  return await exceeded({ headquarterId, panelId, date_after, date_before, page, token })
+}
 
 export default async function page({ searchParams }: SearchParams) {
 
 
   const { headquarter, panel = '1', date_after = new Date(), date_before = new Date(), page = '1' } = await searchParams
 
-  const headquarters = await getHeadquarters()
+  const authToken = await getToken()
+
+
+  const headquarters = await GetHeadquarters(authToken!)
   const { results } = headquarters
   const firstHeadquarter = headquarter || results[0].id.toString()
 
-  const exceededPowers = await exceeded({ headquarterId: firstHeadquarter, panelId: panel, date_after: format(date_after, "yyyy-MM-dd"), date_before: format(date_before, "yyyy-MM-dd"), page })
+  const exceededPowers = await GetExceededPowers({ headquarterId: firstHeadquarter, panelId: panel, date_after: format(date_after, "yyyy-MM-dd"), date_before: format(date_before, "yyyy-MM-dd"), page, token: authToken! })
 
   return (
     <div className="w-full">

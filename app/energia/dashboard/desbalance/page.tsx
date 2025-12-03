@@ -1,3 +1,4 @@
+import { getToken } from "@/app/lib/auth";
 import { currentGraph, threeMostUnbalanced, voltageGraph } from "@/app/sevices/energy/desbalance/data";
 import { getEnergyMeasurementPointPanels, getHeadquarters } from "@/app/sevices/energy/enterprise/data";
 import { getMeasurementPoints } from "@/app/sevices/filters/data";
@@ -12,40 +13,81 @@ import { DatepickerRange } from "@/app/ui/filters/datepicker-range";
 import FiltersContainer from "@/app/ui/filters/filters-container";
 import MeasurementPointFilter from "@/app/ui/filters/measurement-points-filter";
 import { format } from "date-fns";
+import { cacheLife } from "next/cache";
+
+async function GetHeadquarters(token: string) {
+  'use cache'
+  cacheLife('minutes')
+  return await getHeadquarters(token)
+}
+
+async function GetMeasurementPointsPanels({ token, headquarterId }: { token: string, headquarterId: string }) {
+  'use cache'
+  cacheLife('minutes')
+
+  return await getEnergyMeasurementPointPanels({ headquarterId, token })
+}
+
+async function GetMeasurementPoints({ electricalpanelId, token }: { electricalpanelId: string, token: string }) {
+  'use cache'
+  cacheLife('minutes')
+
+  return await getMeasurementPoints({ electricalpanelId, token })
+}
+
+
+async function GetCurrentGraph({ headquarterId, panelId, point, date_after, date_before, token }: { headquarterId: string, panelId: string, point: string, date_after: string, date_before: string, token?: string }) {
+  'use cache'
+  return await currentGraph({ headquarterId, panelId, point, date_after, date_before, token })
+}
+
+async function GetVoltageGraph({ headquarterId, panelId, point, date_after, date_before, token }: { headquarterId: string, panelId: string, point: string, date_after: string, date_before: string, token?: string }) {
+  'use cache'
+  return await voltageGraph({ headquarterId, panelId, point, date_after, date_before, token })
+}
+
+
+
+
 
 export default async function page({ searchParams }: SearchParams) {
 
   const { headquarter, panel, point, date_after = new Date(), date_before = new Date(), metric = 'current' } = await searchParams
 
-  const headquarters = await getHeadquarters()
+  const authToken = await getToken()
+
+
+  const headquarters = await GetHeadquarters(authToken!)
 
   const { results } = headquarters
 
   const firstHeadquarter = headquarter || results[0].id
 
-  const measurementPointsPanels = await getEnergyMeasurementPointPanels({ headquarterId: firstHeadquarter })
+  const measurementPointsPanels = await GetMeasurementPointsPanels({ headquarterId: firstHeadquarter, token: authToken! })
 
   const firstPanel = panel || measurementPointsPanels?.results[0]?.id.toString()
 
-  const measurementPoints = await getMeasurementPoints({ electricalpanelId: firstPanel })
+  const measurementPoints = await GetMeasurementPoints({ electricalpanelId: firstPanel, token: authToken! })
 
   const firstPoint = point || measurementPoints?.results[0]?.measurement_points[0].id.toString()
 
 
 
-  const currentReadings = await currentGraph({
+  const currentReadings = await GetCurrentGraph({
     headquarterId: firstHeadquarter,
     panelId: firstPanel,
     point: firstPoint,
     date_after: format(date_after, "yyyy-MM-dd"),
     date_before: format(date_before, "yyyy-MM-dd"),
+    token: authToken!
   })
-  const voltageReadings = await voltageGraph({
+  const voltageReadings = await GetVoltageGraph({
     headquarterId: firstHeadquarter,
     panelId: firstPanel,
     point: firstPoint,
     date_after: format(date_after, "yyyy-MM-dd"),
     date_before: format(date_before, "yyyy-MM-dd"),
+    token: authToken!
   })
 
   const threeUnbalanced = await threeMostUnbalanced({ headquarterId: firstHeadquarter })
