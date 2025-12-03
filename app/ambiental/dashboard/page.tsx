@@ -1,6 +1,6 @@
 import RoomStatusCard from '@/app/ui/rooms/room-status-card'
 import React from 'react'
-import styles from '/app/ui/home.module.css'
+import styles from '@/app/ui/home.module.css'
 import RoomSearchFilter from '@/app/ui/filters/search'
 import FiltersContainer from '@/app/ui/filters/filters-container'
 import NoResultFound from '@/app/ui/no-result-found'
@@ -15,13 +15,13 @@ interface Room {
   name: string
   status: string
   is_activated: boolean
-  devices: { dev_eui: string, id: number, type_sensor: string}[],
+  devices: { dev_eui: string, id: number, type_sensor: string }[],
   headquarter: { id: number, name: string }
 }
-  
-export default async function page({ searchParams } : SearchParams  ) {
 
-  const { search , status , headquarter, page , limit, offset } = await searchParams
+export default async function page({ searchParams }: SearchParams) {
+
+  const { search, status, headquarter, page, limit, offset } = await searchParams
 
   const headquarters = await getHeadquartersAmbiental()
   const rooms = await roomsListAmbiental({ search, status, headquarter, page, limit, offset })
@@ -29,8 +29,8 @@ export default async function page({ searchParams } : SearchParams  ) {
   return (
     <div>
       <FiltersContainer>
-        <RoomSearchFilter/>
-        <HeadquarterSelect headquarters={headquarters}/>
+        <RoomSearchFilter />
+        <HeadquarterSelect headquarters={headquarters} />
       </FiltersContainer>
       {
         rooms?.results.length > 0 ? (
@@ -50,10 +50,10 @@ export default async function page({ searchParams } : SearchParams  ) {
             }
           </section>
         ) : (
-          <NoResultFound/>
+          <NoResultFound />
         )
       }
-      { rooms?.count > 0 && <PaginationComponent count={rooms?.count} itemsPerPage={10}/>}
+      {rooms?.count > 0 && <PaginationComponent count={rooms?.count} itemsPerPage={10} />}
     </div>
   )
 }
