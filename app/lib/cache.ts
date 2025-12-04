@@ -21,7 +21,6 @@ export const CACHE_TAGS = {
   HEADQUARTERS: 'headquarters-data',
 } as const
 
-// Helper function to create cached functions with consistent naming
 export function createCachedFunction<T extends unknown[], R>(
   fn: (...args: T) => Promise<R>,
   keyPrefix: string,
