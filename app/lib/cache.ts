@@ -20,7 +20,6 @@ export const CACHE_TAGS = {
   PANELS: 'panels-data',
   HEADQUARTERS: 'headquarters-data',
 } as const
-
 export function createCachedFunction<T extends unknown[], R>(
   fn: (...args: T) => Promise<R>,
   keyPrefix: string,
