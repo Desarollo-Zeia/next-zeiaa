@@ -9,7 +9,7 @@ import HeadquarterSelect from '@/app/ui/filters/headquarter-select'
 import { getHeadquartersOcupacional } from '@/app/sevices/filters/data'
 import { SearchParams } from '@/app/type'
 import { getToken } from '@/app/lib/auth'
-import { cacheLife } from 'next/cache'
+// import { cacheLife } from 'next/cache'
 // import StatusSelect from '@/app/ui/filters/status-select'
 
 interface Room {
@@ -22,13 +22,13 @@ interface Room {
 }
 
 
-async function GetRoomsList({ search, status, headquarter, page, limit, offset, token }: any) {
-  'use cache'
-  cacheLife('minutes')
-  const rooms = await roomsList({ search, status, headquarter, page, limit, offset, token })
+// async function GetRoomsList({ search, status, headquarter, page, limit, offset, token }: any) {
+//   'use cache'
+//   cacheLife('minutes')
+//   const rooms = await roomsList({ search, status, headquarter, page, limit, offset, token })
 
-  return rooms
-}
+//   return rooms
+// }
 
 
 export default async function page({ searchParams }: SearchParams) {
@@ -38,7 +38,7 @@ export default async function page({ searchParams }: SearchParams) {
 
   const authToken = await getToken()
 
-  const getRoomsList = await GetRoomsList({ search, status, headquarter, page, limit, offset, token: authToken })
+  const getRoomsList = await roomsList({ search, status, headquarter, page, limit, offset, token: authToken })
 
   const headquarters = await getHeadquartersOcupacional()
 
