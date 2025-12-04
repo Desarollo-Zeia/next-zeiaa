@@ -9,26 +9,26 @@ import FiltersContainer from "@/app/ui/filters/filters-container";
 import RoomSelect from "@/app/ui/filters/room-select";
 // import StatusSelect from "@/app/ui/filters/status-select";
 import { format } from "date-fns";
-import { cacheLife } from "next/cache";
+// import { cacheLife } from "next/cache";
 
-async function GetRooms(token: string) {
-  'use cache'
-  cacheLife('minutes')
-  const rooms = await getRooms(token)
-  return rooms
-}
+// async function GetRooms(token: string) {
+//   'use cache'
+//   cacheLife('minutes')
+//   const rooms = await getRooms(token)
+//   return rooms
+// }
 
-async function GetGeneralData(token: string, currentFirstRoom: string | number) {
-  'use cache'
-  cacheLife('minutes')
-  return await roomGeneralData({ roomId: currentFirstRoom, token })
+// async function GetGeneralData(token: string, currentFirstRoom: string | number) {
+//   'use cache'
+//   cacheLife('minutes')
+//   return await roomGeneralData({ roomId: currentFirstRoom, token })
 
-}
+// }
 
-async function GetAlerts({ roomId, indicator, unit, date_after, date_before, page, status, token }: { roomId: string | number, indicator: string, unit: string, date_after: string, date_before: string, page?: string, status?: string, token?: string }) {
-  'use cache'
-  return await alerts({ roomId, indicator, unit, date_after, date_before, page, status, token })
-}
+// async function GetAlerts({ roomId, indicator, unit, date_after, date_before, page, status, token }: { roomId: string | number, indicator: string, unit: string, date_after: string, date_before: string, page?: string, status?: string, token?: string }) {
+//   'use cache'
+//   return await alerts({ roomId, indicator, unit, date_after, date_before, page, status, token })
+// }
 
 export default async function page({ searchParams }: SearchParams) {
 
@@ -41,13 +41,14 @@ export default async function page({ searchParams }: SearchParams) {
   const formattedDateAfter = format(date_after, 'yyyy-MM-dd')
   const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
 
-  const rooms = await GetRooms(authToken!)
+  const rooms = await getRooms(authToken!)
   const firstRoom = rooms.find((room: any) => room.is_activated === true)  // eslint-disable-line @typescript-eslint/no-explicit-any
 
-  const currentFirstRoom = room ? room : firstRoom.id
+  const currentFirstRoom = room ? room : firstRoom.id.toString()
 
-  const readings = await GetAlerts({ roomId: currentFirstRoom, indicator, unit, date_after: formattedDateAfter, date_before: formattedDateBefore, page, status, token: authToken! })
-  const generalRoomData = await GetGeneralData(authToken!, currentFirstRoom)
+  const readings = await alerts({ roomId: currentFirstRoom, indicator, unit, date_after: formattedDateAfter, date_before: formattedDateBefore, page, status, token: authToken! })
+  const generalRoomData = await roomGeneralData({ roomId: currentFirstRoom, token: authToken! })
+
 
   // const thresholdsFilters = generalRoomData?.thresholds_filter[indicator].filter((th: string) => th !== 'GOOD' && th !== 'MODERATE')
 
