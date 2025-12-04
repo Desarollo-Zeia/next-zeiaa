@@ -7,7 +7,7 @@ import FiltersContainer from "@/app/ui/filters/filters-container"
 import RoomSelect from "@/app/ui/filters/room-select"
 import ChartComponent from "@/app/ui/monitoreo/chart"
 import TableComponent from "@/app/ui/monitoreo/table"
-import { cacheLife } from "next/cache"
+// import { cacheLife } from "next/cache"
 
 type Result = {
   indicator: string,
@@ -29,35 +29,35 @@ interface Room {
 
 // --- Funciones con Caché ---
 
-async function GetRooms(token: string) {
-  'use cache'
-  cacheLife('minutes')
-  const rooms = await getRooms(token)
-  return rooms
-}
+// async function GetRooms(token: string) {
+//   'use cache'
+//   cacheLife('minutes')
+//   const rooms = await getRooms(token)
+//   return rooms
+// }
 
-async function GetRoomList(token: string) {
-  'use cache'
-  cacheLife('minutes')
-  const rooms = await roomsList({ limit: '50', token })
-  return rooms
-}
+// async function GetRoomList(token: string) {
+//   'use cache'
+//   cacheLife('minutes')
+//   const rooms = await roomsList({ limit: '50', token })
+//   return rooms
+// }
 
-async function GetRoomLastData(roomId: string | number, token: string) {
-  'use cache'
-  cacheLife('minutes') // Ajusta a 'seconds' si necesitas datos más frescos
-  return await roomLastData({ roomId, token })
-}
+// async function GetRoomLastData(roomId: string | number, token: string) {
+//   'use cache'
+//   cacheLife('minutes') // Ajusta a 'seconds' si necesitas datos más frescos
+//   return await roomLastData({ roomId, token })
+// }
 
-async function GetReadingsData(roomId: string | number, indicator: string, unit: string) {
-  return await readingsData({ roomId, indicator, unit })
-}
+// async function GetReadingsData(roomId: string | number, indicator: string, unit: string, token?: string) {
+//   return await readingsData({ roomId, indicator, unit, token })
+// }
 
-async function GetRoomGeneralData(roomId: string | number, token: string) {
-  'use cache'
-  cacheLife('minutes') // Generalmente esta info (como thresholds) cambia poco
-  return await roomGeneralData({ roomId, token })
-}
+// async function GetRoomGeneralData(roomId: string | number, token: string) {
+//   'use cache'
+//   cacheLife('minutes') // Generalmente esta info (como thresholds) cambia poco
+//   return await roomGeneralData({ roomId, token })
+// }
 
 // --- Componente Principal ---
 
@@ -67,18 +67,18 @@ export default async function Page({ searchParams }: SearchParams) {
   const authToken = await getToken()
 
   // 1. Obtener lista de salas (Cached)
-  const rooms = await GetRooms(authToken!)
-  const roomsListReadings = await GetRoomList(authToken!)
+  const rooms = await await getRooms(authToken!)
+  const roomsListReadings = await roomsList({ limit: '50', token: authToken! })
 
   // Determinar la sala actual
   const firstRoom = rooms.find((room: any) => room.is_activated === true) // eslint-disable-line @typescript-eslint/no-explicit-any
-  const currentFirstRoom = room ? room : firstRoom.id
+  const currentFirstRoom = room ? room : firstRoom.id.toString()
 
   // 2. Obtener datos específicos de la sala (Ahora usando las funciones Cached)
   // Nota: Podrías usar Promise.all aquí para acelerar la carga en paralelo si las dependencias lo permiten
-  const data = await GetRoomLastData(currentFirstRoom, authToken!)
-  const { results } = await GetReadingsData(currentFirstRoom, indicator as string, unit as string)
-  const generalRoomData = await GetRoomGeneralData(currentFirstRoom, authToken!)
+  const data = await roomLastData({ roomId: currentFirstRoom, token: authToken! })
+  const { results } = await readingsData({ roomId: currentFirstRoom, indicator, unit, token: authToken! })
+  const generalRoomData = await roomGeneralData({ roomId: currentFirstRoom, token: authToken! })
 
   // Procesamiento de datos
   const { name } = rooms.find((room: Room) => room.id === Number(currentFirstRoom)) || { name: 'Desconocido' }
