@@ -12,24 +12,24 @@ import Graph from "@/app/ui/energia/consumo/graph"
 import DownloadExcel from "@/app/ui/energia/consumo/download-excel"
 import { getMeasurementPoints } from "@/app/sevices/filters/data"
 import MeasurementPointFilter from "@/app/ui/filters/measurement-points-filter"
-import { cacheLife } from "next/cache"
+// import { cacheLife } from "next/cache"
 import { getToken } from "@/app/lib/auth"
 
-async function GetHeadquarters(token: string) {
-  'use cache'
-  cacheLife('hours')
-  return await getHeadquarters(token)
-}
+// async function GetHeadquarters(token: string) {
+//   'use cache'
+//   cacheLife('hours')
+//   return await getHeadquarters(token)
+// }
 
-async function GetMeasurementPointsPanels({ token, headquarterId }: { token: string, headquarterId: string }) {
-  'use cache'
-  return await getEnergyMeasurementPointPanels({ headquarterId, token })
-}
+// async function GetMeasurementPointsPanels({ token, headquarterId }: { token: string, headquarterId: string }) {
+//   'use cache'
+//   return await getEnergyMeasurementPointPanels({ headquarterId, token })
+// }
 
-async function GetMeasurementPoints({ electricalpanelId, token }: { electricalpanelId: string, token: string }) {
-  'use cache'
-  return await getMeasurementPoints({ electricalpanelId, token })
-}
+// async function GetMeasurementPoints({ electricalpanelId, token }: { electricalpanelId: string, token: string }) {
+//   'use cache'
+//   return await getMeasurementPoints({ electricalpanelId, token })
+// }
 
 
 
@@ -44,16 +44,16 @@ export default async function Page({ searchParams }: SearchParams) {
   const formattedDateAfter = format(date_after, 'yyyy-MM-dd')
   const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
 
-  const headquarters = await GetHeadquarters(authToken!)
+  const headquarters = await getHeadquarters(authToken!)
   const { results } = headquarters
 
   const firstHeadquarter = headquarter || results[0].id.toString()
 
-  const measurementPointsPanels = await GetMeasurementPointsPanels({ headquarterId: firstHeadquarter, token: authToken! })
+  const measurementPointsPanels = await getEnergyMeasurementPointPanels({ headquarterId: firstHeadquarter, token: authToken! })
 
   const firstPanel = panel || measurementPointsPanels?.results[0]?.id.toString()
 
-  const measurementPoints = await GetMeasurementPoints({ electricalpanelId: firstPanel, token: authToken! })
+  const measurementPoints = await getMeasurementPoints({ electricalpanelId: firstPanel, token: authToken! })
 
   const firstPoint = point || measurementPoints?.results[0]?.measurement_points[0].id.toString()
 

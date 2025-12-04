@@ -11,32 +11,32 @@ import PowerUsageChart from "@/app/ui/energia/monitoreo/power-dashboard";
 import { DatepickerRange } from "@/app/ui/filters/datepicker-range";
 import FiltersContainer from "@/app/ui/filters/filters-container";
 import { format } from "date-fns";
-import { cacheLife } from "next/cache";
+// import { cacheLife } from "next/cache";
 
-async function GetHeadquarters(token: string) {
-  'use cache'
-  cacheLife('minutes')
-  return await getHeadquarters(token)
-}
+// async function GetHeadquarters(token: string) {
+//   'use cache'
+//   cacheLife('minutes')
+//   return await getHeadquarters(token)
+// }
 
-async function GetMonitoringGraph({ headquarterId, date_after, date_before, group_by, token }: { headquarterId: string, panelId: string, date_after: string, date_before: string, group_by: string, token: string }) {
-  'use cache'
-  cacheLife('minutes')
-  return await monitoringGraph({ headquarterId, date_after, date_before, group_by, token })
-}
+// async function GetMonitoringGraph({ headquarterId, date_after, date_before, group_by, token }: { headquarterId: string, panelId: string, date_after: string, date_before: string, group_by: string, token: string }) {
+//   'use cache'
+//   cacheLife('minutes')
+//   return await monitoringGraph({ headquarterId, date_after, date_before, group_by, token })
+// }
 
-async function GetMonitoringLastThree({ headquarterId, token }: { headquarterId: string, panelId: string, token: string }) {
-  'use cache'
-  cacheLife('minutes')
-  return await monitoringLastThree({ headquarterId, token })
-}
+// async function GetMonitoringLastThree({ headquarterId, token }: { headquarterId: string, panelId: string, token: string }) {
+//   'use cache'
+//   cacheLife('minutes')
+//   return await monitoringLastThree({ headquarterId, token })
+// }
 
 export default async function page({ searchParams }: SearchParams) {
 
   const { headquarter, panel = '1', date_after = new Date(), date_before = new Date(), group_by = 'minute' } = await searchParams
 
   const authToken = await getToken()
-  const headquarters = await GetHeadquarters(authToken!)
+  const headquarters = await getHeadquarters(authToken!)
   const { results } = headquarters
   const firstHeadquarter = headquarter || results[0].id.toString()
 
@@ -47,7 +47,7 @@ export default async function page({ searchParams }: SearchParams) {
     monitoringGraphReadings,
     monitoringLastThreeReadings
   ] = await Promise.all([
-    GetMonitoringGraph({
+    monitoringGraph({
       headquarterId: firstHeadquarter,
       panelId: panel,
       date_after: formattedDateAfter,
@@ -55,7 +55,7 @@ export default async function page({ searchParams }: SearchParams) {
       group_by,
       token: authToken!
     }),
-    GetMonitoringLastThree({
+    monitoringLastThree({
       headquarterId: firstHeadquarter,
       panelId: panel,
       token: authToken!

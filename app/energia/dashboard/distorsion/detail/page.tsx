@@ -15,53 +15,57 @@ import { format } from "date-fns"
 import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import DownloadExcelDistorsion from "./download-excel-distorsion"
+import { getToken } from "@/app/lib/auth"
 
-export default async function page({ searchParams } : SearchParams) {
+export default async function page({ searchParams }: SearchParams) {
 
-const { headquarter = '1' , panel = '1',  date_after = new Date(), date_before = new Date(), data_type = 'current', page = '1'} = await searchParams
+    const { headquarter = '1', panel = '1', date_after = new Date(), date_before = new Date(), data_type = 'current', page = '1' } = await searchParams
 
-const headquarters  = await getHeadquarters()
-const { results } = headquarters
-const firstHeadquarter = headquarter || results[0].id
+    const authToken = await getToken()
 
- const armonicsReadings = await armonics({ headquarterId: firstHeadquarter, panelId: panel, date_after: format(date_after, 'yyyy-MM-dd'), date_before: format(date_before, 'yyyy-MM-dd'), data_type, page })
 
-  return (
-    <div className="w-full">
-        <FiltersContainer>
-            <Link href={'/energia/dashboard/distorsion'}
-            className="bg-[#00b0c7] rounded-lg absolute top-1/2 left-6 p-2
+    const headquarters = await getHeadquarters(authToken!)
+    const { results } = headquarters
+    const firstHeadquarter = headquarter || results[0].id
+
+    const armonicsReadings = await armonics({ headquarterId: firstHeadquarter, panelId: panel, date_after: format(date_after, 'yyyy-MM-dd'), date_before: format(date_before, 'yyyy-MM-dd'), data_type, page })
+
+    return (
+        <div className="w-full">
+            <FiltersContainer>
+                <Link href={'/energia/dashboard/distorsion'}
+                    className="bg-[#00b0c7] rounded-lg absolute top-1/2 left-6 p-2
                 transform -translate-y-1/2 cursor-pointer text-white hover:bg-gray-100 hover:text-black"
-            >
-            <ArrowLeft className="h-4 w-4 "/>
-            </Link>
-            <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} energy={firstHeadquarter}/>
-            {/* <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters[0].electrical_panels} /> */}
-            <DateRangePicker/>
-            <DownloadExcelDistorsion headquarterId={headquarter} panelId={panel} date_after={format(date_after, 'yyyy-MM-dd')} date_before={format(date_before, 'yyyy-MM-dd')} data_type={data_type}/>
-        </FiltersContainer>
-        <Card className="w-full p-6 flex flex-col gap-4">
-            <CurrentVoltageToggle type={data_type}/>
-            <div className="overflow-x-auto">
-                {
-                armonicsReadings?.count > 0 ? 
-                (
-                    data_type === 'current' ? 
-                    (
-                        <CurrentTable readings={armonicsReadings}/>
-                    ) : 
-                    (
-                        <VoltageTable readings={armonicsReadings}/>
-                    )
-                ) : 
-                (
-                    <NoResultFound/>
-                )
-                }
-            
-            </div>
-        </Card>
+                >
+                    <ArrowLeft className="h-4 w-4 " />
+                </Link>
+                <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} energy={firstHeadquarter} />
+                {/* <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters[0].electrical_panels} /> */}
+                <DateRangePicker />
+                <DownloadExcelDistorsion headquarterId={headquarter} panelId={panel} date_after={format(date_after, 'yyyy-MM-dd')} date_before={format(date_before, 'yyyy-MM-dd')} data_type={data_type} />
+            </FiltersContainer>
+            <Card className="w-full p-6 flex flex-col gap-4">
+                <CurrentVoltageToggle type={data_type} />
+                <div className="overflow-x-auto">
+                    {
+                        armonicsReadings?.count > 0 ?
+                            (
+                                data_type === 'current' ?
+                                    (
+                                        <CurrentTable readings={armonicsReadings} />
+                                    ) :
+                                    (
+                                        <VoltageTable readings={armonicsReadings} />
+                                    )
+                            ) :
+                            (
+                                <NoResultFound />
+                            )
+                    }
 
-    </div>
-  )
+                </div>
+            </Card>
+
+        </div>
+    )
 }

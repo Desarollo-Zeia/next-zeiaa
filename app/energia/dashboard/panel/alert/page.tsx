@@ -15,6 +15,7 @@ import { Bell } from "lucide-react"
 import PaginationNumberComponent from '@/app/ui/pagination-number'
 import NoResultsFound from '@/app/ui/no-result'
 import HeadquarterEnergyFilter from '@/app/ui/energia/filters/headquarter-energy-filter'
+import { getToken } from '@/app/lib/auth'
 
 const formatDate = (timestamp: string) => {
   const date = new Date(timestamp)
@@ -43,19 +44,22 @@ export default async function page({ searchParams }: SearchParams) {
 
   const { headquarter, panel, point, date_after, date_before, page = '1' } = await searchParams
 
+  const authToken = await getToken()
+
+
   const formattedDateAfter = date_after ? format(date_after, 'yyyy-MM-dd') : undefined
   const formattedDateBefore = date_before ? format(date_before, 'yyyy-MM-dd') : undefined
 
-  const headquarters = await getHeadquarters()
+  const headquarters = await getHeadquarters(authToken!)
 
   const { results } = headquarters
   const firstHeadquarter = headquarter || results[0].id.toString()
 
-  const measurementPointsPanels = await getEnergyMeasurementPointPanels({ headquarterId: firstHeadquarter })
+  const measurementPointsPanels = await getEnergyMeasurementPointPanels({ headquarterId: firstHeadquarter, token: authToken! })
 
   const firstPanel = panel || measurementPointsPanels?.results[0]?.id.toString()
 
-  const measurementPoints = await getMeasurementPoints({ electricalpanelId: firstPanel })
+  const measurementPoints = await getMeasurementPoints({ electricalpanelId: firstPanel, token: authToken! })
 
 
   const firstPoint = point || measurementPoints?.results[0]?.measurement_points[0].id.toString()

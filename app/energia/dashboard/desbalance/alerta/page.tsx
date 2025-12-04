@@ -52,21 +52,24 @@ export default async function page({ searchParams }: SearchParams) {
   const authToken = await getToken()
 
 
-  const headquarters = await GetHeadquarters(authToken!)
+  const headquarters = await getHeadquarters(authToken!)
+
 
   const { results } = headquarters
 
   const firstHeadquarter = headquarter || results[0].id
 
-  const measurementPointsPanels = await GetMeasurementPointsPanels({ headquarterId: firstHeadquarter, token: authToken! })
+  const measurementPointsPanels = await getEnergyMeasurementPointPanels({ headquarterId: firstHeadquarter, token: authToken! })
+
 
   const firstPanel = panel || measurementPointsPanels?.results[0]?.id.toString()
 
-  const measurementPoints = await GetMeasurementPoints({ electricalpanelId: firstPanel, token: authToken! })
+  const measurementPoints = await getMeasurementPoints({ electricalpanelId: firstPanel, token: authToken! })
+
 
   const firstPoint = point || measurementPoints?.results[0]?.measurement_points[0].id.toString()
 
-  const currentReadings = await GetCurrent({
+  const currentReadings = await current({
     headquarterId: firstHeadquarter,
     panelId: firstPanel,
     point: firstPoint,
@@ -77,7 +80,7 @@ export default async function page({ searchParams }: SearchParams) {
     token: authToken!
   })
 
-  const voltageReadings = await GetVoltage({
+  const voltageReadings = await voltage({
     headquarterId: firstHeadquarter,
     panelId: firstPanel,
     point: firstPoint,
