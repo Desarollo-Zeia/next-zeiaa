@@ -11,38 +11,38 @@ import FiltersContainer from "@/app/ui/filters/filters-container";
 import MeasurementPointFilter from "@/app/ui/filters/measurement-points-filter";
 import { format } from "date-fns";
 import { ArrowLeft } from "lucide-react";
-import { cacheLife } from "next/cache";
+// import { cacheLife } from "next/cache";
 import Link from "next/link";
 
-async function GetHeadquarters(token: string) {
-  'use cache'
-  cacheLife('minutes')
-  return await getHeadquarters(token)
-}
+// async function GetHeadquarters(token: string) {
+//   'use cache'
+//   cacheLife('minutes')
+//   return await getHeadquarters(token)
+// }
 
-async function GetMeasurementPointsPanels({ token, headquarterId }: { token: string, headquarterId: string }) {
-  'use cache'
-  cacheLife('minutes')
+// async function GetMeasurementPointsPanels({ token, headquarterId }: { token: string, headquarterId: string }) {
+//   'use cache'
+//   cacheLife('minutes')
 
-  return await getEnergyMeasurementPointPanels({ headquarterId, token })
-}
+//   return await getEnergyMeasurementPointPanels({ headquarterId, token })
+// }
 
-async function GetMeasurementPoints({ electricalpanelId, token }: { electricalpanelId: string, token: string }) {
-  'use cache'
-  cacheLife('minutes')
+// async function GetMeasurementPoints({ electricalpanelId, token }: { electricalpanelId: string, token: string }) {
+//   'use cache'
+//   cacheLife('minutes')
 
-  return await getMeasurementPoints({ electricalpanelId, token })
-}
+//   return await getMeasurementPoints({ electricalpanelId, token })
+// }
 
-async function GetCurrent({ headquarterId, panelId, point, date_after, date_before, page, token, status }: { headquarterId: string, panelId: string, point: string, date_after: string, date_before: string, page: string, token?: string, status?: string }) {
-  'use cache'
-  return await current({ headquarterId, panelId, point, date_after, date_before, page, status: 'unbalanced', token })
-}
+// async function GetCurrent({ headquarterId, panelId, point, date_after, date_before, page, token, status }: { headquarterId: string, panelId: string, point: string, date_after: string, date_before: string, page: string, token?: string, status?: string }) {
+//   'use cache'
+//   return await current({ headquarterId, panelId, point, date_after, date_before, page, status: 'unbalanced', token })
+// }
 
-async function GetVoltage({ headquarterId, panelId, point, date_after, date_before, page, status, token }: { headquarterId: string, panelId: string, point: string, date_after: string, date_before: string, page: string, status?: string, token?: string }) {
-  'use cache'
-  return await voltage({ headquarterId, panelId, point, date_after, date_before, page, status: 'unbalanced' })
-}
+// async function GetVoltage({ headquarterId, panelId, point, date_after, date_before, page, status, token }: { headquarterId: string, panelId: string, point: string, date_after: string, date_before: string, page: string, status?: string, token?: string }) {
+//   'use cache'
+//   return await voltage({ headquarterId, panelId, point, date_after, date_before, page, status: 'unbalanced' })
+// }
 
 export default async function page({ searchParams }: SearchParams) {
 
