@@ -8,7 +8,7 @@ import CostDifferenceChecker from "@/app/ui/energia/tarifario/cost-difference-ch
 import CycleClientInfoTable from "@/app/ui/energia/tarifario/cycle-clientinfo-table"
 import TariffTable from "@/app/ui/energia/tarifario/tariff-table"
 import NoResultsFound from "@/app/ui/no-result"
-import { cacheLife } from "next/cache"
+// import { cacheLife } from "next/cache"
 import { getToken } from "@/app/lib/auth"
 
 interface TariffDataProps {
@@ -20,33 +20,33 @@ interface TariffDataProps {
   secondmonth: string
 }
 
-async function GetConsumptionCalculator({ headquarterId, date_after, date_before, token }: { headquarterId: string, date_after: string, date_before: string, token?: string }) {
-  'use cache'
-  return await consumptionCalculator({ headquarterId, date_after, date_before, token })
-}
+// async function GetConsumptionCalculator({ headquarterId, date_after, date_before, token }: { headquarterId: string, date_after: string, date_before: string, token?: string }) {
+//   'use cache'
+//   return await consumptionCalculator({ headquarterId, date_after, date_before, token })
+// }
 
-async function GetConsumptionCalculatorMonthly({ headquarterId, filter_month, token }: { headquarterId: string, filter_month: string, token?: string }) {
-  'use cache'
-  return await consumptionCalculatorMonthly({ headquarterId, filter_month, token })
-}
+// async function GetConsumptionCalculatorMonthly({ headquarterId, filter_month, token }: { headquarterId: string, filter_month: string, token?: string }) {
+//   'use cache'
+//   return await consumptionCalculatorMonthly({ headquarterId, filter_month, token })
+// }
 
-async function GetSecondConsumptionCalculatorMonthly({ headquarterId, filter_month, token }: { headquarterId: string, filter_month: string, token?: string }) {
-  'use cache'
-  return await consumptionCalculatorMonthly({ headquarterId, filter_month, token })
-}
+// async function GetSecondConsumptionCalculatorMonthly({ headquarterId, filter_month, token }: { headquarterId: string, filter_month: string, token?: string }) {
+//   'use cache'
+//   return await consumptionCalculatorMonthly({ headquarterId, filter_month, token })
+// }
 
-async function GetConsumptionInvoice({ headquarterId, token }: { headquarterId: string, token?: string }) {
-  'use cache'
-  cacheLife('minutes')
-  return await consumptionInvoice({ headquarterId, token })
-}
+// async function GetConsumptionInvoice({ headquarterId, token }: { headquarterId: string, token?: string }) {
+//   'use cache'
+//   cacheLife('minutes')
+//   return await consumptionInvoice({ headquarterId, token })
+// }
 
-async function GetConsumptionTariff({ headquarterId, token }: { headquarterId: string, token?: string }) {
-  'use cache'
-  cacheLife('minutes')
+// async function GetConsumptionTariff({ headquarterId, token }: { headquarterId: string, token?: string }) {
+//   'use cache'
+//   cacheLife('minutes')
 
-  return await consumptionTariff({ headquarterId, token })
-}
+//   return await consumptionTariff({ headquarterId, token })
+// }
 
 async function TariffDataContent({
   headquarterId,
@@ -66,27 +66,27 @@ async function TariffDataContent({
     invoiceResult,
     tariffResult,
   ] = await Promise.all([
-    GetConsumptionCalculator({
+    consumptionCalculator({
       headquarterId,
       date_after: formattedDateAfter,
       date_before: formattedDateBefore,
       token: authToken!
     }),
-    GetConsumptionCalculatorMonthly({
+    consumptionCalculatorMonthly({
       headquarterId,
       filter_month: firstmonth || '',
       token: authToken!
     }),
-    GetSecondConsumptionCalculatorMonthly({
+    consumptionCalculatorMonthly({
       headquarterId,
       filter_month: secondmonth || '',
       token: authToken!
     }),
-    GetConsumptionInvoice({
+    consumptionInvoice({
       headquarterId,
       token: authToken!
     }),
-    GetConsumptionTariff({
+    consumptionTariff({
       headquarterId,
       token: authToken!
     })
