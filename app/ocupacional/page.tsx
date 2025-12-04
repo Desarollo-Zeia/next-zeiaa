@@ -20,7 +20,6 @@ export default function Page() {
       setIsLoading(false)
     }
   }
-
   return (
     <main className="relative min-h-screen bg-[#ebeef1]">
       {/* Gradient background */}
