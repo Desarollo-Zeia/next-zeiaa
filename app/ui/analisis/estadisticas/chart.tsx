@@ -156,7 +156,7 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
     <Card>
       <CardHeader>
         <div className="flex items-center justify-end gap-4">
-          {!toggleChart ? <TimeRangeSlider initialStart={start} initialEnd={end} /> : ''}
+          {/* {!toggleChart ? <TimeRangeSlider initialStart={start} initialEnd={end} /> : ''} */}
           <IndicatorToggle indicators={indicators} indicatorParam={indicator} />
         </div>
         <div className="flex items-center justify-between">
