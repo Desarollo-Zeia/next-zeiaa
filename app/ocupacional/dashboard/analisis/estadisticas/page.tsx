@@ -1,11 +1,12 @@
 import { getToken } from "@/app/lib/auth";
 import { getRooms } from "@/app/sevices/filters/data";
-import { readingsGraph, roomGeneralData } from "@/app/sevices/readings/data";
+import { readingsGraph, readingsReal, roomGeneralData } from "@/app/sevices/readings/data";
 import { Indicator, SearchParams, Unit } from "@/app/type";
 import { ChartComponent } from "@/app/ui/analisis/estadisticas/chart";
 import { DatepickerRange } from "@/app/ui/filters/datepicker-range";
 import FiltersContainer from "@/app/ui/filters/filters-container";
 import RoomSelect from "@/app/ui/filters/room-select";
+import { HumidityChart } from "@/components/chart-statistics";
 import { format } from "date-fns"
 // import { cacheLife } from "next/cache";
 
@@ -43,8 +44,12 @@ export default async function page({ searchParams }: SearchParams) {
   const firstRoom = rooms.find((room: any) => room.is_activated === true)  // eslint-disable-line @typescript-eslint/no-explicit-any
   const currentFirstRoom = room ? room : firstRoom.id
 
-  const readings = await readingsGraph({ roomId: currentFirstRoom, indicator, unit, date_after: formattedDateAfter, date_before: formattedDateBefore, hour_before: start, hour_after: end, token: authToken! })
+  const readings = await readingsReal({ indicator, unit, date_after: formattedDateAfter, date_before: formattedDateBefore, hour_before: start, hour_after: end, token: authToken!, roomId: currentFirstRoom })
   const generalRoomData = await roomGeneralData({ roomId: currentFirstRoom, token: authToken! })
+
+  console.log('readings', readings)
+
+
 
   return (
     <div>
@@ -53,6 +58,7 @@ export default async function page({ searchParams }: SearchParams) {
         <DatepickerRange />
       </FiltersContainer>
       <ChartComponent readings={readings} indicator={indicator as Indicator} unit={unit as Unit} generalRoomData={generalRoomData} start={start} end={end} />
+      {/* <HumidityChart /> */}
     </div>
   )
 }
