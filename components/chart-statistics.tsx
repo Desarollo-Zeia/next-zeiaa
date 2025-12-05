@@ -429,13 +429,13 @@ export function ReadingsChart({
                 tickFormatter={(value) => `${value}${formattedUnit === "°C" ? "°" : formattedUnit === "%" ? "%" : ""}`}
               />
               <Tooltip content={<CustomTooltip unit={formattedUnit} roomsData={roomsData} roomColors={roomColors} />} />
-              <Legend
+              {/* <Legend
                 formatter={(value) => {
                   const roomId = Number(value.replace("room_", ""))
                   const room = roomsData.find((r) => r.room_id === roomId)
                   return room?.room_name || value
                 }}
-              />
+              /> */}
 
               {/* Reference lines for CO2 */}
               {selectedRoom && indicator === "CO2" && (
