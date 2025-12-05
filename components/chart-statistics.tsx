@@ -49,7 +49,7 @@ interface ReadingsChartProps {
   unit: string
   title?: string
   description?: string,
-  indicators: any // disable-line @typescript-eslint/no-explicit-any
+  indicators: Array<{ indicator: string; unit: string }>
 }
 
 // Configuration for each indicator type
@@ -82,6 +82,13 @@ function timeToMinutes(time: string): number {
   return hours * 60 + minutes
 }
 
+function dateTimeToTimestamp(date: string, hour: string): number {
+  const datePart = date.includes("T") ? date.split("T")[0] : date
+  const [year, month, day] = datePart.split("-").map(Number)
+  const [hours, minutes] = hour.split(":").map(Number)
+  return new Date(year, month - 1, day, hours, minutes).getTime()
+}
+
 function formatDateInSpanish(dateStr: string, hour: string): string {
   const months = [
     "enero",
@@ -97,37 +104,47 @@ function formatDateInSpanish(dateStr: string, hour: string): string {
     "noviembre",
     "diciembre",
   ]
-  const datePart = dateStr.split("T")[0]
+  const datePart = dateStr.includes("T") ? dateStr.split("T")[0] : dateStr
   const [year, month, day] = datePart.split("-").map(Number)
   const monthName = months[month - 1]
   return `${day} de ${monthName}, ${hour}`
 }
 
 function mergeReadings(roomsData: RoomData[]): Record<string, string | number | null>[] {
-  // Collect all unique time+date combinations
-  const allTimePoints = new Map<string, string>() // hour -> date
+  // Collect all unique date+time combinations
+  const allTimePoints = new Map<string, { date: string; hour: string }>()
 
   roomsData.forEach((room) => {
     room.readings.forEach((reading) => {
-      if (!allTimePoints.has(reading.hour)) {
-        allTimePoints.set(reading.hour, reading.date)
+      const datePart = reading.date.includes("T") ? reading.date.split("T")[0] : reading.date
+      const key = `${datePart}_${reading.hour}` // Clave única: fecha + hora
+      if (!allTimePoints.has(key)) {
+        allTimePoints.set(key, { date: datePart, hour: reading.hour })
       }
     })
   })
 
-  // Sort times chronologically
-  const sortedTimes = Array.from(allTimePoints.keys()).sort((a, b) => timeToMinutes(a) - timeToMinutes(b))
+  // Sort by timestamp (fecha + hora)
+  const sortedKeys = Array.from(allTimePoints.keys()).sort((a, b) => {
+    const pointA = allTimePoints.get(a)!
+    const pointB = allTimePoints.get(b)!
+    return dateTimeToTimestamp(pointA.date, pointA.hour) - dateTimeToTimestamp(pointB.date, pointB.hour)
+  })
 
   // Create data points for each time
-  return sortedTimes.map((time) => {
-    const date = allTimePoints.get(time) || ""
+  return sortedKeys.map((key) => {
+    const { date, hour } = allTimePoints.get(key)!
     const dataPoint: Record<string, string | number | null> = {
-      hour: time,
-      date: date, // Añadida la fecha al dataPoint
+      hour: hour,
+      date: date,
+      key: key, // Para identificar únicamente cada punto
     }
 
     roomsData.forEach((room) => {
-      const reading = room.readings.find((r) => r.hour === time)
+      const reading = room.readings.find((r) => {
+        const readingDate = r.date.includes("T") ? r.date.split("T")[0] : r.date
+        return readingDate === date && r.hour === hour
+      })
       dataPoint[`room_${room.room_id}`] = reading ? reading.value : null
     })
 
@@ -156,7 +173,7 @@ function CustomTooltip({
 
     return (
       <div className="rounded-lg border bg-card p-3 shadow-md">
-        <p className="font-medium text-card-foreground mb-2">{formattedDateTime}</p>
+        <p className="font-medium text-card-foreground mb-2">Hora: {formattedDateTime}</p>
         {payload
           .filter((entry) => entry.value !== null)
           .map((entry, index) => {
@@ -257,10 +274,10 @@ function MinMaxThresholdsDisplay({
 export function ReadingsChart({
   roomsData,
   indicator,
-  indicators,
   unit,
   title = "Monitor de Calidad Ambiental",
   description,
+  indicators
 }: ReadingsChartProps) {
   const [selectedRoomId, setSelectedRoomId] = useState<string>(
     roomsData.length > 0 ? roomsData[0].room_id.toString() : "",
@@ -412,13 +429,13 @@ export function ReadingsChart({
                 tickFormatter={(value) => `${value}${formattedUnit === "°C" ? "°" : formattedUnit === "%" ? "%" : ""}`}
               />
               <Tooltip content={<CustomTooltip unit={formattedUnit} roomsData={roomsData} roomColors={roomColors} />} />
-              {/* <Legend
+              <Legend
                 formatter={(value) => {
                   const roomId = Number(value.replace("room_", ""))
                   const room = roomsData.find((r) => r.room_id === roomId)
                   return room?.room_name || value
                 }}
-              /> */}
+              />
 
               {/* Reference lines for CO2 */}
               {selectedRoom && indicator === "CO2" && (
