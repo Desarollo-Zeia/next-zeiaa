@@ -156,7 +156,7 @@ function CustomTooltip({
 
     return (
       <div className="rounded-lg border bg-card p-3 shadow-md">
-        <p className="font-medium text-card-foreground mb-2">Hora: {formattedDateTime}</p>
+        <p className="font-medium text-card-foreground mb-2">{formattedDateTime}</p>
         {payload
           .filter((entry) => entry.value !== null)
           .map((entry, index) => {
