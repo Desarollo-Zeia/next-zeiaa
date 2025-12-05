@@ -49,7 +49,7 @@ interface ReadingsChartProps {
   unit: string
   title?: string
   description?: string,
-  indicators?: any // eslint-disable-line @typescript-eslint/no-explicit-any
+  indicators: any // disable-line @typescript-eslint/no-explicit-any
 }
 
 // Configuration for each indicator type
@@ -82,22 +82,49 @@ function timeToMinutes(time: string): number {
   return hours * 60 + minutes
 }
 
-function mergeReadings(roomsData: RoomData[]): Record<string, string | number | null>[] {
-  const allTimes = new Set<string>()
+function formatDateInSpanish(dateStr: string, hour: string): string {
+  const months = [
+    "enero",
+    "febrero",
+    "marzo",
+    "abril",
+    "mayo",
+    "junio",
+    "julio",
+    "agosto",
+    "septiembre",
+    "octubre",
+    "noviembre",
+    "diciembre",
+  ]
+  const datePart = dateStr.split("T")[0]
+  const [year, month, day] = datePart.split("-").map(Number)
+  const monthName = months[month - 1]
+  return `${day} de ${monthName}, ${hour}`
+}
 
-  // Collect all unique times
+function mergeReadings(roomsData: RoomData[]): Record<string, string | number | null>[] {
+  // Collect all unique time+date combinations
+  const allTimePoints = new Map<string, string>() // hour -> date
+
   roomsData.forEach((room) => {
     room.readings.forEach((reading) => {
-      allTimes.add(reading.hour)
+      if (!allTimePoints.has(reading.hour)) {
+        allTimePoints.set(reading.hour, reading.date)
+      }
     })
   })
 
   // Sort times chronologically
-  const sortedTimes = Array.from(allTimes).sort((a, b) => timeToMinutes(a) - timeToMinutes(b))
+  const sortedTimes = Array.from(allTimePoints.keys()).sort((a, b) => timeToMinutes(a) - timeToMinutes(b))
 
   // Create data points for each time
   return sortedTimes.map((time) => {
-    const dataPoint: Record<string, string | number | null> = { hour: time }
+    const date = allTimePoints.get(time) || ""
+    const dataPoint: Record<string, string | number | null> = {
+      hour: time,
+      date: date, // Añadida la fecha al dataPoint
+    }
 
     roomsData.forEach((room) => {
       const reading = room.readings.find((r) => r.hour === time)
@@ -117,16 +144,19 @@ function CustomTooltip({
   roomColors,
 }: {
   active?: boolean
-  payload?: Array<{ name: string; value: number; color: string }>
+  payload?: Array<{ name: string; value: number; color: string; payload: Record<string, string | number | null> }>
   label?: string
   unit: string
   roomsData: RoomData[]
   roomColors: Map<number, string>
 }) {
   if (active && payload && payload.length) {
+    const date = payload[0]?.payload?.date as string
+    const formattedDateTime = date && label ? formatDateInSpanish(date, label) : label
+
     return (
       <div className="rounded-lg border bg-card p-3 shadow-md">
-        <p className="font-medium text-card-foreground mb-2">Hora: {label}</p>
+        <p className="font-medium text-card-foreground mb-2">Hora: {formattedDateTime}</p>
         {payload
           .filter((entry) => entry.value !== null)
           .map((entry, index) => {
@@ -227,10 +257,10 @@ function MinMaxThresholdsDisplay({
 export function ReadingsChart({
   roomsData,
   indicator,
+  indicators,
   unit,
   title = "Monitor de Calidad Ambiental",
   description,
-  indicators
 }: ReadingsChartProps) {
   const [selectedRoomId, setSelectedRoomId] = useState<string>(
     roomsData.length > 0 ? roomsData[0].room_id.toString() : "",
@@ -248,17 +278,36 @@ export function ReadingsChart({
   // Merge readings from all rooms into chart-compatible format
   const chartData = useMemo(() => mergeReadings(roomsData), [roomsData])
 
-  // Calculate Y axis domain based on data
+  const selectedRoom = roomsData.find((r) => r.room_id === Number(selectedRoomId))
+
   const yAxisDomain = useMemo(() => {
     const allValues = roomsData.flatMap((room) => room.readings.map((r) => r.value))
     if (allValues.length === 0) return [0, 100]
-    const min = Math.min(...allValues)
-    const max = Math.max(...allValues)
+
+    let min = Math.min(...allValues)
+    let max = Math.max(...allValues)
+
+    // Incluir los umbrales en el cálculo del dominio
+    if (selectedRoom) {
+      if (indicator === "CO2") {
+        const co2Thresholds = selectedRoom.thresholds.co2
+        min = Math.min(min, co2Thresholds.good)
+        max = Math.max(max, co2Thresholds.dangerous)
+      } else if (indicator === "TEMPERATURE") {
+        const tempThresholds = selectedRoom.thresholds.temperature
+        min = Math.min(min, tempThresholds.min)
+        max = Math.max(max, tempThresholds.max)
+      } else if (indicator === "HUMIDITY") {
+        const humidityThresholds = selectedRoom.thresholds.humidity
+        min = Math.min(min, humidityThresholds.min)
+        max = Math.max(max, humidityThresholds.max)
+      }
+    }
+
     const padding = (max - min) * 0.15
     return [Math.floor(min - padding), Math.ceil(max + padding)]
-  }, [roomsData])
+  }, [roomsData, selectedRoom, indicator])
 
-  const selectedRoom = roomsData.find((r) => r.room_id === Number(selectedRoomId))
   const config = indicatorConfig[indicator]
   const displayUnit = unit || config.defaultUnit
 
@@ -313,6 +362,7 @@ export function ReadingsChart({
             </SelectContent>
           </Select>
           <IndicatorToggle indicators={indicators} indicatorParam={indicator} />
+
         </div>
 
         {/* Thresholds display */}
@@ -362,13 +412,13 @@ export function ReadingsChart({
                 tickFormatter={(value) => `${value}${formattedUnit === "°C" ? "°" : formattedUnit === "%" ? "%" : ""}`}
               />
               <Tooltip content={<CustomTooltip unit={formattedUnit} roomsData={roomsData} roomColors={roomColors} />} />
-              <Legend
+              {/* <Legend
                 formatter={(value) => {
                   const roomId = Number(value.replace("room_", ""))
                   const room = roomsData.find((r) => r.room_id === roomId)
                   return room?.room_name || value
                 }}
-              />
+              /> */}
 
               {/* Reference lines for CO2 */}
               {selectedRoom && indicator === "CO2" && (

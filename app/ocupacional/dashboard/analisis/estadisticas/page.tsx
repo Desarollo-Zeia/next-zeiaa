@@ -1,12 +1,12 @@
 import { getToken } from "@/app/lib/auth";
 import { getRooms } from "@/app/sevices/filters/data";
 import { readingsGraph, readingsReal, roomGeneralData } from "@/app/sevices/readings/data";
-import { Indicator, SearchParams, Unit } from "@/app/type";
-import { ChartComponent } from "@/app/ui/analisis/estadisticas/chart";
+import { SearchParams } from "@/app/type";
+// import { ChartComponent } from "@/app/ui/analisis/estadisticas/chart";
 import { DatepickerRange } from "@/app/ui/filters/datepicker-range";
 import FiltersContainer from "@/app/ui/filters/filters-container";
-import IndicatorToggle from "@/app/ui/filters/indicators-toggle";
-import RoomSelect from "@/app/ui/filters/room-select";
+// import IndicatorToggle from "@/app/ui/filters/indicators-toggle";
+// import RoomSelect from "@/app/ui/filters/room-select";
 import { ReadingsChart } from "@/components/chart-statistics";
 import { format } from "date-fns"
 // import { cacheLife } from "next/cache";
@@ -46,9 +46,21 @@ export default async function page({ searchParams }: SearchParams) {
   const currentFirstRoom = room ? room : firstRoom.id
 
   const readings = await readingsGraph({ indicator, unit, date_after: formattedDateAfter, date_before: formattedDateBefore, hour_before: start, hour_after: end, token: authToken!, roomId: currentFirstRoom })
-  const generalRoomData = await roomGeneralData({ roomId: currentFirstRoom, token: authToken! })
 
-  const { indicators_pollutants: indicators } = generalRoomData
+  const indicators = [
+    {
+      indicator: 'CO2',
+      unit: 'PPM'
+    },
+    {
+      indicator: 'HUMIDITY',
+      unit: 'PERCEN',
+    },
+    {
+      indicator: 'TEMPERATURE',
+      unit: 'CELSIUS',
+    }
+  ]
 
 
   return (
