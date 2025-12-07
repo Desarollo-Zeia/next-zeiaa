@@ -62,15 +62,9 @@ export default async function page({ searchParams }: SearchParams) {
     }
   ]
 
-
   return (
-    <div>
-      <FiltersContainer>
-        {/* <RoomSelect firstRoom={currentFirstRoom} rooms={rooms} /> */}
+    <div className="flex mx-2 justify-center gap-4">
 
-        <DatepickerRange />
-      </FiltersContainer>
-      {/* <ChartComponent readings={readings} indicator={indicator as Indicator} unit={unit as Unit} generalRoomData={generalRoomData} start={start} end={end} /> */}
       <ReadingsChart indicator={indicator as 'CO2' | 'HUMIDITY' | 'TEMPERATURE'} unit={unit} roomsData={readings} indicators={indicators} />
     </div>
   )
