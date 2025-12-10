@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/sidebar"
 import { fetchWithAuthAmbiental } from "@/app/lib/api"
 import { AppSidebar } from "@/components/app-sidebar"
+import { getToken } from "@/app/lib/auth"
 
 interface LayoutProps {
   children: React.ReactNode
@@ -13,7 +14,10 @@ interface LayoutProps {
 
 export default async function Layout({ children }: LayoutProps) {
 
-  const userData = await fetchWithAuthAmbiental('/enterprise/api/enterprise/detail/')
+  const authToken = await getToken()
+
+
+  const userData = await fetchWithAuthAmbiental('/enterprise/api/enterprise/detail/', {}, authToken!)
 
   const ambiental = {
     rooms: '/ambiental/dashboard/rooms',

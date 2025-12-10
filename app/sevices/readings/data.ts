@@ -268,12 +268,14 @@ export async function readinsgExcel({
   unit = 'PPM',
   date_after,
   date_before,
+  token
 }: {
   room: string | number;
   indicator: string;
   unit: string;
   date_after?: string;
   date_before?: string;
+  token?: string;
 }) {
   const url = new URL(`/readings/api/headquarter/49/room/indicator/report/all-rooms?frequency=hourly`, baseUrl);
 
@@ -282,7 +284,7 @@ export async function readinsgExcel({
   if (date_after) url.searchParams.set('date_after', date_after);
   if (date_before) url.searchParams.set('date_before', date_before);
 
-  const res = await fetchWithAuth(`${url.pathname}${url.search}`)
+  const res = await fetchWithAuth(`${url.pathname}${url.search}`, {}, token)
 
   return res
 }

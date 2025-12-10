@@ -11,11 +11,15 @@ import { format } from "date-fns";
 
 
 export default async function page({ searchParams }: SearchParams) {
+
+
+  const { room, indicator = 'CO2', unit = 'PPM', date_after = new Date(), date_before = new Date(), start = '00:00', end = '23:00' } = await searchParams
+
   const authToken = await getToken()
+
 
   const { first_room: firstRoom } = await detailAmbiental({ token: authToken! })
 
-  const { room, indicator = 'CO2', unit = 'PPM', date_after = new Date(), date_before = new Date(), start = '00:00', end = '23:00' } = await searchParams
 
   const currentFirstRoom = room ? room : firstRoom
 
