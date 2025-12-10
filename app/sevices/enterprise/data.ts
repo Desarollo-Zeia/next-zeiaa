@@ -4,20 +4,20 @@ import { baseUrl } from "@/app/lib/constant"
 import { RoomList } from "./type"
 import { cacheLife } from "next/cache"
 
-export async function detail() {
+export async function detail({ token }: { token?: string }) {
   'use cache'
   cacheLife('minutes')
-  const res = await fetchWithAuth('/enterprise/api/enterprise/detail/')
+  const res = await fetchWithAuth('/enterprise/api/enterprise/detail/', {}, token)
 
   return res
 }
 
-export async function detailAmbiental() {
+export async function detailAmbiental({ token }: { token?: string }) {
 
   'use cache'
   cacheLife('minutes')
 
-  const res = await fetchWithAuthAmbiental('/enterprise/api/enterprise/detail/')
+  const res = await fetchWithAuthAmbiental('/enterprise/api/enterprise/detail/', {}, token)
 
   return res
 }

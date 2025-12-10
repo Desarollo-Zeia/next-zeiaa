@@ -14,7 +14,7 @@ import { format } from "date-fns";
 export default async function page({ searchParams }: SearchParams) {
   const authToken = await getToken()
 
-  const { first_room: firstRoom } = await detailAmbiental()
+  const { first_room: firstRoom } = await detailAmbiental({ token: authToken! })
 
   const { room, indicator = 'CO2', unit = 'PPM', date_after = new Date(), date_before = new Date(), page = '1', status } = await searchParams
 
