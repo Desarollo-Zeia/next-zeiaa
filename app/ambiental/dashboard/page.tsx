@@ -9,6 +9,7 @@ import { roomsListAmbiental } from '@/app/sevices/enterprise/data'
 import HeadquarterSelect from '@/app/ui/filters/headquarter-select'
 import { getHeadquartersAmbiental } from '@/app/sevices/filters/data'
 import { SearchParams } from '@/app/type'
+import { getToken } from '@/app/lib/auth'
 
 interface Room {
   id: number
@@ -21,10 +22,13 @@ interface Room {
 
 export default async function page({ searchParams }: SearchParams) {
 
+  const authToken = await getToken()
+
+
   const { search, status, headquarter, page, limit, offset } = await searchParams
 
-  const headquarters = await getHeadquartersAmbiental()
-  const rooms = await roomsListAmbiental({ search, status, headquarter, page, limit, offset })
+  const headquarters = await getHeadquartersAmbiental({ token: authToken! })
+  const rooms = await roomsListAmbiental({ search, status, headquarter, page, limit, offset, token: authToken! })
 
   return (
     <div>

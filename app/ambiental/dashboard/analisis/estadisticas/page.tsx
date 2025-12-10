@@ -1,3 +1,4 @@
+import { getToken } from "@/app/lib/auth";
 import { detailAmbiental } from "@/app/sevices/enterprise/data";
 import { getRoomsAmbiental } from "@/app/sevices/filters/data";
 import { readingsGraphAmbiental, roomGeneralDataAmbiental } from "@/app/sevices/readings/data";
@@ -9,24 +10,26 @@ import RoomSelect from "@/app/ui/filters/room-select";
 import { format } from "date-fns";
 
 
-export default async function page({ searchParams } : SearchParams) {
-  const { first_room: firstRoom} = await detailAmbiental()
+export default async function page({ searchParams }: SearchParams) {
+  const authToken = await getToken()
 
-  const { room, indicator = 'CO2', unit = 'PPM', date_after = new Date(), date_before = new Date(), start = '00:00', end = '23:00'} = await searchParams
+  const { first_room: firstRoom } = await detailAmbiental()
+
+  const { room, indicator = 'CO2', unit = 'PPM', date_after = new Date(), date_before = new Date(), start = '00:00', end = '23:00' } = await searchParams
 
   const currentFirstRoom = room ? room : firstRoom
 
-  const rooms = await getRoomsAmbiental()
-  const readings = await readingsGraphAmbiental({ roomId: currentFirstRoom, indicator, unit, date_after: format(date_after,"yyyy-MM-dd"), date_before: format(date_before, "yyyy-MM-dd"), hour_after: start, hour_before: end})
-  const generalRoomData = await roomGeneralDataAmbiental({ roomId: currentFirstRoom})
+  const rooms = await getRoomsAmbiental({ token: authToken! })
+  const readings = await readingsGraphAmbiental({ roomId: currentFirstRoom, indicator, unit, date_after: format(date_after, "yyyy-MM-dd"), date_before: format(date_before, "yyyy-MM-dd"), hour_after: start, hour_before: end, token: authToken! })
+  const generalRoomData = await roomGeneralDataAmbiental({ roomId: currentFirstRoom, token: authToken! })
 
   return (
     <div>
       <FiltersContainer>
-        <RoomSelect firstRoom={currentFirstRoom} rooms={rooms}/>
+        <RoomSelect firstRoom={currentFirstRoom} rooms={rooms} />
         <DatepickerRange />
       </FiltersContainer>
-      <ChartComponent readings={readings} indicator={indicator as Indicator} unit={unit as Unit} generalRoomData={generalRoomData} start={start} end={end}/>
+      <ChartComponent readings={readings} indicator={indicator as Indicator} unit={unit as Unit} generalRoomData={generalRoomData} start={start} end={end} />
     </div>
   )
 }

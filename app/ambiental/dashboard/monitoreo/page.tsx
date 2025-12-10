@@ -1,3 +1,4 @@
+import { getToken } from "@/app/lib/auth"
 import { detailAmbiental } from "@/app/sevices/enterprise/data"
 import { getRoomsAmbiental } from "@/app/sevices/filters/data"
 import { readingsDataAmbiental, roomGeneralDataAmbiental, roomLastDataAmbiental } from "@/app/sevices/readings/data"
@@ -27,15 +28,18 @@ interface Room {
 
 export default async function page({ searchParams }: SearchParams) {
 
+  const authToken = await getToken()
+
+
   const { room, indicator = 'CO2', unit = 'PPM' } = await searchParams
 
   const { first_room: firstRoom } = await detailAmbiental()
 
   const currentFirstRoom = room ? room : firstRoom
 
-  const rooms = await getRoomsAmbiental()
-  const data = await roomLastDataAmbiental({ roomId: currentFirstRoom })
-  const { results } = await readingsDataAmbiental({ roomId: currentFirstRoom, indicator, unit })
+  const rooms = await getRoomsAmbiental({ token: authToken! })
+  const data = await roomLastDataAmbiental({ roomId: currentFirstRoom, token: authToken! })
+  const { results } = await readingsDataAmbiental({ roomId: currentFirstRoom, indicator, unit, token: authToken! })
 
   const { name } = rooms.find((room: Room) => room.id === Number(currentFirstRoom))
 

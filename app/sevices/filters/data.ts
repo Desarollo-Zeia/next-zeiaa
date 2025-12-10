@@ -23,10 +23,9 @@ const _getRoomsAmbientalCached = unstable_cache(
   }
 )
 
-export async function getRoomsAmbiental() {
-  const token = await getToken()
-  if (!token) throw new Error('No auth token')
-  return _getRoomsAmbientalCached(token)
+export async function getRoomsAmbiental({ token }: { token: string }) {
+  return await fetchWithAuthAmbiental('/enterprise/api/ambiental/enterprise/basic/point-list/', {}, token)
+
 }
 
 const _getHeadquartersOcupacionalCached = unstable_cache(
@@ -70,10 +69,9 @@ const _getHeadquartersAmbientalCached = unstable_cache(
   }
 )
 
-export async function getHeadquartersAmbiental() {
-  const token = await getToken()
-  if (!token) throw new Error('No auth token')
-  return _getHeadquartersAmbientalCached(token)
+export async function getHeadquartersAmbiental({ token }: { token: string }) {
+  return await fetchWithAuthAmbiental('/enterprise/api/ambiental/enterprise/basic/headquearter-list/', {}, token)
+
 }
 
 const _getMeasurementPointsCached = unstable_cache(

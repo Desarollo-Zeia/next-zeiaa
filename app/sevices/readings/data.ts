@@ -37,10 +37,9 @@ const _roomLastDataAmbientalCached = unstable_cache(
   }
 )
 
-export async function roomLastDataAmbiental({ roomId }: { roomId: string | number }) {
-  const token = await getToken()
-  if (!token) throw new Error('No auth token')
-  return _roomLastDataAmbientalCached(token, roomId)
+export async function roomLastDataAmbiental({ roomId, token }: { roomId: string | number, token: string }) {
+  const res = await fetchWithAuthAmbiental(`/readings/api/ambiental/point/${roomId}/general/last`, {}, token)
+  return res
 }
 
 export async function readingsData({ roomId, indicator = 'CO2', unit = 'PPM', date_after, date_before, page, status, hour_before, hour_after, ordering, token }: { roomId: string | number, indicator?: string, unit?: string, date_after?: string, date_before?: string, page?: string, status?: string, hour_before?: string, hour_after?: string, ordering?: string, token?: string }) {
@@ -66,7 +65,7 @@ export async function readingsData({ roomId, indicator = 'CO2', unit = 'PPM', da
 
 
 
-export async function readingsDataAmbiental({ roomId, indicator = 'CO2', unit = 'PPM', date_after, date_before, page, status }: { roomId: string | number, indicator: string, unit: string, date_after?: string, date_before?: string, page?: string, status?: string }) {
+export async function readingsDataAmbiental({ roomId, indicator = 'CO2', unit = 'PPM', date_after, date_before, page, status, token }: { roomId: string | number, indicator: string, unit: string, date_after?: string, date_before?: string, page?: string, status?: string, token?: string }) {
 
   const url = new URL(`/readings/api/ambiental/point/${roomId}/indicator`, baseUrl)
 
@@ -77,7 +76,7 @@ export async function readingsDataAmbiental({ roomId, indicator = 'CO2', unit = 
   if (status) url.searchParams.set('status', status)
   if (page) url.searchParams.set('page', page)
 
-  const res = await fetchWithAuthAmbiental(`${url.pathname}${url.search}`)
+  const res = await fetchWithAuthAmbiental(`${url.pathname}${url.search}`, {}, token)
 
   return res
 }
@@ -180,10 +179,17 @@ const _readingsGraphAmbientalCached = unstable_cache(
   }
 )
 
-export async function readingsGraphAmbiental({ roomId, indicator, unit, date_after, date_before, hour_before, hour_after }: { roomId: string | number, indicator: string, unit: string, date_after?: string, date_before?: string, hour_after: string, hour_before: string }) {
-  const token = await getToken()
-  if (!token) throw new Error('No auth token')
-  return _readingsGraphAmbientalCached(token, roomId, indicator, unit, date_after, date_before, hour_after, hour_before)
+export async function readingsGraphAmbiental({ roomId, indicator, unit, date_after, date_before, hour_before, hour_after, token }: { roomId: string | number, indicator: string, unit: string, date_after?: string, date_before?: string, hour_after: string, hour_before: string, token?: string }) {
+  const url = new URL(`/readings/api/ambiental/point/${roomId}/indicator/graph`, baseUrl)
+
+  if (indicator) url.searchParams.set('indicator', indicator)
+  if (unit) url.searchParams.set('unit', unit)
+  if (date_after) url.searchParams.set('date_after', date_after)
+  if (date_before) url.searchParams.set('date_before', date_before)
+  if (hour_before) url.searchParams.set('hour_before', hour_before)
+  if (hour_after) url.searchParams.set('hour_after', hour_after)
+
+  const res = await fetchWithAuthAmbiental(`${url.pathname}${url.search}`, {}, token)
 }
 
 
@@ -251,8 +257,8 @@ export async function roomGeneralData({ roomId, token }: { roomId: string | numb
   return res
 }
 
-export async function roomGeneralDataAmbiental({ roomId }: { roomId: string | number }) {
-  const res = await fetchWithAuthAmbiental(`/enterprise/api/ambiental/point/${roomId}/`)
+export async function roomGeneralDataAmbiental({ roomId, token }: { roomId: string | number, token?: string }) {
+  const res = await fetchWithAuthAmbiental(`/enterprise/api/ambiental/point/${roomId}/`, {}, token)
   return res
 }
 
