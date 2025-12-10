@@ -42,6 +42,10 @@ export async function roomsList({ search, status, headquarter, page, limit, offs
 
 export async function roomsListAmbiental({ search, status, headquarter, page, limit, offset }: RoomList) {
 
+  'use cache'
+  cacheLife('minutes')
+
+
   const url = new URL('enterprise/api/ambiental/enterprise/point-list/', baseUrl)
 
   if (search) url.searchParams.set('search', search)
