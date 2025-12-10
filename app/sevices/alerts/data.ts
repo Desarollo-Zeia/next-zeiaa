@@ -62,6 +62,8 @@ const _alertsAmbientalCached = unstable_cache(
 )
 
 export async function alertsAmbiental({ roomId, indicator, unit, date_after, date_before, page, status, token }: { roomId: string | number, indicator: string, unit: string, date_after?: string, date_before?: string, page: string, status?: string, token: string }) {
+  'use cache'
+  cacheLife('minutes')
   const url = new URL(`/alerts/api/ambiental/point/${roomId}/alerts/`, baseUrlAmbiental)
 
   if (indicator) url.searchParams.set('indicator', indicator)

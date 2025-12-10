@@ -24,6 +24,8 @@ const _getRoomsAmbientalCached = unstable_cache(
 )
 
 export async function getRoomsAmbiental({ token }: { token: string }) {
+  'use cache'
+  cacheLife('minutes')
   return await fetchWithAuthAmbiental('/enterprise/api/ambiental/enterprise/basic/point-list/', {}, token)
 
 }
@@ -40,6 +42,8 @@ const _getHeadquartersOcupacionalCached = unstable_cache(
 )
 
 export async function getHeadquartersOcupacional({ token }: { token: string }) {
+  'use cache'
+  cacheLife('minutes')
   return await fetchWithAuth('/enterprise/api/enterprise/basic/headquearter-list/', {}, token)
 }
 

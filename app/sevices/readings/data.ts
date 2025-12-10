@@ -258,6 +258,8 @@ export async function roomGeneralData({ roomId, token }: { roomId: string | numb
 }
 
 export async function roomGeneralDataAmbiental({ roomId, token }: { roomId: string | number, token?: string }) {
+  'use cache'
+  cacheLife('minutes')
   const res = await fetchWithAuthAmbiental(`/enterprise/api/ambiental/point/${roomId}/`, {}, token)
   return res
 }
