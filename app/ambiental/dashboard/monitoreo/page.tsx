@@ -33,7 +33,7 @@ export default async function page({ searchParams }: SearchParams) {
 
   const { room, indicator = 'CO2', unit = 'PPM' } = await searchParams
 
-  const { first_room: firstRoom } = await detailAmbiental()
+  const { first_room: firstRoom } = await detailAmbiental({ token: authToken! })
 
   const currentFirstRoom = room ? room : firstRoom
 

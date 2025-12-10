@@ -14,7 +14,7 @@ export default async function page({ searchParams }: SearchParams) {
   const authToken = await getToken()
 
 
-  const { first_room: firstRoom } = await detailAmbiental()
+  const { first_room: firstRoom } = await detailAmbiental({ token: authToken! })
 
   const { room, indicator = 'CO2', unit = 'PPM', date_after = '', date_before = '', page, status } = await searchParams
 
