@@ -40,7 +40,7 @@ export default async function page({ searchParams }: SearchParams) {
   const formattedDateAfter = format(date_after, 'yyyy-MM-dd')
   const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
 
-  const rooms = await await getRooms(authToken!)
+  const rooms = await getRooms(authToken!)
   const firstRoom = rooms.find((room: any) => room.is_activated === true)  // eslint-disable-line @typescript-eslint/no-explicit-any
 
   const currentFirstRoom = room ? room : firstRoom.id

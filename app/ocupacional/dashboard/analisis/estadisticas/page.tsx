@@ -9,6 +9,7 @@ import FiltersContainer from "@/app/ui/filters/filters-container";
 // import RoomSelect from "@/app/ui/filters/room-select";
 import { ReadingsChart } from "@/components/chart-statistics";
 import { format } from "date-fns"
+import { cacheLife } from "next/cache";
 // import { cacheLife } from "next/cache";
 
 // async function GetRooms(token: string) {
@@ -32,8 +33,9 @@ import { format } from "date-fns"
 
 export default async function page({ searchParams }: SearchParams) {
   // const { first_room: firstRoom } = await detail()
-
   const { room, indicator = 'CO2', unit = 'PPM', date_after = new Date(), date_before = new Date(), start = '00:00', end = '23:00' } = await searchParams
+
+
 
   const authToken = await getToken()
 

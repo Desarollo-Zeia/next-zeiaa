@@ -1,10 +1,12 @@
 'use server'
 import { fetchWithAuth, fetchWithAuthAmbiental, fetchWithAuthEnergy } from "@/app/lib/api"
-import { unstable_cache } from 'next/cache'
+import { cacheLife, unstable_cache } from 'next/cache'
 import { CACHE_DURATION, CACHE_TAGS } from "@/app/lib/cache"
 import { getToken } from "@/app/lib/auth"
 
 export async function getRooms(token?: string) {
+  'use cache'
+  cacheLife('minutes')
 
   const res = await fetchWithAuth('/enterprise/api/enterprise/basic/room-list/', {}, token)
   return res
@@ -38,10 +40,8 @@ const _getHeadquartersOcupacionalCached = unstable_cache(
   }
 )
 
-export async function getHeadquartersOcupacional() {
-  const token = await getToken()
-  if (!token) throw new Error('No auth token')
-  return _getHeadquartersOcupacionalCached(token)
+export async function getHeadquartersOcupacional({ token }: { token: string }) {
+  return await fetchWithAuth('/enterprise/api/enterprise/basic/headquearter-list/', {}, token)
 }
 
 const _getHeadquartersCached = unstable_cache(

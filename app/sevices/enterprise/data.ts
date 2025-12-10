@@ -2,6 +2,7 @@
 import { fetchWithAuth, fetchWithAuthAmbiental } from "@/app/lib/api"
 import { baseUrl } from "@/app/lib/constant"
 import { RoomList } from "./type"
+import { cacheLife } from "next/cache"
 
 export async function detail() {
   const res = await fetchWithAuth('/enterprise/api/enterprise/detail/')
@@ -16,6 +17,9 @@ export async function detailAmbiental() {
 }
 
 export async function roomsList({ search, status, headquarter, page, limit, offset, token }: RoomList) {
+
+  'use cache'
+  cacheLife('minutes')
 
   const url = new URL('/enterprise/api/enterprise/room-list/', baseUrl)
 

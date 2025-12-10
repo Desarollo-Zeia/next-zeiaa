@@ -40,7 +40,7 @@ export default async function page({ searchParams }: SearchParams) {
 
   const getRoomsList = await roomsList({ search, status, headquarter, page, limit, offset, token: authToken })
 
-  const headquarters = await getHeadquartersOcupacional()
+  const headquarters = await getHeadquartersOcupacional({ token: authToken! })
 
   return (
     <div>

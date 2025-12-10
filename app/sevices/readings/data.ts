@@ -1,7 +1,7 @@
 'use server'
 import { fetchWithAuth, fetchWithAuthAmbiental } from "@/app/lib/api"
 import { baseUrl } from "@/app/lib/constant"
-import { unstable_cache } from 'next/cache'
+import { cacheLife, unstable_cache } from 'next/cache'
 import { CACHE_DURATION, CACHE_TAGS } from "@/app/lib/cache"
 import { getToken } from "@/app/lib/auth"
 
@@ -19,6 +19,8 @@ import { getToken } from "@/app/lib/auth"
 // )
 
 export async function roomLastData({ roomId, token }: { roomId: string | number, token: string }) {
+  'use cache'
+  cacheLife('minutes')
   const res = await fetchWithAuth(`/readings/api/room/${roomId}/general/last`, {}, token)
   return res
 }
@@ -42,6 +44,8 @@ export async function roomLastDataAmbiental({ roomId }: { roomId: string | numbe
 }
 
 export async function readingsData({ roomId, indicator = 'CO2', unit = 'PPM', date_after, date_before, page, status, hour_before, hour_after, ordering, token }: { roomId: string | number, indicator?: string, unit?: string, date_after?: string, date_before?: string, page?: string, status?: string, hour_before?: string, hour_after?: string, ordering?: string, token?: string }) {
+  'use cache'
+  cacheLife('minutes')
 
   const url = new URL(`/readings/api/room/${roomId}/indicator`, baseUrl)
 
@@ -79,8 +83,12 @@ export async function readingsDataAmbiental({ roomId, indicator = 'CO2', unit = 
 }
 
 export async function readingsPeaks({ roomId, indicator = 'CO2', unit = 'PPM', date_after, date_before, page, status, token }: { roomId: string | number, indicator: string, unit: string, date_after?: string, date_before?: string, page?: string, status?: string, token?: string }) {
+  'use cache'
+  cacheLife('minutes')
 
   const url = new URL(`/readings/api/room/${roomId}/indicator/metrics/high/history?indicator=CO2&unit=PPM&page=1&date_after=2023-01-03`, baseUrl)
+
+
 
   if (indicator) url.searchParams.set('indicator', indicator)
   if (unit) url.searchParams.set('unit', unit)
@@ -134,6 +142,9 @@ export async function readingsReal({ roomId, indicator, unit, date_after, date_b
 }
 
 export async function readingsGraph({ indicator, unit, date_after, date_before, hour_before, hour_after, token }: { roomId?: string | number, indicator: string, unit: string, date_after?: string, date_before?: string, hour_before?: string, hour_after?: string, token?: string }) {
+
+  'use cache'
+  cacheLife('minutes')
   const url = new URL(`/readings/api/rooms/indicators/graphs`, baseUrl)
 
   if (indicator) url.searchParams.set('indicator', indicator)
@@ -234,6 +245,8 @@ export async function riskReached({ roomId, date }: { roomId?: string | number, 
 
 
 export async function roomGeneralData({ roomId, token }: { roomId: string | number, token?: string }) {
+  'use cache'
+  cacheLife('minutes')
   const res = await fetchWithAuth(`/enterprise/api/room/${roomId}/`, {}, token)
   return res
 }

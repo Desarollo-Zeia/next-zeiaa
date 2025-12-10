@@ -1,7 +1,7 @@
 'use server'
 import { fetchWithAuth, fetchWithAuthAmbiental } from "@/app/lib/api"
 import { baseUrl, baseUrlAmbiental } from "@/app/lib/constant"
-import { unstable_cache } from 'next/cache'
+import { cacheLife, unstable_cache } from 'next/cache'
 import { CACHE_DURATION, CACHE_TAGS } from "@/app/lib/cache"
 import { getToken } from "@/app/lib/auth"
 
@@ -23,6 +23,8 @@ const _alertsCached = unstable_cache(
 )
 
 export async function alerts({ roomId, indicator, unit, date_after, date_before, page, status, token }: { roomId: string | number, indicator: string, unit: string, date_after?: string, date_before?: string, page?: string, status?: string, token?: string }) {
+  'use cache'
+  cacheLife('minutes')
   const url = new URL(`/alerts/api/room/${roomId}/alerts`, baseUrl)
 
   if (indicator) url.searchParams.set('indicator', indicator)

@@ -66,6 +66,7 @@ export default async function Page({ searchParams }: SearchParams) {
       point: firstPoint,
       page,
       category,
+      token: authToken!
     }),
     consumeGraph({
       date_after: formattedDateAfter,
@@ -77,6 +78,7 @@ export default async function Page({ searchParams }: SearchParams) {
       category,
       unit,
       last_by,
+      token: authToken!
     }),
   ])
 

@@ -6,32 +6,19 @@ import { unstable_cache } from 'next/cache'
 import { CACHE_DURATION, CACHE_TAGS } from "@/app/lib/cache"
 import { getToken } from "@/app/lib/auth"
 
-const _consumeCached = unstable_cache(
-  async (token: string, headquarterId: string, panelId: string, point: string, date_after?: string, date_before?: string, unit?: string, page?: string, category?: string) => {
-    const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/measurement_points/${point}/readings`, baseUrlEnergy)
+export async function consume({ headquarterId, panelId, date_after = START_DATE, date_before = START_DATE, unit, page, category, point, token }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, unit?: string, page?: string, category?: string, point?: string, token?: string }) {
+  const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/measurement_points/${point}/readings`, baseUrlEnergy)
 
-    if (date_after) url.searchParams.set('date_after', date_after)
-    if (date_before) url.searchParams.set('date_before', date_before)
-    if (unit) url.searchParams.set('unit', unit)
-    if (page) url.searchParams.set('page', page)
-    if (category) url.searchParams.set('category', category)
-    if (point) url.searchParams.set('point', point)
+  if (date_after) url.searchParams.set('date_after', date_after)
+  if (date_before) url.searchParams.set('date_before', date_before)
+  if (unit) url.searchParams.set('unit', unit)
+  if (page) url.searchParams.set('page', page)
+  if (category) url.searchParams.set('category', category)
+  if (point) url.searchParams.set('point', point)
 
-    const res = await fetchWithAuthEnergy(`${url.pathname}${url.search}`, {}, token)
+  const res = await fetchWithAuthEnergy(`${url.pathname}${url.search}`, {}, token)
 
-    return res
-  },
-  ['energy-consume'],
-  {
-    tags: [CACHE_TAGS.ENERGY, CACHE_TAGS.READINGS],
-    revalidate: CACHE_DURATION.DYNAMIC, // 1 minute - readings change frequently
-  }
-)
-
-export async function consume({ headquarterId, panelId, date_after = START_DATE, date_before = START_DATE, unit, page, category, point }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, unit?: string, page?: string, category?: string, point?: string }) {
-  const token = await getToken()
-  if (!token) throw new Error('No auth token')
-  return _consumeCached(token, headquarterId!, panelId!, point!, date_after, date_before, unit, page, category)
+  return res
 }
 
 const _consumeGraphCached = unstable_cache(
@@ -57,10 +44,20 @@ const _consumeGraphCached = unstable_cache(
   }
 )
 
-export async function consumeGraph({ headquarterId, panelId, date_after = START_DATE, date_before = START_DATE, indicador, unit, last_by, category, point }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, indicador?: string, unit?: string, last_by?: string, category?: string, point?: string }) {
-  const token = await getToken()
-  if (!token) throw new Error('No auth token')
-  return _consumeGraphCached(token, headquarterId!, panelId!, point!, date_after, date_before, indicador, unit, last_by, category)
+export async function consumeGraph({ headquarterId, panelId, date_after = START_DATE, date_before = START_DATE, indicador, unit, last_by, category, point, token }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, indicador?: string, unit?: string, last_by?: string, category?: string, point?: string, token?: string }) {
+  const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/measurement_points/${point}/readings/graph`, baseUrlEnergy)
+
+  if (date_after) url.searchParams.set('date_after', date_after)
+  if (date_before) url.searchParams.set('date_before', date_before)
+  if (indicador) url.searchParams.set('indicador', indicador)
+  if (unit) url.searchParams.set('unit', unit)
+  if (last_by) url.searchParams.set('last_by', last_by)
+  if (category) url.searchParams.set('category', category)
+  if (point) url.searchParams.set('point', point)
+
+  const res = await fetchWithAuthEnergy(`${url.pathname}${url.search}`, {}, token)
+
+  return res
 }
 
 const _consumeExcelCached = unstable_cache(
@@ -76,7 +73,7 @@ const _consumeExcelCached = unstable_cache(
 
     const res = await fetchWithAuthEnergy(`${url.pathname}${url.search}`, {}, token)
 
-    return await res
+    return res
   },
   ['energy-consume-excel'],
   {
