@@ -10,6 +10,7 @@ import FiltersContainer from "@/app/ui/filters/filters-container";
 import RoomSelect from "@/app/ui/filters/room-select";
 import NoResultFound from "@/app/ui/no-result-found";
 import { format } from "date-fns";
+import { Suspense } from "react";
 
 export default async function page({ searchParams }: SearchParams) {
   const authToken = await getToken()
@@ -30,17 +31,23 @@ export default async function page({ searchParams }: SearchParams) {
 
   return (
     <div>
-      <FiltersContainer>
-        <RoomSelect firstRoom={currentFirstRoom} rooms={rooms} />
-        <DatepickerRange />
-      </FiltersContainer>
-      {
-        readings?.count > 0 ? (
-          <TableComponent data={readings.results} count={readings.count} generalRoomData={generalRoomData} indicator={indicator as Indicator} />
-        ) : (
-          <NoResultFound />
-        )
-      }
+      <Suspense fallback={<div>Loading...</div>}>
+
+        <FiltersContainer>
+          <RoomSelect firstRoom={currentFirstRoom} rooms={rooms} />
+          <DatepickerRange />
+        </FiltersContainer>
+      </Suspense>
+      <Suspense fallback={<div>Loading...</div>}>
+
+        {
+          readings?.count > 0 ? (
+            <TableComponent data={readings.results} count={readings.count} generalRoomData={generalRoomData} indicator={indicator as Indicator} />
+          ) : (
+            <NoResultFound />
+          )
+        }
+      </Suspense>
 
     </div>
   )
