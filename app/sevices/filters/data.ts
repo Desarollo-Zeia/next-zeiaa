@@ -74,6 +74,8 @@ const _getHeadquartersAmbientalCached = unstable_cache(
 )
 
 export async function getHeadquartersAmbiental({ token }: { token: string }) {
+  'use cache'
+  cacheLife('minutes')
   return await fetchWithAuthAmbiental('/enterprise/api/ambiental/enterprise/basic/headquearter-list/', {}, token)
 
 }
