@@ -5,12 +5,18 @@ import { RoomList } from "./type"
 import { cacheLife } from "next/cache"
 
 export async function detail() {
+  'use cache'
+  cacheLife('minutes')
   const res = await fetchWithAuth('/enterprise/api/enterprise/detail/')
 
   return res
 }
 
 export async function detailAmbiental() {
+
+  'use cache'
+  cacheLife('minutes')
+
   const res = await fetchWithAuthAmbiental('/enterprise/api/enterprise/detail/')
 
   return res
