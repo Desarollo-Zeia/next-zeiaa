@@ -50,10 +50,7 @@ export function AppSidebar({ module, ...props }: AppSidebarProps) {
     const handleRequest = async () => {
       try {
         const res = await accountDataOcupacional()
-        const { results } = res
-        const user = results[0]
-        const { email, last_name } = user
-        setUserInfo({ email, name: last_name, avatar: '' })
+        setUserInfo({ email: res?.email, name: res.name, avatar: res.acronym })
       } catch (error) {
         console.log(error)
       }
