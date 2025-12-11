@@ -9,6 +9,7 @@ import { Indicator } from "@/app/type";
 import StatusSelect from "@/app/ui/filters/status-select";
 // import { cacheLife } from "next/cache";
 import { getToken } from "@/app/lib/auth";
+import { Suspense } from "react";
 
 type SearchParams = {
   searchParams: Promise<{ [key: string]: string | undefined }>
@@ -33,7 +34,7 @@ type SearchParams = {
 //   return await readingsPeaks({ roomId, indicator, unit, date_after, date_before, page, status, token })
 // }
 
-export default async function page({ searchParams }: SearchParams) {
+async function PicosHistoricos({ searchParams }: SearchParams) {
 
 
   const { room, indicator = 'CO2', unit = 'PPM', date_after = new Date(), date_before = new Date(), page, status } = await searchParams
@@ -61,6 +62,16 @@ export default async function page({ searchParams }: SearchParams) {
         <DatepickerRange />
       </FiltersContainer>
       <TableComponent generalRoomData={generalRoomData} readings={readings} indicator={indicator as Indicator} />
+    </div>
+  )
+}
+
+export default async function Page({ searchParams }: SearchParams) {
+  return (
+    <div>
+      <Suspense fallback={<div>Cargando picos históricos...</div>}>
+        <PicosHistoricos searchParams={searchParams} />
+      </Suspense>
     </div>
   )
 }

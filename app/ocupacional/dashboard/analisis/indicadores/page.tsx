@@ -9,6 +9,7 @@ import RoomSelect from "@/app/ui/filters/room-select";
 import StatusSelect from "@/app/ui/filters/status-select";
 import { TimeRangeSlider } from "@/app/ui/filters/time-range-slider";
 import { format } from "date-fns";
+import { Suspense } from "react";
 // import { cacheLife } from "next/cache";
 
 // async function GetRooms(token: string) {
@@ -30,7 +31,7 @@ import { format } from "date-fns";
 //   return await readingsData({ roomId, indicator, unit, date_after, date_before, page, status, hour_before, hour_after, ordering, token })
 // }
 
-export default async function page({ searchParams }: SearchParams) {
+async function Indicadores({ searchParams }: SearchParams) {
 
   const { room, indicator, unit, date_after = new Date(), date_before = new Date(), page = '1', status, start, end, ordering } = await searchParams
 
@@ -58,6 +59,16 @@ export default async function page({ searchParams }: SearchParams) {
         <DatepickerRange />
       </FiltersContainer>
       <TableComponent generalRoomData={generalRoomData} readings={readings} count={readings.count} indicator={indicator as Indicator} unit={unit as Unit} date_after={formattedDateAfter} date_before={formattedDateBefore} room={currentFirstRoom} />
+    </div>
+  )
+}
+
+export default async function Page({ searchParams }: SearchParams) {
+  return (
+    <div>
+      <Suspense fallback={<div>Cargando indicadores...</div>}>
+        <Indicadores searchParams={searchParams} />
+      </Suspense>
     </div>
   )
 }

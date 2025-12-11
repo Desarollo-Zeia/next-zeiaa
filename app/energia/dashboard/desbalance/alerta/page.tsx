@@ -11,61 +11,40 @@ import FiltersContainer from "@/app/ui/filters/filters-container";
 import MeasurementPointFilter from "@/app/ui/filters/measurement-points-filter";
 import { format } from "date-fns";
 import { ArrowLeft } from "lucide-react";
-// import { cacheLife } from "next/cache";
 import Link from "next/link";
+import { Suspense } from "react";
 
-// async function GetHeadquarters(token: string) {
-//   'use cache'
-//   cacheLife('minutes')
-//   return await getHeadquarters(token)
-// }
-
-// async function GetMeasurementPointsPanels({ token, headquarterId }: { token: string, headquarterId: string }) {
-//   'use cache'
-//   cacheLife('minutes')
-
-//   return await getEnergyMeasurementPointPanels({ headquarterId, token })
-// }
-
-// async function GetMeasurementPoints({ electricalpanelId, token }: { electricalpanelId: string, token: string }) {
-//   'use cache'
-//   cacheLife('minutes')
-
-//   return await getMeasurementPoints({ electricalpanelId, token })
-// }
-
-// async function GetCurrent({ headquarterId, panelId, point, date_after, date_before, page, token, status }: { headquarterId: string, panelId: string, point: string, date_after: string, date_before: string, page: string, token?: string, status?: string }) {
-//   'use cache'
-//   return await current({ headquarterId, panelId, point, date_after, date_before, page, status: 'unbalanced', token })
-// }
-
-// async function GetVoltage({ headquarterId, panelId, point, date_after, date_before, page, status, token }: { headquarterId: string, panelId: string, point: string, date_after: string, date_before: string, page: string, status?: string, token?: string }) {
-//   'use cache'
-//   return await voltage({ headquarterId, panelId, point, date_after, date_before, page, status: 'unbalanced' })
-// }
-
-export default async function page({ searchParams }: SearchParams) {
-
-
-  const { headquarter, panel, point, date_after = new Date(), date_before = new Date(), metric = 'current', page = '1' } = await searchParams
+// Componente que maneja la carga de datos
+async function UnbalanceAlertsContent({ searchParams }: SearchParams) {
+  const {
+    headquarter,
+    panel,
+    point,
+    date_after = new Date(),
+    date_before = new Date(),
+    metric = 'current',
+    page = '1'
+  } = await searchParams
 
   const authToken = await getToken()
 
-
   const headquarters = await getHeadquarters(authToken!)
-
 
   const { results } = headquarters
 
   const firstHeadquarter = headquarter || results[0].id
 
-  const measurementPointsPanels = await getEnergyMeasurementPointPanels({ headquarterId: firstHeadquarter, token: authToken! })
-
+  const measurementPointsPanels = await getEnergyMeasurementPointPanels({
+    headquarterId: firstHeadquarter,
+    token: authToken!
+  })
 
   const firstPanel = panel || measurementPointsPanels?.results[0]?.id.toString()
 
-  const measurementPoints = await getMeasurementPoints({ electricalpanelId: firstPanel, token: authToken! })
-
+  const measurementPoints = await getMeasurementPoints({
+    electricalpanelId: firstPanel,
+    token: authToken!
+  })
 
   const firstPoint = point || measurementPoints?.results[0]?.measurement_points[0].id.toString()
 
@@ -92,13 +71,14 @@ export default async function page({ searchParams }: SearchParams) {
   })
 
   return (
-    <div>
+    <>
       <FiltersContainer>
-        <Link href={'/energia/dashboard/desbalance'}
+        <Link
+          href={'/energia/dashboard/desbalance'}
           className="bg-[#00b0c7] rounded-lg absolute top-1/2 left-6 p-2
             transform -translate-y-1/2 cursor-pointer text-white hover:bg-gray-100 hover:text-black"
         >
-          <ArrowLeft className="h-4 w-4 " />
+          <ArrowLeft className="h-4 w-4" />
         </Link>
         <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} energy={firstHeadquarter} />
         <PanelsFilterEnergy energyPanels={measurementPointsPanels.results} panel={firstPanel} />
@@ -106,7 +86,48 @@ export default async function page({ searchParams }: SearchParams) {
         <DatepickerRange />
       </FiltersContainer>
       <AlertTable readings={metric === 'current' ? currentReadings : voltageReadings} metric={metric} />
-    </div>
+    </>
+  )
+}
 
+// Skeleton de carga
+function UnbalanceAlertsSkeleton() {
+  return (
+    <div className="animate-pulse">
+      {/* Filtros skeleton */}
+      <div className="relative mb-6">
+        <div className="flex gap-4 items-center">
+          <div className="absolute left-6 h-10 w-10 bg-gray-200 rounded-lg"></div>
+          <div className="flex gap-4 w-full ml-20">
+            <div className="h-10 bg-gray-200 rounded flex-1"></div>
+            <div className="h-10 bg-gray-200 rounded flex-1"></div>
+            <div className="h-10 bg-gray-200 rounded flex-1"></div>
+            <div className="h-10 bg-gray-200 rounded flex-1"></div>
+          </div>
+        </div>
+      </div>
+
+      {/* Tabla skeleton */}
+      <div className="space-y-4">
+        <div className="h-12 bg-gray-200 rounded"></div>
+        <div className="space-y-2">
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="h-16 bg-gray-200 rounded"></div>
+          ))}
+        </div>
+        <div className="h-10 bg-gray-200 rounded w-64 mx-auto"></div>
+      </div>
+    </div>
+  )
+}
+
+// Componente de página principal
+export default function Page({ searchParams }: SearchParams) {
+  return (
+    <div>
+      <Suspense fallback={<UnbalanceAlertsSkeleton />}>
+        <UnbalanceAlertsContent searchParams={searchParams} />
+      </Suspense>
+    </div>
   )
 }

@@ -14,6 +14,7 @@ import { getMeasurementPoints } from "@/app/sevices/filters/data"
 import MeasurementPointFilter from "@/app/ui/filters/measurement-points-filter"
 // import { cacheLife } from "next/cache"
 import { getToken } from "@/app/lib/auth"
+import { Suspense } from "react"
 
 // async function GetHeadquarters(token: string) {
 //   'use cache'
@@ -33,7 +34,7 @@ import { getToken } from "@/app/lib/auth"
 
 
 
-export default async function Page({ searchParams }: SearchParams) {
+async function HomeContent({ searchParams }: SearchParams) {
   // const { companies } = await getCompanyData()
 
   const { headquarter, panel, date_after = new Date(), date_before = new Date(), unit = 'V', indicator = 'P', page = '1', last_by = 'minute', category = 'power', point } = await searchParams
@@ -96,6 +97,17 @@ export default async function Page({ searchParams }: SearchParams) {
         <MeasurementTable readings={readings} category={category} indicator={indicator} />
         <Graph readingsGraph={readingsGraph} category={category} indicator={indicator} last_by={last_by} readings={readings} />
       </div>
+    </div>
+  )
+}
+
+
+export default async function page({ searchParams }: SearchParams) {
+  return (
+    <div>
+      <Suspense fallback={<div>Cargando...</div>}>
+        <HomeContent searchParams={searchParams} />
+      </Suspense>
     </div>
   )
 }

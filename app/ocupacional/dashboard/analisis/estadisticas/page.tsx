@@ -10,6 +10,7 @@ import FiltersContainer from "@/app/ui/filters/filters-container";
 import { ReadingsChart } from "@/components/chart-statistics";
 import { format } from "date-fns"
 import { cacheLife } from "next/cache";
+import { Suspense } from "react";
 // import { cacheLife } from "next/cache";
 
 // async function GetRooms(token: string) {
@@ -31,7 +32,7 @@ import { cacheLife } from "next/cache";
 //   return await readingsGraph({ roomId, indicator, unit, date_after, date_before, hour_before, hour_after, token })
 // }
 
-export default async function page({ searchParams }: SearchParams) {
+async function Estadisticas({ searchParams }: SearchParams) {
   // const { first_room: firstRoom } = await detail()
   const { room, indicator = 'CO2', unit = 'PPM', date_after = new Date(), date_before = new Date(), start = '00:00', end = '23:00' } = await searchParams
 
@@ -68,6 +69,16 @@ export default async function page({ searchParams }: SearchParams) {
     <div className="flex mx-2 justify-center gap-4">
 
       <ReadingsChart indicator={indicator as 'CO2' | 'HUMIDITY' | 'TEMPERATURE'} unit={unit} roomsData={readings} indicators={indicators} />
+    </div>
+  )
+}
+
+export default async function Page({ searchParams }: SearchParams) {
+  return (
+    <div>
+      <Suspense fallback={<div>Cargando estadísticas...</div>}>
+        <Estadisticas searchParams={searchParams} />
+      </Suspense>
     </div>
   )
 }

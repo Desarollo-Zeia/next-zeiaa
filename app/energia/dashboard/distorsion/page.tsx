@@ -18,8 +18,9 @@ import { Button } from '@/components/ui/button'
 import { format } from 'date-fns'
 import { Eye } from 'lucide-react'
 import Link from 'next/link'
+import { Suspense } from 'react'
 
-export default async function page({ searchParams }: SearchParams) {
+async function DistorsionContent({ searchParams }: SearchParams) {
 
   const { headquarter, panel = '1', date_after = new Date(), date_before = new Date(), data_type = 'current' } = await searchParams
 
@@ -92,3 +93,14 @@ export default async function page({ searchParams }: SearchParams) {
     </div>
   )
 }
+
+export default async function page({ searchParams }: SearchParams) {
+  return (
+    <div>
+      <Suspense fallback={<div>Cargando...</div>}>
+        <DistorsionContent searchParams={searchParams} />
+      </Suspense>
+    </div>
+  )
+}
+

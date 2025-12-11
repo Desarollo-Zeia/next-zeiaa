@@ -9,6 +9,7 @@ import FiltersContainer from "@/app/ui/filters/filters-container";
 import RoomSelect from "@/app/ui/filters/room-select";
 // import StatusSelect from "@/app/ui/filters/status-select";
 import { format } from "date-fns";
+import { Suspense } from "react";
 // import { cacheLife } from "next/cache";
 
 // async function GetRooms(token: string) {
@@ -30,7 +31,7 @@ import { format } from "date-fns";
 //   return await alerts({ roomId, indicator, unit, date_after, date_before, page, status, token })
 // }
 
-export default async function page({ searchParams }: SearchParams) {
+async function Alertas({ searchParams }: SearchParams) {
 
 
   const { room, indicator = 'CO2', unit = 'PPM', date_after = new Date(), date_before = new Date(), page = '1', status } = await searchParams
@@ -63,3 +64,14 @@ export default async function page({ searchParams }: SearchParams) {
     </div>
   )
 }
+
+export default async function Page({ searchParams }: SearchParams) {
+  return (
+    <div>
+      <Suspense fallback={<div>Cargando alertas...</div>}>
+        <Alertas searchParams={searchParams} />
+      </Suspense>
+    </div>
+  )
+}
+

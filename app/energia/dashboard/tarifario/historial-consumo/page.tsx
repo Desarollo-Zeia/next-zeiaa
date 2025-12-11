@@ -14,7 +14,7 @@ import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 import React from 'react'
 
-export default async function page({ searchParams }: SearchParams) {
+async function TarifarioHistorialConsumo({ searchParams }: SearchParams) {
 
   const { headquarter, panel = '1', date_after = new Date(), date_before = new Date(), page = '1', group_by = 'day' } = await searchParams
 
@@ -70,6 +70,16 @@ export default async function page({ searchParams }: SearchParams) {
         <ConsumptionTable consumptionTableReadings={consumptionTableReadings} />
         <HistoricalCosumption group_by={group_by} consumptionGraphReadings={consumptionGraphReadings} />
       </section>
+    </div>
+  )
+}
+
+export default async function page({ searchParams }: SearchParams) {
+  return (
+    <div>
+      <React.Suspense fallback={<div>Cargando...</div>}>
+        <TarifarioHistorialConsumo searchParams={searchParams} />
+      </React.Suspense>
     </div>
   )
 }

@@ -16,8 +16,9 @@ import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import DownloadExcelDistorsion from "./download-excel-distorsion"
 import { getToken } from "@/app/lib/auth"
+import { Suspense } from "react"
 
-export default async function page({ searchParams }: SearchParams) {
+async function DistorsionContentDetail({ searchParams }: SearchParams) {
 
     const { headquarter = '1', panel = '1', date_after = new Date(), date_before = new Date(), data_type = 'current', page = '1' } = await searchParams
 
@@ -66,6 +67,16 @@ export default async function page({ searchParams }: SearchParams) {
                 </div>
             </Card>
 
+        </div>
+    )
+}
+
+export default async function page({ searchParams }: SearchParams) {
+    return (
+        <div>
+            <Suspense fallback={<div>Cargando...</div>}>
+                <DistorsionContentDetail searchParams={searchParams} />
+            </Suspense>
         </div>
     )
 }

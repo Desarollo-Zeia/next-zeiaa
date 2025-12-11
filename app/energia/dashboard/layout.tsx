@@ -3,7 +3,7 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/s
 import { AppSidebar } from "@/app/ui/sidebar/app-siderbar";
 
 
-export default function Layout({ children } : { children: React.ReactNode}) {
+export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -13,7 +13,7 @@ export default function Layout({ children } : { children: React.ReactNode}) {
             <SidebarTrigger className="-ml-1" />
           </div>
         </header>
-        { children }
+        {children}
       </SidebarInset>
     </SidebarProvider>
   )

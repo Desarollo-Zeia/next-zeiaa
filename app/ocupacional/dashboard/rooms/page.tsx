@@ -9,6 +9,7 @@ import HeadquarterSelect from '@/app/ui/filters/headquarter-select'
 import { getHeadquartersOcupacional } from '@/app/sevices/filters/data'
 import { SearchParams } from '@/app/type'
 import { getToken } from '@/app/lib/auth'
+import { Suspense } from 'react'
 // import { cacheLife } from 'next/cache'
 // import StatusSelect from '@/app/ui/filters/status-select'
 
@@ -31,7 +32,7 @@ interface Room {
 // }
 
 
-export default async function page({ searchParams }: SearchParams) {
+async function Rooms({ searchParams }: SearchParams) {
 
 
   const { search, status, headquarter, page, limit, offset } = await searchParams
@@ -73,6 +74,16 @@ export default async function page({ searchParams }: SearchParams) {
         )
       }
       {getRoomsList?.count > 0 && <PaginationComponent count={getRoomsList?.count} itemsPerPage={10} />}
+    </div>
+  )
+}
+
+export default async function Page({ searchParams }: SearchParams) {
+  return (
+    <div>
+      <Suspense fallback={<div>Cargando salas...</div>}>
+        <Rooms searchParams={searchParams} />
+      </Suspense>
     </div>
   )
 }

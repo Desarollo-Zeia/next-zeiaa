@@ -11,6 +11,7 @@ import PowerUsageChart from "@/app/ui/energia/monitoreo/power-dashboard";
 import { DatepickerRange } from "@/app/ui/filters/datepicker-range";
 import FiltersContainer from "@/app/ui/filters/filters-container";
 import { format } from "date-fns";
+import { Suspense } from "react";
 // import { cacheLife } from "next/cache";
 
 // async function GetHeadquarters(token: string) {
@@ -31,7 +32,7 @@ import { format } from "date-fns";
 //   return await monitoringLastThree({ headquarterId, token })
 // }
 
-export default async function page({ searchParams }: SearchParams) {
+async function MonitoreoContent({ searchParams }: SearchParams) {
 
   const { headquarter, panel = '1', date_after = new Date(), date_before = new Date(), group_by = 'minute' } = await searchParams
 
@@ -78,6 +79,16 @@ export default async function page({ searchParams }: SearchParams) {
           <ExcessPower excessPowerData={monitoringLastThreeReadings} panel={electrical_panels[0]} powers={results[0].powers} />
         </div>
       </div>
+    </div>
+  )
+}
+
+export default async function page({ searchParams }: SearchParams) {
+  return (
+    <div>
+      <Suspense fallback={<div>Cargando...</div>}>
+        <MonitoreoContent searchParams={searchParams} />
+      </Suspense>
     </div>
   )
 }
