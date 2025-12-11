@@ -11,9 +11,8 @@ import MeasurementPointFilter from '@/app/ui/filters/measurement-points-filter'
 import MonthFilter from '@/app/ui/filters/month-filter'
 import PeriodPickerFilter from '@/app/ui/filters/period-picker-filter'
 import { format } from 'date-fns'
-import React from 'react'
+import React, { Suspense } from 'react'
 import TodayAlertBanner from '@/app/ui/energia/panel/today-alert-banner'
-import { cacheLife } from 'next/cache'
 import { getToken } from '@/app/lib/auth'
 
 const monthDateRanges: { [key: number]: string } = {
@@ -31,43 +30,20 @@ const monthDateRanges: { [key: number]: string } = {
   12: "2025-12-01:2025-12-31",
 }
 
-// async function GetHeadquarters(token: string) {
-//   'use cache'
-//   cacheLife('hours')
-//   return await getHeadquarters(token)
-// }
-
-// async function GetMeasurementPointsPanels({ token, headquarterId }: { token: string, headquarterId: string }) {
-//   'use cache'
-//   return await getEnergyMeasurementPointPanels({ headquarterId, token })
-// }
-
-// async function GetMeasurementPoints({ electricalpanelId, token }: { electricalpanelId: string, token: string }) {
-//   'use cache'
-//   return await getMeasurementPoints({ electricalpanelId, token })
-// }
-
-// async function GetDashboardTable({ headquarterId, date_after, date_before, unit, page, category, point, token }: { headquarterId: string, date_after?: string, date_before?: string, unit?: string, page?: string, category?: string, point?: string, token: string }) {
-//   'use cache'
-//   cacheLife('minutes')
-//   return await dashboardTable({ headquarterId, date_after, date_before, unit, page, category, point, token })
-// }
-
-
-// async function GetPorcentageGraph({ headquarterId, this_week, this_month, date_after, date_before, token }: { headquarterId: string, this_week?: string, this_month?: string, date_after?: string, date_before?: string, token: string }) {
-//   'use cache'
-//   return await porcentageGraph({ headquarterId, this_week, this_month, date_after, date_before, token })
-// }
-
-// async function GetConsumeGraph({ date_after, date_before, headquarterId, indicador, panelId, point, category, unit, last_by, weekday, token }: { date_after?: string, date_before?: string, headquarterId: string, indicador: string, panelId: string, point: string, category?: string, unit?: string, last_by: string, weekday: string, token: string }) {
-//   'use cache'
-//   cacheLife('minutes')
-//   return await consumeGraph({ date_after, date_before, headquarterId, indicador, panelId, point, category, unit, last_by, weekday, token })
-// }
-
-export default async function page({ searchParams }: SearchParams) {
-
-  const { headquarter, panel, point, weekday = '1,2,3,4,5', date_start, date_end, date_after, date_before, this_month, this_week } = await searchParams
+// Componente que maneja la carga de datos
+async function DashboardContent({ searchParams }: SearchParams) {
+  const {
+    headquarter,
+    panel,
+    point,
+    weekday = '1,2,3,4,5',
+    date_start,
+    date_end,
+    date_after,
+    date_before,
+    this_month,
+    this_week
+  } = await searchParams
 
   const authToken = await getToken()
 
@@ -85,23 +61,39 @@ export default async function page({ searchParams }: SearchParams) {
   const { results } = headquarters
   const firstHeadquarter = headquarter || results[0].id.toString()
 
-  const measurementPointsPanels = await getEnergyMeasurementPointPanels({ headquarterId: firstHeadquarter, token: authToken! })
+  const measurementPointsPanels = await getEnergyMeasurementPointPanels({
+    headquarterId: firstHeadquarter,
+    token: authToken!
+  })
 
   const firstPanel = panel || measurementPointsPanels?.results[0]?.id.toString()
 
-  const measurementPoints = await getMeasurementPoints({ electricalpanelId: firstPanel, token: authToken! })
-
+  const measurementPoints = await getMeasurementPoints({
+    electricalpanelId: firstPanel,
+    token: authToken!
+  })
 
   const firstPoint = point || measurementPoints?.results[0]?.measurement_points[0].id.toString()
 
-
-  const dashboardTableReadings = await dashboardTable({ headquarterId: firstHeadquarter, token: authToken!, date_after: formattedDateAfter, date_before: formattedDateBefore, point: firstPoint, page: '1' })
+  const dashboardTableReadings = await dashboardTable({
+    headquarterId: firstHeadquarter,
+    token: authToken!,
+    date_after: formattedDateAfter,
+    date_before: formattedDateBefore,
+    point: firstPoint,
+    page: '1'
+  })
 
   const alertToday = await lastAlertToday(authToken!)
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-
-  const dashboardPorcentageGraph = await porcentageGraph({ headquarterId: firstHeadquarter, this_month, this_week, date_after: formattedDateAfter, date_before: formattedDateBefore, token: authToken! })
+  const dashboardPorcentageGraph = await porcentageGraph({
+    headquarterId: firstHeadquarter,
+    this_month,
+    this_week,
+    date_after: formattedDateAfter,
+    date_before: formattedDateBefore,
+    token: authToken!
+  })
 
   const consumeGraphReadings = await consumeGraph({
     date_after: start,
@@ -110,18 +102,18 @@ export default async function page({ searchParams }: SearchParams) {
     indicador: 'EPpos',
     panelId: firstPanel,
     point: firstPoint,
-    // category,
-    // unit,
     last_by: 'day',
     weekday,
     token: authToken!
   })
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const thresholds = measurementPoints?.results[0]?.measurement_points.find((mp: any) => mp.id === Number(firstPoint))?.energy_thresholds?.thresholds_values
+  const thresholds = measurementPoints?.results[0]?.measurement_points.find((mp: any) =>
+    mp.id === Number(firstPoint)
+  )?.energy_thresholds?.thresholds_values
 
   return (
-    <div className="relative p-6 flex flex-col justify-center gap-8">
+    <>
       <FiltersContainer>
         <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} energy={firstHeadquarter} />
       </FiltersContainer>
@@ -152,6 +144,54 @@ export default async function page({ searchParams }: SearchParams) {
           <BarChart readingsGraph={consumeGraphReadings} weekday={weekday} thresholds={thresholds} />
         </div>
       </div>
+    </>
+  )
+}
+
+// Skeleton de carga
+function DashboardSkeleton() {
+  return (
+    <div className="relative p-6 flex flex-col justify-center gap-8">
+      {/* Filtros skeleton */}
+      <div className="h-12 bg-gray-200 rounded animate-pulse"></div>
+
+      {/* Banner de alerta skeleton */}
+      <div className="h-16 bg-gray-200 rounded animate-pulse"></div>
+
+      {/* Gráficos y tabla skeleton */}
+      <div className='w-full flex gap-8 justify-between'>
+        <div className="flex-1 h-64 bg-gray-200 rounded animate-pulse"></div>
+        <div className="flex-1 h-64 bg-gray-200 rounded animate-pulse"></div>
+      </div>
+
+      {/* Gráfico de barras skeleton */}
+      <div className='w-full'>
+        <div className='flex justify-between gap-4 mb-4'>
+          <div className='flex flex-col gap-2'>
+            <div className="h-6 w-64 bg-gray-200 rounded animate-pulse"></div>
+            <div className="h-4 w-80 bg-gray-200 rounded animate-pulse"></div>
+          </div>
+          <div className='flex flex-col gap-4 px-4'>
+            <div className="h-10 w-40 bg-gray-200 rounded animate-pulse"></div>
+            <div className='flex gap-4'>
+              <div className="h-10 w-32 bg-gray-200 rounded animate-pulse"></div>
+              <div className="h-10 w-48 bg-gray-200 rounded animate-pulse"></div>
+            </div>
+          </div>
+        </div>
+        <div className='w-[80%] h-[740px] bg-gray-200 rounded animate-pulse m-auto'></div>
+      </div>
+    </div>
+  )
+}
+
+// Componente de página principal
+export default function Page({ searchParams }: SearchParams) {
+  return (
+    <div className="relative p-6 flex flex-col justify-center gap-8">
+      <Suspense fallback={<DashboardSkeleton />}>
+        <DashboardContent searchParams={searchParams} />
+      </Suspense>
     </div>
   )
 }

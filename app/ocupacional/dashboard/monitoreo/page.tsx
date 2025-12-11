@@ -7,6 +7,7 @@ import FiltersContainer from "@/app/ui/filters/filters-container"
 import RoomSelect from "@/app/ui/filters/room-select"
 import ChartComponent from "@/app/ui/monitoreo/chart"
 import TableComponent from "@/app/ui/monitoreo/table"
+import { Suspense } from "react"
 // import { cacheLife } from "next/cache"
 
 type Result = {
@@ -61,7 +62,7 @@ interface Room {
 
 // --- Componente Principal ---
 
-export default async function Page({ searchParams }: SearchParams) {
+async function Monitoreo({ searchParams }: SearchParams) {
   const { room, indicator = 'CO2', unit = 'PPM' } = await searchParams
 
   const authToken = await getToken()
@@ -120,6 +121,16 @@ export default async function Page({ searchParams }: SearchParams) {
           thresholds={generalRoomData?.thresholds}
         />
       </div>
+    </div>
+  )
+}
+
+export default async function Page({ searchParams }: SearchParams) {
+  return (
+    <div>
+      <Suspense fallback={<div>Cargando datos de monitoreo...</div>}>
+        <Monitoreo searchParams={searchParams} />
+      </Suspense>
     </div>
   )
 }

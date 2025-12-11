@@ -13,6 +13,7 @@ import { DatepickerRange } from "@/app/ui/filters/datepicker-range";
 import FiltersContainer from "@/app/ui/filters/filters-container";
 import MeasurementPointFilter from "@/app/ui/filters/measurement-points-filter";
 import { format } from "date-fns";
+import { Suspense } from "react";
 // import { cacheLife } from "next/cache";
 
 // async function GetHeadquarters(token: string) {
@@ -46,7 +47,7 @@ import { format } from "date-fns";
 //   return await voltageGraph({ headquarterId, panelId, point, date_after, date_before, token })
 // }
 
-export default async function page({ searchParams }: SearchParams) {
+async function DesbalancedDashboardContent({ searchParams }: SearchParams) {
 
   const { headquarter, panel, point, date_after = new Date(), date_before = new Date(), metric = 'current' } = await searchParams
 
@@ -100,6 +101,17 @@ export default async function page({ searchParams }: SearchParams) {
           </div>
         </div>
       </div>
+    </div>
+  )
+}
+
+export default async function page({ searchParams }: SearchParams) {
+  return (
+    <div>
+      <Suspense fallback={<div>Cargando...</div>}>
+
+        <DesbalancedDashboardContent searchParams={searchParams} />
+      </Suspense>
     </div>
   )
 }

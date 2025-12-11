@@ -1,13 +1,16 @@
 import { getToken } from "@/app/lib/auth";
 import { getRooms } from "@/app/sevices/filters/data";
 import { readingsGraph, readingsReal, roomGeneralData } from "@/app/sevices/readings/data";
-import { Indicator, SearchParams, Unit } from "@/app/type";
-import { ChartComponent } from "@/app/ui/analisis/estadisticas/chart";
+import { SearchParams } from "@/app/type";
+// import { ChartComponent } from "@/app/ui/analisis/estadisticas/chart";
 import { DatepickerRange } from "@/app/ui/filters/datepicker-range";
 import FiltersContainer from "@/app/ui/filters/filters-container";
-import RoomSelect from "@/app/ui/filters/room-select";
-import { HumidityChart } from "@/components/chart-statistics";
+// import IndicatorToggle from "@/app/ui/filters/indicators-toggle";
+// import RoomSelect from "@/app/ui/filters/room-select";
+import { ReadingsChart } from "@/components/chart-statistics";
 import { format } from "date-fns"
+import { cacheLife } from "next/cache";
+import { Suspense } from "react";
 // import { cacheLife } from "next/cache";
 
 // async function GetRooms(token: string) {
@@ -29,10 +32,11 @@ import { format } from "date-fns"
 //   return await readingsGraph({ roomId, indicator, unit, date_after, date_before, hour_before, hour_after, token })
 // }
 
-export default async function page({ searchParams }: SearchParams) {
+async function Estadisticas({ searchParams }: SearchParams) {
   // const { first_room: firstRoom } = await detail()
-
   const { room, indicator = 'CO2', unit = 'PPM', date_after = new Date(), date_before = new Date(), start = '00:00', end = '23:00' } = await searchParams
+
+
 
   const authToken = await getToken()
 
@@ -44,21 +48,37 @@ export default async function page({ searchParams }: SearchParams) {
   const firstRoom = rooms.find((room: any) => room.is_activated === true)  // eslint-disable-line @typescript-eslint/no-explicit-any
   const currentFirstRoom = room ? room : firstRoom.id
 
-  const readings = await readingsReal({ indicator, unit, date_after: formattedDateAfter, date_before: formattedDateBefore, hour_before: start, hour_after: end, token: authToken!, roomId: currentFirstRoom })
-  const generalRoomData = await roomGeneralData({ roomId: currentFirstRoom, token: authToken! })
+  const readings = await readingsGraph({ indicator, unit, date_after: formattedDateAfter, date_before: formattedDateBefore, hour_before: start, hour_after: end, token: authToken!, roomId: currentFirstRoom })
 
-  console.log('readings', readings)
-
-
+  const indicators = [
+    {
+      indicator: 'CO2',
+      unit: 'PPM'
+    },
+    {
+      indicator: 'HUMIDITY',
+      unit: 'PERCEN',
+    },
+    {
+      indicator: 'TEMPERATURE',
+      unit: 'CELSIUS',
+    }
+  ]
 
   return (
+    <div className="flex mx-2 justify-center gap-4">
+
+      <ReadingsChart indicator={indicator as 'CO2' | 'HUMIDITY' | 'TEMPERATURE'} unit={unit} roomsData={readings} indicators={indicators} />
+    </div>
+  )
+}
+
+export default async function Page({ searchParams }: SearchParams) {
+  return (
     <div>
-      <FiltersContainer>
-        <RoomSelect firstRoom={currentFirstRoom} rooms={rooms} />
-        <DatepickerRange />
-      </FiltersContainer>
-      <ChartComponent readings={readings} indicator={indicator as Indicator} unit={unit as Unit} generalRoomData={generalRoomData} start={start} end={end} />
-      {/* <HumidityChart /> */}
+      <Suspense fallback={<div>Cargando estadísticas...</div>}>
+        <Estadisticas searchParams={searchParams} />
+      </Suspense>
     </div>
   )
 }

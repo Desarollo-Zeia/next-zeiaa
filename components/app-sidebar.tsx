@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/sidebar"
 import Image from "next/image"
 import ZeiaLogo from '@/public/logozeia.png'
+import { useState, useEffect } from "react"
+import { accountDataOcupacional } from "@/app/utils/account"
 
 type UserData = {
   name?: string,
@@ -25,7 +27,6 @@ type UserData = {
 
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
-  userData: UserData;
   module: {
     rooms: string,
     monitoreo: string,
@@ -39,21 +40,34 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
     }
   } // Agrega userdata aquí
 }
-export function AppSidebar({ module, userData, ...props }: AppSidebarProps) {
+export function AppSidebar({ module, ...props }: AppSidebarProps) {
 
-  const { name, acronym: email, logo: avatar } = userData
+  const [userInfo, setUserInfo] = useState<object>({ email: '', name: '', avatar: '' })
 
-  const userinfo = {
-    name: name || "",
-    email: email || "",
-    avatar: avatar || "",
-  }
+
+  useEffect(() => {
+
+    const handleRequest = async () => {
+      try {
+        const res = await accountDataOcupacional()
+        const { results } = res
+        const user = results[0]
+        const { email, last_name } = user
+        setUserInfo({ email, name: last_name, avatar: '' })
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    handleRequest()
+
+  }, [])
+
 
   return (
     <Sidebar collapsible="icon" {...props} >
       <SidebarHeader>
         {/* <TeamSwitcher teams={data.teams} /> */}
-        <NavUser userinfo={userinfo} />
+        <NavUser userinfo={userInfo} />
       </SidebarHeader>
       <SidebarContent>
         <NavMain module={module} />

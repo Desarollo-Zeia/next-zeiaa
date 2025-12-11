@@ -33,7 +33,7 @@ Chart.register(Colors, annotationPlugin, zoomPlugin)
 type Readings = Record<string, Omit<Measurement, 'date'>[]>;
 
 type ChartComponentProps = {
-  readings: Readings,
+  readings: any, // eslint-disable-line @typescript-eslint/no-explicit-any
   generalRoomData: GeneralRoomData,
   indicator: Indicator,
   unit: Unit,

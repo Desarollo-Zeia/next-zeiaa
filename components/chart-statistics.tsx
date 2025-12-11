@@ -1,122 +1,69 @@
 "use client"
 
-import { useState } from "react"
-import {
-  Line,
-  LineChart,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  Legend,
-  ReferenceLine,
-} from "recharts"
+import { useState, useMemo } from "react"
+import { Line, LineChart, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, ReferenceLine } from "recharts"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
+import { Checkbox } from "@/components/ui/checkbox"
+import IndicatorToggle from "@/app/ui/filters/indicators-toggle"
+import { DatepickerRange } from "@/app/ui/filters/datepicker-range"
 
-const roomsData = [
-  {
-    room_id: 325,
-    room_name: "Ducto resonador magnético",
-    thresholds: {
-      co2: { good: 800.0, moderate: 1000.0, unhealthy: 1500.0, dangerous: 2500.0 },
-      temperature: { min: 15.0, max: 21.0 },
-      humidity: { min: 30.0, max: 60.0, unit: "%" },
-    },
-    readings: [
-      { hour: "08:05", indicator: "HUMIDITY", value: 45.2, status: "GOOD" },
-      { hour: "08:37", indicator: "HUMIDITY", value: 48.8, status: "GOOD" },
-      { hour: "09:12", indicator: "HUMIDITY", value: 52.1, status: "GOOD" },
-      { hour: "09:45", indicator: "HUMIDITY", value: 55.5, status: "GOOD" },
-      { hour: "10:08", indicator: "HUMIDITY", value: 58.2, status: "GOOD" },
-      { hour: "10:33", indicator: "HUMIDITY", value: 62.8, status: "HUMIDITY_MAX" },
-      { hour: "11:02", indicator: "HUMIDITY", value: 67.0, status: "HUMIDITY_MAX" },
-      { hour: "11:28", indicator: "HUMIDITY", value: 72.5, status: "HUMIDITY_MAX" },
-      { hour: "12:15", indicator: "HUMIDITY", value: 71.0, status: "HUMIDITY_MAX" },
-      { hour: "12:42", indicator: "HUMIDITY", value: 68.3, status: "HUMIDITY_MAX" },
-      { hour: "13:05", indicator: "HUMIDITY", value: 64.5, status: "HUMIDITY_MAX" },
-      { hour: "13:38", indicator: "HUMIDITY", value: 61.8, status: "HUMIDITY_MAX" },
-      { hour: "14:10", indicator: "HUMIDITY", value: 58.2, status: "GOOD" },
-      { hour: "14:45", indicator: "HUMIDITY", value: 55.5, status: "GOOD" },
-      { hour: "15:18", indicator: "HUMIDITY", value: 53.2, status: "GOOD" },
-      { hour: "15:50", indicator: "HUMIDITY", value: 50.1, status: "GOOD" },
-      { hour: "16:22", indicator: "HUMIDITY", value: 48.9, status: "GOOD" },
-      { hour: "16:55", indicator: "HUMIDITY", value: 47.4, status: "GOOD" },
-      { hour: "17:30", indicator: "HUMIDITY", value: 46.0, status: "GOOD" },
-      { hour: "18:05", indicator: "HUMIDITY", value: 44.8, status: "GOOD" },
-    ],
-  },
-  {
-    room_id: 326,
-    room_name: "Sala de Operaciones 1",
-    thresholds: {
-      co2: { good: 800.0, moderate: 1000.0, unhealthy: 1500.0, dangerous: 2500.0 },
-      temperature: { min: 18.0, max: 24.0 },
-      humidity: { min: 40.0, max: 70.0, unit: "%" },
-    },
-    readings: [
-      { hour: "08:00", indicator: "HUMIDITY", value: 56.5, status: "GOOD" },
-      { hour: "08:30", indicator: "HUMIDITY", value: 54.5, status: "GOOD" },
-      { hour: "09:00", indicator: "HUMIDITY", value: 52.0, status: "GOOD" },
-      { hour: "09:30", indicator: "HUMIDITY", value: 50.5, status: "GOOD" },
-      { hour: "10:00", indicator: "HUMIDITY", value: 53.2, status: "GOOD" },
-      { hour: "10:30", indicator: "HUMIDITY", value: 58.8, status: "GOOD" },
-      { hour: "11:00", indicator: "HUMIDITY", value: 63.0, status: "GOOD" },
-      { hour: "11:30", indicator: "HUMIDITY", value: 68.5, status: "GOOD" },
-      { hour: "12:00", indicator: "HUMIDITY", value: 74.0, status: "HUMIDITY_MAX" },
-      { hour: "12:30", indicator: "HUMIDITY", value: 78.3, status: "HUMIDITY_MAX" },
-      { hour: "13:00", indicator: "HUMIDITY", value: 75.5, status: "HUMIDITY_MAX" },
-      { hour: "13:30", indicator: "HUMIDITY", value: 71.8, status: "HUMIDITY_MAX" },
-      { hour: "14:00", indicator: "HUMIDITY", value: 68.2, status: "GOOD" },
-      { hour: "14:30", indicator: "HUMIDITY", value: 65.5, status: "GOOD" },
-      { hour: "15:00", indicator: "HUMIDITY", value: 62.2, status: "GOOD" },
-      { hour: "15:30", indicator: "HUMIDITY", value: 59.1, status: "GOOD" },
-      { hour: "16:00", indicator: "HUMIDITY", value: 56.9, status: "GOOD" },
-      { hour: "16:30", indicator: "HUMIDITY", value: 54.4, status: "GOOD" },
-      { hour: "17:00", indicator: "HUMIDITY", value: 52.0, status: "GOOD" },
-      { hour: "17:30", indicator: "HUMIDITY", value: 50.8, status: "GOOD" },
-      { hour: "18:00", indicator: "HUMIDITY", value: 49.5, status: "GOOD" },
-    ],
-  },
-  {
-    room_id: 327,
-    room_name: "UCI Pediátrica",
-    thresholds: {
-      co2: { good: 700.0, moderate: 900.0, unhealthy: 1200.0, dangerous: 2000.0 },
-      temperature: { min: 20.0, max: 26.0 },
-      humidity: { min: 35.0, max: 55.0, unit: "%" },
-    },
-    readings: [
-      { hour: "08:10", indicator: "HUMIDITY", value: 38.5, status: "GOOD" },
-      { hour: "08:42", indicator: "HUMIDITY", value: 40.5, status: "GOOD" },
-      { hour: "09:15", indicator: "HUMIDITY", value: 43.0, status: "GOOD" },
-      { hour: "09:48", indicator: "HUMIDITY", value: 46.5, status: "GOOD" },
-      { hour: "10:20", indicator: "HUMIDITY", value: 50.2, status: "GOOD" },
-      { hour: "10:52", indicator: "HUMIDITY", value: 54.8, status: "GOOD" },
-      { hour: "11:25", indicator: "HUMIDITY", value: 58.0, status: "HUMIDITY_MAX" },
-      { hour: "11:58", indicator: "HUMIDITY", value: 55.5, status: "HUMIDITY_MAX" },
-      { hour: "12:30", indicator: "HUMIDITY", value: 52.0, status: "GOOD" },
-      { hour: "13:02", indicator: "HUMIDITY", value: 49.3, status: "GOOD" },
-      { hour: "13:35", indicator: "HUMIDITY", value: 47.5, status: "GOOD" },
-      { hour: "14:08", indicator: "HUMIDITY", value: 45.8, status: "GOOD" },
-      { hour: "14:40", indicator: "HUMIDITY", value: 48.2, status: "GOOD" },
-      { hour: "15:12", indicator: "HUMIDITY", value: 51.5, status: "GOOD" },
-      { hour: "15:45", indicator: "HUMIDITY", value: 53.2, status: "GOOD" },
-      { hour: "16:18", indicator: "HUMIDITY", value: 50.1, status: "GOOD" },
-      { hour: "16:50", indicator: "HUMIDITY", value: 47.9, status: "GOOD" },
-      { hour: "17:22", indicator: "HUMIDITY", value: 45.4, status: "GOOD" },
-      { hour: "17:55", indicator: "HUMIDITY", value: 43.0, status: "GOOD" },
-      { hour: "18:28", indicator: "HUMIDITY", value: 41.8, status: "GOOD" },
-    ],
-  },
+type CO2Thresholds = { good: number; moderate: number; unhealthy: number; dangerous: number }
+type MinMaxThresholds = { min: number; max: number }
+type IndicatorType = "CO2" | "TEMPERATURE" | "HUMIDITY"
+
+interface Reading {
+  room_id: number
+  date: string
+  hour: string
+  indicator: IndicatorType
+  unit: string
+  value: number
+  status: string
+}
+
+interface RoomData {
+  room_id: number
+  room_name: string
+  thresholds: {
+    co2: CO2Thresholds
+    temperature: MinMaxThresholds
+    humidity: MinMaxThresholds
+  }
+  readings: Reading[]
+}
+
+interface ReadingsChartProps {
+  roomsData: RoomData[]
+  indicator: IndicatorType
+  unit: string
+  title?: string
+  description?: string
+  indicators: Array<{ indicator: string; unit: string }>
+}
+
+const indicatorConfig: Record<IndicatorType, { label: string; defaultUnit: string }> = {
+  CO2: { label: "CO2", defaultUnit: "PPM" },
+  TEMPERATURE: { label: "Temperatura", defaultUnit: "°C" },
+  HUMIDITY: { label: "Humedad", defaultUnit: "%" },
+}
+
+const colorPalette = [
+  "#3b82f6",
+  "#10b981",
+  "#f59e0b",
+  "#8b5cf6",
+  "#ef4444",
+  "#06b6d4",
+  "#ec4899",
+  "#84cc16",
+  "#6366f1",
+  "#14b8a6",
 ]
 
-const roomColors: Record<number, string> = {
-  325: "#3b82f6", // azul
-  326: "#10b981", // esmeralda
-  327: "#f59e0b", // ámbar
+function getRoomColor(index: number): string {
+  return colorPalette[index % colorPalette.length]
 }
 
 function timeToMinutes(time: string): number {
@@ -124,25 +71,66 @@ function timeToMinutes(time: string): number {
   return hours * 60 + minutes
 }
 
-function mergeReadings() {
-  const allTimes = new Set<string>()
+function dateTimeToTimestamp(date: string, hour: string): number {
+  const datePart = date.includes("T") ? date.split("T")[0] : date
+  const [year, month, day] = datePart.split("-").map(Number)
+  const [hours, minutes] = hour.split(":").map(Number)
+  return new Date(year, month - 1, day, hours, minutes).getTime()
+}
 
-  // Collect all unique times
+function formatDateInSpanish(dateStr: string, hour: string): string {
+  const months = [
+    "enero",
+    "febrero",
+    "marzo",
+    "abril",
+    "mayo",
+    "junio",
+    "julio",
+    "agosto",
+    "septiembre",
+    "octubre",
+    "noviembre",
+    "diciembre",
+  ]
+  const datePart = dateStr.includes("T") ? dateStr.split("T")[0] : dateStr
+  const [year, month, day] = datePart.split("-").map(Number)
+  const monthName = months[month - 1]
+  return `${day} de ${monthName}, ${hour}`
+}
+
+function mergeReadings(roomsData: RoomData[]): Record<string, string | number | null>[] {
+  const allTimePoints = new Map<string, { date: string; hour: string }>()
+
   roomsData.forEach((room) => {
     room.readings.forEach((reading) => {
-      allTimes.add(reading.hour)
+      const datePart = reading.date.includes("T") ? reading.date.split("T")[0] : reading.date
+      const key = `${datePart}_${reading.hour}`
+      if (!allTimePoints.has(key)) {
+        allTimePoints.set(key, { date: datePart, hour: reading.hour })
+      }
     })
   })
 
-  // Sort times chronologically
-  const sortedTimes = Array.from(allTimes).sort((a, b) => timeToMinutes(a) - timeToMinutes(b))
+  const sortedKeys = Array.from(allTimePoints.keys()).sort((a, b) => {
+    const pointA = allTimePoints.get(a)!
+    const pointB = allTimePoints.get(b)!
+    return dateTimeToTimestamp(pointA.date, pointA.hour) - dateTimeToTimestamp(pointB.date, pointB.hour)
+  })
 
-  // Create data points for each time
-  return sortedTimes.map((time) => {
-    const dataPoint: Record<string, string | number | null> = { hour: time }
+  return sortedKeys.map((key) => {
+    const { date, hour } = allTimePoints.get(key)!
+    const dataPoint: Record<string, string | number | null> = {
+      hour: hour,
+      date: date,
+      key: key,
+    }
 
     roomsData.forEach((room) => {
-      const reading = room.readings.find((r) => r.hour === time)
+      const reading = room.readings.find((r) => {
+        const readingDate = r.date.includes("T") ? r.date.split("T")[0] : r.date
+        return readingDate === date && r.hour === hour
+      })
       dataPoint[`room_${room.room_id}`] = reading ? reading.value : null
     })
 
@@ -154,23 +142,32 @@ function CustomTooltip({
   active,
   payload,
   label,
+  unit,
+  roomsData,
+  roomColors,
 }: {
   active?: boolean
-  payload?: Array<{ name: string; value: number; color: string }>
+  payload?: Array<{ name: string; value: number; color: string; payload: Record<string, string | number | null> }>
   label?: string
+  unit: string
+  roomsData: RoomData[]
+  roomColors: Map<number, string>
 }) {
   if (active && payload && payload.length) {
+    const date = payload[0]?.payload?.date as string
+    const formattedDateTime = date && label ? formatDateInSpanish(date, label) : label
+
     return (
       <div className="rounded-lg border bg-card p-3 shadow-md">
-        <p className="font-medium text-card-foreground mb-2">Hora: {label}</p>
+        <p className="font-medium text-card-foreground mb-2">Hora: {formattedDateTime}</p>
         {payload
           .filter((entry) => entry.value !== null)
           .map((entry, index) => {
-            const roomId = entry.name.replace("room_", "")
-            const room = roomsData.find((r) => r.room_id === Number(roomId))
+            const roomId = Number(entry.name.replace("room_", ""))
+            const room = roomsData.find((r) => r.room_id === roomId)
             return (
-              <p key={index} className="text-sm" style={{ color: entry.color }}>
-                {room?.room_name}: {entry.value}%
+              <p key={index} className="text-sm" style={{ color: roomColors.get(roomId) }}>
+                {room?.room_name}: {entry.value} {unit}
               </p>
             )
           })}
@@ -180,62 +177,269 @@ function CustomTooltip({
   return null
 }
 
-export function HumidityChart() {
-  const [selectedRoomId, setSelecatedRoomId] = useState<string>(roomsData[0].room_id.toString())
-  const chartData = mergeReadings()
+function CO2ThresholdsDisplay({
+  thresholds,
+  roomName,
+  roomColor,
+}: {
+  thresholds: CO2Thresholds
+  roomName: string
+  roomColor: string
+}) {
+  return (
+    <div className="mb-6 p-4 border rounded-lg bg-muted/30">
+      <p className="text-sm font-semibold mb-3" style={{ color: roomColor }}>
+        Umbrales de {roomName} (CO2 - PPM):
+      </p>
+      <div className="flex flex-wrap gap-4">
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-0.5 bg-green-500" />
+          <span className="text-sm">
+            <span className="font-medium text-green-600">Bueno:</span> {"<"} {thresholds.good} PPM
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-0.5 bg-yellow-500" />
+          <span className="text-sm">
+            <span className="font-medium text-yellow-600">Moderado:</span> {"<"} {thresholds.moderate} PPM
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-0.5 bg-orange-500" />
+          <span className="text-sm">
+            <span className="font-medium text-orange-600">No saludable:</span> {"<"} {thresholds.unhealthy} PPM
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-0.5 bg-red-500" />
+          <span className="text-sm">
+            <span className="font-medium text-red-600">Peligroso:</span> {">="} {thresholds.dangerous} PPM
+          </span>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function MinMaxThresholdsDisplay({
+  thresholds,
+  roomName,
+  roomColor,
+  indicatorLabel,
+  unit,
+}: {
+  thresholds: MinMaxThresholds
+  roomName: string
+  roomColor: string
+  indicatorLabel: string
+  unit: string
+}) {
+  return (
+    <div className="mb-6 p-4 border rounded-lg bg-muted/30">
+      <p className="text-sm font-semibold mb-3" style={{ color: roomColor }}>
+        Umbrales de {roomName} ({indicatorLabel} - {unit}):
+      </p>
+      <div className="flex flex-wrap gap-6">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-0.5 bg-blue-500" />
+          <span className="text-sm">
+            <span className="font-medium text-blue-600">Mínimo:</span> {thresholds.min} {unit}
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-0.5 bg-red-500" />
+          <span className="text-sm">
+            <span className="font-medium text-red-600">Máximo:</span> {thresholds.max} {unit}
+          </span>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export function ReadingsChart({
+  roomsData,
+  indicator,
+  unit,
+  title = "Monitor de Calidad Ambiental",
+  description,
+  indicators,
+}: ReadingsChartProps) {
+  const [selectedRoomId, setSelectedRoomId] = useState<string>(
+    roomsData.length > 0 ? roomsData[0].room_id.toString() : "",
+  )
+
+  const [visibleRooms, setVisibleRooms] = useState<Set<number>>(() => {
+    return new Set(roomsData.map((room) => room.room_id))
+  })
+
+  const roomColors = useMemo(() => {
+    const colors = new Map<number, string>()
+    roomsData.forEach((room, index) => {
+      colors.set(room.room_id, getRoomColor(index))
+    })
+    return colors
+  }, [roomsData])
+
+  const visibleRoomsData = useMemo(() => {
+    return roomsData.filter((room) => visibleRooms.has(room.room_id))
+  }, [roomsData, visibleRooms])
+
+  const chartData = useMemo(() => mergeReadings(visibleRoomsData), [visibleRoomsData])
 
   const selectedRoom = roomsData.find((r) => r.room_id === Number(selectedRoomId))
-  const thresholds = selectedRoom?.thresholds.humidity
+
+  const yAxisDomain = useMemo(() => {
+    const allValues = visibleRoomsData.flatMap((room) => room.readings.map((r) => r.value))
+    if (allValues.length === 0) return [0, 100]
+
+    let min = Math.min(...allValues)
+    let max = Math.max(...allValues)
+
+    if (selectedRoom) {
+      if (indicator === "CO2") {
+        const co2Thresholds = selectedRoom.thresholds.co2
+        min = Math.min(min, co2Thresholds.good)
+        max = Math.max(max, co2Thresholds.dangerous)
+      } else if (indicator === "TEMPERATURE") {
+        const tempThresholds = selectedRoom.thresholds.temperature
+        min = Math.min(min, tempThresholds.min)
+        max = Math.max(max, tempThresholds.max)
+      } else if (indicator === "HUMIDITY") {
+        const humidityThresholds = selectedRoom.thresholds.humidity
+        min = Math.min(min, humidityThresholds.min)
+        max = Math.max(max, humidityThresholds.max)
+      }
+    }
+
+    const padding = (max - min) * 0.15
+    return [Math.floor(min - padding), Math.ceil(max + padding)]
+  }, [visibleRoomsData, selectedRoom, indicator])
+
+  const handleRoomToggle = (roomId: number, checked: boolean) => {
+    setVisibleRooms((prev) => {
+      const newSet = new Set(prev)
+      if (checked) {
+        newSet.add(roomId)
+      } else {
+        if (newSet.size > 1) {
+          newSet.delete(roomId)
+        }
+      }
+      return newSet
+    })
+  }
+
+  const config = indicatorConfig[indicator]
+  const displayUnit = unit || config.defaultUnit
+
+  const formatUnit = (u: string) => {
+    if (u === "CELSIUS") return "°C"
+    if (u === "PERCENT") return "%"
+    return u
+  }
+
+  const formattedUnit = formatUnit(displayUnit)
+  const defaultDescription = `Lecturas de ${config.label} en las salas monitoreadas`
+
+  if (roomsData.length === 0) {
+    return (
+      <Card className="w-full">
+        <CardHeader>
+          <CardTitle>{title}</CardTitle>
+          <CardDescription>{description || defaultDescription}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="h-[300px] flex items-center justify-center text-muted-foreground">
+            No hay datos disponibles para mostrar
+          </div>
+        </CardContent>
+      </Card>
+    )
+  }
 
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle>Lecturas de Humedad Multi-Sala</CardTitle>
-        <CardDescription>Niveles de humedad en diferentes salas a lo largo del día</CardDescription>
+        <CardTitle>{title}</CardTitle>
+        <CardDescription>{description || defaultDescription}</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="mb-4 flex flex-col sm:flex-row sm:items-center gap-4">
-          <div className="flex items-center gap-2">
-            <Label htmlFor="room-select" className="text-sm font-medium whitespace-nowrap">
-              Mostrar umbrales de:
-            </Label>
-            <Select value={selectedRoomId} onValueChange={setSelecatedRoomId}>
-              <SelectTrigger id="room-select" className="w-[280px]">
-                <SelectValue placeholder="Seleccionar sala" />
-              </SelectTrigger>
-              <SelectContent>
-                {roomsData.map((room) => (
-                  <SelectItem key={room.room_id} value={room.room_id.toString()}>
+        <div className="mb-4 flex items-center gap-2">
+          <Label htmlFor="room-select" className="text-sm font-medium whitespace-nowrap">
+            Mostrar umbrales de:
+          </Label>
+          <Select value={selectedRoomId} onValueChange={setSelectedRoomId}>
+            <SelectTrigger id="room-select" className="w-[280px] bg-[#00b0c7]">
+              <SelectValue placeholder="Seleccionar sala" />
+            </SelectTrigger>
+            <SelectContent>
+              {roomsData.map((room) => (
+                <SelectItem key={room.room_id} value={room.room_id.toString()}>
+                  {room.room_name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <IndicatorToggle indicators={indicators} indicatorParam={indicator} />
+          <DatepickerRange />
+        </div>
+
+        <div className="mb-4 p-4 border rounded-lg bg-muted/20">
+          <Label className="text-sm font-medium mb-3 block">Salas a mostrar en la gráfica:</Label>
+          <div className="flex flex-wrap gap-4">
+            {roomsData.map((room) => {
+              const isVisible = visibleRooms.has(room.room_id)
+              const isOnlyOne = visibleRooms.size === 1 && isVisible
+              return (
+                <div key={room.room_id} className="flex items-center gap-2">
+                  <Checkbox
+                    id={`room-visibility-${room.room_id}`}
+                    checked={isVisible}
+                    disabled={isOnlyOne}
+                    onCheckedChange={(checked) => handleRoomToggle(room.room_id, checked as boolean)}
+                  />
+                  <label
+                    htmlFor={`room-visibility-${room.room_id}`}
+                    className="text-sm flex items-center gap-2 cursor-pointer"
+                  >
+                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: roomColors.get(room.room_id) }} />
                     {room.room_name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+                  </label>
+                </div>
+              )
+            })}
           </div>
         </div>
 
-        {thresholds && (
-          <div className="mb-6 p-4 border rounded-lg bg-muted/30">
-            <p className="text-sm font-semibold mb-3" style={{ color: roomColors[Number(selectedRoomId)] }}>
-              Umbrales de {selectedRoom?.room_name}:
-            </p>
-            <div className="flex flex-wrap gap-6">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-1 bg-red-500" style={{ borderStyle: "dashed" }} />
-                <span className="text-sm">
-                  <span className="font-medium">Mínimo:</span> {thresholds.min} {thresholds.unit}
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-1 bg-orange-500" style={{ borderStyle: "dashed" }} />
-                <span className="text-sm">
-                  <span className="font-medium">Máximo:</span> {thresholds.max} {thresholds.unit}
-                </span>
-              </div>
-            </div>
-          </div>
+        {/* Thresholds display */}
+        {selectedRoom && indicator === "CO2" && (
+          <CO2ThresholdsDisplay
+            thresholds={selectedRoom.thresholds.co2}
+            roomName={selectedRoom.room_name}
+            roomColor={roomColors.get(selectedRoom.room_id) || "#3b82f6"}
+          />
+        )}
+        {selectedRoom && indicator === "TEMPERATURE" && (
+          <MinMaxThresholdsDisplay
+            thresholds={selectedRoom.thresholds.temperature}
+            roomName={selectedRoom.room_name}
+            roomColor={roomColors.get(selectedRoom.room_id) || "#3b82f6"}
+            indicatorLabel="Temperatura"
+            unit={formattedUnit}
+          />
+        )}
+        {selectedRoom && indicator === "HUMIDITY" && (
+          <MinMaxThresholdsDisplay
+            thresholds={selectedRoom.thresholds.humidity}
+            roomName={selectedRoom.room_name}
+            roomColor={roomColors.get(selectedRoom.room_id) || "#3b82f6"}
+            indicatorLabel="Humedad"
+            unit={formattedUnit}
+          />
         )}
 
+        {/* Chart */}
         <div className="h-[450px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
@@ -248,60 +452,138 @@ export function HumidityChart() {
                 interval="preserveStartEnd"
               />
               <YAxis
-                domain={[20, 90]}
+                domain={yAxisDomain}
                 tick={{ fontSize: 12, fill: "#6b7280" }}
                 tickLine={false}
                 axisLine={false}
-                tickFormatter={(value) => `${value}%`}
+                tickFormatter={(value) => `${value}${formattedUnit === "°C" ? "°" : formattedUnit === "%" ? "%" : ""}`}
               />
-              <Tooltip content={<CustomTooltip />} />
-              <Legend
-                formatter={(value) => {
-                  const roomId = value.replace("room_", "")
-                  const room = roomsData.find((r) => r.room_id === Number(roomId))
-                  return room?.room_name || value
-                }}
+              <Tooltip
+                content={<CustomTooltip unit={formattedUnit} roomsData={visibleRoomsData} roomColors={roomColors} />}
               />
 
-              {thresholds && (
-                <>
+
+              {/* Reference lines for CO2 */}
+              {selectedRoom && indicator === "CO2" && (
+                <ReferenceLine
+                  y={selectedRoom.thresholds.co2.good}
+                  stroke="#22c55e"
+                  strokeDasharray="5 5"
+                  strokeWidth={1.5}
+                  label={{
+                    value: `Bueno ${selectedRoom.thresholds.co2.good}`,
+                    position: "insideTopRight",
+                    fill: "#22c55e",
+                    fontSize: 10,
+                  }}
+
+                />
+              )}
+              {
+                selectedRoom && indicator === "CO2" && (
                   <ReferenceLine
-                    y={thresholds.min}
-                    stroke="#ef4444"
+                    y={selectedRoom.thresholds.co2.moderate}
+                    stroke="#eab308"
                     strokeDasharray="5 5"
-                    strokeWidth={2}
+                    strokeWidth={1.5}
                     label={{
-                      value: `Mín ${thresholds.min}%`,
-                      position: "insideTopLeft",
-                      fill: "#ef4444",
-                      fontSize: 11,
+                      value: `Moderado ${selectedRoom.thresholds.co2.moderate}`,
+                      position: "insideTopRight",
+                      fill: "#eab308",
+                      fontSize: 10,
                     }}
                   />
+                )
+              }
+              {
+                selectedRoom && indicator === "CO2" && (
                   <ReferenceLine
-                    y={thresholds.max}
+                    y={selectedRoom.thresholds.co2.unhealthy}
                     stroke="#f97316"
                     strokeDasharray="5 5"
-                    strokeWidth={2}
+                    strokeWidth={1.5}
                     label={{
-                      value: `Máx ${thresholds.max}%`,
-                      position: "insideTopLeft",
+                      value: `No saludable ${selectedRoom.thresholds.co2.unhealthy}`,
+                      position: "insideTopRight",
                       fill: "#f97316",
-                      fontSize: 11,
+                      fontSize: 10,
                     }}
                   />
-                </>
+                )
+              }
+
+              {/* Reference lines for Temperature */}
+              {selectedRoom && indicator === "TEMPERATURE" && (
+                <ReferenceLine
+                  y={selectedRoom.thresholds.temperature.min}
+                  stroke="#3b82f6"
+                  strokeDasharray="5 5"
+                  strokeWidth={2}
+                  label={{
+                    value: `Mín ${selectedRoom.thresholds.temperature.min}${formattedUnit}`,
+                    position: "insideTopLeft",
+                    fill: "#3b82f6",
+                    fontSize: 11,
+                  }}
+                />
               )}
 
-              {/* Lines for each room - connectNulls handles different timestamps */}
-              {roomsData.map((room) => (
+              {selectedRoom && indicator === "TEMPERATURE" && (
+                <ReferenceLine
+                  y={selectedRoom.thresholds.temperature.max}
+                  stroke="#ef4444"
+                  strokeDasharray="5 5"
+                  strokeWidth={2}
+                  label={{
+                    value: `Máx ${selectedRoom.thresholds.temperature.max}${formattedUnit}`,
+                    position: "insideTopLeft",
+                    fill: "#ef4444",
+                    fontSize: 11,
+                  }}
+                />
+              )}
+
+              {/* Reference lines for Humidity */}
+              {selectedRoom && indicator === "HUMIDITY" && (
+                <ReferenceLine
+                  y={selectedRoom.thresholds.humidity.min}
+                  stroke="#3b82f6"
+                  strokeDasharray="5 5"
+                  strokeWidth={2}
+                  label={{
+                    value: `Mín ${selectedRoom.thresholds.humidity.min}${formattedUnit}`,
+                    position: "insideTopLeft",
+                    fill: "#3b82f6",
+                    fontSize: 11,
+                  }}
+                />
+              )}
+
+              {/* Referencia Máxima Humedad */}
+              {selectedRoom && indicator === "HUMIDITY" && (
+                <ReferenceLine
+                  y={selectedRoom.thresholds.humidity.max}
+                  stroke="#ef4444"
+                  strokeDasharray="5 5"
+                  strokeWidth={2}
+                  label={{
+                    value: `Máx ${selectedRoom.thresholds.humidity.max}${formattedUnit}`,
+                    position: "insideTopLeft",
+                    fill: "#ef4444",
+                    fontSize: 11,
+                  }}
+                />
+              )}
+
+              {visibleRoomsData.map((room) => (
                 <Line
                   key={room.room_id}
                   type="monotone"
                   dataKey={`room_${room.room_id}`}
                   name={`room_${room.room_id}`}
-                  stroke={roomColors[room.room_id]}
+                  stroke={roomColors.get(room.room_id)}
                   strokeWidth={2}
-                  dot={{ fill: roomColors[room.room_id], strokeWidth: 2, r: 3 }}
+                  dot={{ fill: roomColors.get(room.room_id), strokeWidth: 2, r: 3 }}
                   activeDot={{ r: 5, strokeWidth: 2 }}
                   connectNulls={true}
                 />
@@ -311,9 +593,9 @@ export function HumidityChart() {
         </div>
 
         <div className="mt-4 flex flex-wrap gap-4 justify-center">
-          {roomsData.map((room) => (
+          {visibleRoomsData.map((room) => (
             <div key={room.room_id} className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: roomColors[room.room_id] }} />
+              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: roomColors.get(room.room_id) }} />
               <span className="text-sm text-muted-foreground">{room.room_name}</span>
             </div>
           ))}
@@ -322,3 +604,5 @@ export function HumidityChart() {
     </Card>
   )
 }
+
+export type { RoomData, Reading, IndicatorType, CO2Thresholds, MinMaxThresholds, ReadingsChartProps }

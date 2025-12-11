@@ -13,6 +13,7 @@ import { format } from "date-fns";
 import { ArrowLeft } from "lucide-react";
 // import { cacheLife } from "next/cache";
 import Link from "next/link";
+import { Suspense } from "react";
 
 // async function GetHeadquarters(token: string) {
 //   'use cache'
@@ -26,7 +27,7 @@ import Link from "next/link";
 //   return await exceeded({ headquarterId, panelId, date_after, date_before, page, token })
 // }
 
-export default async function page({ searchParams }: SearchParams) {
+async function MonitoreoPotenciaExcedente({ searchParams }: SearchParams) {
 
 
   const { headquarter, panel = '1', date_after = new Date(), date_before = new Date(), page = '1' } = await searchParams
@@ -55,6 +56,17 @@ export default async function page({ searchParams }: SearchParams) {
         <DownloadExcelMonitoreo headquarterId={firstHeadquarter} panelId={panel} />
       </FiltersContainer>
       <PowerConsumptionTable exceeded={exceededPowers} />
+    </div>
+  )
+}
+
+
+export default async function page({ searchParams }: SearchParams) {
+  return (
+    <div>
+      <Suspense fallback={<div>Cargando...</div>}>
+        <MonitoreoPotenciaExcedente searchParams={searchParams} />
+      </Suspense>
     </div>
   )
 }

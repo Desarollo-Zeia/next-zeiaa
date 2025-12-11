@@ -1,21 +1,28 @@
-'use server'
 import { fetchWithAuth, fetchWithAuthAmbiental } from "@/app/lib/api"
 import { baseUrl } from "@/app/lib/constant"
 import { RoomList } from "./type"
+import { cacheLife } from "next/cache"
 
-export async function detail() {
-  const res = await fetchWithAuth('/enterprise/api/enterprise/detail/')
-
+export async function detail({ token }: { token?: string }) {
+  'use cache'
+  cacheLife('minutes')
+  const res = await fetchWithAuth('/enterprise/api/enterprise/detail/', {}, token)
   return res
 }
 
-export async function detailAmbiental() {
-  const res = await fetchWithAuthAmbiental('/enterprise/api/enterprise/detail/')
+export async function detailAmbiental({ token }: { token?: string }) {
+  'use cache'
+  cacheLife('minutes')
+
+  const res = await fetchWithAuthAmbiental('/enterprise/api/enterprise/detail/', {}, token)
 
   return res
 }
 
 export async function roomsList({ search, status, headquarter, page, limit, offset, token }: RoomList) {
+
+  'use cache'
+  cacheLife('minutes')
 
   const url = new URL('/enterprise/api/enterprise/room-list/', baseUrl)
 
@@ -30,7 +37,11 @@ export async function roomsList({ search, status, headquarter, page, limit, offs
   return res
 }
 
-export async function roomsListAmbiental({ search, status, headquarter, page, limit, offset }: RoomList) {
+export async function roomsListAmbiental({ search, status, headquarter, page, limit, offset, token }: RoomList) {
+
+  'use cache'
+  cacheLife('minutes')
+
 
   const url = new URL('enterprise/api/ambiental/enterprise/point-list/', baseUrl)
 
@@ -41,7 +52,7 @@ export async function roomsListAmbiental({ search, status, headquarter, page, li
   if (limit) url.searchParams.set('limit', limit)
   if (offset) url.searchParams.set('offset', offset)
 
-  const res = await fetchWithAuthAmbiental(`${url.pathname}${url.search}`)
+  const res = await fetchWithAuthAmbiental(`${url.pathname}${url.search}`, {}, token)
   return res
 }
 

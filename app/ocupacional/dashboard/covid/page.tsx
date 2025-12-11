@@ -6,8 +6,9 @@ import { DatepickerRange } from "@/app/ui/filters/datepicker-range";
 import FiltersContainer from "@/app/ui/filters/filters-container";
 import RoomSelect from "@/app/ui/filters/room-select";
 import { format } from "date-fns";
+import { Suspense } from "react";
 
-export default async function page({ searchParams }: SearchParams) {
+async function Covid({ searchParams }: SearchParams) {
 
   const { room, indicator = 'CO2', unit = 'PPM', date_after = new Date(), date_before = new Date(), page = '1' } = await searchParams
 
@@ -31,3 +32,15 @@ export default async function page({ searchParams }: SearchParams) {
     </div>
   )
 }
+
+export default async function Page({ searchParams }: SearchParams) {
+  return (
+    <div>
+      <Suspense fallback={<div>Cargando datos de COVID...</div>}>
+        <Covid searchParams={searchParams} />
+      </Suspense>
+    </div>
+  )
+}
+
+
