@@ -23,31 +23,25 @@ export default async function page({ searchParams }: SearchParams) {
 
   const currentFirstRoom = room ? room : firstRoom
 
-
-
   const rooms = await getRoomsAmbiental({ token: authToken! })
   const readings = await alertsAmbiental({ roomId: currentFirstRoom, indicator, unit, date_after: format(date_after, "yyyy-MM-dd"), date_before: format(date_before, "yyyy-MM-dd"), page, status, token: authToken! })
   const generalRoomData = await roomGeneralDataAmbiental({ roomId: currentFirstRoom, token: authToken! })
 
   return (
     <div>
-      <Suspense fallback={<div>Loading...</div>}>
 
-        <FiltersContainer>
-          <RoomSelect firstRoom={currentFirstRoom} rooms={rooms} />
-          <DatepickerRange />
-        </FiltersContainer>
-      </Suspense>
-      <Suspense fallback={<div>Loading...</div>}>
+      <FiltersContainer>
+        <RoomSelect firstRoom={currentFirstRoom} rooms={rooms} />
+        <DatepickerRange />
+      </FiltersContainer>
 
-        {
-          readings?.count > 0 ? (
-            <TableComponent data={readings.results} count={readings.count} generalRoomData={generalRoomData} indicator={indicator as Indicator} />
-          ) : (
-            <NoResultFound />
-          )
-        }
-      </Suspense>
+      {
+        readings?.count > 0 ? (
+          <TableComponent data={readings.results} count={readings.count} generalRoomData={generalRoomData} indicator={indicator as Indicator} />
+        ) : (
+          <NoResultFound />
+        )
+      }
 
     </div>
   )
