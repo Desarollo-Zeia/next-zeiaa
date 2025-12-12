@@ -17,6 +17,8 @@ type TableComponentProps = {
 
 export default function TableComponent({ generalRoomData, readings, indicator }: TableComponentProps) {
 
+
+  console.log('General Room Data:', generalRoomData);
   const { indicators_pollutants: indicators } = generalRoomData
   const colorByLever = {
     GOOD: "bg-green-600",
