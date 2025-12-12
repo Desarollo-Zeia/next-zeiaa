@@ -17,7 +17,7 @@ export default function IndicatorToggle({ indicators, indicatorParam }: Indicato
   const pathname = usePathname()
   const { replace } = useRouter()
 
-  const currentIndicator = indicators[0].indicator ?? indicatorParam
+  const currentIndicator = indicatorParam ?? indicators[0].indicator
 
   const handleValueChange = (value: Indicator) => {
     startTransition(() => {
