@@ -28,7 +28,12 @@ async function PicosHistoricos({ searchParams }: SearchParams) {
 
   const currentFirstRoom = room ? room : firstRoom.id
   const generalRoomData = await roomGeneralData({ roomId: currentFirstRoom, token: authToken! })
-  const readings = await readingsPeaks({ roomId: currentFirstRoom, indicator, unit, date_after: formattedDateAfter, date_before: formattedDateBefore, page, status, token: authToken! })
+
+  const { indicator: currentFirstIndicator, unit: currentFirstUnit } = generalRoomData.indicators_activated[0]
+
+  const currentIndicator = indicator ?? currentFirstIndicator
+  const currentUnit = unit ?? currentFirstUnit
+  const readings = await readingsPeaks({ roomId: currentFirstRoom, indicator: currentIndicator, unit: currentUnit, date_after: formattedDateAfter, date_before: formattedDateBefore, page, status, token: authToken! })
 
   const indicators = generalRoomData.indicators_activated
 
@@ -37,9 +42,11 @@ async function PicosHistoricos({ searchParams }: SearchParams) {
   return (
     <div>
       <FiltersContainer>
+        {/* <RoomSelect firstRoom={currentFirstRoom} rooms={rooms} /> */}
         <DatepickerRange />
 
       </FiltersContainer>
+      {/* <TableComponent generalRoomData={generalRoomData} readings={readings} indicator={indicator as Indicator} /> */}
       <div className="flex justify-between px-4">
         <div>
           <p className="font-semibold">Top 3 valores más altos de cada sala</p>
@@ -47,7 +54,7 @@ async function PicosHistoricos({ searchParams }: SearchParams) {
         </div>
         <IndicatorToggle indicators={indicators} indicatorParam={indicator as Indicator} />
       </div>
-      <Peaks readings={readings} indicator={indicator as 'CO2' | 'TEMPERATURE' | 'HUMIDITY'} indicators={indicators} />
+      <Peaks readings={readings} indicator={currentIndicator as 'CO2' | 'TEMPERATURE' | 'HUMIDITY'} indicators={indicators} />
     </div>
   )
 }

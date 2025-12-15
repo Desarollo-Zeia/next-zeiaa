@@ -4,6 +4,7 @@ import { INDICATOR_CONVERTED, STATUS_TO_SPANISH, UNIT_CONVERTED } from "@/app/ut
 import { formattedDate } from "@/app/utils/func";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Calendar, CalendarRange, Clock, Wind, ChevronLeft, ChevronRight } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 type Thresholds = {
@@ -47,7 +48,13 @@ interface Readings {
   results: Peak[]
 }
 
+
+
 export default function Peaks({ readings, indicator, indicators }: { readings: Readings, indicator: 'CO2' | 'TEMPERATURE' | 'HUMIDITY', indicators: { unit: string, indicator: string }[] }) {
+
+  const router = useRouter()
+
+
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 3;
@@ -136,14 +143,13 @@ export default function Peaks({ readings, indicator, indicators }: { readings: R
           currentResults.map(reading => {
             let arr = [...reading.readings_top_3]
             while (arr.length < 3) {
-              console.log('2')
               arr.push(null as any)
             }
 
             const thresholdInfo = getThresholdInfo({ thresholds: reading.thresholds })
             return (
               <div key={reading.room_id} className="grid grid-cols-4 mt-8 mx-4 mb-8 gap-4">
-                <Card className="w-full min-h-[150px] shadow-lg">
+                <Card className="w-full min-h-[150px] shadow-lg cursor-pointer" onClick={() => router.push(`/ocupacional/dashboard/analisis/picoshistoricos/tabla?room=${reading.room_id.toString()}`)}>
                   <CardHeader className="p-4 bg-[#f9fafb]">
                     <h2 className="text-base font-bold text-foreground">{reading.room_name}</h2>
                     <p className="text-xs text-muted-foreground mt-0">

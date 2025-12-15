@@ -71,15 +71,22 @@ async function Monitoreo({ searchParams }: SearchParams) {
   const rooms = await await getRooms(authToken!)
   const roomsListReadings = await roomsList({ limit: '50', token: authToken! })
 
+
   // Determinar la sala actual
   const firstRoom = rooms.find((room: any) => room.is_activated === true) // eslint-disable-line @typescript-eslint/no-explicit-any
   const currentFirstRoom = room ? room : firstRoom.id.toString()
+  const generalRoomData = await roomGeneralData({ roomId: currentFirstRoom, token: authToken! })
+  const { indicator: currentFirstIndicator, unit: currentFirstUnit } = generalRoomData.indicators_activated[0]
+
+  const currentIndicator = indicator ?? currentFirstIndicator
+  const currentUnit = unit ?? currentFirstUnit
 
   // 2. Obtener datos específicos de la sala (Ahora usando las funciones Cached)
   // Nota: Podrías usar Promise.all aquí para acelerar la carga en paralelo si las dependencias lo permiten
   const data = await roomLastData({ roomId: currentFirstRoom, token: authToken! })
-  const { results } = await readingsData({ roomId: currentFirstRoom, indicator, unit, token: authToken! })
-  const generalRoomData = await roomGeneralData({ roomId: currentFirstRoom, token: authToken! })
+  const { results } = await readingsData({ roomId: currentFirstRoom, indicator: currentIndicator, unit: currentUnit, token: authToken! })
+
+
 
   // Procesamiento de datos
   const { name } = rooms.find((room: Room) => room.id === Number(currentFirstRoom)) || { name: 'Desconocido' }
@@ -116,8 +123,8 @@ async function Monitoreo({ searchParams }: SearchParams) {
         <ChartComponent
           results={sortResults(results)}
           generalRoomData={generalRoomData}
-          indicator={indicator as Indicator}
-          unit={unit as Unit}
+          indicator={currentIndicator as Indicator}
+          unit={currentUnit as Unit}
           thresholds={generalRoomData?.thresholds}
         />
       </div>

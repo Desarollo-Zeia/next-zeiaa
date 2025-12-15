@@ -34,7 +34,7 @@ import { Suspense } from "react";
 
 async function Estadisticas({ searchParams }: SearchParams) {
   // const { first_room: firstRoom } = await detail()
-  const { room, indicator = 'CO2', unit = 'PPM', date_after = new Date(), date_before = new Date(), start = '00:00', end = '23:00' } = await searchParams
+  const { room, indicator, unit, date_after = new Date(), date_before = new Date(), start = '00:00', end = '23:00' } = await searchParams
 
   const authToken = await getToken()
 
@@ -46,27 +46,21 @@ async function Estadisticas({ searchParams }: SearchParams) {
   const firstRoom = rooms.find((room: any) => room.is_activated === true)  // eslint-disable-line @typescript-eslint/no-explicit-any
   const currentFirstRoom = room ? room : firstRoom.id
 
-  const readings = await readingsGraph({ indicator, unit, date_after: formattedDateAfter, date_before: formattedDateBefore, hour_before: start, hour_after: end, token: authToken!, roomId: currentFirstRoom })
+  const generalRoomData = await roomGeneralData({ roomId: currentFirstRoom, token: authToken! })
+  const { indicator: currentFirstIndicator, unit: currentFirstUnit } = generalRoomData.indicators_activated[0]
 
-  const indicators = [
-    {
-      indicator: 'CO2',
-      unit: 'PPM'
-    },
-    {
-      indicator: 'HUMIDITY',
-      unit: 'PERCEN',
-    },
-    {
-      indicator: 'TEMPERATURE',
-      unit: 'CELSIUS',
-    }
-  ]
+  const currentIndicator = indicator ?? currentFirstIndicator
+  const currentUnit = unit ?? currentFirstUnit
+
+  const readings = await readingsGraph({ indicator: currentIndicator, unit: currentUnit, date_after: formattedDateAfter, date_before: formattedDateBefore, hour_before: start, hour_after: end, token: authToken!, roomId: currentFirstRoom })
+
+
+  const indicators = generalRoomData.indicators_activated
 
   return (
     <div className="flex mx-2 justify-center gap-4">
 
-      <ReadingsChart indicator={indicator as 'CO2' | 'HUMIDITY' | 'TEMPERATURE'} unit={unit} roomsData={readings} indicators={indicators} />
+      <ReadingsChart indicator={currentIndicator as 'CO2' | 'HUMIDITY' | 'TEMPERATURE'} unit={currentUnit} roomsData={readings} indicators={indicators} />
     </div>
   )
 }

@@ -42,12 +42,18 @@ async function Indicadores({ searchParams }: SearchParams) {
   const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
 
   const rooms = await getRooms(authToken!)
+
   const firstRoom = rooms.find((room: any) => room.is_activated === true)  // eslint-disable-line @typescript-eslint/no-explicit-any
 
-  const currentFirstRoom = room ? room : firstRoom.id
-
+  const currentFirstRoom = room ? room : firstRoom.id.toString()
   const generalRoomData = await roomGeneralData({ roomId: currentFirstRoom, token: authToken! })
-  const readings = await readingsData({ roomId: currentFirstRoom, indicator, unit, date_after: formattedDateAfter, date_before: formattedDateBefore, page, status, hour_before: end, hour_after: start, ordering, token: authToken! })
+
+  const { indicator: currentFirstIndicator, unit: currentFirstUnit } = generalRoomData.indicators_activated[0]
+
+  const currentIndicator = indicator ?? currentFirstIndicator
+  const currentUnit = unit ?? currentFirstUnit
+
+  const readings = await readingsData({ roomId: currentFirstRoom, indicator: currentIndicator, unit: currentUnit, date_after: formattedDateAfter, date_before: formattedDateBefore, page, status, hour_before: end, hour_after: start, ordering, token: authToken! })
   const thresholdsFilters = generalRoomData?.thresholds_filter[indicator as Indicator]
 
   return (
@@ -58,7 +64,7 @@ async function Indicadores({ searchParams }: SearchParams) {
         <TimeRangeSlider />
         <DatepickerRange />
       </FiltersContainer>
-      <TableComponent generalRoomData={generalRoomData} readings={readings} count={readings.count} indicator={indicator as Indicator} unit={unit as Unit} date_after={formattedDateAfter} date_before={formattedDateBefore} room={currentFirstRoom} />
+      <TableComponent generalRoomData={generalRoomData} readings={readings} count={readings.count} indicator={currentIndicator as Indicator} unit={currentUnit as Unit} date_after={formattedDateAfter} date_before={formattedDateBefore} room={currentFirstRoom} />
     </div>
   )
 }

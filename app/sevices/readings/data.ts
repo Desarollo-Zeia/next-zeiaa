@@ -99,6 +99,24 @@ export async function readingsPeaks({ roomId, indicator, unit, date_after, date_
   return res
 }
 
+export async function readingsPeaksTable({ roomId, indicator, unit, date_after, date_before, page, status, token }: { roomId: string | number, indicator?: string, unit?: string, date_after?: string, date_before?: string, page?: string, status?: string, token?: string }) {
+  'use cache'
+  cacheLife('minutes')
+
+  const url = new URL(`/readings/api/room/${roomId}/indicator/metrics/high/history`, baseUrl)
+
+  if (indicator) url.searchParams.set('indicator', indicator)
+  if (unit) url.searchParams.set('unit', unit)
+  if (date_after) url.searchParams.set('date_after', date_after)
+  if (date_before) url.searchParams.set('date_before', date_before)
+  if (status) url.searchParams.set('status', status)
+  if (page) url.searchParams.set('page', page)
+
+  const res = await fetchWithAuth(`${url.pathname}${url.search}`, {}, token)
+
+  return res
+}
+
 const _readingsGraphCached = unstable_cache(
   async (token: string, roomId: string | number, indicator: string, unit: string, date_after?: string, date_before?: string, hour_before?: string, hour_after?: string) => {
     const url = new URL(`/readings/api/room/${roomId}/indicator/graph`, baseUrl)

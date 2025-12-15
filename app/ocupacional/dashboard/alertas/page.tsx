@@ -34,7 +34,7 @@ import { Suspense } from "react";
 async function Alertas({ searchParams }: SearchParams) {
 
 
-  const { room, indicator = 'CO2', unit = 'PPM', date_after = new Date(), date_before = new Date(), page = '1', status } = await searchParams
+  const { room, indicator, unit, date_after = new Date(), date_before = new Date(), page = '1', status } = await searchParams
 
   const authToken = await getToken()
 
@@ -47,9 +47,13 @@ async function Alertas({ searchParams }: SearchParams) {
 
   const currentFirstRoom = room ? room : firstRoom.id.toString()
 
-  const readings = await alerts({ roomId: currentFirstRoom, indicator, unit, date_after: formattedDateAfter, date_before: formattedDateBefore, page, status, token: authToken! })
   const generalRoomData = await roomGeneralData({ roomId: currentFirstRoom, token: authToken! })
+  const { indicator: currentFirstIndicator, unit: currentFirstUnit } = generalRoomData.indicators_activated[0]
 
+  const currentIndicator = indicator ?? currentFirstIndicator
+  const currentUnit = unit ?? currentFirstUnit
+
+  const readings = await alerts({ roomId: currentFirstRoom, indicator: currentIndicator, unit: currentUnit, date_after: formattedDateAfter, date_before: formattedDateBefore, page, status, token: authToken! })
 
   // const thresholdsFilters = generalRoomData?.thresholds_filter[indicator].filter((th: string) => th !== 'GOOD' && th !== 'MODERATE')
 
@@ -60,7 +64,7 @@ async function Alertas({ searchParams }: SearchParams) {
         {/* <StatusSelect status_filter={thresholdsFilters} /> */}
         <DatepickerRange />
       </FiltersContainer>
-      <TableComponent data={readings.results} count={readings.count} generalRoomData={generalRoomData} indicator={indicator as Indicator} />
+      <TableComponent data={readings.results} count={readings.count} generalRoomData={generalRoomData} indicator={currentIndicator as Indicator} />
     </div>
   )
 }
