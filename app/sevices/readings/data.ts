@@ -81,13 +81,11 @@ export async function readingsDataAmbiental({ roomId, indicator = 'CO2', unit = 
   return res
 }
 
-export async function readingsPeaks({ roomId, indicator = 'CO2', unit = 'PPM', date_after, date_before, page, status, token }: { roomId: string | number, indicator: string, unit: string, date_after?: string, date_before?: string, page?: string, status?: string, token?: string }) {
+export async function readingsPeaks({ roomId, indicator, unit, date_after, date_before, page, status, token }: { roomId: string | number, indicator?: string, unit?: string, date_after?: string, date_before?: string, page?: string, status?: string, token?: string }) {
   'use cache'
   cacheLife('minutes')
 
-  const url = new URL(`/readings/api/room/${roomId}/indicator/metrics/high/history?indicator=CO2&unit=PPM&page=1&date_after=2023-01-03`, baseUrl)
-
-
+  const url = new URL(`/readings/api/rooms/indicators/metrics/high/history?indicator=CO2&unit=PPM`, baseUrl)
 
   if (indicator) url.searchParams.set('indicator', indicator)
   if (unit) url.searchParams.set('unit', unit)

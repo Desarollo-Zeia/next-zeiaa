@@ -63,7 +63,7 @@ interface Room {
 // --- Componente Principal ---
 
 async function Monitoreo({ searchParams }: SearchParams) {
-  const { room, indicator = 'CO2', unit = 'PPM' } = await searchParams
+  const { room, indicator, unit } = await searchParams
 
   const authToken = await getToken()
 

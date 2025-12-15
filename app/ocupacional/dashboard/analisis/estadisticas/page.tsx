@@ -36,8 +36,6 @@ async function Estadisticas({ searchParams }: SearchParams) {
   // const { first_room: firstRoom } = await detail()
   const { room, indicator = 'CO2', unit = 'PPM', date_after = new Date(), date_before = new Date(), start = '00:00', end = '23:00' } = await searchParams
 
-
-
   const authToken = await getToken()
 
   const formattedDateAfter = format(date_after, 'yyyy-MM-dd')
