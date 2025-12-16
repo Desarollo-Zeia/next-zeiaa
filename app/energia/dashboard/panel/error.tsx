@@ -23,9 +23,7 @@ export default function Error({
       localStorage.removeItem('token'); // o tu método de storage
 
       // Redirigir al login después de 2 segundos
-      setTimeout(() => {
-        router.push('/login');
-      }, 2000);
+      router.push('/login');
     }
   }, [error, router]);
 

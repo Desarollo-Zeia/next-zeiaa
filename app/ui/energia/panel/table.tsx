@@ -26,6 +26,8 @@ interface PanelReadings {
 
 export default function TableComponent({ readings }: { readings: PanelReadings }) {
 
+  console.log(readings.results)
+
 
   return (
     <div className='flex-1'>
@@ -69,7 +71,7 @@ export default function TableComponent({ readings }: { readings: PanelReadings }
                     {reading.channel}
                   </TableCell>
                   <TableCell className='text-center'>
-                    {reading.key}
+                    {reading.name}
                   </TableCell>
 
                   <TableCell className='text-center'>
@@ -88,7 +90,7 @@ export default function TableComponent({ readings }: { readings: PanelReadings }
                     {reading.electrical_panel}
                   </TableCell>
                   <TableCell className='text-center'>
-                    {reading.location_reference}
+                    {reading.location_reference || 'No precisa'}
                   </TableCell>
                 </TableRow>
               )

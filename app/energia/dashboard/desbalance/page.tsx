@@ -74,8 +74,6 @@ async function DesbalancedDashboardContent({ searchParams }: SearchParams) {
 
   const { top_unbalanced_measurement_points: [first, second, third] } = threeUnbalanced
 
-  console.log(voltageReadings)
-
   return (
     <div className="w-full h-auto">
       <FiltersContainer>
