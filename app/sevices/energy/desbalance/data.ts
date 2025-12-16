@@ -70,14 +70,14 @@ export async function voltageGraph({ headquarterId, panelId, point, date_after, 
 }
 
 
-export async function threeMostUnbalanced({ headquarterId }: { headquarterId?: string }) {
+export async function threeMostUnbalanced({ headquarterId, token }: { headquarterId?: string, token?: string }) {
 
   'use cache'
   cacheLife('minutes')
 
   const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/most-three-unbalanced`, baseUrlEnergy)
 
-  const res = await fetchWithAuthEnergy(`${url.pathname}${url.search}`)
+  const res = await fetchWithAuthEnergy(`${url.pathname}${url.search}`, {}, token)
 
   return res
 }
