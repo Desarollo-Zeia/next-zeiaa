@@ -28,25 +28,27 @@ type Props = {
 }
 
 
-export default function HeadquarterEnergyFilter({ energyHeadquarter = [], energy }: Props ) {
+export default function HeadquarterEnergyFilter({ energyHeadquarter = [], energy }: Props) {
 
-   const [isPending, startTransition] = useTransition()
-   const searchParams = useSearchParams()
-   const { replace } = useRouter()
-   const pathname = usePathname()
+
+  console.log(energyHeadquarter)
+  const [isPending, startTransition] = useTransition()
+  const searchParams = useSearchParams()
+  const { replace } = useRouter()
+  const pathname = usePathname()
 
 
   const handleHeadquarterChange = (headquarterId: string) => {
     startTransition(() => {
-        const params = new URLSearchParams(searchParams)
-        params.set("headquarter", headquarterId)
-        params.set("page", '1')
-        params.delete('point')
-        params.delete('panel')
-        replace(`${pathname}?${params.toString()}`)
+      const params = new URLSearchParams(searchParams)
+      params.set("headquarter", headquarterId)
+      params.set("page", '1')
+      params.delete('point')
+      params.delete('panel')
+      replace(`${pathname}?${params.toString()}`)
     })
-    }
-  
+  }
+
   return (
     <div>
       <Select defaultValue={energy.toString()} onValueChange={handleHeadquarterChange}>
@@ -63,9 +65,9 @@ export default function HeadquarterEnergyFilter({ energyHeadquarter = [], energy
           </SelectGroup>
         </SelectContent>
         {isPending && (
-            <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50">
+          <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50">
             <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
-            </div>
+          </div>
         )}
       </Select>
     </div>
