@@ -72,6 +72,7 @@ export async function actionEnergy(prevState: { message: string }, formData: For
 
     if (response.ok) {
       const data = await response.json()
+      console.log(data?.token)
       await setToken(data.token)
       await setCompanyData(data.user)
     } else {

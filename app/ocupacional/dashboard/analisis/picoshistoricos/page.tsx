@@ -1,46 +1,24 @@
 import { readingsPeaks, roomGeneralData } from "@/app/sevices/readings/data";
-import TableComponent from "@/app/ui/picos/table";
 import { DatepickerRange } from "@/app/ui/filters/datepicker-range";
 import FiltersContainer from "@/app/ui/filters/filters-container";
 import { format } from "date-fns";
 import { getRooms } from "@/app/sevices/filters/data";
-import RoomSelect from "@/app/ui/filters/room-select";
 import { Indicator } from "@/app/type";
-import StatusSelect from "@/app/ui/filters/status-select";
-// import { cacheLife } from "next/cache";
 import { getToken } from "@/app/lib/auth";
 import { Suspense } from "react";
+import Peaks from "@/app/ui/picos/peaks";
+import IndicatorToggle from "@/app/ui/filters/indicators-toggle";
 
 type SearchParams = {
   searchParams: Promise<{ [key: string]: string | undefined }>
 }
 
-// async function GetRooms(token: string) {
-//   'use cache'
-//   cacheLife('minutes')
-//   const rooms = await getRooms(token)
-//   return rooms
-// }
-
-// async function GetGeneralData(token: string, currentFirstRoom: string | number) {
-//   'use cache'
-//   cacheLife('minutes')
-//   return await roomGeneralData({ roomId: currentFirstRoom, token })
-
-// }
-
-// async function ReadingsPeaks({ roomId, indicator, unit, date_after, date_before, page, status, token }: { roomId: string | number, indicator: string, unit: string, date_after: string, date_before: string, page?: string, status?: string, token: string }) {
-//   'use cache'
-//   return await readingsPeaks({ roomId, indicator, unit, date_after, date_before, page, status, token })
-// }
-
 async function PicosHistoricos({ searchParams }: SearchParams) {
 
 
-  const { room, indicator = 'CO2', unit = 'PPM', date_after = new Date(), date_before = new Date(), page, status } = await searchParams
+  const { room, indicator, unit, date_after = new Date(), date_before = new Date(), page, status } = await searchParams
 
   const authToken = await getToken()
-
 
   const formattedDateAfter = format(date_after, 'yyyy-MM-dd')
   const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
@@ -50,18 +28,33 @@ async function PicosHistoricos({ searchParams }: SearchParams) {
 
   const currentFirstRoom = room ? room : firstRoom.id
   const generalRoomData = await roomGeneralData({ roomId: currentFirstRoom, token: authToken! })
-  const readings = await readingsPeaks({ roomId: currentFirstRoom, indicator, unit, date_after: formattedDateAfter, date_before: formattedDateBefore, page, status, token: authToken! })
 
-  const thresholdsFilters = generalRoomData?.thresholds_filter[indicator]
+  const { indicator: currentFirstIndicator, unit: currentFirstUnit } = generalRoomData.indicators_activated[0]
+
+  const currentIndicator = indicator ?? currentFirstIndicator
+  const currentUnit = unit ?? currentFirstUnit
+  const readings = await readingsPeaks({ roomId: currentFirstRoom, indicator: currentIndicator, unit: currentUnit, date_after: formattedDateAfter, date_before: formattedDateBefore, page, status, token: authToken! })
+
+  const indicators = generalRoomData.indicators_activated
+
+  const thresholdsFilters = generalRoomData?.thresholds_filter[indicator as Indicator]
 
   return (
     <div>
       <FiltersContainer>
-        <RoomSelect firstRoom={currentFirstRoom} rooms={rooms} />
-        <StatusSelect status_filter={thresholdsFilters} />
+        {/* <RoomSelect firstRoom={currentFirstRoom} rooms={rooms} /> */}
         <DatepickerRange />
+
       </FiltersContainer>
-      <TableComponent generalRoomData={generalRoomData} readings={readings} indicator={indicator as Indicator} />
+      {/* <TableComponent generalRoomData={generalRoomData} readings={readings} indicator={indicator as Indicator} /> */}
+      <div className="flex justify-between px-4">
+        <div>
+          <p className="font-semibold">Top 3 valores más altos de cada sala</p>
+          <p>Selecciona una de las salas para ver más detalles</p>
+        </div>
+        <IndicatorToggle indicators={indicators} indicatorParam={indicator as Indicator} />
+      </div>
+      <Peaks readings={readings} indicator={currentIndicator as 'CO2' | 'TEMPERATURE' | 'HUMIDITY'} indicators={indicators} />
     </div>
   )
 }

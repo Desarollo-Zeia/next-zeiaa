@@ -17,9 +17,8 @@ type TableComponentProps = {
 
 export default function TableComponent({ generalRoomData, readings, indicator }: TableComponentProps) {
 
+  const { indicators_activated: indicators } = generalRoomData
 
-  console.log('General Room Data:', generalRoomData);
-  const { indicators_pollutants: indicators } = generalRoomData
   const colorByLever = {
     GOOD: "bg-green-600",
     UNHEALTHY: "bg-orange-600",
@@ -42,7 +41,7 @@ export default function TableComponent({ generalRoomData, readings, indicator }:
               </CardHeader>
               <CardContent className="w-full flex flex-col gap-8">
                 {
-                  readings?.top.map(reading => (
+                  readings?.top?.map(reading => (
                     <Card className="w-full shadow-lg" key={reading.date}>
                       <CardHeader className="relative pb-0">
                         <div className={`absolute left-12 -top-2 px-4 py-2 rounded-lg text-white text-sm font-medium ${colorByLever[reading.status] ?? 'bg-[#00b0c7]'} shadow-lg`}>

@@ -70,9 +70,11 @@ async function DesbalancedDashboardContent({ searchParams }: SearchParams) {
   const currentReadings = await currentGraph({ headquarterId: firstHeadquarter, panelId: firstPanel, point: firstPoint, date_after: format(date_after, "yyyy-MM-dd"), date_before: format(date_before, "yyyy-MM-dd"), token: authToken! })
   const voltageReadings = await voltageGraph({ headquarterId: firstHeadquarter, panelId: firstPanel, point: firstPoint, date_after: format(date_after, "yyyy-MM-dd"), date_before: format(date_before, "yyyy-MM-dd"), token: authToken! })
 
-  const threeUnbalanced = await threeMostUnbalanced({ headquarterId: firstHeadquarter })
+  const threeUnbalanced = await threeMostUnbalanced({ headquarterId: firstHeadquarter, token: authToken! })
 
   const { top_unbalanced_measurement_points: [first, second, third] } = threeUnbalanced
+
+  console.log(voltageReadings)
 
   return (
     <div className="w-full h-auto">

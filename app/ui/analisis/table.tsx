@@ -60,7 +60,6 @@ export default function TableComponent({ generalRoomData, readings, count, indic
 
   const { indicators_activated: indicators, thresholds } = generalRoomData
 
-
   const th = thresholds?.[indicator]?.levels;
 
   const handleExcelDownload = async () => {

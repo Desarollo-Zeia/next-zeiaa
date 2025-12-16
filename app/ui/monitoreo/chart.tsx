@@ -68,6 +68,8 @@ export default function ChartComponent({ results, generalRoomData, indicator, un
 
   const [{ value: domaninY } = {}] = thresholds?.[indicator]?.levels?.slice(-1) ?? [];
 
+  console.log({ unit })
+
   const th = thresholds?.[indicator]?.levels;
 
   return (

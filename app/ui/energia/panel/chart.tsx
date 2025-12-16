@@ -64,6 +64,8 @@ ChartJS.register(LineElement, PointElement, LinearScale, TimeScale, ArcElement, 
 
 export default function ChartComponent({ electricalPanelData }: { electricalPanelData: ElectricalPanelData }) {
 
+  console.log(electricalPanelData)
+
   const [isPending, startTransition] = useTransition()
   const searchParams = useSearchParams()
   const { replace } = useRouter()
@@ -121,56 +123,91 @@ export default function ChartComponent({ electricalPanelData }: { electricalPane
           </div>
         )}
       </div>
-      <Pie
-        options={
-          {
-            responsive: true,
-            plugins: {
-              legend: {
-                display: false,
-                position: 'top',
-              },
-              title: {
-                display: false,
-                text: 'Chart.js Pie Chart'
-              },
-              tooltip: {
-                callbacks: {
-                  label: function (ctx) {
-                    return `${ctx.formattedValue}%`
+      {
+        electricalPanelData.results.length > 0 ? (
+          <>
+            <Pie
+              options={
+                {
+                  responsive: true,
+                  plugins: {
+                    legend: {
+                      display: false,
+                      position: 'top',
+                    },
+                    title: {
+                      display: false,
+                      text: 'Chart.js Pie Chart'
+                    },
+                    tooltip: {
+                      callbacks: {
+                        label: function (ctx) {
+                          return `${ctx.formattedValue}%`
+                        }
+                      }
+                    }
                   }
                 }
               }
-            }
-          }
-        }
-        data={graphData}
-      />
-      <Accordion type="single" collapsible defaultValue='item-1'>
-        <AccordionItem value="item-1">
-          <AccordionTrigger className='bg-[#00b0c7] text-white rounded-lg'>
-            <div className='flex justify-between gap-4 w-full px-4'>
-              <p className='font-semibold'>{electricalPanelData.results[0]?.measurement_point_name}</p>
-              <p>{electricalPanelData.results[0]?.consumption_percentage}%</p>
-            </div>
-          </AccordionTrigger>
-          <AccordionContent>
-            {
-              electricalPanelData?.results?.slice(1).map(electrical => {
-                return (
-                  <div className='flex justify-between w-full px-4' key={electrical?.measurement_point_name}>
-                    <div className='font-semibold flex items-center gap-1 '>
-                      <div className='w-2 h-2 rounded-full bg-black' />
-                      <p>{electrical?.measurement_point_name}</p>
-                    </div>
-                    <p className='mr-6'>{electrical?.consumption_percentage}%</p>
+              data={graphData}
+            />
+            <Accordion type="single" collapsible defaultValue='item-1'>
+              <AccordionItem value="item-1">
+                <AccordionTrigger className='bg-[#00b0c7] text-white rounded-lg'>
+                  <div className='flex justify-between gap-4 w-full px-4'>
+                    <p className='font-semibold'>{electricalPanelData.results[0]?.measurement_point_name}</p>
+                    <p>{electricalPanelData.results[0]?.consumption_percentage}%</p>
                   </div>
-                )
-              })
-            }
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
+                </AccordionTrigger>
+                <AccordionContent>
+                  {
+                    electricalPanelData?.results?.slice(1).map(electrical => {
+                      return (
+                        <div className='flex justify-between w-full px-4' key={electrical?.measurement_point_name}>
+                          <div className='font-semibold flex items-center gap-1 '>
+                            <div className='w-2 h-2 rounded-full bg-black' />
+                            <p>{electrical?.measurement_point_name}</p>
+                          </div>
+                          <p className='mr-6'>{electrical?.consumption_percentage}%</p>
+                        </div>
+                      )
+                    })
+                  }
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-16 px-4">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-100 to-purple-100 blur-2xl opacity-30 rounded-full"></div>
+              <svg
+                className="relative w-24 h-24 text-gray-300 mb-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                />
+              </svg>
+            </div>
+
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">
+              No hay datos disponibles
+            </h3>
+
+            <p className="text-gray-500 text-center max-w-md">
+              No se encontró información para la fecha seleccionada.
+              Intenta seleccionar un rango de fechas diferente.
+            </p>
+          </div>
+        )
+      }
+
     </div>
   )
 }
