@@ -10,6 +10,7 @@ import { getHeadquartersOcupacional } from '@/app/sevices/filters/data'
 import { SearchParams } from '@/app/type'
 import { getToken } from '@/app/lib/auth'
 import { Suspense } from 'react'
+import RoomSkeleton from './loading'
 // import { cacheLife } from 'next/cache'
 // import StatusSelect from '@/app/ui/filters/status-select'
 
@@ -42,6 +43,8 @@ async function Rooms({ searchParams }: SearchParams) {
   const getRoomsList = await roomsList({ search, status, headquarter, page, limit, offset, token: authToken })
 
   const headquarters = await getHeadquartersOcupacional({ token: authToken! })
+
+  console.log(getRoomsList.results)
 
   return (
     <div>
@@ -81,7 +84,7 @@ async function Rooms({ searchParams }: SearchParams) {
 export default async function Page({ searchParams }: SearchParams) {
   return (
     <div>
-      <Suspense fallback={<div>Cargando salas...</div>}>
+      <Suspense fallback={<RoomSkeleton />}>
         <Rooms searchParams={searchParams} />
       </Suspense>
     </div>

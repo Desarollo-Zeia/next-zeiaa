@@ -8,6 +8,7 @@ import RoomSelect from "@/app/ui/filters/room-select"
 import ChartComponent from "@/app/ui/monitoreo/chart"
 import TableComponent from "@/app/ui/monitoreo/table"
 import { Suspense } from "react"
+import MonitoreoSkeleton from "./loading"
 // import { cacheLife } from "next/cache"
 
 type Result = {
@@ -135,7 +136,7 @@ async function Monitoreo({ searchParams }: SearchParams) {
 export default async function Page({ searchParams }: SearchParams) {
   return (
     <div>
-      <Suspense fallback={<div>Cargando datos de monitoreo...</div>}>
+      <Suspense fallback={<MonitoreoSkeleton />}>
         <Monitoreo searchParams={searchParams} />
       </Suspense>
     </div>

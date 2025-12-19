@@ -10,6 +10,7 @@ import StatusSelect from "@/app/ui/filters/status-select";
 import { TimeRangeSlider } from "@/app/ui/filters/time-range-slider";
 import { format } from "date-fns";
 import { Suspense } from "react";
+import IndicadoresSkeleton from "./loading";
 // import { cacheLife } from "next/cache";
 
 // async function GetRooms(token: string) {
@@ -72,7 +73,7 @@ async function Indicadores({ searchParams }: SearchParams) {
 export default async function Page({ searchParams }: SearchParams) {
   return (
     <div>
-      <Suspense fallback={<div>Cargando indicadores...</div>}>
+      <Suspense fallback={<IndicadoresSkeleton />}>
         <Indicadores searchParams={searchParams} />
       </Suspense>
     </div>

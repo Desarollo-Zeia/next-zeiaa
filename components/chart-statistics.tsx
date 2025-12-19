@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import IndicatorToggle from "@/app/ui/filters/indicators-toggle"
 import { DatepickerRange } from "@/app/ui/filters/datepicker-range"
+import FrequencyIntervalFilter from "@/app/ui/filters/frequency-interval-filter"
 
 type CO2Thresholds = { good: number; moderate: number; unhealthy: number; dangerous: number }
 type MinMaxThresholds = { min: number; max: number }
@@ -41,6 +42,7 @@ interface ReadingsChartProps {
   title?: string
   description?: string
   indicators: Array<{ indicator: string; unit: string }>
+  interval?: string
 }
 
 const indicatorConfig: Record<IndicatorType, { label: string; defaultUnit: string }> = {
@@ -264,6 +266,7 @@ export function ReadingsChart({
   title = "Monitor de Calidad Ambiental",
   description,
   indicators,
+  interval
 }: ReadingsChartProps) {
   const [selectedRoomId, setSelectedRoomId] = useState<string>(
     roomsData.length > 0 ? roomsData[0].room_id.toString() : "",
@@ -383,6 +386,7 @@ export function ReadingsChart({
           </Select>
           <IndicatorToggle indicators={indicators} indicatorParam={indicator} />
           <DatepickerRange />
+          <FrequencyIntervalFilter interval={interval as string} />
         </div>
 
         <div className="mb-4 p-4 border rounded-lg bg-muted/20">

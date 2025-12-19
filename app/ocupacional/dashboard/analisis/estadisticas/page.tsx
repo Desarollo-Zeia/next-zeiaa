@@ -11,6 +11,7 @@ import { ReadingsChart } from "@/components/chart-statistics";
 import { format } from "date-fns"
 import { cacheLife } from "next/cache";
 import { Suspense } from "react";
+import EstadisticasSkeleton from "./loading";
 // import { cacheLife } from "next/cache";
 
 // async function GetRooms(token: string) {
@@ -34,7 +35,7 @@ import { Suspense } from "react";
 
 async function Estadisticas({ searchParams }: SearchParams) {
   // const { first_room: firstRoom } = await detail()
-  const { room, indicator, unit, date_after = new Date(), date_before = new Date(), start = '00:00', end = '23:00' } = await searchParams
+  const { room, indicator, unit, date_after = new Date(), date_before = new Date(), start = '00:00', end = '23:00', interval } = await searchParams
 
   const authToken = await getToken()
 
@@ -52,7 +53,7 @@ async function Estadisticas({ searchParams }: SearchParams) {
   const currentIndicator = indicator ?? currentFirstIndicator
   const currentUnit = unit ?? currentFirstUnit
 
-  const readings = await readingsGraph({ indicator: currentIndicator, unit: currentUnit, date_after: formattedDateAfter, date_before: formattedDateBefore, hour_before: start, hour_after: end, token: authToken!, roomId: currentFirstRoom })
+  const readings = await readingsGraph({ indicator: currentIndicator, unit: currentUnit, date_after: formattedDateAfter, date_before: formattedDateBefore, hour_before: start, hour_after: end, token: authToken!, roomId: currentFirstRoom, interval })
 
 
   const indicators = generalRoomData.indicators_activated
@@ -60,7 +61,7 @@ async function Estadisticas({ searchParams }: SearchParams) {
   return (
     <div className="flex mx-2 justify-center gap-4">
 
-      <ReadingsChart indicator={currentIndicator as 'CO2' | 'HUMIDITY' | 'TEMPERATURE'} unit={currentUnit} roomsData={readings} indicators={indicators} />
+      <ReadingsChart indicator={currentIndicator as 'CO2' | 'HUMIDITY' | 'TEMPERATURE'} unit={currentUnit} roomsData={readings} indicators={indicators} interval={interval} />
     </div>
   )
 }
@@ -68,7 +69,7 @@ async function Estadisticas({ searchParams }: SearchParams) {
 export default async function Page({ searchParams }: SearchParams) {
   return (
     <div>
-      <Suspense fallback={<div>Cargando estadísticas...</div>}>
+      <Suspense fallback={<EstadisticasSkeleton />}>
         <Estadisticas searchParams={searchParams} />
       </Suspense>
     </div>

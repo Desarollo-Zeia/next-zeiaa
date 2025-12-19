@@ -10,6 +10,7 @@ import RoomSelect from "@/app/ui/filters/room-select";
 // import StatusSelect from "@/app/ui/filters/status-select";
 import { format } from "date-fns";
 import { Suspense } from "react";
+import AlertasSkeleton from "./loading";
 // import { cacheLife } from "next/cache";
 
 // async function GetRooms(token: string) {
@@ -64,7 +65,7 @@ async function Alertas({ searchParams }: SearchParams) {
         {/* <StatusSelect status_filter={thresholdsFilters} /> */}
         <DatepickerRange />
       </FiltersContainer>
-      <TableComponent data={readings.results} count={readings.count} generalRoomData={generalRoomData} indicator={currentIndicator as Indicator} />
+      <TableComponent data={readings.results} count={readings.count} generalRoomData={generalRoomData} indicator={currentIndicator as Indicator} room={currentFirstRoom as string} unit={currentUnit} date_after={formattedDateAfter as string} date_before={formattedDateBefore as string} />
     </div>
   )
 }
@@ -72,7 +73,7 @@ async function Alertas({ searchParams }: SearchParams) {
 export default async function Page({ searchParams }: SearchParams) {
   return (
     <div>
-      <Suspense fallback={<div>Cargando alertas...</div>}>
+      <Suspense fallback={<AlertasSkeleton />}>
         <Alertas searchParams={searchParams} />
       </Suspense>
     </div>

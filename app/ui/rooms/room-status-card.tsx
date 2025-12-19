@@ -5,6 +5,7 @@ import Link from "next/link"
 import { usePathname } from 'next/navigation'
 import { PlugZap, Unplug } from "lucide-react"
 import { useRoom } from "@/app/utils/func"
+import RoomToggleImage from "./room-toggle-image"
 
 type Props = {
   name: string,
@@ -33,7 +34,7 @@ export default function RoomStatusCard(
   const [, s, t, ,] = pathname.split('/')
 
   return (
-    <Card className="max-w-xs shadow-lg">
+    <Card className="w-auto shadow-lg">
       <CardContent className="p-6">
         {/* Top Section */}
         <div className="flex items-center justify-between mb-4">
@@ -72,22 +73,20 @@ export default function RoomStatusCard(
           {headquarter}
         </div>
       </CardContent>
-      <CardFooter>
-        <Link
-          className="w-full"
-          href={{
-            pathname: `/${s}/${t}/monitoreo`,
-            query: {
-              room,
-              devEUI
-            }
-          }}
-          onClick={() => changeRoom(room.toString())}
-        >
-          <Button className="w-full" >
+      <CardFooter className="flex justify-between items-center p-4 gap-2">
+        <Button asChild variant="default" className="flex-1">
+          <Link
+            href={{
+              pathname: `/${s}/${t}/monitoreo`,
+              query: { room, devEUI }
+            }}
+            onClick={() => changeRoom(room.toString())}
+          >
             Ir a detalles de la sala
-          </Button>
-        </Link>
+          </Link>
+        </Button>
+
+        <RoomToggleImage roomId={room} name={name} />
       </CardFooter>
     </Card>
   )
