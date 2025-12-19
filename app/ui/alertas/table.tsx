@@ -20,10 +20,10 @@ type TableComponentProps = {
   count: number,
   generalRoomData: GeneralRoomData,
   indicator: Indicator,
-  room: string,
-  unit: Unit,
-  date_before: string,
-  date_after: string
+  room?: string,
+  unit?: Unit,
+  date_before?: string,
+  date_after?: string
 }
 
 export default function TableComponent({ data, count, generalRoomData, indicator, room, unit, date_before, date_after }: TableComponentProps) {
