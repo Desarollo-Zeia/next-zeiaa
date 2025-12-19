@@ -102,14 +102,14 @@ export default function Peaks({ readings, indicator, indicators }: { readings: R
       case "TEMPERATURE":
         return thresholds.temperature
           ? [
-            { label: "Mínimo permitido", value: `${thresholds.temperature.min}°C`, color: "text-yellow-400", background: "bg-yellow-300" },
+            { label: "Mínimo permitido", value: `${thresholds.temperature.min}°C`, color: "text-yellow-500", background: "bg-yellow-500" },
             { label: "Máximo permitido", value: `${thresholds.temperature.max}°C`, color: "text-red-600", background: "bg-red-500" },
           ]
           : []
       case "HUMIDITY":
         return thresholds.humidity
           ? [
-            { label: "Mínimo permitido", value: `${thresholds.humidity.min}%`, color: "text-yellow-300", background: "bg-yellow-300" },
+            { label: "Mínimo permitido", value: `${thresholds.humidity.min}%`, color: "text-yellow-500", background: "bg-yellow-500" },
             { label: "Máximo permitido", value: `${thresholds.humidity.max}%`, color: "text-red-600", background: "bg-red-500" },
           ]
           : []
@@ -173,9 +173,9 @@ export default function Peaks({ readings, indicator, indicators }: { readings: R
                   <CardContent className="w-full flex justify-between gap-4 col-span-3 p-0">
                     <Card className="shadow-lg flex-1" key={formattedDateTwo(reading.readings_highest.created_at)}>
                       <CardHeader className="relative pb-0">
-                        <div className={`absolute w-[80%] left-8 -top-2 px-4 py-2 rounded-lg text-white text-sm font-medium ${colorByLever[reading.readings_highest.status as Status] ?? 'bg-[#00b0c7]'} shadow-lg text-balance text-center`}>
+                        <div className={`absolute w-[80%] left-8 -top-2 px-4 py-2 rounded-lg text-white text-sm font-medium bg-red-500 shadow-lg text-balance text-center`}>
 
-                          Nivel más alto {STATUS_TO_SPANISH[reading.readings_highest.status as Status] ? `(${STATUS_TO_SPANISH[reading.readings_highest.status as Status]})` : ''}
+                          Nivel más alto
                         </div>
                       </CardHeader>
                       <CardContent className="pt-8">
@@ -201,9 +201,8 @@ export default function Peaks({ readings, indicator, indicators }: { readings: R
                   <CardContent className="w-full flex justify-between gap-4 col-span-3 p-0">
                     <Card className="shadow-lg flex-1" key={formattedDateTwo(reading.readings_lowest.created_at)}>
                       <CardHeader className="relative pb-0">
-                        <div className={`absolute w-[80%] left-8 -top-2 px-4 py-2 rounded-lg text-white text-sm font-medium ${colorByLever[reading.readings_lowest.status as Status] ?? 'bg-[#00b0c7]'} shadow-lg text-balance text-center`}>
-
-                          Nivel más bajo {STATUS_TO_SPANISH[reading.readings_lowest.status as Status] ? `(${STATUS_TO_SPANISH[reading.readings_lowest.status as Status]})` : ''}
+                        <div className={`absolute w-[80%] left-8 -top-2 px-4 py-2 rounded-lg text-white text-sm font-medium bg-yellow-500   shadow-lg text-balance text-center`}>
+                          Nivel más bajo
                         </div>
                       </CardHeader>
                       <CardContent className="pt-8">

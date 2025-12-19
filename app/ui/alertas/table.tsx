@@ -4,7 +4,7 @@ import PaginationNumberComponent from "../pagination-number";
 import IndicatorToggle from "../filters/indicators-toggle";
 import { GeneralRoomData, Indicator, Measurement, Status, Unit } from "@/app/type";
 import { formattedDate } from "@/app/utils/func";
-import { STATUS_TO_SPANISH, UNIT_CONVERTED } from "@/app/utils/formatter";
+import { STATUS_TO_SPANISH_EXC, UNIT_CONVERTED } from "@/app/utils/formatter";
 import NoResultFound from "@/app/ui/no-result-found";
 import DownloadAlertas from "./alertas-excel";
 
@@ -64,7 +64,7 @@ export default function TableComponent({ data, count, generalRoomData, indicator
                       <TableCell >{indicator.hours.toLowerCase()}</TableCell>
                       <TableCell>{indicator.value}</TableCell>
                       <TableCell>{UNIT_CONVERTED[indicator.unit]}</TableCell>
-                      <TableCell >{STATUS_TO_SPANISH[indicator.level as Status]}</TableCell>
+                      <TableCell >{STATUS_TO_SPANISH_EXC[indicator.level as Status]}</TableCell>
                     </TableRow>
                   )
                   )
