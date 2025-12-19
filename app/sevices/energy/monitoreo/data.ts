@@ -1,6 +1,7 @@
 'use server'
-import { fetchWithAuthEnergy } from "@/app/lib/api"
-import { baseUrlEnergy } from "@/app/lib/constant"
+import { fetchWithAuth, fetchWithAuthEnergy } from "@/app/lib/api"
+import { baseUrl, baseUrlEnergy } from "@/app/lib/constant"
+import { Indicator, Unit } from "@/app/type"
 import { cacheLife } from "next/cache"
 
 export async function monitoringGraph({ headquarterId, date_after, date_before, group_by, token }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, group_by?: string, token?: string }) {
@@ -47,6 +48,21 @@ export async function exceeded({ headquarterId, date_after, date_before, page, t
 export async function exceededExcel({ headquarterId }: { headquarterId?: string, panelId?: string }) {
 
   const res = await fetchWithAuthEnergy(`/api/v1/headquarter/${headquarterId}/electrical_panel/powers/report-exceeded`)
+
+  return res
+}
+
+
+export async function alertsExcel({ room, indicator, unit, date_after, date_before }: { room?: string, indicator: Indicator, unit: Unit, date_after?: string, date_before?: string }) {
+
+  const url = new URL(`/alerts/api/room/${room}/report/`, baseUrl)
+
+  if (date_after) url.searchParams.set('date_after', date_after)
+  if (date_before) url.searchParams.set('date_before', date_before)
+  if (indicator) url.searchParams.set('indicator', indicator)
+  if (unit) url.searchParams.set('unit', unit)
+
+  const res = await fetchWithAuth(`${url.pathname}${url.search}`)
 
   return res
 }

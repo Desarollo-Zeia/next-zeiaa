@@ -8,6 +8,7 @@ import { getToken } from "@/app/lib/auth";
 import { Suspense } from "react";
 import Peaks from "@/app/ui/picos/peaks";
 import IndicatorToggle from "@/app/ui/filters/indicators-toggle";
+import PicosSkeleton from "./loading";
 
 type SearchParams = {
   searchParams: Promise<{ [key: string]: string | undefined }>
@@ -62,7 +63,7 @@ async function PicosHistoricos({ searchParams }: SearchParams) {
 export default async function Page({ searchParams }: SearchParams) {
   return (
     <div>
-      <Suspense fallback={<div>Cargando picos históricos...</div>}>
+      <Suspense fallback={<PicosSkeleton />}>
         <PicosHistoricos searchParams={searchParams} />
       </Suspense>
     </div>

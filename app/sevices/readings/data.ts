@@ -156,7 +156,7 @@ export async function readingsReal({ roomId, indicator, unit, date_after, date_b
   return res
 }
 
-export async function readingsGraph({ indicator, unit, date_after, date_before, hour_before, hour_after, token }: { roomId?: string | number, indicator: string, unit: string, date_after?: string, date_before?: string, hour_before?: string, hour_after?: string, token?: string }) {
+export async function readingsGraph({ indicator, unit, date_after, date_before, hour_before, hour_after, interval, token }: { roomId?: string | number, indicator: string, unit: string, date_after?: string, date_before?: string, hour_before?: string, hour_after?: string, token?: string, interval?: string }) {
 
   'use cache'
   cacheLife('minutes')
@@ -166,6 +166,7 @@ export async function readingsGraph({ indicator, unit, date_after, date_before, 
   if (unit) url.searchParams.set('unit', unit)
   if (date_after) url.searchParams.set('date_after', date_after)
   if (date_before) url.searchParams.set('date_before', date_before)
+  if (interval) url.searchParams.set('interval', interval)
 
   const res = await fetchWithAuth(`${url.pathname}${url.search}`, {}, token)
 
