@@ -6,6 +6,7 @@ import Image from 'next/image';
 import ExcelIconGreen from "@/public/icons/excel.png"
 import { alertsExcel } from '@/app/sevices/energy/monitoreo/data';
 import { Indicator, Unit } from '@/app/type';
+import { formattedDate } from '@/app/utils/func';
 
 export default function DownloadAlertas({ room, indicator, unit, date_after, date_before }: { room: string, indicator: Indicator, unit: Unit, date_after?: string, date_before?: string }) {
 
@@ -16,7 +17,7 @@ export default function DownloadAlertas({ room, indicator, unit, date_after, dat
       startTransition(async () => {
         const blob = await alertsExcel({ room, indicator, unit, date_after, date_before });
 
-        saveAs(blob, `Reporte monitoreo potencia excedente`);
+        saveAs(blob, `Reporte de alertas (${formattedDate(date_after as string)})-(${formattedDate(date_before as string)})`);
       })
 
     } catch (error) {

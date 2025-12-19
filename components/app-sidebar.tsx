@@ -51,6 +51,8 @@ export function AppSidebar({ module, ...props }: AppSidebarProps) {
       try {
         const res = await accountDataOcupacional()
         setUserInfo({ email: res?.email, name: res.name, avatar: res.acronym })
+
+        console.log(res)
       } catch (error) {
         console.log(error)
       }
@@ -58,6 +60,8 @@ export function AppSidebar({ module, ...props }: AppSidebarProps) {
     handleRequest()
 
   }, [])
+
+  console.log(userInfo)
 
 
   return (
