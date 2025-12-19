@@ -3,22 +3,27 @@
 import { Eye, EyeOff, Lock, SendToBack, User, Loader2 } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import { useState } from "react"
+import { useState, useTransition } from "react"
 import { useActionState } from "react"
 import { actionEnergy } from "../actions/validation"
 
 export default function Page() {
   const [showPassword, setShowPassword] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [isPending, startTransition] = useTransition()
+
   const [state, formAction] = useActionState(actionEnergy, { message: "" })
 
   const handleSubmit = async (formData: FormData) => {
-    setIsLoading(true)
-    try {
-      await formAction(formData)
-    } finally {
-      setIsLoading(false)
-    }
+    startTransition(async () => {
+      setIsLoading(true)
+      try {
+        await formAction(formData)
+      } finally {
+        setIsLoading(false)
+      }
+    })
+
   }
 
   return (
@@ -105,7 +110,7 @@ export default function Page() {
                 disabled={isLoading}
                 className="relative w-full overflow-hidden rounded-lg bg-gradient-to-r from-[rgb(0,183,202)] to-[rgb(0,186,167)] p-3 text-sm font-medium text-white shadow-lg transition-all hover:scale-[1.02] hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[rgb(0,183,202)] focus:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
-                {isLoading ? (
+                {isPending ? (
                   <div className="flex items-center justify-center">
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Iniciando sesión...

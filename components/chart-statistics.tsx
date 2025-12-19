@@ -273,8 +273,11 @@ export function ReadingsChart({
   )
 
   const [visibleRooms, setVisibleRooms] = useState<Set<number>>(() => {
-    return new Set(roomsData.map((room) => room.room_id))
+    // Solo selecciona la primera sala por defecto
+    return roomsData.length > 0 ? new Set([roomsData[0].room_id]) : new Set()
   })
+
+
 
   const roomColors = useMemo(() => {
     const colors = new Map<number, string>()
@@ -290,7 +293,11 @@ export function ReadingsChart({
 
   const chartData = useMemo(() => mergeReadings(visibleRoomsData), [visibleRoomsData])
 
-  const selectedRoom = roomsData.find((r) => r.room_id === Number(selectedRoomId))
+  const selectedRoom = roomsData.find((r) => visibleRooms.has(r.room_id))
+
+
+
+
 
   const yAxisDomain = useMemo(() => {
     const allValues = visibleRoomsData.flatMap((room) => room.readings.map((r) => r.value))
@@ -368,8 +375,8 @@ export function ReadingsChart({
         <CardDescription>{description || defaultDescription}</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="mb-4 flex items-center gap-2">
-          <Label htmlFor="room-select" className="text-sm font-medium whitespace-nowrap">
+        <div className="mb-4 flex items-center justify-end gap-2">
+          {/* <Label htmlFor="room-select" className="text-sm font-medium whitespace-nowrap">
             Mostrar umbrales de:
           </Label>
           <Select value={selectedRoomId} onValueChange={setSelectedRoomId}>
@@ -383,7 +390,7 @@ export function ReadingsChart({
                 </SelectItem>
               ))}
             </SelectContent>
-          </Select>
+          </Select> */}
           <IndicatorToggle indicators={indicators} indicatorParam={indicator} />
           <DatepickerRange />
           <FrequencyIntervalFilter interval={interval as string} />
@@ -417,14 +424,14 @@ export function ReadingsChart({
         </div>
 
         {/* Thresholds display */}
-        {selectedRoom && indicator === "CO2" && (
+        {selectedRoom && visibleRooms.size < 2 && indicator === "CO2" && (
           <CO2ThresholdsDisplay
             thresholds={selectedRoom.thresholds.co2}
             roomName={selectedRoom.room_name}
             roomColor={roomColors.get(selectedRoom.room_id) || "#3b82f6"}
           />
         )}
-        {selectedRoom && indicator === "TEMPERATURE" && (
+        {selectedRoom && visibleRooms.size < 2 && indicator === "TEMPERATURE" && (
           <MinMaxThresholdsDisplay
             thresholds={selectedRoom.thresholds.temperature}
             roomName={selectedRoom.room_name}
@@ -433,7 +440,7 @@ export function ReadingsChart({
             unit={formattedUnit}
           />
         )}
-        {selectedRoom && indicator === "HUMIDITY" && (
+        {selectedRoom && visibleRooms.size < 2 && indicator === "HUMIDITY" && (
           <MinMaxThresholdsDisplay
             thresholds={selectedRoom.thresholds.humidity}
             roomName={selectedRoom.room_name}
@@ -468,7 +475,7 @@ export function ReadingsChart({
 
 
               {/* Reference lines for CO2 */}
-              {selectedRoom && indicator === "CO2" && (
+              {selectedRoom && visibleRooms.size < 2 && indicator === "CO2" && (
                 <ReferenceLine
                   y={selectedRoom.thresholds.co2.good}
                   stroke="#22c55e"
@@ -484,7 +491,7 @@ export function ReadingsChart({
                 />
               )}
               {
-                selectedRoom && indicator === "CO2" && (
+                selectedRoom && visibleRooms.size < 2 && indicator === "CO2" && (
                   <ReferenceLine
                     y={selectedRoom.thresholds.co2.moderate}
                     stroke="#eab308"
@@ -500,7 +507,7 @@ export function ReadingsChart({
                 )
               }
               {
-                selectedRoom && indicator === "CO2" && (
+                selectedRoom && visibleRooms.size < 2 && indicator === "CO2" && (
                   <ReferenceLine
                     y={selectedRoom.thresholds.co2.unhealthy}
                     stroke="#f97316"
@@ -517,7 +524,7 @@ export function ReadingsChart({
               }
 
               {/* Reference lines for Temperature */}
-              {selectedRoom && indicator === "TEMPERATURE" && (
+              {selectedRoom && visibleRooms.size < 2 && indicator === "TEMPERATURE" && (
                 <ReferenceLine
                   y={selectedRoom.thresholds.temperature.min}
                   stroke="#3b82f6"
@@ -532,7 +539,7 @@ export function ReadingsChart({
                 />
               )}
 
-              {selectedRoom && indicator === "TEMPERATURE" && (
+              {selectedRoom && visibleRooms.size < 2 && indicator === "TEMPERATURE" && (
                 <ReferenceLine
                   y={selectedRoom.thresholds.temperature.max}
                   stroke="#ef4444"
@@ -548,7 +555,7 @@ export function ReadingsChart({
               )}
 
               {/* Reference lines for Humidity */}
-              {selectedRoom && indicator === "HUMIDITY" && (
+              {selectedRoom && visibleRooms.size < 2 && indicator === "HUMIDITY" && (
                 <ReferenceLine
                   y={selectedRoom.thresholds.humidity.min}
                   stroke="#3b82f6"
@@ -564,7 +571,7 @@ export function ReadingsChart({
               )}
 
               {/* Referencia Máxima Humedad */}
-              {selectedRoom && indicator === "HUMIDITY" && (
+              {selectedRoom && visibleRooms.size < 2 && indicator === "HUMIDITY" && (
                 <ReferenceLine
                   y={selectedRoom.thresholds.humidity.max}
                   stroke="#ef4444"
