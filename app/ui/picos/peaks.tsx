@@ -191,7 +191,7 @@ export default function Peaks({ readings, indicator, indicators }: { readings: R
                             </li>
                             <li className="flex items-center space-x-3">
                               <Clock className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
-                              <span className="text-sm">{formattedDateTwo(reading.readings_highest.created_at)}</span>
+                              <span className="text-sm">{formattedDateWithHour(reading.readings_highest.created_at)}</span>
                             </li>
                           </ul>
                         }
@@ -203,7 +203,7 @@ export default function Peaks({ readings, indicator, indicators }: { readings: R
                       <CardHeader className="relative pb-0">
                         <div className={`absolute w-[80%] left-8 -top-2 px-4 py-2 rounded-lg text-white text-sm font-medium ${colorByLever[reading.readings_lowest.status as Status] ?? 'bg-[#00b0c7]'} shadow-lg text-balance text-center`}>
 
-                          Nivel más alto {STATUS_TO_SPANISH[reading.readings_lowest.status as Status] ? `(${STATUS_TO_SPANISH[reading.readings_lowest.status as Status]})` : ''}
+                          Nivel más bajo {STATUS_TO_SPANISH[reading.readings_lowest.status as Status] ? `(${STATUS_TO_SPANISH[reading.readings_lowest.status as Status]})` : ''}
                         </div>
                       </CardHeader>
                       <CardContent className="pt-8">

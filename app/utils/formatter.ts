@@ -54,6 +54,18 @@ export const STATUS_TO_SPANISH = {
   TEMP_MAX: 'Máximo permitido',
 }
 
+export const STATUS_TO_SPANISH_EXC = {
+  MODERATE: 'Moderado',
+  UNHEALTHY: 'Insalubre',
+  DANGEROUS: 'Peligroso',
+  GOOD: 'Bueno',
+  CRITICAL: 'Crítico',
+  HUMIDITY_MIN: 'Bajo',
+  HUMIDITY_MAX: 'Alto',
+  TEMP_MIN: 'Bajo',
+  TEMP_MAX: 'Alto',
+}
+
 export const STATUS_COLOR = {
   MODERATE: 'text-yellow-500',
   UNHEALTHY: 'text-orange-500',
