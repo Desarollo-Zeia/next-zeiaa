@@ -40,7 +40,7 @@ export default function TableComponent({ data, count, generalRoomData, indicator
     </CardHeader> */}
       <CardHeader className="flex flex-row items-center justify-end space-y-0 pb-2 gap-8">
         <IndicatorToggle indicators={avaibleIndicatorsForAlerts} indicatorParam={indicator} />
-        {/* <DownloadAlertas room={room} indicator={indicator} unit={unit} date_after={date_after} date_before={date_before} /> */}
+        <DownloadAlertas room={room as string} indicator={indicator} unit={unit as Unit} date_after={date_after} date_before={date_before} />
       </CardHeader>
       {
         count > 0 ? (
