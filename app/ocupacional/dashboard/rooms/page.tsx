@@ -44,8 +44,6 @@ async function Rooms({ searchParams }: SearchParams) {
 
   const headquarters = await getHeadquartersOcupacional({ token: authToken! })
 
-  console.log(getRoomsList.results)
-
   return (
     <div>
       <FiltersContainer>
