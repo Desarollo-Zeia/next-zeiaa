@@ -36,7 +36,7 @@ type SearchParams = {
 
 async function PicosHistoricos({ searchParams }: SearchParams) {
 
-  const { room, indicator = 'CO2', unit = 'PPM', date_after = new Date(), date_before = new Date(), page, status } = await searchParams
+  const { room, indicator, unit, date_after = new Date(), date_before = new Date(), page, status } = await searchParams
 
   const authToken = await getToken()
 
@@ -48,9 +48,12 @@ async function PicosHistoricos({ searchParams }: SearchParams) {
 
   const currentFirstRoom = room ? room : firstRoom.id
   const generalRoomData = await roomGeneralData({ roomId: currentFirstRoom, token: authToken! })
-  const readings = await readingsPeaksTable({ roomId: currentFirstRoom, indicator, unit, date_after: formattedDateAfter, date_before: formattedDateBefore, page, status, token: authToken! })
 
-  console.log(generalRoomData)
+  const { indicator: currentFirstIndicator, unit: currentFirstUnit } = generalRoomData.indicators_activated[0]
+
+  const currentIndicator = indicator ?? currentFirstIndicator
+  const currentUnit = unit ?? currentFirstUnit
+  const readings = await readingsPeaksTable({ roomId: currentFirstRoom, indicator: currentIndicator, unit: currentUnit, date_after: formattedDateAfter, date_before: formattedDateBefore, page, status, token: authToken! })
 
   const thresholdsFilters = generalRoomData?.thresholds_filter[indicator as Indicator]
 
@@ -61,7 +64,7 @@ async function PicosHistoricos({ searchParams }: SearchParams) {
         <StatusSelect status_filter={thresholdsFilters} />
         <DatepickerRange />
       </FiltersContainer>
-      <TableComponent generalRoomData={generalRoomData} readings={readings} indicator={indicator as Indicator} />
+      <TableComponent generalRoomData={generalRoomData} readings={readings} indicator={currentIndicator as Indicator} />
     </div>
   )
 }
