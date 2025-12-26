@@ -48,7 +48,7 @@ export default function PeriodPickerFilter({ weekday }: { weekday: string }) {
                 {
                     periods.map(period => {
                         return (
-                            <ToggleGroupItem key={period.id} value={period.value} disabled={period.value === weekday}>
+                            <ToggleGroupItem key={period.id} value={period.value} disabled={period.value === weekday} className='text-nowrap'>
                                 {period.name}
                             </ToggleGroupItem>
                         )

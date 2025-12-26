@@ -14,6 +14,7 @@ import { format } from 'date-fns'
 import React, { Suspense } from 'react'
 import TodayAlertBanner from '@/app/ui/energia/panel/today-alert-banner'
 import { getToken } from '@/app/lib/auth'
+import PanelsFilterEnergy from '@/app/ui/energia/filters/panels-energy-filter'
 
 const monthDateRanges: { [key: number]: string } = {
   1: "2025-01-01:2025-01-31",
@@ -73,6 +74,8 @@ async function DashboardContent({ searchParams }: SearchParams) {
     token: authToken!
   })
 
+
+
   const firstPoint = point || measurementPoints?.results[0]?.measurement_points[0].id.toString()
 
   const dashboardTableReadings = await dashboardTable({
@@ -124,7 +127,8 @@ async function DashboardContent({ searchParams }: SearchParams) {
       </div>
       <div className='w-full'>
         <div className='flex justify-between gap-4'>
-          <div className='flex flex-col justify-center'>
+          <div className='flex flex-col justify-center text-sm'>
+            {/* <p></p> */}
             <p>Consumo energético (kWh) con umbrales</p>
             <p>Gráfico de lunes a viernes con el filtro de fines de semana</p>
           </div>
@@ -134,7 +138,8 @@ async function DashboardContent({ searchParams }: SearchParams) {
             </div>
             <div className='flex justify-between items-center gap-4'>
               <PeriodPickerFilter weekday={weekday} />
-              <div>
+              <div className='flex gap-2'>
+                <PanelsFilterEnergy energyPanels={measurementPointsPanels.results} panel={firstPanel} />
                 <MeasurementPointFilter measurementPoints={measurementPoints} point={firstPoint} />
               </div>
             </div>

@@ -198,13 +198,13 @@ export const ELECTRIC_PARAMETERS = {
     unit: "%",
   },
 
-  EPpos: { parameter: "Consumo de energía activa entregada", unit: "KWh" },
-  EPneg: { parameter: "Consumo de energía activa recibida", unit: "KWh" },
+  EPpos: { parameter: "Energía activa consumida", unit: "KWh" },
+  EPneg: { parameter: "Energía activa generada", unit: "KWh" },
   EQpos: {
-    parameter: "Consumo de energía reactiva",
+    parameter: "Energía reactiva inductiva ",
     unit: "KVarh",
   },
-  EQneg: { parameter: "Consumo de energía reactiva", unit: "KVarh" },
+  EQneg: { parameter: "Energía reactiva capacitiva", unit: "KVarh" },
   EPposA: {
     parameter: "Consumo de energía activa en la fase R",
     unit: "KWh",

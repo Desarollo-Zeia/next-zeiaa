@@ -10,6 +10,8 @@ interface MonitoringCardProps {
 }
 
 export default function MostThreeUnbalanced({ title, frequency, cup, vup }: MonitoringCardProps) {
+
+  const desbalancePorcentage = ((cup / frequency) * 100).toFixed(2)
   return (
     <Card className="w-full max-w-lg bg-card border border-border shadow-sm">
       <CardContent className="p-4">
@@ -25,6 +27,9 @@ export default function MostThreeUnbalanced({ title, frequency, cup, vup }: Moni
                 CUF: {cup} VUF: {vup}
               </div>
             </div>
+          </div>
+          <div>
+            <p className="text-sm font-medium text-card-foreground">La red está  desbalanceada: {desbalancePorcentage}%</p>
           </div>
         </div>
       </CardContent>
