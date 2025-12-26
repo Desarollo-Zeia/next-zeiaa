@@ -39,6 +39,7 @@ type VoltageByDay = {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function BarChart({ readingsGraph, weekday, thresholds }: { readingsGraph: any[], weekday?: string, thresholds?: VoltageByDay }) {
 
+  console.log(readingsGraph)
   const inferiorThreshold =
     weekday === '1,2,3,4,5'
       ? thresholds?.workdays.inferior

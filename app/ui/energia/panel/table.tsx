@@ -26,9 +26,6 @@ interface PanelReadings {
 
 export default function TableComponent({ readings }: { readings: PanelReadings }) {
 
-  console.log(readings.results)
-
-
   return (
     <div className='flex-1'>
       <h3 className='p-4 font-semibold text-[#6d6c6c]'>Tablero de distribución</h3>

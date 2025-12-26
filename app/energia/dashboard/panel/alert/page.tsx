@@ -62,6 +62,8 @@ async function AlertsContent({ searchParams }: SearchParams) {
 
   const dashboardTableAlertsReadings = await dashboardTableAlerts({ headquarterId: firstHeadquarter, point: firstPoint, date_after: formattedDateAfter, date_before: formattedDateBefore, page })
 
+  console.log(dashboardTableAlertsReadings)
+
   return (
     <>
       <FiltersContainer>

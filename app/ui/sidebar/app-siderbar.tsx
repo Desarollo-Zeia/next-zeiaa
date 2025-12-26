@@ -38,8 +38,8 @@ export function AppSidebar() {
         const res = await accountData()
         const { results } = res
         const user = results[0]
-        const { email, last_name, energy_modules } = user
-        setUserInfo({ email, name: last_name, avatar: '' })
+        const { email, last_name, energy_modules, enterprise_name } = user
+        setUserInfo({ email, name: enterprise_name, avatar: '' })
         setEnergyModules(energy_modules)
       } catch (error) {
         console.log(error)
