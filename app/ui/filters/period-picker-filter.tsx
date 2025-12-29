@@ -25,7 +25,6 @@ const periods = [
 
 export default function PeriodPickerFilter({ weekday }: { weekday: string }) {
 
-
     const searchParams = useSearchParams()
 
     const [isPending, startTransition] = useTransition()

@@ -1,5 +1,6 @@
 import React from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import PaginationNumberComponent from '../../pagination-number'
 
 type Reading = {
   id: number,
@@ -96,6 +97,7 @@ export default function TableComponent({ readings }: { readings: PanelReadings }
 
         </TableBody>
       </Table>
+      <PaginationNumberComponent count={readings.count} itemsPerPage={10} />
     </div>
   )
 }

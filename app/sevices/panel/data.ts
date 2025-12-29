@@ -1,7 +1,7 @@
 'use server'
 import { fetchWithAuthEnergy } from "@/app/lib/api"
 import { baseUrlEnergy } from "@/app/lib/constant"
-import { unstable_cache } from 'next/cache'
+import { cacheLife, unstable_cache } from 'next/cache'
 import { CACHE_DURATION, CACHE_TAGS } from "@/app/lib/cache"
 import { getToken } from "@/app/lib/auth"
 
@@ -28,6 +28,8 @@ const _dashboardTableCached = unstable_cache(
 )
 
 export async function dashboardTable({ headquarterId, date_after, date_before, unit, page, category, point, token }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, unit?: string, page?: string, category?: string, point?: string, token: string }) {
+  'use cache'
+  cacheLife('minutes')
   const url = new URL(`/api/v1/headquarter/${headquarterId}/devices/measurement-points/list/`, baseUrlEnergy)
 
   if (date_after) url.searchParams.set('date_after', date_after)
@@ -63,6 +65,8 @@ const _porcentageGraphCached = unstable_cache(
 )
 
 export async function porcentageGraph({ headquarterId, this_week, this_month, date_after, date_before, token }: { headquarterId: string, this_week?: string, this_month?: string, date_after?: string, date_before?: string, token: string }) {
+  'use cache'
+  cacheLife('minutes')
   const url = new URL(`/api/v1/headquarter/${headquarterId}/consumption-distribution/`, baseUrlEnergy)
 
   if (this_week) url.searchParams.set('this_week', this_week)
@@ -100,6 +104,8 @@ const _consumeGraphCached = unstable_cache(
 )
 
 export async function consumeGraph({ headquarterId, panelId, date_after, date_before, indicador, unit, last_by, category, point, weekday, token }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, indicador?: string, unit?: string, last_by?: string, category?: string, point?: string, weekday: string, token: string }) {
+  'use cache'
+  cacheLife('minutes')
   const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/measurement_points/${point}/readings/graph?this_month=true`, baseUrlEnergy)
 
   if (date_after) url.searchParams.set('date_after', date_after)

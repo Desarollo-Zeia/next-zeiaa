@@ -24,6 +24,8 @@ export async function getHeadquartersOcupacional({ token }: { token: string }) {
 }
 
 export async function getHeadquarters(token: string) {
+  'use cache'
+  cacheLife('minutes')
   return await fetchWithAuthEnergy('/api/v1/user/headquarters/', {}, token)
 }
 
@@ -35,6 +37,8 @@ export async function getHeadquartersAmbiental({ token }: { token: string }) {
 }
 
 export async function getMeasurementPoints({ electricalpanelId, token }: { electricalpanelId: string, token: string }) {
+  'use cache'
+  cacheLife('minutes')
   return await fetchWithAuthEnergy(`/api/v1/electrical-panel/${electricalpanelId}/devices/measurement-points/`, {}, token)
 
 }
