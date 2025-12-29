@@ -7,7 +7,7 @@ import { getToken } from "@/app/lib/auth"
 
 const _dashboardTableCached = unstable_cache(
   async (token: string, headquarterId: string, date_after?: string, date_before?: string, unit?: string, page?: string, category?: string, point?: string) => {
-    const url = new URL(`/api/v1/headquarter/${headquarterId}/devices/measurement-points/list/`, baseUrlEnergy)
+    const url = new URL(`/api/v1/headquarter/${headquarterId}devices/measurement-points/list/`, baseUrlEnergy)
 
     if (date_after) url.searchParams.set('date_after', date_after)
     if (date_before) url.searchParams.set('date_before', date_before)
@@ -27,10 +27,10 @@ const _dashboardTableCached = unstable_cache(
   }
 )
 
-export async function dashboardTable({ headquarterId, date_after, date_before, unit, page, category, point, token }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, unit?: string, page?: string, category?: string, point?: string, token: string }) {
+export async function dashboardTable({ headquarterId, panelId, date_after, date_before, unit, page, category, point, token }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, unit?: string, page?: string, category?: string, point?: string, token: string }) {
   'use cache'
   cacheLife('minutes')
-  const url = new URL(`/api/v1/headquarter/${headquarterId}/devices/measurement-points/list/`, baseUrlEnergy)
+  const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/devices/measurement-points/list/`, baseUrlEnergy)
 
   if (date_after) url.searchParams.set('date_after', date_after)
   if (date_before) url.searchParams.set('date_before', date_before)
@@ -64,10 +64,10 @@ const _porcentageGraphCached = unstable_cache(
   }
 )
 
-export async function porcentageGraph({ headquarterId, this_week, this_month, date_after, date_before, token }: { headquarterId: string, this_week?: string, this_month?: string, date_after?: string, date_before?: string, token: string }) {
+export async function porcentageGraph({ headquarterId, panelId, this_week, this_month, date_after, date_before, token }: { headquarterId: string, panelId: string, this_week?: string, this_month?: string, date_after?: string, date_before?: string, token: string }) {
   'use cache'
   cacheLife('minutes')
-  const url = new URL(`/api/v1/headquarter/${headquarterId}/consumption-distribution/`, baseUrlEnergy)
+  const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/consumption-distribution/`, baseUrlEnergy)
 
   if (this_week) url.searchParams.set('this_week', this_week)
   if (this_month) url.searchParams.set('this_month', this_month)
@@ -81,7 +81,7 @@ export async function porcentageGraph({ headquarterId, this_week, this_month, da
 
 const _consumeGraphCached = unstable_cache(
   async (token: string, headquarterId: string, panelId: string, point: string, weekday: string, date_after?: string, date_before?: string, indicador?: string, unit?: string, last_by?: string, category?: string) => {
-    const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/measurement_points/${point}/readings/graph?this_month=true`, baseUrlEnergy)
+    const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/consumption-distribution/?this_month=true`, baseUrlEnergy)
 
     if (date_after) url.searchParams.set('date_after', date_after)
     if (date_before) url.searchParams.set('date_before', date_before)

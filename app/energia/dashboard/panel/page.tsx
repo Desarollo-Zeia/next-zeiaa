@@ -85,6 +85,7 @@ async function DashboardContent({ searchParams }: SearchParams) {
     date_after: formattedDateAfter,
     date_before: formattedDateBefore,
     point: firstPoint,
+    panelId: firstPanel,
     page
   })
 
@@ -96,6 +97,7 @@ async function DashboardContent({ searchParams }: SearchParams) {
     this_week,
     date_after: formattedDateAfter,
     date_before: formattedDateBefore,
+    panelId: firstPanel,
     token: authToken!
   })
 
