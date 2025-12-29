@@ -37,18 +37,13 @@ export const formattedDateTwo = (date: string) => {
 }
 
 export const formattedDate = (date: string) => {
-  // Parsear la cadena de fecha en un objeto Date
-  const parsedDate = parse(date, 'yyyy-MM-dd', new Date())
+  // Intentar parsear como yyyy-MM-dd, si falla usar new Date()
+  let parsedDate = parse(date, 'yyyy-MM-dd', new Date())
 
-  // Verificar si la fecha es válida
-  // if (isNaN(parsedDate.getTime())) {
-  //   throw new Error("Invalid date format");
-  // }
-
-
-
-  // Sumar un día a la fecha analizada
-  // const nextDay = addDays(parsedDate, 1)
+  // Si el parse falla (Invalid Date), usar new Date() como fallback
+  if (isNaN(parsedDate.getTime())) {
+    parsedDate = new Date(date)
+  }
 
   // Formatear la fecha
   return capitalizeFirstLetter(format(parsedDate, "EEEE d 'de' MMMM", { locale: es }));

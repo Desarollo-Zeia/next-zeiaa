@@ -59,16 +59,16 @@ export function DatepickerRange({
   }, [start, end])
 
   // ref para el timer del debounce
-  const debounceRef = React.useRef<number>(0)
+  const debounceRef = React.useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
   React.useEffect(() => {
     const nextParams = new URLSearchParams(searchParams as any)  // eslint-disable-line @typescript-eslint/no-explicit-any
     if (fecha?.from || fecha?.to) {
       nextParams.delete("page")
     }
-    window.clearTimeout(debounceRef.current)
+    clearTimeout(debounceRef.current)
 
-    debounceRef.current = window.setTimeout(() => {
+    debounceRef.current = setTimeout(() => {
       // construimos params según fecha
       if (fecha?.from) {
         nextParams.set("date_after", fecha.from.toISOString())
@@ -98,7 +98,7 @@ export function DatepickerRange({
     }, 500)
 
     return () => {
-      window.clearTimeout(debounceRef.current)
+      clearTimeout(debounceRef.current)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fecha])
