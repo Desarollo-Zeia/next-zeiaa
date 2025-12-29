@@ -37,6 +37,7 @@ async function DashboardContent({ searchParams }: SearchParams) {
     headquarter,
     panel,
     point,
+    page,
     weekday = '1,2,3,4,5',
     date_start,
     date_end,
@@ -84,7 +85,7 @@ async function DashboardContent({ searchParams }: SearchParams) {
     date_after: formattedDateAfter,
     date_before: formattedDateBefore,
     point: firstPoint,
-    page: '1'
+    page
   })
 
   const alertToday = await lastAlertToday(authToken!)
