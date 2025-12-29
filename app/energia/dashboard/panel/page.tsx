@@ -118,6 +118,7 @@ async function DashboardContent({ searchParams }: SearchParams) {
   return (
     <>
       <FiltersContainer>
+        <PanelsFilterEnergy energyPanels={measurementPointsPanels.results} panel={firstPanel} />
         <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} energy={firstHeadquarter} />
       </FiltersContainer>
       <TodayAlertBanner alertToday={alertToday} />
