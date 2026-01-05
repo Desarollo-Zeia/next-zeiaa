@@ -83,6 +83,8 @@ async function HomeContent({ searchParams }: SearchParams) {
     }),
   ])
 
+  console.log(measurementPoints)
+
 
   return (
     <div className="w-full">
@@ -93,9 +95,13 @@ async function HomeContent({ searchParams }: SearchParams) {
         <DatepickerRange />
         <DownloadExcel headquarterId={firstHeadquarter} point={firstPoint} panelId={firstPanel} date_after={formattedDateAfter} date_before={formattedDateBefore} unit={unit} />
       </FiltersContainer>
-      <div className="flex items-center justify-center min-h-full">
-        <MeasurementTable readings={readings} category={category} indicator={indicator} />
-        <Graph readingsGraph={readingsGraph} category={category} indicator={indicator} last_by={last_by} readings={readings} />
+      <div className="flex gap-4 min-h-full">
+        <div className="w-2/5">
+          <MeasurementTable readings={readings} category={category} indicator={indicator} />
+        </div>
+        <div className="w-3/5">
+          <Graph readingsGraph={readingsGraph} category={category} indicator={indicator} last_by={last_by} readings={readings} />
+        </div>
       </div>
     </div>
   )
