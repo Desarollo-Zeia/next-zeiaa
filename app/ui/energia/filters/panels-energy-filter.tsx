@@ -23,15 +23,15 @@ export default function PanelsFilterEnergy({ energyPanels = [], panel }: PanelsF
   const pathname = usePathname()
 
   const handlePanelChange = (panelId: string) => {
-      startTransition(() => {
-        const params = new URLSearchParams(searchParams)
-  
-        params.set("panel", panelId)
-        params.set("page", '1')
-        params.delete('point')
-         replace(`${pathname}?${params.toString()}`, { scroll: false });
-      })
-    }
+    startTransition(() => {
+      const params = new URLSearchParams(searchParams)
+
+      params.set("panel", panelId)
+      params.set("page", '1')
+      params.delete('point')
+      replace(`${pathname}?${params.toString()}`, { scroll: false });
+    })
+  }
 
   return (
     <div className="relative">
@@ -49,9 +49,9 @@ export default function PanelsFilterEnergy({ energyPanels = [], panel }: PanelsF
           </SelectGroup>
         </SelectContent>
         {isPending && (
-            <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50">
+          <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50">
             <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
-            </div>
+          </div>
         )}
       </Select>
     </div>

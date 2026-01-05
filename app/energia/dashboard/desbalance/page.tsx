@@ -55,6 +55,10 @@ async function DesbalancedDashboardContent({ searchParams }: SearchParams) {
 
   const headquarters = await getHeadquarters(authToken!)
 
+  const formattedDateAfter = format(date_after, 'yyyy-MM-dd')
+  const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
+
+
   const { results } = headquarters
 
   const firstHeadquarter = headquarter || results[0].id
@@ -67,37 +71,38 @@ async function DesbalancedDashboardContent({ searchParams }: SearchParams) {
 
   const firstPoint = point || measurementPoints?.results[0]?.measurement_points[0].id.toString()
 
-  const currentReadings = await currentGraph({ headquarterId: firstHeadquarter, panelId: firstPanel, point: firstPoint, date_after: format(date_after, "yyyy-MM-dd"), date_before: format(date_before, "yyyy-MM-dd"), token: authToken! })
-  const voltageReadings = await voltageGraph({ headquarterId: firstHeadquarter, panelId: firstPanel, point: firstPoint, date_after: format(date_after, "yyyy-MM-dd"), date_before: format(date_before, "yyyy-MM-dd"), token: authToken! })
+  const currentReadings = await currentGraph({ headquarterId: firstHeadquarter, panelId: firstPanel, point: firstPoint, date_after: formattedDateAfter, date_before: formattedDateBefore, token: authToken! })
+  const voltageReadings = await voltageGraph({ headquarterId: firstHeadquarter, panelId: firstPanel, point: firstPoint, date_after: formattedDateAfter, date_before: formattedDateBefore, token: authToken! })
 
   const threeUnbalanced = await threeMostUnbalanced({ headquarterId: firstHeadquarter, token: authToken! })
 
   const { top_unbalanced_measurement_points: [first, second, third] } = threeUnbalanced
 
   return (
-    <div className="w-full h-auto">
+    <div className="w-full h-auto space-y-6">
       <FiltersContainer>
         <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} energy={firstHeadquarter} />
         <PanelsFilterEnergy energyPanels={measurementPointsPanels.results} panel={firstPanel} />
         <MeasurementPointFilter measurementPoints={measurementPoints} point={firstPoint} />
-        {/* <PanelsFilterEnergy energyPanels={energyDetails.energy_headquarters[0].electrical_panels} /> */}
         <DatepickerRange />
       </FiltersContainer>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full items-center" >
-        <div className="flex flex-col items-center gap-2">
-          <h3>Top 3 equipos con mayor desbalance del día</h3>
-          <MostThreeUnbalanced title={first.measurement_point_name} frequency={first.total_readings} cup={first.current_unbalanced} vup={first.voltage_unbalanced} />
-          <MostThreeUnbalanced title={second.measurement_point_name} frequency={second.total_readings} cup={second.current_unbalanced} vup={second.voltage_unbalanced} />
-          <MostThreeUnbalanced title={third.measurement_point_name} frequency={third.total_readings} cup={third.current_unbalanced} vup={third.voltage_unbalanced} />
-        </div>
-        <div className="flex flex-col gap-4">
-          <div>
-            <MetricSelector />
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pl-4">
+        {/* Top 3 equipos */}
+        <div>
+          <h3 className="text-lg font-medium text-center mb-3">Top 3 equipos con mayor desbalance del día</h3>
+          <div className="flex flex-col gap-3">
+            <MostThreeUnbalanced title={first.measurement_point_name} frequency={first.total_readings} cup={first.current_unbalanced} vup={first.voltage_unbalanced} />
+            <MostThreeUnbalanced title={second.measurement_point_name} frequency={second.total_readings} cup={second.current_unbalanced} vup={second.voltage_unbalanced} />
+            <MostThreeUnbalanced title={third.measurement_point_name} frequency={third.total_readings} cup={third.current_unbalanced} vup={third.voltage_unbalanced} />
           </div>
-          <div className="flex justify-center items-center">
-            {
-              metric === 'current' ? <CurrentChartCount currentReadings={currentReadings} /> : <VoltageChartCount voltageReadings={voltageReadings} />
-            }
+        </div>
+
+        {/* Gráfica */}
+        <div className="lg:col-span-2">
+          <MetricSelector />
+          <div className="w-full mt-3">
+            {metric === 'current' ? <CurrentChartCount currentReadings={currentReadings} /> : <VoltageChartCount voltageReadings={voltageReadings} />}
           </div>
         </div>
       </div>

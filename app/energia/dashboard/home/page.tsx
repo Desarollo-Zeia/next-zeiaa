@@ -83,7 +83,11 @@ async function HomeContent({ searchParams }: SearchParams) {
     }),
   ])
 
-  console.log(measurementPoints)
+  const energyPanel = measurementPointsPanels.results.find((p: any) => p.id.toString() === firstPanel) // @ts-ignore
+  const energyMeasurementPoint = measurementPoints.results.find((mp: any) => mp.id.toString() === firstPoint).measurement_points[0].name // @ts-
+
+
+  console.log(energyMeasurementPoint)
 
 
   return (
@@ -93,7 +97,7 @@ async function HomeContent({ searchParams }: SearchParams) {
         <PanelsFilterEnergy energyPanels={measurementPointsPanels.results} panel={firstPanel} />
         <MeasurementPointFilter measurementPoints={measurementPoints} point={firstPoint} />
         <DatepickerRange />
-        <DownloadExcel headquarterId={firstHeadquarter} point={firstPoint} panelId={firstPanel} date_after={formattedDateAfter} date_before={formattedDateBefore} unit={unit} />
+        <DownloadExcel headquarterId={firstHeadquarter} point={firstPoint} panelId={firstPanel} date_after={formattedDateAfter} date_before={formattedDateBefore} unit={unit} energyPanel={energyPanel} measurementPoint={energyMeasurementPoint} />
       </FiltersContainer>
       <div className="flex gap-4 min-h-full">
         <div className="w-2/5">

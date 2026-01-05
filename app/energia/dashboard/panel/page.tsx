@@ -9,6 +9,7 @@ import TableComponent from '@/app/ui/energia/panel/table'
 import FiltersContainer from '@/app/ui/filters/filters-container'
 import MeasurementPointFilter from '@/app/ui/filters/measurement-points-filter'
 import MonthFilter from '@/app/ui/filters/month-filter'
+import YearFilter from '@/app/ui/filters/year-filter'
 import PeriodPickerFilter from '@/app/ui/filters/period-picker-filter'
 import { format } from 'date-fns'
 import React, { Suspense } from 'react'
@@ -16,19 +17,33 @@ import TodayAlertBanner from '@/app/ui/energia/panel/today-alert-banner'
 import { getToken } from '@/app/lib/auth'
 import PanelsFilterEnergy from '@/app/ui/energia/filters/panels-energy-filter'
 
-const monthDateRanges: { [key: number]: string } = {
-  1: "2025-01-01:2025-01-31",
-  2: "2025-02-01:2025-02-28",
-  3: "2025-03-01:2025-03-31",
-  4: "2025-04-01:2025-04-30",
-  5: "2025-05-01:2025-05-31",
-  6: "2025-06-01:2025-06-30",
-  7: "2025-07-01:2025-07-31",
-  8: "2025-08-01:2025-08-31",
-  9: "2025-09-01:2025-09-30",
-  10: "2025-10-01:2025-10-31",
-  11: "2025-11-01:2025-11-30",
-  12: "2025-12-01:2025-12-31",
+function isLeapYear(year: number): boolean {
+  return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0)
+}
+
+function getLastDayOfMonth(year: number, month: number): number {
+  const daysInMonth: { [key: number]: number } = {
+    1: 31,
+    2: isLeapYear(year) ? 29 : 28,
+    3: 31,
+    4: 30,
+    5: 31,
+    6: 30,
+    7: 31,
+    8: 31,
+    9: 30,
+    10: 31,
+    11: 30,
+    12: 31,
+  }
+  return daysInMonth[month]
+}
+
+function getMonthDateRange(year: number, month: number): string {
+  const startDate = `${year}-${month.toString().padStart(2, '0')}-01`
+  const lastDay = getLastDayOfMonth(year, month)
+  const endDate = `${year}-${month.toString().padStart(2, '0')}-${lastDay.toString().padStart(2, '0')}`
+  return `${startDate}:${endDate}`
 }
 
 // Componente que maneja la carga de datos
@@ -44,13 +59,18 @@ async function DashboardContent({ searchParams }: SearchParams) {
     date_after,
     date_before,
     this_month,
-    this_week
+    this_week,
+    year
   } = await searchParams
 
   const authToken = await getToken()
 
-  const currentMonthNumber = monthDateRanges[new Date().getMonth() + 1]
-  const [defaultStart, defaultFinish] = currentMonthNumber.split(":")
+  const currentYear = new Date().getFullYear()
+  const selectedYear = year ? parseInt(year, 10) : currentYear
+  const currentMonth = new Date().getMonth() + 1
+
+  const defaultMonthRange = getMonthDateRange(selectedYear, currentMonth)
+  const [defaultStart, defaultFinish] = defaultMonthRange.split(":")
 
   const formattedDateAfter = date_after ? format(date_after, 'yyyy-MM-dd') : undefined
   const formattedDateBefore = date_before ? format(date_before, 'yyyy-MM-dd') : undefined
@@ -141,8 +161,9 @@ async function DashboardContent({ searchParams }: SearchParams) {
             <p>Gráfico de lunes a viernes con el filtro de fines de semana</p>
           </div>
           <div className='flex flex-col gap-4 px-4'>
-            <div className='flex items-end justify-end relative'>
-              <MonthFilter />
+            <div className='flex items-end justify-end relative gap-2'>
+              <YearFilter year={selectedYear.toString()} />
+              <MonthFilter year={selectedYear.toString()} />
             </div>
             <div className='flex justify-between items-center gap-4'>
               <PeriodPickerFilter weekday={weekday} />

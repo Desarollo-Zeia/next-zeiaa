@@ -9,7 +9,7 @@ import { formatFromUS } from '@/app/utils/func';
 import { START_DATE } from '@/app/utils/formatter';
 
 
-export default function DownloadExcel({ headquarterId, panelId, date_after = START_DATE, date_before = START_DATE, unit, point }: { headquarterId?: string, panelId?: string, date_after?: string, date_before?: string, unit?: string, point: string }) {
+export default function DownloadExcel({ headquarterId, panelId, date_after = START_DATE, date_before = START_DATE, unit, point, energyPanel, measurementPoint }: { headquarterId?: string, panelId?: string, date_after?: string, date_before?: string, unit?: string, point: string, energyPanel: any, measurementPoint: any }) { // ts-ignore
 
   const [isPending, startTransition] = useTransition()
 
@@ -20,7 +20,7 @@ export default function DownloadExcel({ headquarterId, panelId, date_after = STA
 
         const blob = await consumeExcel({ headquarterId, panelId, date_after, date_before, unit, point });
 
-        saveAs(blob, `Reporte:${formatFromUS(date_after!)} - ${formatFromUS(date_before!)}`);
+        saveAs(blob, `${energyPanel?.name} - ${measurementPoint} - ${formatFromUS(date_after!)} - ${formatFromUS(date_before!)}`);
       })
     } catch (error) {
       console.error('Error al descargar el reporte:', error);

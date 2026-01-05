@@ -54,7 +54,7 @@ export default function VoltageChartCount({ voltageReadings }: { voltageReadings
   const { results = [], message } = voltageReadings?.[0] ?? {}
 
   const dataPoints = results?.map((item: Result) => ({
-    x: new Date(item.date ?? '').toISOString(),
+    x: item.date ? `${item.date}T12:00:00` : '',
     y: item.unbalanced_count,
   })) || []
 

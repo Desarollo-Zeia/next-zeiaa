@@ -57,7 +57,7 @@ export default function CurrentChartCount({ currentReadings }: { currentReadings
   const { results = [], message } = currentReadings?.[0] ?? {}
 
   const dataPoints = results?.map((item: Result) => ({
-    x: new Date(item.date ?? '').toISOString(),
+    x: item.date ? `${item.date}T12:00:00` : '',
     y: item.unbalanced_count,
   })) || []
 
@@ -83,11 +83,9 @@ export default function CurrentChartCount({ currentReadings }: { currentReadings
         ticks: {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           callback: (value: any) => {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const date = new Date(results[value].date as any)
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const dateFormatted = formattedWithoutMonth(date as any)
-            return dateFormatted
+            const dateStr = results[value]?.date
+            if (!dateStr) return ''
+            return formattedWithoutMonth(`${dateStr}T12:00:00`)
           }
         }
 
@@ -105,7 +103,8 @@ export default function CurrentChartCount({ currentReadings }: { currentReadings
         callbacks: {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           title: function (tooltipItems: any) {
-            const date = new Date(tooltipItems[0].label)
+            const label = tooltipItems[0].label
+            const date = new Date(label)
             const dateFormatted = capitalizeFirstLetter(format(date, "EEEE d 'de' MMMM", { locale: es }))
             return dateFormatted
           },
