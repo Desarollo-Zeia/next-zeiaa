@@ -79,6 +79,7 @@ export async function readingsDataAmbiental({ roomId, indicator = 'CO2', unit = 
   const res = await fetchWithAuthAmbiental(`${url.pathname}${url.search}`, {}, token)
 
   return res
+
 }
 
 export async function readingsPeaks({ roomId, indicator, unit, date_after, date_before, page, status, token }: { roomId: string | number, indicator?: string, unit?: string, date_after?: string, date_before?: string, page?: string, status?: string, token?: string }) {
