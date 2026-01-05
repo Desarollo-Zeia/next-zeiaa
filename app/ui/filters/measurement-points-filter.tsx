@@ -60,6 +60,7 @@ export default function MeasurementPointFilter({ measurementPoints, point }: { m
   };
 
 
+
   return (
     <div className='relative'>
       <Select

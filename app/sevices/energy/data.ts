@@ -60,30 +60,19 @@ export async function consumeGraph({ headquarterId, panelId, date_after = START_
   return res
 }
 
-const _consumeExcelCached = unstable_cache(
-  async (token: string, headquarterId: string, panelId: string, point: string, date_after?: string, date_before?: string, unit?: string) => {
-    const url = new URL(
-      `/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/measurement_points/${point}/readings/report`,
-      baseUrlEnergy
-    );
-
-    if (date_after) url.searchParams.set('date_after', date_after);
-    if (date_before) url.searchParams.set('date_before', date_before);
-    if (unit) url.searchParams.set('unit', unit);
-
-    const res = await fetchWithAuthEnergy(`${url.pathname}${url.search}`, {}, token)
-
-    return res
-  },
-  ['energy-consume-excel'],
-  {
-    tags: [CACHE_TAGS.ENERGY, CACHE_TAGS.READINGS],
-    revalidate: CACHE_DURATION.MEDIUM, // 5 minutes - Excel reports can be cached
-  }
-)
-
+// Note: Excel download cannot use cache because Blobs cannot be serialized
 export async function consumeExcel({ headquarterId, panelId, date_after = START_DATE, date_before = START_DATE, unit, point }: { headquarterId?: string, panelId?: string, date_after?: string, date_before?: string, unit?: string, point?: string }) {
   const token = await getToken()
   if (!token) throw new Error('No auth token')
-  return _consumeExcelCached(token, headquarterId!, panelId!, point!, date_after, date_before, unit)
+
+  const url = new URL(
+    `/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/measurement_points/${point}/readings/report`,
+    baseUrlEnergy
+  )
+
+  if (date_after) url.searchParams.set('date_after', date_after)
+  if (date_before) url.searchParams.set('date_before', date_before)
+  if (unit) url.searchParams.set('unit', unit)
+
+  return await fetchWithAuthEnergy(`${url.pathname}${url.search}`, {}, token)
 }

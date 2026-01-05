@@ -35,9 +35,6 @@ export default function TableComponent({ readings }: { readings: PanelReadings }
           <TableHeader className='sticky top-0 bg-white z-10'>
             <TableRow>
               <TableHead className='text-center bg-gray-50'>
-                Pinza
-              </TableHead>
-              <TableHead className='text-center bg-gray-50'>
                 Puntos de monitoreo
               </TableHead>
               <TableHead className='text-center bg-gray-50'>
@@ -65,9 +62,6 @@ export default function TableComponent({ readings }: { readings: PanelReadings }
               readings.results.map(reading => {
                 return (
                   <TableRow key={reading.id} className={`${reading.is_active ? 'bg-white' : 'bg-gray-200'}`}>
-                    <TableCell className='text-center'>
-                      {reading.channel}
-                    </TableCell>
                     <TableCell className='text-center'>
                       {reading.name}
                     </TableCell>
