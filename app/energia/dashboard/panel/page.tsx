@@ -16,6 +16,7 @@ import React, { Suspense } from 'react'
 import TodayAlertBanner from '@/app/ui/energia/panel/today-alert-banner'
 import { getToken } from '@/app/lib/auth'
 import PanelsFilterEnergy from '@/app/ui/energia/filters/panels-energy-filter'
+import IndicatorEnergyFilter from '@/app/ui/filters/indicator-energy-filter'
 
 function isLeapYear(year: number): boolean {
   return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0)
@@ -60,7 +61,8 @@ async function DashboardContent({ searchParams }: SearchParams) {
     date_before,
     this_month,
     this_week,
-    year
+    year,
+    indicador
   } = await searchParams
 
   const authToken = await getToken()
@@ -99,6 +101,8 @@ async function DashboardContent({ searchParams }: SearchParams) {
 
   const firstPoint = point || measurementPoints?.results[0]?.measurement_points[0].id.toString()
 
+  const selectedIndicador = indicador || 'EPpos'
+
   const dashboardTableReadings = await dashboardTable({
     headquarterId: firstHeadquarter,
     token: authToken!,
@@ -125,7 +129,7 @@ async function DashboardContent({ searchParams }: SearchParams) {
     date_after: start,
     date_before: finish,
     headquarterId: firstHeadquarter,
-    indicador: 'EPpos',
+    indicador: selectedIndicador,
     panelId: firstPanel,
     point: firstPoint,
     last_by: 'day',
@@ -155,11 +159,7 @@ async function DashboardContent({ searchParams }: SearchParams) {
       </div>
       <div className='w-full'>
         <div className='flex justify-between gap-4'>
-          <div className='flex flex-col justify-center text-sm'>
-            {/* <p></p> */}
-            <p>Consumo energético (kWh) con umbrales</p>
-            <p>Gráfico de lunes a viernes con el filtro de fines de semana</p>
-          </div>
+
           <div className='flex flex-col gap-4 px-4'>
             <div className='flex items-end justify-end relative gap-2'>
               <YearFilter year={selectedYear.toString()} />
@@ -170,6 +170,7 @@ async function DashboardContent({ searchParams }: SearchParams) {
               <div className='flex gap-2'>
                 <PanelsFilterEnergy energyPanels={measurementPointsPanels.results} panel={firstPanel} />
                 <MeasurementPointFilter measurementPoints={measurementPoints} point={firstPoint} />
+                <IndicatorEnergyFilter indicador={selectedIndicador} />
               </div>
             </div>
           </div>
