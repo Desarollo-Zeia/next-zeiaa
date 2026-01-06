@@ -148,7 +148,7 @@ async function DashboardContent({ searchParams }: SearchParams) {
         <PanelsFilterEnergy energyPanels={measurementPointsPanels.results} panel={firstPanel} />
         <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} energy={firstHeadquarter} />
       </FiltersContainer>
-      <TodayAlertBanner alertToday={alertToday} />
+      {/* <TodayAlertBanner alertToday={alertToday} /> */}
       <div className='w-full flex gap-6'>
         <div className='w-2/5'>
           <ChartComponent electricalPanelData={dashboardPorcentageGraph} />
