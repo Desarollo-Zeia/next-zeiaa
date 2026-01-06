@@ -41,6 +41,8 @@ export default function MeasurementPointFilter({ measurementPoints, point }: { m
   const pathname = usePathname()
   const { replace } = useRouter()
 
+  console.log(measurementPoints)
+
   const handlePointChange = (point: string) => {
     startTransition(() => {
       const newParams = new URLSearchParams(searchParams);
@@ -74,22 +76,24 @@ export default function MeasurementPointFilter({ measurementPoints, point }: { m
         <SelectContent>
           <SelectGroup>
             {
-              measurementPoints.results.slice(0, 1).map((device) => {
-                return (
-                  <React.Fragment key={device.id}>
-                    <SelectLabel>{device.name}</SelectLabel>
-                    {
-                      device.measurement_points.slice(0, 1).map((point) =>
-                      (
-                        <SelectItem value={point.id.toString()} key={point.id} disabled={!point.is_active}>
-                          {point.name}
-                        </SelectItem>
-                      )
-                      )
-                    }
-                  </React.Fragment>
-                )
-              })
+              measurementPoints.results
+                .filter((device) => !device.name.includes("Device Falso"))
+                .map((device) => {
+                  return (
+                    <React.Fragment key={device.id}>
+                      <SelectLabel>{device.name}</SelectLabel>
+                      {
+                        device.measurement_points.map((point) =>
+                        (
+                          <SelectItem value={point.id.toString()} key={point.id} disabled={!point.is_active}>
+                            {point.name}
+                          </SelectItem>
+                        )
+                        )
+                      }
+                    </React.Fragment>
+                  )
+                })
             }
 
           </SelectGroup>
