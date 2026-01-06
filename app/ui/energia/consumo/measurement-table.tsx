@@ -56,11 +56,11 @@ export default function MeasurementTable({ readings, category }: { readings: Rea
   // Filter out indicators with all zero values when category is 'voltage'
   const avaibleIndicators = category === 'voltage'
     ? allIndicators.filter((indicator) => {
-        return readings.results?.some((reading) => {
-          const value = reading.indicators.values[indicator]
-          return value && value > 0
-        })
+      return readings.results?.some((reading) => {
+        const value = reading.indicators.values[indicator]
+        return value && value > 0
       })
+    })
     : allIndicators
 
 
@@ -131,7 +131,7 @@ export default function MeasurementTable({ readings, category }: { readings: Rea
                   (
                     <div className="overflow-x-auto">
                       <Table>
-<TableHeader>
+                        <TableHeader>
                           <TableRow className="hover:bg-transparent">
                             <TableHead>
                               <div className="flex items-center gap-2">
@@ -181,7 +181,7 @@ export default function MeasurementTable({ readings, category }: { readings: Rea
                             const indicatorValues = reading.indicators.values
 
                             return (
-<TableRow key={readingIndex} className="hover:bg-transparent">
+                              <TableRow key={readingIndex} className="hover:bg-transparent">
                                 <TableCell className="text-nowrap">{date}</TableCell>
                                 <TableCell>{time}</TableCell>
                                 {avaibleIndicators?.map((header, headerIndex) => {
