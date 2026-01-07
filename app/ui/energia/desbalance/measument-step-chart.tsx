@@ -3,10 +3,22 @@
 import { useState } from "react"
 import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale"
-import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
+import { Line } from "react-chartjs-2"
+import {
+  Chart as ChartJS,
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale,
+  Tooltip,
+  Legend,
+  Filler,
+} from "chart.js"
+import zoomPlugin from "chartjs-plugin-zoom"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+
+ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend, Filler, zoomPlugin)
 
 // Define the type for our measurement data
 interface Measurement {
@@ -46,7 +58,7 @@ export function MeasurementStepChart({
   const [selectedMetric, setSelectedMetric] = useState<"Ia" | "Ib" | "Ic">("Ia")
 
   // Transform the data for the chart
-  const chartData = data.map((item) => {
+  const processedData = data.map((item) => {
     // Get the first channel's values (assuming there's always at least one channel)
     const channelValues = item.values_per_channel[0]?.values || { Ia: 0, Ib: 0, Ic: 0 }
 
@@ -62,9 +74,101 @@ export function MeasurementStepChart({
   })
 
   // Get min and max values for the Y axis with some padding
-  const values = chartData.map((item) => item[selectedMetric])
+  const values = processedData.map((item) => item[selectedMetric])
   const maxValue = Math.max(...values) * 1.1 || 10 // Default to 10 if all values are 0
   const minValue = Math.min(...values) * 0.9 || 0
+
+  const labels = processedData.map((item) => item.formattedTime)
+
+  const chartData = {
+    labels,
+    datasets: [{
+      label: `Corriente Fase ${selectedMetric.charAt(1)}`,
+      data: processedData.map((item) => item[selectedMetric]),
+      borderColor: "#00b0c7",
+      backgroundColor: "rgba(0, 176, 199, 0.2)",
+      fill: true,
+      stepped: true,
+      borderWidth: 2,
+      pointRadius: 0,
+      pointHoverRadius: 6,
+    }]
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const options: any = {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: {
+      mode: 'nearest',
+      axis: 'x',
+      intersect: false,
+    },
+    scales: {
+      x: {
+        grid: { display: false },
+        ticks: { font: { size: 11 } }
+      },
+      y: {
+        min: minValue,
+        max: maxValue,
+        grid: { color: '#e5e7eb' },
+        ticks: {
+          font: { size: 11 },
+          callback: function(val: number) {
+            return `${val}A`
+          }
+        }
+      }
+    },
+    plugins: {
+      tooltip: {
+        backgroundColor: "white",
+        titleColor: "#333",
+        bodyColor: "#00b0c7",
+        borderColor: "#e5e7eb",
+        borderWidth: 1,
+        padding: 12,
+        bodyFont: { weight: 'bold' },
+        callbacks: {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          title: function(tooltipItems: any) {
+            const index = tooltipItems[0].dataIndex
+            const item = processedData[index]
+            return `${item.formattedTime}\n${item.deviceName} - ${item.measurementPoint}`
+          },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          label: function(context: any) {
+            return `Fase ${selectedMetric.charAt(1)}: ${context.parsed.y}A`
+          }
+        }
+      },
+      zoom: {
+        pan: {
+          enabled: true,
+          mode: "x",
+        },
+        zoom: {
+          wheel: {
+            enabled: true,
+            mode: "x",
+            speed: 0.1,
+          },
+          pinch: {
+            enabled: true,
+          },
+          mode: "x",
+        },
+        limits: {
+          y: { min: 'original', max: 'original' },
+          x: { min: 'original', max: 'original' }
+        }
+      },
+      legend: {
+        display: false,
+      }
+    }
+  }
 
   return (
     <Card className="w-full">
@@ -86,61 +190,7 @@ export function MeasurementStepChart({
       </CardHeader>
       <CardContent className="pb-4">
         <div className="h-[300px]">
-          <ChartContainer
-            config={{
-              [selectedMetric]: {
-                label: `Corriente Fase ${selectedMetric.charAt(1)}`,
-                color: "hsl(var(--chart-1))",
-              },
-            }}
-          >
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-                <XAxis
-                  dataKey="formattedTime"
-                  tickLine={false}
-                  axisLine={false}
-                  tickMargin={10}
-                  minTickGap={10}
-                  tickFormatter={(value) => value}
-                />
-                <YAxis
-                  tickLine={false}
-                  axisLine={false}
-                  tickMargin={10}
-                  domain={[minValue, maxValue]}
-                  tickFormatter={(value) => `${value}A`}
-                />
-                <ChartTooltip
-                  content={
-                    <ChartTooltipContent
-                      labelFormatter={(label, payload) => {
-                        const dataPoint = payload[0]?.payload
-                        if (!dataPoint) return label
-
-                        return (
-                          <div className="flex flex-col gap-1">
-                            <p className="text-sm font-medium">{dataPoint.formattedTime}</p>
-                            <p className="text-xs text-muted-foreground">
-                              {dataPoint.deviceName} - {dataPoint.measurementPoint}
-                            </p>
-                          </div>
-                        )
-                      }}
-                      formatter={(value) => [`${value}A`, `Fase ${selectedMetric.charAt(1)}`]}
-                    />
-                  }
-                />
-                <Area
-                  type="stepAfter"
-                  dataKey={selectedMetric}
-                  strokeWidth={2}
-                  activeDot={{ r: 6, strokeWidth: 0 }}
-                  isAnimationActive={true}
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          </ChartContainer>
+          <Line data={chartData} options={options} />
         </div>
       </CardContent>
     </Card>

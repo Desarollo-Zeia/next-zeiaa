@@ -1,7 +1,18 @@
 "use client"
 
-import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts"
-import { ChartContainer, ChartTooltip } from "@/components/ui/chart"
+import { Line } from "react-chartjs-2"
+import {
+  Chart as ChartJS,
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale,
+  Tooltip,
+  Legend,
+} from "chart.js"
+import zoomPlugin from "chartjs-plugin-zoom"
+
+ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend, zoomPlugin)
 
 // Definición de tipos para los datos THDI
 interface THDICurrent {
@@ -16,141 +27,153 @@ interface THDIDataPoint {
   current: THDICurrent
 }
 
-interface FormattedTHDIDataPoint {
-  timestamp: string
-  date: string
-  THDIa: number
-  THDIb: number
-  THDIc: number
-}
-
-interface CustomTooltipProps {
-  active?: boolean
-  payload?: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
-  label?: string
+// Colores para las fases
+const PHASE_COLORS = {
+  THDIa: "#2563eb", // blue
+  THDIb: "#16a34a", // green
+  THDIc: "#dc2626", // red
 }
 
 const dateFormat = (date: string) => {
   const dateObject = new Date(date)
 
-    const options: Intl.DateTimeFormatOptions = {
-      weekday: "long",
-      day: "numeric",
-      month: "long",
-    }
-
-    const formattedDate = new Intl.DateTimeFormat("es-ES", options).format(
-      dateObject
-    );
-
-    const finalDate = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1)
-
-    return finalDate
-    
-}
-
-function CustomTooltip({ active, payload }: CustomTooltipProps) {
-  if (!active || !payload || payload.length === 0) {
-    return null
+  const options: Intl.DateTimeFormatOptions = {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
   }
 
-  // Extract data from the first payload item
-  const data = payload[0].payload
+  const formattedDate = new Intl.DateTimeFormat("es-ES", options).format(
+    dateObject
+  );
 
-  return (
-    <div className="bg-white dark:bg-gray-800 p-3 border rounded-lg shadow-sm">
-      <p className="text-sm font-medium mb-2">
-        {data.date} - {data.timestamp}
-      </p>
+  const finalDate = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1)
 
-      {payload.map((entry, index) => (
-        <div key={index} className="flex items-center gap-2 text-xs mb-1">
-          <span className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }} />
-          <span>
-            {entry.dataKey === "THDIa"
-              ? "THDI Fase A"
-              : entry.dataKey === "THDIb"
-                ? "THDI Fase B"
-                : entry.dataKey === "THDIc"
-                  ? "THDI Fase C"
-                  : entry.dataKey}
-            :
-          </span>
-          <span className="font-medium">{entry.value} %</span>
-        </div>
-      ))}
-    </div>
-  )
+  return finalDate
 }
 
 export default function CurrentChart({ currentReadings }: { currentReadings: THDIDataPoint[] }) {
-  const formattedData: FormattedTHDIDataPoint[] = currentReadings.map((item) => ({
-    timestamp: `${ item.time}`,
-    date: `${dateFormat(item.date)}`,
-    THDIa: item.current.THDIa,
-    THDIb: item.current.THDIb,
-    THDIc: item.current.THDIc,
-  }))
+  const labels = currentReadings.map((item) => item.time)
+  const formattedDates = currentReadings.map((item) => dateFormat(item.date))
+
+  const chartData = {
+    labels,
+    datasets: [
+      {
+        label: "THDI Fase A",
+        data: currentReadings.map((item) => item.current.THDIa),
+        borderColor: PHASE_COLORS.THDIa,
+        backgroundColor: "transparent",
+        stepped: true,
+        borderWidth: 1,
+        pointRadius: 0,
+        pointHoverRadius: 4,
+      },
+      {
+        label: "THDI Fase B",
+        data: currentReadings.map((item) => item.current.THDIb),
+        borderColor: PHASE_COLORS.THDIb,
+        backgroundColor: "transparent",
+        stepped: true,
+        borderWidth: 1,
+        pointRadius: 0,
+        pointHoverRadius: 4,
+      },
+      {
+        label: "THDI Fase C",
+        data: currentReadings.map((item) => item.current.THDIc),
+        borderColor: PHASE_COLORS.THDIc,
+        backgroundColor: "transparent",
+        stepped: true,
+        borderWidth: 1,
+        pointRadius: 0,
+        pointHoverRadius: 4,
+      },
+    ],
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const options: any = {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: {
+      mode: 'index',
+      intersect: false,
+    },
+    scales: {
+      x: {
+        grid: { 
+          display: true,
+          color: '#e5e7eb',
+          drawBorder: false,
+        },
+        ticks: { 
+          font: { size: 12 },
+          maxRotation: 45,
+          minRotation: 45,
+        }
+      },
+      y: {
+        grid: { 
+          color: '#e5e7eb',
+          drawBorder: false,
+        },
+        ticks: { font: { size: 12 } }
+      }
+    },
+    plugins: {
+      tooltip: {
+        backgroundColor: "white",
+        titleColor: "#333",
+        bodyColor: "#666",
+        borderColor: "#e5e7eb",
+        borderWidth: 1,
+        padding: 12,
+        callbacks: {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          title: function(tooltipItems: any) {
+            const index = tooltipItems[0].dataIndex
+            return `${formattedDates[index]} - ${labels[index]}`
+          },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          label: function(context: any) {
+            return `${context.dataset.label}: ${context.parsed.y} %`
+          }
+        }
+      },
+      zoom: {
+        pan: {
+          enabled: true,
+          mode: "x",
+        },
+        zoom: {
+          wheel: {
+            enabled: true,
+            mode: "x",
+            speed: 0.1,
+          },
+          pinch: {
+            enabled: true,
+          },
+          mode: "x",
+        },
+        limits: {
+          y: { min: 'original', max: 'original' },
+          x: { min: 'original', max: 'original' }
+        }
+      },
+      legend: {
+        display: true,
+        position: 'top',
+      }
+    }
+  }
 
   return (
     <div className="w-full p-6 bg-white dark:bg-gray-800 rounded-lg">
-      <ChartContainer
-        config={{
-          THDIa: {
-            label: "THDI Fase A",
-            color: "hsl(var(--chart-1))",
-          },
-          THDIb: {
-            label: "THDI Fase B",
-            color: "hsl(var(--chart-2))",
-          },
-          THDIc: {
-            label: "THDI Fase C",
-            color: "hsl(var(--chart-3))",
-          },
-        }}
-        className="min-h-[350px]"
-      >
-        <LineChart
-          accessibilityLayer
-          data={formattedData}
-          margin={{
-            top: 20,
-            right: 30,
-            left: 20,
-            bottom: 50,
-          }}
-        >
-          <CartesianGrid strokeDasharray="3 3" vertical={false} />
-          <XAxis dataKey="timestamp" tickLine={false} axisLine={false} tickMargin={10} angle={-45} textAnchor="end" />
-          <YAxis tickLine={false} axisLine={false} tickMargin={10} />
-          <ChartTooltip content={<CustomTooltip />} />
-          <Line
-            type="step"
-            dataKey="THDIa"
-            stroke="var(--color-THDIa)"
-            strokeWidth={1}
-            dot={false}
-            activeDot={{ r: 4 }}
-          />
-          <Line
-            type="step"
-            dataKey="THDIb"
-            stroke="var(--color-THDIb)"
-            strokeWidth={1}
-            dot={false}
-            activeDot={{ r: 4 }}
-          />
-          <Line
-            type="step"
-            dataKey="THDIc"
-            stroke="var(--color-THDIc)"
-            strokeWidth={1}
-            dot={false}
-            activeDot={{ r: 4 }}
-          />
-        </LineChart>
-      </ChartContainer>
+      <div className="h-[350px]">
+        <Line data={chartData} options={options} />
+      </div>
     </div>
   )
 }

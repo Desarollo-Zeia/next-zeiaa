@@ -1,10 +1,22 @@
 "use client"
 
-import { Line, LineChart, Tooltip, XAxis, YAxis } from "recharts"
-import { ChartContainer } from "@/components/ui/chart"
+import { Line } from "react-chartjs-2"
+import {
+  Chart as ChartJS,
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale,
+  Tooltip,
+  Legend,
+} from "chart.js"
+import zoomPlugin from "chartjs-plugin-zoom"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
 import NoResultsFound from "../../no-result"
+
+ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend, zoomPlugin)
+
 // TypeScript interfaces for the JSON data
 interface VoltageValues {
   Uab: number
@@ -49,27 +61,6 @@ interface ProcessedDataPoint {
   Uac: number
 }
 
-
-// Componente CustomTooltip que recibe props específicas
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const CustomTooltip = ({ active, payload }: any) => {
-  if (active && payload && payload.length) {
-    const iaValue = payload[0].value
-    const date = new Date(payload[0].payload.timestamp)
-    const dataKey = payload[0].dataKey
-    const fechaFormateada = format(date, "d 'de' MMMM, HH:mm", { locale: es })
-
-    return (
-      <div className="bg-white dark:bg-gray-800 p-3.5 border border-gray-200 dark:border-gray-700 rounded-lg shadow-md">
-        <p className="text-gray-600 dark:text-gray-300 text-sm mb-1.5">{`Fecha: ${fechaFormateada}`}</p>
-        <p className="text-primary font-semibold text-base">{`${dataKey}: ${iaValue} A`}</p>
-      </div>
-    )
-  }
-
-  return null
-}
-
 // Process data for charts
 const processData = (data: MeasurementData[]): ProcessedDataPoint[] => {
   return data?.map((item) => {
@@ -88,6 +79,111 @@ const processData = (data: MeasurementData[]): ProcessedDataPoint[] => {
     .sort((a, b) => a.timestamp - b.timestamp)
 }
 
+// Componente de gráfica individual
+function VoltageLineChart({ 
+  data, 
+  dataKey, 
+  label 
+}: { 
+  data: ProcessedDataPoint[], 
+  dataKey: 'Uab' | 'Ubc' | 'Uac',
+  label: string 
+}) {
+  const labels = data.map((item) => {
+    const date = new Date(item.timestamp)
+    return `${date.getHours()}:${date.getMinutes().toString().padStart(2, "0")}`
+  })
+
+  const chartData = {
+    labels,
+    datasets: [{
+      label,
+      data: data.map((item) => item[dataKey]),
+      borderColor: "#00b0c7",
+      backgroundColor: "transparent",
+      stepped: true,
+      borderWidth: 2,
+      pointRadius: 0,
+      pointHoverRadius: 4,
+    }]
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const options: any = {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: {
+      mode: 'nearest',
+      axis: 'x',
+      intersect: false,
+    },
+    scales: {
+      x: {
+        grid: { display: false },
+        ticks: { font: { size: 11 } }
+      },
+      y: {
+        display: false,
+      }
+    },
+    plugins: {
+      tooltip: {
+        backgroundColor: "white",
+        titleColor: "#666",
+        bodyColor: "#00b0c7",
+        borderColor: "#e5e7eb",
+        borderWidth: 1,
+        padding: 12,
+        bodyFont: { weight: 'bold' },
+        callbacks: {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          title: function(tooltipItems: any) {
+            const index = tooltipItems[0].dataIndex
+            const timestamp = data[index].timestamp
+            return `Fecha: ${format(new Date(timestamp), "d 'de' MMMM, HH:mm", { locale: es })}`
+          },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          label: function(context: any) {
+            return `${dataKey}: ${context.parsed.y} A`
+          }
+        }
+      },
+      zoom: {
+        pan: {
+          enabled: true,
+          mode: "x",
+        },
+        zoom: {
+          wheel: {
+            enabled: true,
+            mode: "x",
+            speed: 0.1,
+          },
+          pinch: {
+            enabled: true,
+          },
+          mode: "x",
+        },
+        limits: {
+          y: { min: 'original', max: 'original' },
+          x: { min: 'original', max: 'original' }
+        }
+      },
+      legend: {
+        display: true,
+        position: 'top',
+        align: 'start',
+      }
+    }
+  }
+
+  return (
+    <div className="h-[150px]">
+      <Line data={chartData} options={options} />
+    </div>
+  )
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function VoltageCharts({ voltageReadings }: { voltageReadings: MeasurementData[] }) {
 
@@ -99,75 +195,11 @@ export default function VoltageCharts({ voltageReadings }: { voltageReadings: Me
   const processedData = processData(voltageReadings)
 
   return (
-    <div className="flex flex-col w-full">
-      <ChartContainer
-        config={{
-          Uab: {
-            label: "Uab",
-            color: "#00b0c7",
-          },
-        }}
-        className="w-full h-[150px]"
-      >
-        <LineChart data={processedData}>
-          <XAxis
-            dataKey="timestamp"
-            tickFormatter={(value: number) => {
-              const date = new Date(value)
-              return `${date.getHours()}:${date.getMinutes().toString().padStart(2, "0")}`
-            }}
-          />
-          <YAxis hide={true} domain={[0, 500]} />
-          <Tooltip content={<CustomTooltip />} />
-          <Line type="stepAfter" dataKey="Uab" stroke="#00b0c7" strokeWidth={2} dot={false} isAnimationActive={true} />
-        </LineChart>
-      </ChartContainer>
-      <ChartContainer
-        config={{
-          Ubc: {
-            label: "Ubc",
-            color: "#00b0c7",
-          },
-        }}
-        className="w-full h-[150px]"
-      >
-        <LineChart data={processedData}>
-          <XAxis
-            dataKey="timestamp"
-            tickFormatter={(value: number) => {
-              const date = new Date(value)
-              return `${date.getHours()}:${date.getMinutes().toString().padStart(2, "0")}`
-            }}
-          />
-          <YAxis type="number" hide={true} domain={[200, 500]} />
-          <Tooltip content={<CustomTooltip />} />
-          <Line type="stepAfter" dataKey="Ubc" stroke="#00b0c7" strokeWidth={2} dot={false} isAnimationActive={true} />
-        </LineChart>
-      </ChartContainer>
-      <ChartContainer
-        config={{
-          Uac: {
-            label: "Uac",
-            color: "#00b0c7",
-          },
-        }}
-        className="w-full h-[150px]"
-      >
-        <LineChart data={processedData}>
-          <XAxis
-            dataKey="timestamp"
-            tickFormatter={(value: number) => {
-              const date = new Date(value)
-              return `${date.getHours()}:${date.getMinutes().toString().padStart(2, "0")}`
-            }}
-          />
-          <YAxis hide={true} />
-          <Tooltip content={<CustomTooltip />} />
-          <Line type="stepAfter" dataKey="Uac" stroke="#00b0c7" strokeWidth={2} dot={false} isAnimationActive={true} />
-        </LineChart>
-      </ChartContainer>
-
-    </div >
+    <div className="flex flex-col w-full gap-2">
+      <VoltageLineChart data={processedData} dataKey="Uab" label="Uab" />
+      <VoltageLineChart data={processedData} dataKey="Ubc" label="Ubc" />
+      <VoltageLineChart data={processedData} dataKey="Uac" label="Uac" />
+    </div>
   )
 }
 
