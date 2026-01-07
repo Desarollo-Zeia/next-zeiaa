@@ -1,7 +1,19 @@
 "use client"
 
 import { useTransition } from "react"
-import { LineChart, Line, XAxis, YAxis, Tooltip, ReferenceLine, ResponsiveContainer } from "recharts"
+import { Line } from "react-chartjs-2"
+import {
+  Chart as ChartJS,
+  LineElement,
+  PointElement,
+  LinearScale,
+  TimeScale,
+  Tooltip,
+  Legend,
+} from "chart.js"
+import zoomPlugin from "chartjs-plugin-zoom"
+import annotationPlugin from "chartjs-plugin-annotation"
+import "chartjs-adapter-date-fns"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
@@ -10,34 +22,14 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import DeviceReadingsChart from "./measurement-graph"
 import NoResultsFound from "../../no-result"
 
+ChartJS.register(LineElement, PointElement, LinearScale, TimeScale, Tooltip, Legend, zoomPlugin, annotationPlugin)
+
 const energyToggleArray = [
   { label: "Hora", value: "none" },
   { label: "Dia", value: "day" },
   { label: "Semana", value: "week" },
   { label: "Mes", value: "month" },
 ]
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const CustomTooltip = ({ active, payload }: any) => {
-  if (active && payload && payload.length) {
-    const value = payload[0].value
-    const date = new Date(payload[0].payload.timestamp)
-    const unit = payload[0].payload.unit
-    const parameter = payload[0].payload.parameter
-    const fechaFormateada = format(date, "EEEE d 'de' MMMM, HH:mm", { locale: es })
-    const fechaCapitalizada = fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1)
-
-    return (
-      <div className="bg-white p-3 border border-gray-200 rounded-lg shadow-md">
-        <p className="text-gray-600 text-sm mb-1">{fechaCapitalizada}</p>
-        <p className="text-[#00b0c7] font-semibold">
-          {parameter}: {value.toFixed(2)} {unit}
-        </p>
-      </div>
-    )
-  }
-  return null
-}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings }: { readingsGraph: any, category: any, indicator: any, last_by: any, readings: any }) => {
@@ -57,17 +49,17 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
 
   const parameterLabel = ELECTRIC_PARAMETERS[indicator as keyof typeof ELECTRIC_PARAMETERS]?.parameter || indicator
 
-  // Procesar datos para Recharts
-  const chartData = readingsGraph
+  // Procesar datos para Chart.js
+  const dataPoints = readingsGraph
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ?.filter((item: any) => item.first_value !== 0)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     .map((item: any) => ({
-      timestamp: new Date(item.first_reading).getTime(),
-      value: item.first_value,
-      unit: item.unit,
-      parameter: parameterLabel
+      x: new Date(item.first_reading).toISOString(),
+      y: item.first_value,
     })) || []
+
+  const unit = readingsGraph?.[0]?.unit || ''
 
   const handleFrequency = (frequency: string) => {
     startTransition(() => {
@@ -84,7 +76,134 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
     })
   }
 
-  const unit = chartData[0]?.unit || ''
+  const chartData = {
+    datasets: [{
+      label: parameterLabel,
+      data: dataPoints,
+      borderColor: "#00b0c7",
+      backgroundColor: "rgba(0, 176, 199, 0.1)",
+      stepped: true,
+      tension: 0,
+      pointRadius: 0,
+      borderWidth: 2,
+    }]
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const options: any = {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: {
+      mode: 'nearest',
+      axis: 'x',
+      intersect: false
+    },
+    scales: {
+      x: {
+        type: "time",
+        time: { 
+          unit: "hour",
+          displayFormats: {
+            hour: "dd MMM HH:mm"
+          }
+        },
+        grid: { color: '#e5e7eb' },
+        ticks: { font: { size: 12 } }
+      },
+      y: {
+        grid: { color: '#e5e7eb' },
+        ticks: {
+          font: { size: 12 },
+          callback: function(val: number) {
+            return `${val.toFixed(0)} ${unit}`
+          }
+        }
+      }
+    },
+    plugins: {
+      tooltip: {
+        backgroundColor: "white",
+        titleColor: "#666",
+        bodyColor: "#00b0c7",
+        borderColor: "#e5e7eb",
+        borderWidth: 1,
+        padding: 12,
+        bodyFont: { weight: 'bold' },
+        callbacks: {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          title: function(tooltipItems: any) {
+            const date = new Date(tooltipItems[0].parsed.x)
+            const fechaFormateada = format(date, "EEEE d 'de' MMMM, HH:mm", { locale: es })
+            return fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1)
+          },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          label: function(context: any) {
+            return `${parameterLabel}: ${context.parsed.y.toFixed(2)} ${unit}`
+          }
+        }
+      },
+      zoom: {
+        pan: {
+          enabled: true,
+          mode: "x",
+        },
+        zoom: {
+          wheel: {
+            enabled: true,
+            mode: "x",
+            speed: 0.1,
+          },
+          pinch: {
+            enabled: true,
+          },
+          mode: "x",
+        },
+        limits: {
+          y: { min: 'original', max: 'original' },
+          x: { min: 'original', max: 'original' }
+        }
+      },
+      annotation: {
+        annotations: category === 'voltage' ? {
+          line209: {
+            type: 'line',
+            yMin: 209,
+            yMax: 209,
+            borderColor: '#000',
+            borderWidth: 1,
+            borderDash: [5, 5],
+            label: {
+              display: true,
+              content: '209 v',
+              position: 'end',
+              backgroundColor: 'transparent',
+              color: '#000',
+              font: { size: 12 }
+            }
+          },
+          line231: {
+            type: 'line',
+            yMin: 231,
+            yMax: 231,
+            borderColor: '#000',
+            borderWidth: 1,
+            borderDash: [5, 5],
+            label: {
+              display: true,
+              content: '231 v',
+              position: 'end',
+              backgroundColor: 'transparent',
+              color: '#000',
+              font: { size: 12 }
+            }
+          }
+        } : {}
+      },
+      legend: {
+        display: false
+      }
+    }
+  }
 
   return (
     <div className="w-full min-h-full p-4 bg-white flex flex-col justify-center items-center relative">
@@ -134,54 +253,8 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
         <>
           {last_by === 'minute' ? (
             <div className="w-full h-[350px]">
-              {chartData.length > 0 ? (
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart
-                    data={chartData}
-                    margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
-                  >
-                    <XAxis
-                      dataKey="timestamp"
-                      tickFormatter={(value: number) => format(new Date(value), "dd MMM HH:mm", { locale: es })}
-                      tick={{ fontSize: 12 }}
-                      tickLine={false}
-                      axisLine={{ stroke: '#e5e7eb' }}
-                    />
-                    <YAxis
-                      tickFormatter={(val: number) => `${val.toFixed(0)} ${unit}`}
-                      tick={{ fontSize: 12 }}
-                      tickLine={false}
-                      axisLine={{ stroke: '#e5e7eb' }}
-                      width={80}
-                    />
-                    <Tooltip content={<CustomTooltip />} />
-                    <Line
-                      type="stepAfter"
-                      dataKey="value"
-                      stroke="#00b0c7"
-                      strokeWidth={2}
-                      dot={false}
-                      isAnimationActive={true}
-                    />
-
-                    {category === 'voltage' && (
-                      <>
-                        <ReferenceLine
-                          y={209}
-                          stroke="#000"
-                          strokeDasharray="5 5"
-                          label={{ value: '209 v', position: 'right', fontSize: 12 }}
-                        />
-                        <ReferenceLine
-                          y={231}
-                          stroke="#000"
-                          strokeDasharray="5 5"
-                          label={{ value: '231 v', position: 'right', fontSize: 12 }}
-                        />
-                      </>
-                    )}
-                  </LineChart>
-                </ResponsiveContainer>
+              {dataPoints.length > 0 ? (
+                <Line data={chartData} options={options} />
               ) : (
                 <NoResultsFound message="Aun no hay informacion disponible" />
               )}

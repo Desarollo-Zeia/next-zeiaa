@@ -1,14 +1,26 @@
 "use client"
 
 import { useState, useMemo } from "react"
-import { Line, LineChart, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, ReferenceLine } from "recharts"
+import { Line } from "react-chartjs-2"
+import {
+  Chart as ChartJS,
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale,
+  Tooltip,
+  Legend,
+} from "chart.js"
+import zoomPlugin from "chartjs-plugin-zoom"
+import annotationPlugin from "chartjs-plugin-annotation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import IndicatorToggle from "@/app/ui/filters/indicators-toggle"
 import { DatepickerRange } from "@/app/ui/filters/datepicker-range"
 import FrequencyIntervalFilter from "@/app/ui/filters/frequency-interval-filter"
+
+ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend, zoomPlugin, annotationPlugin)
 
 type CO2Thresholds = { good: number; moderate: number; unhealthy: number; dangerous: number }
 type MinMaxThresholds = { min: number; max: number }
@@ -259,6 +271,263 @@ function MinMaxThresholdsDisplay({
   )
 }
 
+// Componente de gráfica con Chart.js y zoom
+function ChartWithZoom({
+  chartData,
+  visibleRoomsData,
+  roomColors,
+  yAxisDomain,
+  formattedUnit,
+  selectedRoom,
+  visibleRooms,
+  indicator,
+}: {
+  chartData: Record<string, string | number | null>[]
+  visibleRoomsData: RoomData[]
+  roomColors: Map<number, string>
+  yAxisDomain: number[]
+  formattedUnit: string
+  selectedRoom: RoomData | undefined
+  visibleRooms: Set<number>
+  indicator: IndicatorType
+}) {
+  const labels = chartData.map((item) => item.hour as string)
+  
+  const datasets = visibleRoomsData.map((room) => ({
+    label: room.room_name,
+    data: chartData.map((item) => item[`room_${room.room_id}`] as number | null),
+    borderColor: roomColors.get(room.room_id),
+    backgroundColor: roomColors.get(room.room_id),
+    tension: 0.3,
+    borderWidth: 2,
+    pointRadius: 3,
+    pointHoverRadius: 5,
+    spanGaps: true,
+  }))
+
+  const data = { labels, datasets }
+
+  // Crear anotaciones para las líneas de referencia
+  const annotations: Record<string, any> = {} // eslint-disable-line @typescript-eslint/no-explicit-any
+  
+  if (selectedRoom && visibleRooms.size < 2) {
+    if (indicator === "CO2") {
+      annotations.co2Good = {
+        type: 'line',
+        yMin: selectedRoom.thresholds.co2.good,
+        yMax: selectedRoom.thresholds.co2.good,
+        borderColor: '#22c55e',
+        borderWidth: 1.5,
+        borderDash: [5, 5],
+        label: {
+          display: true,
+          content: `Bueno ${selectedRoom.thresholds.co2.good}`,
+          position: 'end',
+          backgroundColor: 'transparent',
+          color: '#22c55e',
+          font: { size: 10 }
+        }
+      }
+      annotations.co2Moderate = {
+        type: 'line',
+        yMin: selectedRoom.thresholds.co2.moderate,
+        yMax: selectedRoom.thresholds.co2.moderate,
+        borderColor: '#eab308',
+        borderWidth: 1.5,
+        borderDash: [5, 5],
+        label: {
+          display: true,
+          content: `Moderado ${selectedRoom.thresholds.co2.moderate}`,
+          position: 'end',
+          backgroundColor: 'transparent',
+          color: '#eab308',
+          font: { size: 10 }
+        }
+      }
+      annotations.co2Unhealthy = {
+        type: 'line',
+        yMin: selectedRoom.thresholds.co2.unhealthy,
+        yMax: selectedRoom.thresholds.co2.unhealthy,
+        borderColor: '#f97316',
+        borderWidth: 1.5,
+        borderDash: [5, 5],
+        label: {
+          display: true,
+          content: `No saludable ${selectedRoom.thresholds.co2.unhealthy}`,
+          position: 'end',
+          backgroundColor: 'transparent',
+          color: '#f97316',
+          font: { size: 10 }
+        }
+      }
+    } else if (indicator === "TEMPERATURE") {
+      annotations.tempMin = {
+        type: 'line',
+        yMin: selectedRoom.thresholds.temperature.min,
+        yMax: selectedRoom.thresholds.temperature.min,
+        borderColor: '#3b82f6',
+        borderWidth: 2,
+        borderDash: [5, 5],
+        label: {
+          display: true,
+          content: `Mín ${selectedRoom.thresholds.temperature.min}${formattedUnit}`,
+          position: 'start',
+          backgroundColor: 'transparent',
+          color: '#3b82f6',
+          font: { size: 11 }
+        }
+      }
+      annotations.tempMax = {
+        type: 'line',
+        yMin: selectedRoom.thresholds.temperature.max,
+        yMax: selectedRoom.thresholds.temperature.max,
+        borderColor: '#ef4444',
+        borderWidth: 2,
+        borderDash: [5, 5],
+        label: {
+          display: true,
+          content: `Máx ${selectedRoom.thresholds.temperature.max}${formattedUnit}`,
+          position: 'start',
+          backgroundColor: 'transparent',
+          color: '#ef4444',
+          font: { size: 11 }
+        }
+      }
+    } else if (indicator === "HUMIDITY") {
+      annotations.humidityMin = {
+        type: 'line',
+        yMin: selectedRoom.thresholds.humidity.min,
+        yMax: selectedRoom.thresholds.humidity.min,
+        borderColor: '#3b82f6',
+        borderWidth: 2,
+        borderDash: [5, 5],
+        label: {
+          display: true,
+          content: `Mín ${selectedRoom.thresholds.humidity.min}${formattedUnit}`,
+          position: 'start',
+          backgroundColor: 'transparent',
+          color: '#3b82f6',
+          font: { size: 11 }
+        }
+      }
+      annotations.humidityMax = {
+        type: 'line',
+        yMin: selectedRoom.thresholds.humidity.max,
+        yMax: selectedRoom.thresholds.humidity.max,
+        borderColor: '#ef4444',
+        borderWidth: 2,
+        borderDash: [5, 5],
+        label: {
+          display: true,
+          content: `Máx ${selectedRoom.thresholds.humidity.max}${formattedUnit}`,
+          position: 'start',
+          backgroundColor: 'transparent',
+          color: '#ef4444',
+          font: { size: 11 }
+        }
+      }
+    }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const options: any = {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: {
+      mode: 'index',
+      intersect: false,
+    },
+    scales: {
+      x: {
+        grid: { 
+          color: '#e5e7eb',
+          drawBorder: false,
+        },
+        ticks: { 
+          font: { size: 11 },
+          color: '#6b7280',
+        }
+      },
+      y: {
+        min: yAxisDomain[0],
+        max: yAxisDomain[1],
+        grid: { 
+          color: '#e5e7eb',
+          drawBorder: false,
+        },
+        ticks: {
+          font: { size: 12 },
+          color: '#6b7280',
+          callback: function(value: number) {
+            return `${value}${formattedUnit === "°C" ? "°" : formattedUnit === "%" ? "%" : ""}`
+          }
+        }
+      }
+    },
+    plugins: {
+      tooltip: {
+        backgroundColor: "white",
+        titleColor: "#333",
+        bodyColor: "#666",
+        borderColor: "#e5e7eb",
+        borderWidth: 1,
+        padding: 12,
+        callbacks: {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          title: function(tooltipItems: any) {
+            const index = tooltipItems[0].dataIndex
+            const item = chartData[index]
+            const date = item?.date as string
+            const hour = item?.hour as string
+            if (date && hour) {
+              return `Hora: ${formatDateInSpanish(date, hour)}`
+            }
+            return `Hora: ${hour}`
+          },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          label: function(context: any) {
+            if (context.parsed.y === null) return null
+            return `${context.dataset.label}: ${context.parsed.y} ${formattedUnit}`
+          }
+        }
+      },
+      zoom: {
+        pan: {
+          enabled: true,
+          mode: "x",
+        },
+        zoom: {
+          wheel: {
+            enabled: true,
+            mode: "x",
+            speed: 0.1,
+          },
+          pinch: {
+            enabled: true,
+          },
+          mode: "x",
+        },
+        limits: {
+          y: { min: 'original', max: 'original' },
+          x: { min: 'original', max: 'original' }
+        }
+      },
+      annotation: {
+        annotations
+      },
+      legend: {
+        display: false,
+      }
+    }
+  }
+
+  return (
+    <div className="h-[450px] w-full">
+      <Line data={data} options={options} />
+    </div>
+  )
+}
+
 export function ReadingsChart({
   roomsData,
   indicator,
@@ -451,157 +720,16 @@ export function ReadingsChart({
         )}
 
         {/* Chart */}
-        <div className="h-[450px] w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-              <XAxis
-                dataKey="hour"
-                tick={{ fontSize: 11, fill: "#6b7280" }}
-                tickLine={false}
-                axisLine={false}
-                interval="preserveStartEnd"
-              />
-              <YAxis
-                domain={yAxisDomain}
-                tick={{ fontSize: 12, fill: "#6b7280" }}
-                tickLine={false}
-                axisLine={false}
-                tickFormatter={(value) => `${value}${formattedUnit === "°C" ? "°" : formattedUnit === "%" ? "%" : ""}`}
-              />
-              <Tooltip
-                content={<CustomTooltip unit={formattedUnit} roomsData={visibleRoomsData} roomColors={roomColors} />}
-              />
-
-
-              {/* Reference lines for CO2 */}
-              {selectedRoom && visibleRooms.size < 2 && indicator === "CO2" && (
-                <ReferenceLine
-                  y={selectedRoom.thresholds.co2.good}
-                  stroke="#22c55e"
-                  strokeDasharray="5 5"
-                  strokeWidth={1.5}
-                  label={{
-                    value: `Bueno ${selectedRoom.thresholds.co2.good}`,
-                    position: "insideTopRight",
-                    fill: "#22c55e",
-                    fontSize: 10,
-                  }}
-
-                />
-              )}
-              {
-                selectedRoom && visibleRooms.size < 2 && indicator === "CO2" && (
-                  <ReferenceLine
-                    y={selectedRoom.thresholds.co2.moderate}
-                    stroke="#eab308"
-                    strokeDasharray="5 5"
-                    strokeWidth={1.5}
-                    label={{
-                      value: `Moderado ${selectedRoom.thresholds.co2.moderate}`,
-                      position: "insideTopRight",
-                      fill: "#eab308",
-                      fontSize: 10,
-                    }}
-                  />
-                )
-              }
-              {
-                selectedRoom && visibleRooms.size < 2 && indicator === "CO2" && (
-                  <ReferenceLine
-                    y={selectedRoom.thresholds.co2.unhealthy}
-                    stroke="#f97316"
-                    strokeDasharray="5 5"
-                    strokeWidth={1.5}
-                    label={{
-                      value: `No saludable ${selectedRoom.thresholds.co2.unhealthy}`,
-                      position: "insideTopRight",
-                      fill: "#f97316",
-                      fontSize: 10,
-                    }}
-                  />
-                )
-              }
-
-              {/* Reference lines for Temperature */}
-              {selectedRoom && visibleRooms.size < 2 && indicator === "TEMPERATURE" && (
-                <ReferenceLine
-                  y={selectedRoom.thresholds.temperature.min}
-                  stroke="#3b82f6"
-                  strokeDasharray="5 5"
-                  strokeWidth={2}
-                  label={{
-                    value: `Mín ${selectedRoom.thresholds.temperature.min}${formattedUnit}`,
-                    position: "insideTopLeft",
-                    fill: "#3b82f6",
-                    fontSize: 11,
-                  }}
-                />
-              )}
-
-              {selectedRoom && visibleRooms.size < 2 && indicator === "TEMPERATURE" && (
-                <ReferenceLine
-                  y={selectedRoom.thresholds.temperature.max}
-                  stroke="#ef4444"
-                  strokeDasharray="5 5"
-                  strokeWidth={2}
-                  label={{
-                    value: `Máx ${selectedRoom.thresholds.temperature.max}${formattedUnit}`,
-                    position: "insideTopLeft",
-                    fill: "#ef4444",
-                    fontSize: 11,
-                  }}
-                />
-              )}
-
-              {/* Reference lines for Humidity */}
-              {selectedRoom && visibleRooms.size < 2 && indicator === "HUMIDITY" && (
-                <ReferenceLine
-                  y={selectedRoom.thresholds.humidity.min}
-                  stroke="#3b82f6"
-                  strokeDasharray="5 5"
-                  strokeWidth={2}
-                  label={{
-                    value: `Mín ${selectedRoom.thresholds.humidity.min}${formattedUnit}`,
-                    position: "insideTopLeft",
-                    fill: "#3b82f6",
-                    fontSize: 11,
-                  }}
-                />
-              )}
-
-              {/* Referencia Máxima Humedad */}
-              {selectedRoom && visibleRooms.size < 2 && indicator === "HUMIDITY" && (
-                <ReferenceLine
-                  y={selectedRoom.thresholds.humidity.max}
-                  stroke="#ef4444"
-                  strokeDasharray="5 5"
-                  strokeWidth={2}
-                  label={{
-                    value: `Máx ${selectedRoom.thresholds.humidity.max}${formattedUnit}`,
-                    position: "insideTopLeft",
-                    fill: "#ef4444",
-                    fontSize: 11,
-                  }}
-                />
-              )}
-
-              {visibleRoomsData.map((room) => (
-                <Line
-                  key={room.room_id}
-                  type="monotone"
-                  dataKey={`room_${room.room_id}`}
-                  name={`room_${room.room_id}`}
-                  stroke={roomColors.get(room.room_id)}
-                  strokeWidth={2}
-                  dot={{ fill: roomColors.get(room.room_id), strokeWidth: 2, r: 3 }}
-                  activeDot={{ r: 5, strokeWidth: 2 }}
-                  connectNulls={true}
-                />
-              ))}
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
+        <ChartWithZoom
+          chartData={chartData}
+          visibleRoomsData={visibleRoomsData}
+          roomColors={roomColors}
+          yAxisDomain={yAxisDomain}
+          formattedUnit={formattedUnit}
+          selectedRoom={selectedRoom}
+          visibleRooms={visibleRooms}
+          indicator={indicator}
+        />
 
         <div className="mt-4 flex flex-wrap gap-4 justify-center">
           {visibleRoomsData.map((room) => (

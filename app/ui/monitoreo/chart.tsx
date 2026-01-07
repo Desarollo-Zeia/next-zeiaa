@@ -1,22 +1,27 @@
 'use client'
 import IndicatorToggle from "../filters/indicators-toggle";
-import { CartesianGrid, Line, LineChart, ReferenceLine, XAxis, YAxis } from "recharts"
+import { Line } from "react-chartjs-2"
+import {
+  Chart as ChartJS,
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale,
+  Tooltip,
+  Legend,
+} from "chart.js"
+import zoomPlugin from "chartjs-plugin-zoom"
+import annotationPlugin from "chartjs-plugin-annotation"
 import {
   Card,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart"
 import { STATUS_COLOR, STATUS_COLOR_THRESHOLD, STATUS_TO_SPANISH, UNIT_CONVERTED } from "@/app/utils/formatter";
-// import { UNIT_INDICATOR_THRESHOLD, UNIT_INDICATOR_THRESHOLD_AMBIENTAL } from "@/app/utils/threshold";
 import { Indicator, Unit } from "@/app/type";
-// import { usePathname } from "next/navigation";
 import NoResultFound from "../no-result-found";
+
+ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend, zoomPlugin, annotationPlugin)
 
 interface IndicatorStructure {
   indicator: string,
@@ -54,23 +59,109 @@ interface ChartComponentProps {
   thresholds: any // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
-const chartConfig = {
-  desktop: {
-    color: "#00b0c7",
-  },
-
-} satisfies ChartConfig
-
-
 export default function ChartComponent({ results, generalRoomData, indicator, unit }: ChartComponentProps) {
 
   const { indicators_pollutants: indicators, thresholds } = generalRoomData
 
   const [{ value: domaninY } = {}] = thresholds?.[indicator]?.levels?.slice(-1) ?? [];
 
-  console.log({ unit })
-
   const th = thresholds?.[indicator]?.levels;
+
+  // Preparar datos para Chart.js
+  const labels = results.map(item => item.hours)
+  const dataPoints = results.map(item => parseFloat(item.value))
+
+  const chartData = {
+    labels,
+    datasets: [{
+      label: indicator,
+      data: dataPoints,
+      borderColor: "#00b0c7",
+      backgroundColor: "rgba(0, 176, 199, 0.1)",
+      tension: 0.4, // type="natural"
+      pointRadius: 0,
+      borderWidth: 2,
+    }]
+  }
+
+  // Crear anotaciones dinámicas para los thresholds
+  const annotations: Record<string, any> = {} // eslint-disable-line @typescript-eslint/no-explicit-any
+  th?.forEach((threshold: any, i: number) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+    annotations[`threshold-${i}`] = {
+      type: 'line',
+      yMin: threshold.value,
+      yMax: threshold.value,
+      borderColor: STATUS_COLOR_THRESHOLD[threshold.level as keyof typeof STATUS_COLOR_THRESHOLD],
+      borderWidth: 2,
+      borderDash: [3, 3],
+    }
+  })
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const options: any = {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: {
+      mode: 'nearest',
+      axis: 'x',
+      intersect: false
+    },
+    scales: {
+      x: {
+        grid: { display: false },
+        ticks: { font: { size: 12 } }
+      },
+      y: {
+        min: 0,
+        max: domaninY ? domaninY * 1.4 : undefined,
+        grid: { color: '#e5e7eb' },
+        ticks: {
+          font: { size: 12 },
+          callback: function(val: number) {
+            return `${val} ${UNIT_CONVERTED[unit]}`
+          }
+        }
+      }
+    },
+    plugins: {
+      tooltip: {
+        backgroundColor: "white",
+        titleColor: "#666",
+        bodyColor: "#00b0c7",
+        borderColor: "#e5e7eb",
+        borderWidth: 1,
+        padding: 12,
+        bodyFont: { weight: 'bold' },
+      },
+      zoom: {
+        pan: {
+          enabled: true,
+          mode: "x",
+        },
+        zoom: {
+          wheel: {
+            enabled: true,
+            mode: "x",
+            speed: 0.1,
+          },
+          pinch: {
+            enabled: true,
+          },
+          mode: "x",
+        },
+        limits: {
+          y: { min: 'original', max: 'original' },
+          x: { min: 'original', max: 'original' }
+        }
+      },
+      annotation: {
+        annotations
+      },
+      legend: {
+        display: false
+      }
+    }
+  }
 
   return (
     <Card className="w-full flex-1">
@@ -105,58 +196,11 @@ export default function ChartComponent({ results, generalRoomData, indicator, un
         results.length === 0 ? (
           <NoResultFound />
         ) : (
-          <ChartContainer config={chartConfig}>
-            <LineChart
-              accessibilityLayer
-              data={results}
-              margin={{ top: 20, right: 0, left: 0, bottom: 0 }}
-            >
-              <CartesianGrid vertical={false} />
-              <XAxis
-                dataKey="hours"
-                tickLine={false}
-                axisLine={false}
-                tickMargin={8}
-              />
-              <YAxis
-                tickLine={false}
-                axisLine={false}
-                hide={false}
-                tickMargin={0}
-                dataKey="value"
-                domain={[0, domaninY * 1.4]}
-                tickFormatter={(a) => `${a} ${UNIT_CONVERTED[unit]}`}
-              />
-              <ChartTooltip
-                cursor={false}
-                content={<ChartTooltipContent />}
-              />
-              {
-                th?.map((threshold: any, i: number) => ( // eslint-disable-line @typescript-eslint/no-explicit-any
-                  <ReferenceLine
-                    key={`${threshold.level}-${i}`}
-                    y={threshold.value}
-                    stroke={STATUS_COLOR_THRESHOLD[threshold.level as keyof typeof STATUS_COLOR_THRESHOLD]}
-                    strokeWidth={2}
-                    strokeDasharray="3 3"
-                    isFront={true}
-                  />
-                ))
-
-              }
-              <Line
-                dataKey="value"
-                type="natural"
-                stroke="var(--color-desktop)"
-                strokeWidth={2}
-                dot={false}
-              />
-            </LineChart>
-          </ChartContainer>
+          <div className="px-6 pb-6 h-[300px]">
+            <Line data={chartData} options={options} />
+          </div>
         )
       }
-
-
     </Card>
   )
 }
