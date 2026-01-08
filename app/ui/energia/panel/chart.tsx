@@ -2,12 +2,6 @@
 
 import { useTransition } from 'react'
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts'
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion"
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { DatepickerRange } from '../../filters/datepicker-range'
@@ -107,93 +101,99 @@ export default function ChartComponent({ electricalPanelData }: { electricalPane
 
   return (
     <div className='flex flex-col gap-4'>
-      <div className='relative'>
-        <DatepickerRange />
-        <ToggleGroup 
-          type="single" 
-          defaultValue='month' 
-          value={currentFrequency} 
-          onValueChange={handleFrequencyChange}
-          className="mt-2"
-        >
-          <ToggleGroupItem 
-            value="month" 
-            className={`shadow-sm border ${currentFrequency === 'month' ? 'bg-[#00b0c7] text-white border-[#00b0c7]' : 'bg-white border-gray-200'}`}
-          >
-            Este mes
-          </ToggleGroupItem>
-          <ToggleGroupItem 
-            value="week" 
-            className={`shadow-sm border ${currentFrequency === 'week' ? 'bg-[#00b0c7] text-white border-[#00b0c7]' : 'bg-white border-gray-200'}`}
-          >
-            Esta semana
-          </ToggleGroupItem>
-        </ToggleGroup>
-        {isPending && (
-          <div className="absolute inset-0 flex items-center justify-center bg-white/50 rounded-lg">
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#00b0c7]"></div>
-          </div>
-        )}
-      </div>
-
       {electricalPanelData.results?.length > 0 ? (
-        <>
-          {/* PieChart con Recharts - solo si hay datos secundarios */}
-          {chartData.length > 0 ? (
-            <div className="h-[250px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={chartData}
-                    dataKey="value"
-                    nameKey="name"
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={50}
-                    outerRadius={90}
-                    paddingAngle={2}
-                    strokeWidth={2}
-                    stroke="#fff"
-                  >
-                    {chartData.map((_, index) => (
-                      <Cell 
-                        key={`cell-${index}`} 
-                        fill={CHART_COLORS[index % CHART_COLORS.length]} 
-                      />
-                    ))}
-                  </Pie>
-                  <Tooltip content={<CustomTooltip />} />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-          ) : (
-            <div className="h-[250px] w-full flex items-center justify-center">
-              <div className="text-center">
-                <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
-                  <svg className="w-12 h-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
-                  </svg>
+        <div className='flex gap-6'>
+          {/* Columna izquierda: Filtros + PieChart - 50% */}
+          <div className='w-1/2 flex flex-col gap-4'>
+            {/* Filtros compactos encima del PieChart */}
+            <div className='flex items-center gap-3 relative'>
+              <DatepickerRange />
+              <ToggleGroup 
+                type="single" 
+                defaultValue='month' 
+                value={currentFrequency} 
+                onValueChange={handleFrequencyChange}
+              >
+                <ToggleGroupItem 
+                  value="month" 
+                  className={`shadow-sm border text-sm px-3 py-1 ${currentFrequency === 'month' ? 'bg-[#00b0c7] text-white border-[#00b0c7]' : 'bg-white border-gray-200'}`}
+                >
+                  Este mes
+                </ToggleGroupItem>
+                <ToggleGroupItem 
+                  value="week" 
+                  className={`shadow-sm border text-sm px-3 py-1 ${currentFrequency === 'week' ? 'bg-[#00b0c7] text-white border-[#00b0c7]' : 'bg-white border-gray-200'}`}
+                >
+                  Esta semana
+                </ToggleGroupItem>
+              </ToggleGroup>
+              {isPending && (
+                <div className="absolute inset-0 flex items-center justify-center bg-white/50 rounded-lg">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#00b0c7]"></div>
                 </div>
-                <p className="text-gray-500 text-sm">Sin datos de distribucion</p>
-              </div>
+              )}
             </div>
-          )}
 
-          {/* Accordion mejorado */}
-          {mainSwitch && (
-            <Accordion type="single" collapsible defaultValue="item-1">
-              <AccordionItem value="item-1" className="border rounded-lg overflow-hidden shadow-sm">
-                <AccordionTrigger className="bg-[#00b0c7] text-white px-4 py-3 hover:no-underline hover:bg-[#009bb0] transition-colors [&[data-state=open]>svg]:text-white [&>svg]:text-white">
-                  <div className="flex justify-between w-full items-center pr-2">
+            {/* PieChart */}
+            {chartData.length > 0 ? (
+              <div className="h-[280px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={chartData}
+                      dataKey="value"
+                      nameKey="name"
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={70}
+                      outerRadius={130}
+                      paddingAngle={2}
+                      strokeWidth={2}
+                      stroke="#fff"
+                    >
+                      {chartData.map((_, index) => (
+                        <Cell 
+                          key={`cell-${index}`} 
+                          fill={CHART_COLORS[index % CHART_COLORS.length]} 
+                        />
+                      ))}
+                    </Pie>
+                    <Tooltip content={<CustomTooltip />} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            ) : (
+              <div className="h-[280px] w-full flex items-center justify-center">
+                <div className="text-center">
+                  <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
+                    <svg className="w-12 h-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+                    </svg>
+                  </div>
+                  <p className="text-gray-500 text-sm">Sin datos de distribucion</p>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Columna derecha: Lista de porcentajes - 50% */}
+          <div className='w-1/2'>
+            {mainSwitch && (
+              <div className="border rounded-lg overflow-hidden shadow-sm">
+                {/* Título principal */}
+                <div className="bg-[#00b0c7] text-white px-4 py-3">
+                  <div className="flex justify-between w-full items-center">
                     <div className="flex items-center gap-3">
                       <div className="w-3 h-3 rounded-full bg-white/40" />
                       <span className="font-semibold">{mainSwitch.measurement_point_name}</span>
                     </div>
                     <span className="font-bold text-lg">{mainSwitch.consumption_percentage}%</span>
                   </div>
-                </AccordionTrigger>
-                <AccordionContent className="p-0 bg-white">
+                </div>
+                
+                {/* Lista de items secundarios (siempre visible) */}
+                <div className="bg-white">
                   {secondaryItems.length > 0 ? (
                     secondaryItems.map((item, index) => (
                       <div
@@ -215,11 +215,11 @@ export default function ChartComponent({ electricalPanelData }: { electricalPane
                       No hay puntos de medicion secundarios
                     </div>
                   )}
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          )}
-        </>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       ) : (
         <div className="flex flex-col items-center justify-center py-16 px-4">
           <div className="relative">

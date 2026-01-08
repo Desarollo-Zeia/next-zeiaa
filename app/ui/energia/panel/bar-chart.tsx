@@ -154,7 +154,7 @@ export default function BarChart({ readingsGraph, weekday, thresholds }: { readi
   }
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-[400px]">
       {readingsGraph?.length > 0 ? (
         <Bar options={options} data={data} />
       ) : (

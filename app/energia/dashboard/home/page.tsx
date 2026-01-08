@@ -86,10 +86,6 @@ async function HomeContent({ searchParams }: SearchParams) {
   const energyPanel = measurementPointsPanels.results.find((p: any) => p.id.toString() === firstPanel) // @ts-ignore
   const energyMeasurementPoint = measurementPoints.results.find((mp: any) => mp.id.toString() === firstPoint).measurement_points[0].name // @ts-
 
-
-  console.log(energyMeasurementPoint)
-
-
   return (
     <div className="w-full">
       <FiltersContainer>
@@ -104,7 +100,7 @@ async function HomeContent({ searchParams }: SearchParams) {
           <MeasurementTable readings={readings} category={category} indicator={indicator} />
         </div>
         <div className="w-3/5">
-          <Graph readingsGraph={readingsGraph} category={category} indicator={indicator} last_by={last_by} readings={readings} />
+          <Graph readingsGraph={readingsGraph} category={category} indicator={indicator} last_by={last_by} readings={readings} dateAfter={formattedDateAfter} dateBefore={formattedDateBefore} />
         </div>
       </div>
     </div>
