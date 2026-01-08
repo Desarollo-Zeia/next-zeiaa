@@ -27,15 +27,17 @@ const _dashboardTableCached = unstable_cache(
   }
 )
 
-export async function dashboardTable({ headquarterId, panelId, date_after, date_before, unit, page, category, point, token }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, unit?: string, page?: string, category?: string, point?: string, token: string }) {
+export async function dashboardTable({ headquarterId, panelId, date_after, date_before, unit, category, point, token }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, unit?: string, category?: string, point?: string, token: string }) {
   'use cache'
   cacheLife('minutes')
   const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/devices/measurement-points/list/`, baseUrlEnergy)
 
+  // Traer todos los registros sin paginación
+  url.searchParams.set('page_size', '1000')
+  
   if (date_after) url.searchParams.set('date_after', date_after)
   if (date_before) url.searchParams.set('date_before', date_before)
   if (unit) url.searchParams.set('unit', unit)
-  if (page) url.searchParams.set('page', page)
   if (category) url.searchParams.set('category', category)
   if (point) url.searchParams.set('point', point)
 

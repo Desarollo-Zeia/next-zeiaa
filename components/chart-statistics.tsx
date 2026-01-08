@@ -55,6 +55,8 @@ interface ReadingsChartProps {
   description?: string
   indicators: Array<{ indicator: string; unit: string }>
   interval?: string
+  dateAfter?: string
+  dateBefore?: string
 }
 
 const indicatorConfig: Record<IndicatorType, { label: string; defaultUnit: string }> = {
@@ -281,6 +283,8 @@ function ChartWithZoom({
   selectedRoom,
   visibleRooms,
   indicator,
+  dateAfter,
+  dateBefore,
 }: {
   chartData: Record<string, string | number | null>[]
   visibleRoomsData: RoomData[]
@@ -290,8 +294,23 @@ function ChartWithZoom({
   selectedRoom: RoomData | undefined
   visibleRooms: Set<number>
   indicator: IndicatorType
+  dateAfter?: string
+  dateBefore?: string
 }) {
-  const labels = chartData.map((item) => item.hour as string)
+  // Determinar si es el mismo día
+  const isSameDay = dateAfter === dateBefore
+
+  // Cambiar formato de labels según si es el mismo día o rango de fechas
+  const monthNames = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
+  
+  const labels = isSameDay 
+    ? chartData.map((item) => item.hour as string)  // Solo hora: "08:00"
+    : chartData.map((item) => {
+        const date = item.date as string
+        if (!date) return item.hour as string
+        const [, month, day] = date.split('-')
+        return `${day} ${monthNames[parseInt(month) - 1]}`  // "07 ene"
+      })
   
   const datasets = visibleRoomsData.map((room) => ({
     label: room.room_name,
@@ -535,7 +554,9 @@ export function ReadingsChart({
   title = "Monitor de Calidad Ambiental",
   description,
   indicators,
-  interval
+  interval,
+  dateAfter,
+  dateBefore
 }: ReadingsChartProps) {
   const [selectedRoomId, setSelectedRoomId] = useState<string>(
     roomsData.length > 0 ? roomsData[0].room_id.toString() : "",
@@ -729,6 +750,8 @@ export function ReadingsChart({
           selectedRoom={selectedRoom}
           visibleRooms={visibleRooms}
           indicator={indicator}
+          dateAfter={dateAfter}
+          dateBefore={dateBefore}
         />
 
         <div className="mt-4 flex flex-wrap gap-4 justify-center">

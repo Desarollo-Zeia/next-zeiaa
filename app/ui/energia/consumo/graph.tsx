@@ -32,7 +32,7 @@ const energyToggleArray = [
 ]
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings }: { readingsGraph: any, category: any, indicator: any, last_by: any, readings: any }) => {
+const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings, dateAfter, dateBefore }: { readingsGraph: any, category: any, indicator: any, last_by: any, readings: any, dateAfter?: string, dateBefore?: string }) => {
   const [isPending, startTransition] = useTransition()
   const searchParams = useSearchParams()
   const pathname = usePathname()
@@ -60,6 +60,9 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
     })) || []
 
   const unit = readingsGraph?.[0]?.unit || ''
+
+  // Determinar si es el mismo día (mostrar solo horas) o rango de fechas
+  const isSameDay = dateAfter === dateBefore
 
   const handleFrequency = (frequency: string) => {
     startTransition(() => {
@@ -101,10 +104,16 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
     scales: {
       x: {
         type: "time",
+        adapters: {
+          date: {
+            locale: es
+          }
+        },
         time: { 
-          unit: "hour",
+          unit: isSameDay ? "hour" : "day",
           displayFormats: {
-            hour: "dd MMM HH:mm"
+            hour: isSameDay ? "HH:mm" : "dd MMM HH:mm",
+            day: "dd MMM"
           }
         },
         grid: { color: '#e5e7eb' },

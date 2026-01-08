@@ -61,7 +61,7 @@ async function Estadisticas({ searchParams }: SearchParams) {
   return (
     <div className="flex mx-2 justify-center gap-4">
 
-      <ReadingsChart indicator={currentIndicator as 'CO2' | 'HUMIDITY' | 'TEMPERATURE'} unit={currentUnit} roomsData={readings} indicators={indicators} interval={interval} />
+      <ReadingsChart indicator={currentIndicator as 'CO2' | 'HUMIDITY' | 'TEMPERATURE'} unit={currentUnit} roomsData={readings} indicators={indicators} interval={interval} dateAfter={formattedDateAfter} dateBefore={formattedDateBefore} />
     </div>
   )
 }

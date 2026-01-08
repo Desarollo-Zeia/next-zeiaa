@@ -53,7 +53,6 @@ async function DashboardContent({ searchParams }: SearchParams) {
     headquarter,
     panel,
     point,
-    page,
     weekday = '1,2,3,4,5',
     date_start,
     date_end,
@@ -109,8 +108,7 @@ async function DashboardContent({ searchParams }: SearchParams) {
     date_after: formattedDateAfter,
     date_before: formattedDateBefore,
     point: firstPoint,
-    panelId: firstPanel,
-    page
+    panelId: firstPanel
   })
 
   const alertToday = await lastAlertToday(authToken!)
@@ -149,14 +147,8 @@ async function DashboardContent({ searchParams }: SearchParams) {
         <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} energy={firstHeadquarter} />
       </FiltersContainer>
       {/* <TodayAlertBanner alertToday={alertToday} /> */}
-      <div className='w-full flex gap-6'>
-        <div className='w-2/5'>
-          <ChartComponent electricalPanelData={dashboardPorcentageGraph} />
-        </div>
-        <div className='w-3/5'>
-          <TableComponent readings={dashboardTableReadings} />
-        </div>
-      </div>
+      <ChartComponent electricalPanelData={dashboardPorcentageGraph} />
+      <TableComponent readings={dashboardTableReadings} />
       <div className='w-full'>
         <div className='flex justify-between gap-4'>
 
@@ -175,7 +167,7 @@ async function DashboardContent({ searchParams }: SearchParams) {
             </div>
           </div>
         </div>
-        <div className='w-[80%] h-[740px] flex justify-center items-center m-auto'>
+        <div className='w-[80%] flex justify-center items-center m-auto'>
           <BarChart readingsGraph={consumeGraphReadings} weekday={weekday} thresholds={thresholds} />
         </div>
       </div>
