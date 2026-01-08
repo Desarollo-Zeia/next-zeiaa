@@ -17,7 +17,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { STATUS_COLOR, STATUS_COLOR_THRESHOLD, STATUS_TO_SPANISH, UNIT_CONVERTED } from "@/app/utils/formatter";
+import { INDICATOR_CONVERTED, STATUS_COLOR, STATUS_COLOR_THRESHOLD, STATUS_TO_SPANISH, UNIT_CONVERTED } from "@/app/utils/formatter";
 import { Indicator, Unit } from "@/app/type";
 import NoResultFound from "../no-result-found";
 
@@ -71,10 +71,16 @@ export default function ChartComponent({ results, generalRoomData, indicator, un
   const labels = results.map(item => item.hours)
   const dataPoints = results.map(item => parseFloat(item.value))
 
+  // Calcular el máximo considerando thresholds y valores de datos
+  const maxDataValue = dataPoints.length > 0 ? Math.max(...dataPoints) : 0
+  const maxY = Math.max(domaninY || 0, maxDataValue) * 1.2
+
+  const indicatorLabel = INDICATOR_CONVERTED[indicator as keyof typeof INDICATOR_CONVERTED] || indicator
+
   const chartData = {
     labels,
     datasets: [{
-      label: indicator,
+      label: indicatorLabel,
       data: dataPoints,
       borderColor: "#00b0c7",
       backgroundColor: "rgba(0, 176, 199, 0.1)",
@@ -113,7 +119,7 @@ export default function ChartComponent({ results, generalRoomData, indicator, un
       },
       y: {
         min: 0,
-        max: domaninY ? domaninY * 1.4 : undefined,
+        max: maxY || undefined,
         grid: { color: '#e5e7eb' },
         ticks: {
           font: { size: 12 },
