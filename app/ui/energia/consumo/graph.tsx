@@ -52,7 +52,6 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
   // Procesar datos para Chart.js
   const dataPoints = readingsGraph
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ?.filter((item: any) => item.first_value !== 0)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     .map((item: any) => ({
       x: new Date(item.first_reading).toISOString(),
@@ -109,7 +108,7 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
             locale: es
           }
         },
-        time: { 
+        time: {
           unit: isSameDay ? "hour" : "day",
           displayFormats: {
             hour: isSameDay ? "HH:mm" : "dd MMM HH:mm",
@@ -123,7 +122,7 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
         grid: { color: '#e5e7eb' },
         ticks: {
           font: { size: 12 },
-          callback: function(val: number) {
+          callback: function (val: number) {
             return `${val.toFixed(0)} ${unit}`
           }
         }
@@ -140,13 +139,13 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
         bodyFont: { weight: 'bold' },
         callbacks: {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          title: function(tooltipItems: any) {
+          title: function (tooltipItems: any) {
             const date = new Date(tooltipItems[0].parsed.x)
             const fechaFormateada = format(date, "EEEE d 'de' MMMM, HH:mm", { locale: es })
             return fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1)
           },
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          label: function(context: any) {
+          label: function (context: any) {
             return `${parameterLabel}: ${context.parsed.y.toFixed(2)} ${unit}`
           }
         }
@@ -237,11 +236,10 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
               <ToggleGroupItem
                 key={times.value}
                 value={times.value}
-                className={`w-[120px] h-[40px] ${
-                  times.value === last_by
-                    ? 'bg-[#00b0c7] text-white'
-                    : 'bg-gray-100 text-black'
-                } ${last_by === 'hour' && times.value === 'none' ? 'bg-[#00b0c7] text-white' : ''}`}
+                className={`w-[120px] h-[40px] ${times.value === last_by
+                  ? 'bg-[#00b0c7] text-white'
+                  : 'bg-gray-100 text-black'
+                  } ${last_by === 'hour' && times.value === 'none' ? 'bg-[#00b0c7] text-white' : ''}`}
               >
                 {isPending ? (
                   <div className="flex items-center justify-center">
