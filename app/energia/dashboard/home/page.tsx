@@ -52,9 +52,11 @@ async function HomeContent({ searchParams }: SearchParams) {
 
   const measurementPointsPanels = await getEnergyMeasurementPointPanels({ headquarterId: firstHeadquarter, token: authToken! })
 
+
   const firstPanel = panel || measurementPointsPanels?.results[0]?.id.toString()
 
   const measurementPoints = await getMeasurementPoints({ electricalpanelId: firstPanel, token: authToken! })
+
 
   const firstPoint = point || measurementPoints?.results[0]?.measurement_points[0].id.toString()
 
@@ -84,7 +86,7 @@ async function HomeContent({ searchParams }: SearchParams) {
   ])
 
   const energyPanel = measurementPointsPanels.results.find((p: any) => p.id.toString() === firstPanel) // @ts-ignore
-  const energyMeasurementPoint = measurementPoints.results.find((mp: any) => mp.id.toString() === firstPoint).measurement_points[0].name // @ts-
+  const energyMeasurementPoint = measurementPoints.results.find((mp: any) => mp.id.toString() === firstPoint)?.measurement_points[0].name // @ts-
 
   return (
     <div className="w-full">
