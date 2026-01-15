@@ -86,9 +86,14 @@ async function HomeContent({ searchParams }: SearchParams) {
   ])
 
   const energyPanel = measurementPointsPanels.results.find((p: any) => p.id.toString() === firstPanel) // @ts-ignore
-  const energyMeasurementPoint = measurementPoints.results.find((mp: any) => mp.id.toString() === firstPoint)?.measurement_points[0].name // @ts-
+  const energyMeasurementPoint = measurementPoints.results
+    .flatMap((device: any) => device.measurement_points)
+    .find((mp: any) => mp.id.toString() === firstPoint)?.name
+
 
   return (
+
+
     <div className="w-full">
       <FiltersContainer>
         <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} energy={firstHeadquarter} />
