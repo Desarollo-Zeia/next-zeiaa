@@ -1,6 +1,6 @@
 'use client'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import React from 'react'
+import React, { memo } from 'react'
 
 const MONTHS = [
   { value: 'january', label: 'Enero' },
@@ -26,7 +26,7 @@ type MonthSelectProps = {
   disabled?: boolean,
 }
 
-export default function MonthPicker({ value, onChange, isPending, firstMonth, secondMonth }: MonthSelectProps) {
+export default memo(function MonthPicker({ value, onChange, isPending, firstMonth, secondMonth }: MonthSelectProps) {
   return (
     <div className='relative'>
       <Select value={value} onValueChange={onChange}>
@@ -50,4 +50,4 @@ export default function MonthPicker({ value, onChange, isPending, firstMonth, se
       )}
     </div>
   )
-}
+})

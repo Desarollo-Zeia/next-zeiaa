@@ -79,8 +79,7 @@ export default function AlertTable({ readings, metric }: any) {
 
                   {/* Renderizamos las filas de la tabla usando "readingsDat                                                                                                                                                                                             a" format (date, "hh:mm")*/}
                   {/* // eslint-disable-next-line @typescript-eslint/no-explicit-any*/}
-                  {readingsData?.map((reading: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any 
-                    console.log(reading)
+                  {readingsData?.map((reading: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
                     const { date, time } = formatDateTime(reading.created_at)
                     return (
                       <TableRow key={`${reading.id}-${reading.channel}`}>

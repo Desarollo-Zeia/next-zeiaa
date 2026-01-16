@@ -2,7 +2,7 @@
 import React, { useTransition } from 'react'
 import { saveAs } from 'file-saver';
 import { Button } from '@/components/ui/button';
-import { consumeExcel } from '@/app/sevices/energy/data';
+import { consumeExcel } from '@/app/services/energy/data';
 import Image from 'next/image';
 import ExcelIconGreen from "@/public/icons/excel.png"
 import { formatFromUS } from '@/app/utils/func';

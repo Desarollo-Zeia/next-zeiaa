@@ -1,7 +1,7 @@
 // import { getCompanyData } from "@/app/lib/auth";
 import { getToken } from "@/app/lib/auth";
-import { getHeadquarters } from "@/app/sevices/energy/enterprise/data";
-import { monitoringGraph, monitoringLastThree } from "@/app/sevices/energy/monitoreo/data";
+import { getHeadquarters } from "@/app/services/energy/enterprise/data";
+import { monitoringGraph, monitoringLastThree } from "@/app/services/energy/monitoreo/data";
 import { SearchParams } from "@/app/type";
 import HeadquarterEnergyFilter from "@/app/ui/energia/filters/headquarter-energy-filter";
 // import PanelsFilterEnergy from "@/app/ui/energia/filters/panels-energy-filter";

@@ -41,8 +41,6 @@ export default function MeasurementPointFilter({ measurementPoints, point }: { m
   const pathname = usePathname()
   const { replace } = useRouter()
 
-  console.log(measurementPoints)
-
   const handlePointChange = (point: string) => {
     startTransition(() => {
       const newParams = new URLSearchParams(searchParams);

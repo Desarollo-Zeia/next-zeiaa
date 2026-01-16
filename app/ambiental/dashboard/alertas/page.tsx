@@ -1,8 +1,8 @@
 import { getToken } from "@/app/lib/auth";
-import { alertsAmbiental } from "@/app/sevices/alerts/data";
-import { detailAmbiental } from "@/app/sevices/enterprise/data";
-import { getRoomsAmbiental } from "@/app/sevices/filters/data";
-import { roomGeneralDataAmbiental } from "@/app/sevices/readings/data";
+import { alertsAmbiental } from "@/app/services/alerts/data";
+import { detailAmbiental } from "@/app/services/enterprise/data";
+import { getRoomsAmbiental } from "@/app/services/filters/data";
+import { roomGeneralDataAmbiental } from "@/app/services/readings/data";
 import { Indicator, SearchParams } from "@/app/type";
 import TableComponent from "@/app/ui/alertas/table";
 import { DatepickerRange } from "@/app/ui/filters/datepicker-range";

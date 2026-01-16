@@ -1,26 +1,25 @@
 'use client'
-import React, { useTransition } from 'react'
+import React, { useTransition, memo } from 'react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useSearchParams, usePathname, useRouter } from 'next/navigation'
 
 const START_YEAR = 2025
 
-function generateYears(): number[] {
+// Generar años una sola vez fuera del componente
+const YEARS = (() => {
   const currentYear = new Date().getFullYear()
   const years: number[] = []
   for (let year = START_YEAR; year <= currentYear; year++) {
     years.push(year)
   }
   return years
-}
+})()
 
-export default function YearFilter({ year }: { year: string }) {
+export default memo(function YearFilter({ year }: { year: string }) {
   const searchParams = useSearchParams()
   const [isPending, startTransition] = useTransition()
   const pathname = usePathname()
   const { replace } = useRouter()
-
-  const years = generateYears()
 
   const handleYear = (selectedYear: string) => {
     startTransition(() => {
@@ -40,7 +39,7 @@ export default function YearFilter({ year }: { year: string }) {
           <SelectValue placeholder="Año" />
         </SelectTrigger>
         <SelectContent>
-          {years.map((y) => (
+          {YEARS.map((y) => (
             <SelectItem key={y} value={y.toString()}>
               {y}
             </SelectItem>
@@ -54,4 +53,4 @@ export default function YearFilter({ year }: { year: string }) {
       )}
     </div>
   )
-}
+})

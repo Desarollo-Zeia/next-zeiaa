@@ -1,5 +1,5 @@
-import { getRooms } from "@/app/sevices/filters/data";
-import { readingsCovid, readingsCovidBaselines } from "@/app/sevices/readings/data";
+import { getRooms } from "@/app/services/filters/data";
+import { readingsCovid, readingsCovidBaselines } from "@/app/services/readings/data";
 import { SearchParams } from "@/app/type";
 import TableComponent from "@/app/ui/covid/table";
 import { DatepickerRange } from "@/app/ui/filters/datepicker-range";

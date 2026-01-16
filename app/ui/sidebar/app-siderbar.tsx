@@ -41,8 +41,8 @@ export function AppSidebar() {
         const { email, last_name, energy_modules, enterprise_name } = user
         setUserInfo({ email, name: enterprise_name, avatar: '' })
         setEnergyModules(energy_modules)
-      } catch (error) {
-        console.log(error)
+      } catch {
+        // Error silenciado - manejo de errores de carga de usuario
       }
     }
     handleRequest()

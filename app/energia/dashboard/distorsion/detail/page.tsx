@@ -1,6 +1,6 @@
 // import { getCompanyData } from "@/app/lib/auth"
-import { armonics } from "@/app/sevices/energy/distorsion/data"
-import { getHeadquarters } from "@/app/sevices/energy/enterprise/data"
+import { armonics } from "@/app/services/energy/distorsion/data"
+import { getHeadquarters } from "@/app/services/energy/enterprise/data"
 import { SearchParams } from "@/app/type"
 import CurrentVoltageToggle from "@/app/ui/energia/distorsion/current-voltage-toggle"
 import CurrentTable from "@/app/ui/energia/distorsion/detail/current-table"

@@ -1,7 +1,7 @@
 import { getToken } from "@/app/lib/auth";
-import { detailAmbiental } from "@/app/sevices/enterprise/data";
-import { getRoomsAmbiental } from "@/app/sevices/filters/data";
-import { readingsGraphAmbiental, roomGeneralDataAmbiental } from "@/app/sevices/readings/data";
+import { detailAmbiental } from "@/app/services/enterprise/data";
+import { getRoomsAmbiental } from "@/app/services/filters/data";
+import { readingsGraphAmbiental, roomGeneralDataAmbiental } from "@/app/services/readings/data";
 import { Indicator, SearchParams, Unit } from "@/app/type";
 import { ChartComponent } from "@/app/ui/analisis/estadisticas/chart";
 import { DatepickerRange } from "@/app/ui/filters/datepicker-range";

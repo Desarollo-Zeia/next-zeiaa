@@ -5,9 +5,9 @@
 // import FiltersContainer from '@/app/ui/filters/filters-container'
 // import NoResultFound from '@/app/ui/no-result-found'
 // import PaginationComponent from '@/app/ui/pagination'
-// import { roomsListAmbiental } from '@/app/sevices/enterprise/data'
+// import { roomsListAmbiental } from '@/app/services/enterprise/data'
 // import HeadquarterSelect from '@/app/ui/filters/headquarter-select'
-// import { getHeadquartersAmbiental } from '@/app/sevices/filters/data'
+// import { getHeadquartersAmbiental } from '@/app/services/filters/data'
 // import { SearchParams } from '@/app/type'
 // import { getToken } from '@/app/lib/auth'
 

@@ -1,4 +1,4 @@
-import { readingsCovidBaselines, readingsCovidDetail, riskReached } from "@/app/sevices/readings/data"
+import { readingsCovidBaselines, readingsCovidDetail, riskReached } from "@/app/services/readings/data"
 import { SearchParams } from "@/app/type"
 import TableComponent from "@/app/ui/covid/detail/table"
 import FiltersContainer from "@/app/ui/filters/filters-container"
