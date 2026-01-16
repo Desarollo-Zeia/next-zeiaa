@@ -4,7 +4,7 @@ import { saveAs } from 'file-saver';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import ExcelIconGreen from "@/public/icons/excel.png"
-import { armonicsExcel } from '@/app/sevices/energy/distorsion/data';
+import { armonicsExcel } from '@/app/services/energy/distorsion/data';
 
 export default function DownloadExcelDistorsion({ headquarterId, panelId, data_type, date_after, date_before } : { headquarterId?: string, panelId?: string, data_type?: string, date_after?: string,  date_before?: string}) {
 

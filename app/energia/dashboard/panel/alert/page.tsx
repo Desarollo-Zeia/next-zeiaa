@@ -1,6 +1,6 @@
-import { getEnergyMeasurementPointPanels, getHeadquarters } from '@/app/sevices/energy/enterprise/data'
-import { getMeasurementPoints } from '@/app/sevices/filters/data'
-import { dashboardTableAlerts } from '@/app/sevices/panel/data'
+import { getEnergyMeasurementPointPanels, getHeadquarters } from '@/app/services/energy/enterprise/data'
+import { getMeasurementPoints } from '@/app/services/filters/data'
+import { dashboardTableAlerts } from '@/app/services/panel/data'
 import { SearchParams } from '@/app/type'
 import { DatepickerRange } from '@/app/ui/filters/datepicker-range'
 import FiltersContainer from '@/app/ui/filters/filters-container'
@@ -61,8 +61,6 @@ async function AlertsContent({ searchParams }: SearchParams) {
   const firstPoint = point || measurementPoints?.results[0]?.measurement_points[0].id.toString()
 
   const dashboardTableAlertsReadings = await dashboardTableAlerts({ headquarterId: firstHeadquarter, point: firstPoint, date_after: formattedDateAfter, date_before: formattedDateBefore, page })
-
-  console.log(dashboardTableAlertsReadings)
 
   return (
     <>

@@ -14,11 +14,7 @@ export default function Error({
   const router = useRouter()
   const pathname = usePathname()
 
-  console.log(pathname)
-
   useEffect(() => {
-    // Log el error para debugging (opcional)
-    console.error('Error capturado:', error);
 
     // Si es un error de autenticación, redirigir al login
     if (error.message.includes('403') || error.message.includes('Token inválido')) {

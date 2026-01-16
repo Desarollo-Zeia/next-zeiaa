@@ -4,7 +4,7 @@ import { saveAs } from 'file-saver';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import ExcelIconGreen from "@/public/icons/excel.png"
-import { alertsExcel } from '@/app/sevices/energy/monitoreo/data';
+import { alertsExcel } from '@/app/services/energy/monitoreo/data';
 import { Indicator, Unit } from '@/app/type';
 import { formattedDate } from '@/app/utils/func';
 

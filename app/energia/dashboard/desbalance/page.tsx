@@ -1,7 +1,7 @@
 import { getToken } from "@/app/lib/auth";
-import { currentGraph, threeMostUnbalanced, voltageGraph } from "@/app/sevices/energy/desbalance/data";
-import { getEnergyMeasurementPointPanels, getHeadquarters } from "@/app/sevices/energy/enterprise/data";
-import { getMeasurementPoints } from "@/app/sevices/filters/data";
+import { currentGraph, threeMostUnbalanced, voltageGraph } from "@/app/services/energy/desbalance/data";
+import { getEnergyMeasurementPointPanels, getHeadquarters } from "@/app/services/energy/enterprise/data";
+import { getMeasurementPoints } from "@/app/services/filters/data";
 import { SearchParams } from "@/app/type";
 import CurrentChartCount from "@/app/ui/energia/desbalance/current-chart-count";
 import { MetricSelector } from "@/app/ui/energia/desbalance/metric-selector";

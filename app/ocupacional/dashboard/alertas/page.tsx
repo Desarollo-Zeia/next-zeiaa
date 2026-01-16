@@ -1,7 +1,7 @@
 import { getToken } from "@/app/lib/auth";
-import { alerts } from "@/app/sevices/alerts/data";
-import { getRooms } from "@/app/sevices/filters/data";
-import { roomGeneralData } from "@/app/sevices/readings/data";
+import { alerts } from "@/app/services/alerts/data";
+import { getRooms } from "@/app/services/filters/data";
+import { roomGeneralData } from "@/app/services/readings/data";
 import { Indicator, SearchParams } from "@/app/type";
 import TableComponent from "@/app/ui/alertas/table";
 import { DatepickerRange } from "@/app/ui/filters/datepicker-range";
@@ -46,7 +46,7 @@ async function Alertas({ searchParams }: SearchParams) {
   const rooms = await getRooms(authToken!)
   const firstRoom = rooms.find((room: any) => room.is_activated === true)  // eslint-disable-line @typescript-eslint/no-explicit-any
 
-  const currentFirstRoom = room ? room : firstRoom.id.toString()
+  const currentFirstRoom = room ? room : firstRoom?.id?.toString() ?? rooms[0]?.id?.toString()
 
   const generalRoomData = await roomGeneralData({ roomId: currentFirstRoom, token: authToken! })
   const { indicator: currentFirstIndicator, unit: currentFirstUnit } = generalRoomData.indicators_activated[0]

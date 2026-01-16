@@ -29,9 +29,6 @@ type Props = {
 
 
 export default function HeadquarterEnergyFilter({ energyHeadquarter = [], energy }: Props) {
-
-
-  console.log(energyHeadquarter)
   const [isPending, startTransition] = useTransition()
   const searchParams = useSearchParams()
   const { replace } = useRouter()

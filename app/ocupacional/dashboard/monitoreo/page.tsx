@@ -1,7 +1,7 @@
 import { getToken } from "@/app/lib/auth"
-import { roomsList } from "@/app/sevices/enterprise/data"
-import { getRooms } from "@/app/sevices/filters/data"
-import { readingsData, roomGeneralData, roomLastData } from "@/app/sevices/readings/data"
+import { roomsList } from "@/app/services/enterprise/data"
+import { getRooms } from "@/app/services/filters/data"
+import { readingsData, roomGeneralData, roomLastData } from "@/app/services/readings/data"
 import { Indicator, SearchParams, Unit } from "@/app/type"
 import FiltersContainer from "@/app/ui/filters/filters-container"
 import RoomSelect from "@/app/ui/filters/room-select"
@@ -86,8 +86,6 @@ async function Monitoreo({ searchParams }: SearchParams) {
   // Nota: Podrías usar Promise.all aquí para acelerar la carga en paralelo si las dependencias lo permiten
   const data = await roomLastData({ roomId: currentFirstRoom, token: authToken! })
   const { results } = await readingsData({ roomId: currentFirstRoom, indicator: currentIndicator, unit: currentUnit, token: authToken! })
-
-
 
   // Procesamiento de datos
   const { name } = rooms.find((room: Room) => room.id === Number(currentFirstRoom)) || { name: 'Desconocido' }

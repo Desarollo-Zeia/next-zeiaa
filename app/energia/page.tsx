@@ -8,22 +8,12 @@ import { useActionState } from "react"
 import { actionEnergy } from "../actions/validation"
 
 export default function Page() {
-  const [showPassword, setShowPassword] = useState<boolean>(false)
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [showPassword, setShowPassword] = useState(false)
   const [isPending, startTransition] = useTransition()
-
   const [state, formAction] = useActionState(actionEnergy, { message: "" })
 
-  const handleSubmit = async (formData: FormData) => {
-    startTransition(async () => {
-      setIsLoading(true)
-      try {
-        await formAction(formData)
-      } finally {
-        setIsLoading(false)
-      }
-    })
-
+  const handleSubmit = (formData: FormData) => {
+    startTransition(() => formAction(formData))
   }
 
   return (
@@ -96,6 +86,7 @@ export default function Page() {
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
                       className="px-3 text-gray-400 hover:text-gray-600"
+                      aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
                     >
                       {showPassword ? <Eye className="h-5 w-5" /> : <EyeOff className="h-5 w-5" />}
                     </button>
@@ -107,7 +98,7 @@ export default function Page() {
 
               <button
                 type="submit"
-                disabled={isLoading}
+                disabled={isPending}
                 className="relative w-full overflow-hidden rounded-lg bg-gradient-to-r from-[rgb(0,183,202)] to-[rgb(0,186,167)] p-3 text-sm font-medium text-white shadow-lg transition-all hover:scale-[1.02] hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[rgb(0,183,202)] focus:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
                 {isPending ? (

@@ -3,7 +3,7 @@ import {
   consumptionCalculator, consumptionCalculatorMonthly,
   consumptionInvoice,
   consumptionTariff,
-} from "@/app/sevices/energy/tarifario/data"
+} from "@/app/services/energy/tarifario/data"
 import CostDifferenceChecker from "@/app/ui/energia/tarifario/cost-difference-checker"
 import CycleClientInfoTable from "@/app/ui/energia/tarifario/cycle-clientinfo-table"
 import TariffTable from "@/app/ui/energia/tarifario/tariff-table"

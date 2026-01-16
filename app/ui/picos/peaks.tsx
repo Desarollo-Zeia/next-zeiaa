@@ -5,7 +5,7 @@ import { formattedDate, formattedDateTwo, formattedDateWithHour } from "@/app/ut
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Calendar, CalendarRange, Clock, Wind, ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
 type Thresholds = {
   co2: {
@@ -60,11 +60,14 @@ export default function Peaks({ readings, indicator, indicators }: { readings: R
 
   const currentIndicator = indicator ?? indicators[0].indicator
 
-  // Calcular paginación
-  const totalPages = Math.ceil((readings?.results?.length || 0) / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentResults = readings?.results?.slice(startIndex, endIndex) || [];
+  // Calcular paginación con useMemo para evitar recalculos innecesarios
+  const { totalPages, currentResults } = useMemo(() => {
+    const total = Math.ceil((readings?.results?.length || 0) / itemsPerPage)
+    const startIndex = (currentPage - 1) * itemsPerPage
+    const endIndex = startIndex + itemsPerPage
+    const results = readings?.results?.slice(startIndex, endIndex) || []
+    return { totalPages: total, currentResults: results }
+  }, [readings?.results, currentPage, itemsPerPage])
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {

@@ -1,7 +1,7 @@
 import { getToken } from "@/app/lib/auth";
-import { current, voltage } from "@/app/sevices/energy/desbalance/data";
-import { getEnergyMeasurementPointPanels, getHeadquarters } from "@/app/sevices/energy/enterprise/data";
-import { getMeasurementPoints } from "@/app/sevices/filters/data";
+import { current, voltage } from "@/app/services/energy/desbalance/data";
+import { getEnergyMeasurementPointPanels, getHeadquarters } from "@/app/services/energy/enterprise/data";
+import { getMeasurementPoints } from "@/app/services/filters/data";
 import { SearchParams } from "@/app/type";
 import AlertTable from "@/app/ui/energia/desbalance/alerta/alerts-table";
 import HeadquarterEnergyFilter from "@/app/ui/energia/filters/headquarter-energy-filter";

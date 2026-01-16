@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { useState } from 'react';
 import { saveAs } from 'file-saver';
 import PaginationNumberComponent from '../pagination-number';
-import { readinsgExcel, readinsgExcelAmbiental } from '@/app/sevices/readings/data';
+import { readinsgExcel, readinsgExcelAmbiental } from '@/app/services/readings/data';
 import Image from "next/image";
 import ExcelIconGreen from "@/public/icons/excel.png"
 import { INDICATOR_CONSEQUENCES_TEXT, INDICATOR_CONVERTED, INDICATOR_MEASUREMENT_TEXT, STATUS_COLOR, STATUS_COLOR_BG, STATUS_TO_SPANISH_EXC, UNIT_CONVERTED } from "@/app/utils/formatter";
@@ -39,7 +39,6 @@ type TableComponentProps = {
   date_after?: string,
   date_before?: string,
   room: string,
-
 }
 
 export default function TableComponent({ generalRoomData, readings, count, indicator, unit, room, date_before, date_after }: TableComponentProps) {
@@ -68,7 +67,6 @@ export default function TableComponent({ generalRoomData, readings, count, indic
         let blob;
         if (module === 'ocupacional') {
           blob = await readinsgExcel({
-            room,
             indicator,
             unit,
             date_before: DbFormat,

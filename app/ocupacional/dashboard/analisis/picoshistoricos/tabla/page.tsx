@@ -1,9 +1,9 @@
-import { readingsPeaksTable, roomGeneralData } from "@/app/sevices/readings/data";
+import { readingsPeaksTable, roomGeneralData } from "@/app/services/readings/data";
 import TableComponent from "@/app/ui/picos/table";
 import { DatepickerRange } from "@/app/ui/filters/datepicker-range";
 import FiltersContainer from "@/app/ui/filters/filters-container";
 import { format } from "date-fns";
-import { getRooms } from "@/app/sevices/filters/data";
+import { getRooms } from "@/app/services/filters/data";
 import RoomSelect from "@/app/ui/filters/room-select";
 import { Indicator } from "@/app/type";
 import StatusSelect from "@/app/ui/filters/status-select";

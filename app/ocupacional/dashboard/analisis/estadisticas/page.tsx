@@ -1,6 +1,6 @@
 import { getToken } from "@/app/lib/auth";
-import { getRooms } from "@/app/sevices/filters/data";
-import { readingsGraph, readingsReal, roomGeneralData } from "@/app/sevices/readings/data";
+import { getRooms } from "@/app/services/filters/data";
+import { readingsGraph, readingsReal, roomGeneralData } from "@/app/services/readings/data";
 import { SearchParams } from "@/app/type";
 // import { ChartComponent } from "@/app/ui/analisis/estadisticas/chart";
 import { DatepickerRange } from "@/app/ui/filters/datepicker-range";

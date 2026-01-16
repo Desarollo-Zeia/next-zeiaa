@@ -4,9 +4,10 @@ import { removeToken, setCompanyData, setToken } from '../lib/auth'
 import { baseUrl, baseUrlAmbiental, baseUrlEnergy } from '../lib/constant'
 
 export async function actionOccupational(prevState: { message: string }, formData: FormData) {
-
   const email = formData.get('email') as string
   const password = formData.get('password') as string
+
+  let shouldRedirect = false
 
   try {
     const response = await fetch(`${baseUrl}/account/api/token/`, {
@@ -17,23 +18,28 @@ export async function actionOccupational(prevState: { message: string }, formDat
 
     if (response.ok) {
       const data = await response.json()
-      console.log(data.token)
       await setToken(data.token)
+      shouldRedirect = true
     } else {
       await removeToken()
-      return { message: 'Error, valide correo o constraseña' }
+      return { message: 'Error, valide correo o contraseña' }
     }
-  } catch (error) {
-    console.error('Error:', error)
+  } catch {
+    return { message: 'Error de conexion, intente nuevamente' }
   }
 
-  redirect(`/ocupacional/dashboard/rooms`)
+  if (shouldRedirect) {
+    redirect(`/ocupacional/dashboard/rooms`)
+  }
 
+  return { message: '' }
 }
 
 export async function actionAmbiental(prevState: { message: string }, formData: FormData) {
   const email = formData.get('email') as string
   const password = formData.get('password') as string
+
+  let shouldRedirect = false
 
   try {
     const response = await fetch(`${baseUrlAmbiental}/account/api/token/ambiental`, {
@@ -43,25 +49,29 @@ export async function actionAmbiental(prevState: { message: string }, formData: 
     })
 
     if (response.ok) {
-
       const data = await response.json()
-      console.log(data)
       await setToken(data.token)
+      shouldRedirect = true
     } else {
       await removeToken()
-      return { message: 'Error, valide correo o constraseña' }
+      return { message: 'Error, valide correo o contraseña' }
     }
-  } catch (error) {
-    console.error('Error:', error)
+  } catch {
+    return { message: 'Error de conexion, intente nuevamente' }
   }
 
-  redirect(`/ambiental/dashboard`)
+  if (shouldRedirect) {
+    redirect(`/ambiental/dashboard`)
+  }
+
+  return { message: '' }
 }
 
 export async function actionEnergy(prevState: { message: string }, formData: FormData) {
-
   const email = formData.get('email') as string
   const password = formData.get('password') as string
+
+  let shouldRedirect = false
 
   try {
     const response = await fetch(`${baseUrlEnergy}/api/v1/accounts/request-token/`, {
@@ -72,17 +82,20 @@ export async function actionEnergy(prevState: { message: string }, formData: For
 
     if (response.ok) {
       const data = await response.json()
-      console.log(data?.token)
       await setToken(data.token)
       await setCompanyData(data.user)
+      shouldRedirect = true
     } else {
       await removeToken()
-      return { message: 'Error, valide correo o constraseña' }
+      return { message: 'Error, valide correo o contraseña' }
     }
-  } catch (error) {
-    console.error('Error:', error)
+  } catch {
+    return { message: 'Error de conexion, intente nuevamente' }
   }
 
-  redirect(`/energia/dashboard/panel`)
+  if (shouldRedirect) {
+    redirect(`/energia/dashboard/panel`)
+  }
 
+  return { message: '' }
 }

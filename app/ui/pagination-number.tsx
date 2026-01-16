@@ -24,7 +24,6 @@ export default function PaginationNumberComponent({ count, itemsPerPage }: { cou
   const totalPages = Math.ceil(count / itemsPerPage)
 
   const handlePageChange = (page: number) => {
-    console.log(page)
     const params = new URLSearchParams(searchParams)
     startTransition(() => {
       if (page === 0) {

@@ -1,5 +1,6 @@
 'use client'
 
+import { useMemo } from 'react'
 import { Bar } from 'react-chartjs-2'
 import {
   Chart as ChartJS,
@@ -14,6 +15,7 @@ import {
 import "chartjs-adapter-date-fns";
 import NoResultsFound from '../../no-result';
 import { formattedDate, formattedWithoutMonth } from '@/app/utils/func';
+import { getThresholdsByWeekday } from '@/app/utils/thresholds';
 
 ChartJS.register(
   CategoryScale,
@@ -38,21 +40,10 @@ type VoltageByDay = {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function BarChart({ readingsGraph, weekday, thresholds }: { readingsGraph: any[], weekday?: string, thresholds?: VoltageByDay }) {
-
-  console.log(readingsGraph)
-  const inferiorThreshold =
-    weekday === '1,2,3,4,5'
-      ? thresholds?.workdays.inferior
-      : weekday === '6'
-        ? thresholds?.saturday.inferior
-        : thresholds?.sunday.inferior
-
-  const superiorThreshold =
-    weekday === '1,2,3,4,5'
-      ? thresholds?.workdays.superior
-      : weekday === '6'
-        ? thresholds?.saturday.superior
-        : thresholds?.sunday.superior
+  const { inferior: inferiorThreshold, superior: superiorThreshold } = useMemo(
+    () => getThresholdsByWeekday(thresholds, weekday || ''),
+    [thresholds, weekday]
+  )
 
   // 🔹 Normalizar fechas como ISO string -> determinista
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

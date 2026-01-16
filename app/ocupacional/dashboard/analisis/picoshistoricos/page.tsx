@@ -1,8 +1,8 @@
-import { readingsPeaks, roomGeneralData } from "@/app/sevices/readings/data";
+import { readingsPeaks, roomGeneralData } from "@/app/services/readings/data";
 import { DatepickerRange } from "@/app/ui/filters/datepicker-range";
 import FiltersContainer from "@/app/ui/filters/filters-container";
 import { format } from "date-fns";
-import { getRooms } from "@/app/sevices/filters/data";
+import { getRooms } from "@/app/services/filters/data";
 import { Indicator } from "@/app/type";
 import { getToken } from "@/app/lib/auth";
 import { Suspense } from "react";

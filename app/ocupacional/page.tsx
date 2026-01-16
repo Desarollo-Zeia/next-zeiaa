@@ -7,22 +7,38 @@ import { useState, useTransition } from "react"
 import { useActionState } from "react"
 import { actionOccupational } from "../actions/validation"
 
+interface FormErrors {
+  email?: string
+  password?: string
+}
+
 export default function Page() {
-  const [showPassword, setShowPassword] = useState<boolean>(false)
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [errors, setErrors] = useState<FormErrors>({})
   const [isPending, startTransition] = useTransition()
   const [state, formAction] = useActionState(actionOccupational, { message: "" })
 
-  const handleSubmit = async (formData: FormData) => {
-    startTransition(async () => {
-      setIsLoading(true)
-      try {
-        await formAction(formData)
-      } finally {
-        setIsLoading(false)
-      }
-    })
+  const handleSubmit = (formData: FormData) => {
+    const email = formData.get("email") as string
+    const password = formData.get("password") as string
 
+    const newErrors: FormErrors = {}
+
+    if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+      newErrors.email = "Ingrese un email válido"
+    }
+
+    if (password.length < 4) {
+      newErrors.password = "La contraseña debe tener al menos 4 caracteres"
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors)
+      return
+    }
+
+    setErrors({})
+    startTransition(() => formAction(formData))
   }
   return (
     <main className="relative min-h-screen bg-[#ebeef1]">
@@ -68,24 +84,35 @@ export default function Page() {
             <form className="mt-8 space-y-6" action={handleSubmit}>
               <div className="space-y-4">
                 <div className="group relative">
-                  <div className="flex items-center rounded-lg border border-gray-200 bg-gray-50 transition-all duration-300 focus-within:border-[rgb(0,183,202)] focus-within:ring-4 focus-within:ring-[rgb(0,183,202)]/10">
+                  <div className={`flex items-center rounded-lg border bg-gray-50 transition-all duration-300 focus-within:border-[rgb(0,183,202)] focus-within:ring-4 focus-within:ring-[rgb(0,183,202)]/10 ${errors.email ? "border-red-400" : "border-gray-200"}`}>
                     <User className="ml-3 h-5 w-5 text-gray-400" />
                     <input
                       type="email"
                       name="email"
+                      id="email"
+                      aria-label="Correo electrónico"
+                      aria-describedby={errors.email ? "email-error" : undefined}
+                      aria-invalid={!!errors.email}
                       className="w-full bg-transparent px-3 py-3 text-sm outline-none placeholder:text-gray-400"
                       placeholder="example@zeia.com.pe"
                       required
                     />
                   </div>
+                  {errors.email && (
+                    <p id="email-error" className="mt-1 text-xs text-red-500">{errors.email}</p>
+                  )}
                 </div>
 
                 <div className="group relative">
-                  <div className="flex items-center rounded-lg border border-gray-200 bg-gray-50 transition-all duration-300 focus-within:border-[rgb(0,183,202)] focus-within:ring-4 focus-within:ring-[rgb(0,183,202)]/10">
+                  <div className={`flex items-center rounded-lg border bg-gray-50 transition-all duration-300 focus-within:border-[rgb(0,183,202)] focus-within:ring-4 focus-within:ring-[rgb(0,183,202)]/10 ${errors.password ? "border-red-400" : "border-gray-200"}`}>
                     <Lock className="ml-3 h-5 w-5 text-gray-400" />
                     <input
                       type={showPassword ? "text" : "password"}
                       name="password"
+                      id="password"
+                      aria-label="Contraseña"
+                      aria-describedby={errors.password ? "password-error" : undefined}
+                      aria-invalid={!!errors.password}
                       className="w-full bg-transparent px-3 py-3 text-sm outline-none placeholder:text-gray-400"
                       placeholder="****"
                       required
@@ -94,10 +121,14 @@ export default function Page() {
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
                       className="px-3 text-gray-400 hover:text-gray-600"
+                      aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
                     >
                       {showPassword ? <Eye className="h-5 w-5" /> : <EyeOff className="h-5 w-5" />}
                     </button>
                   </div>
+                  {errors.password && (
+                    <p id="password-error" className="mt-1 text-xs text-red-500">{errors.password}</p>
+                  )}
                 </div>
               </div>
 
@@ -105,7 +136,7 @@ export default function Page() {
 
               <button
                 type="submit"
-                disabled={isLoading}
+                disabled={isPending}
                 className="relative w-full overflow-hidden rounded-lg bg-gradient-to-r from-[rgb(0,183,202)] to-[rgb(0,186,167)] p-3 text-sm font-medium text-white shadow-lg transition-all hover:scale-[1.02] hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[rgb(0,183,202)] focus:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
                 {isPending ? (

@@ -4,7 +4,7 @@ import { saveAs } from 'file-saver';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import ExcelIconGreen from "@/public/icons/excel.png"
-import { exceededExcel } from '@/app/sevices/energy/monitoreo/data';
+import { exceededExcel } from '@/app/services/energy/monitoreo/data';
 
 export default function DownloadExcelMonitoreo({ headquarterId, panelId }: { headquarterId?: string, panelId?: string }) {
 
