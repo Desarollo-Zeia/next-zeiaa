@@ -175,14 +175,14 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
         annotations: category === 'voltage' ? {
           line209: {
             type: 'line',
-            yMin: 209,
-            yMax: 209,
+            yMin: 456,
+            yMax: 456,
             borderColor: '#000',
             borderWidth: 1,
             borderDash: [5, 5],
             label: {
               display: true,
-              content: '209 v',
+              content: '456 v',
               position: 'end',
               backgroundColor: 'transparent',
               color: '#000',
@@ -191,14 +191,14 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
           },
           line231: {
             type: 'line',
-            yMin: 231,
-            yMax: 231,
+            yMin: 504,
+            yMax: 504,
             borderColor: '#000',
             borderWidth: 1,
             borderDash: [5, 5],
             label: {
               display: true,
-              content: '231 v',
+              content: '504 v',
               position: 'end',
               backgroundColor: 'transparent',
               color: '#000',
