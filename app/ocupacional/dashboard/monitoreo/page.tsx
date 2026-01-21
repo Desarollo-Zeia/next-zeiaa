@@ -1,132 +1,52 @@
 import { getToken } from "@/app/lib/auth"
-import { roomsList } from "@/app/services/enterprise/data"
 import { getRooms } from "@/app/services/filters/data"
-import { readingsData, roomGeneralData, roomLastData } from "@/app/services/readings/data"
-import { Indicator, SearchParams, Unit } from "@/app/type"
-import FiltersContainer from "@/app/ui/filters/filters-container"
-import RoomSelect from "@/app/ui/filters/room-select"
-import ChartComponent from "@/app/ui/monitoreo/chart"
-import TableComponent from "@/app/ui/monitoreo/table"
+import { readingsGraph, roomGeneralData } from "@/app/services/readings/data"
+import { SearchParams } from "@/app/type"
+import MonitoreoMultiSala from "@/app/ui/monitoreo/monitoreo-multi-sala"
 import { Suspense } from "react"
 import MonitoreoSkeleton from "./loading"
-// import { cacheLife } from "next/cache"
-
-type Result = {
-  indicator: string,
-  value: string,
-  unit: string,
-  status: string,
-  hours: string,
-  date: string
-}
-
-interface Room {
-  id: number
-  name: string
-  status: string
-  is_activated: boolean,
-  devices: { dev_eui: string, id: number, type_sensor: string }[],
-  headquarter: { id: number, name: string }
-}
-
-// --- Funciones con Caché ---
-
-// async function GetRooms(token: string) {
-//   'use cache'
-//   cacheLife('minutes')
-//   const rooms = await getRooms(token)
-//   return rooms
-// }
-
-// async function GetRoomList(token: string) {
-//   'use cache'
-//   cacheLife('minutes')
-//   const rooms = await roomsList({ limit: '50', token })
-//   return rooms
-// }
-
-// async function GetRoomLastData(roomId: string | number, token: string) {
-//   'use cache'
-//   cacheLife('minutes') // Ajusta a 'seconds' si necesitas datos más frescos
-//   return await roomLastData({ roomId, token })
-// }
-
-// async function GetReadingsData(roomId: string | number, indicator: string, unit: string, token?: string) {
-//   return await readingsData({ roomId, indicator, unit, token })
-// }
-
-// async function GetRoomGeneralData(roomId: string | number, token: string) {
-//   'use cache'
-//   cacheLife('minutes') // Generalmente esta info (como thresholds) cambia poco
-//   return await roomGeneralData({ roomId, token })
-// }
+import { format, subHours } from "date-fns"
 
 // --- Componente Principal ---
 
 async function Monitoreo({ searchParams }: SearchParams) {
-  const { room, indicator, unit } = await searchParams
+  const { indicator, unit } = await searchParams
 
   const authToken = await getToken()
 
-  // 1. Obtener lista de salas (Cached)
-  const rooms = await await getRooms(authToken!)
-  const roomsListReadings = await roomsList({ limit: '50', token: authToken! })
+  // 1. Obtener lista de salas
+  const rooms = await getRooms(authToken!)
 
-
-  // Determinar la sala actual
-  const firstRoom = rooms.find((room: any) => room.is_activated === true) // eslint-disable-line @typescript-eslint/no-explicit-any
-  const currentFirstRoom = room ? room : firstRoom.id.toString()
-  const generalRoomData = await roomGeneralData({ roomId: currentFirstRoom, token: authToken! })
+  // Determinar la primera sala activa para obtener indicadores
+  const firstRoom = rooms.find((room: { is_activated: boolean }) => room.is_activated === true)
+  const generalRoomData = await roomGeneralData({ roomId: firstRoom.id.toString(), token: authToken! })
   const { indicator: currentFirstIndicator, unit: currentFirstUnit } = generalRoomData.indicators_activated[0]
 
   const currentIndicator = indicator ?? currentFirstIndicator
   const currentUnit = unit ?? currentFirstUnit
 
-  // 2. Obtener datos específicos de la sala (Ahora usando las funciones Cached)
-  // Nota: Podrías usar Promise.all aquí para acelerar la carga en paralelo si las dependencias lo permiten
-  const data = await roomLastData({ roomId: currentFirstRoom, token: authToken! })
-  const { results } = await readingsData({ roomId: currentFirstRoom, indicator: currentIndicator, unit: currentUnit, token: authToken! })
+  // 2. Obtener datos de la última hora de TODAS las salas
+  const now = new Date()
+  const oneHourAgo = subHours(now, 1)
+  const formattedDateAfter = format(oneHourAgo, "yyyy-MM-dd")
+  const formattedDateBefore = format(now, "yyyy-MM-dd")
 
-  // Procesamiento de datos
-  const { name } = rooms.find((room: Room) => room.id === Number(currentFirstRoom)) || { name: 'Desconocido' }
-  const { status } = roomsListReadings.results.find((room: Room) => room.id === Number(currentFirstRoom)) || { status: 'Desconocido' }
-
-  const sortResults = (results: Result[]): Result[] => {
-    return results.sort((a, b) => {
-      const [aHours] = a.hours ? a.hours.split(' ') : ['00:00']
-      const [bHours] = b.hours ? b.hours.split(' ') : ['00:00']
-
-      // Nota: Es mejor usar la fecha completa si está disponible, pero respetando tu lógica:
-      const timeA = new Date(`1970-01-01T${aHours}`)
-      const timeB = new Date(`1970-01-01T${bHours}`)
-
-      return timeA.getTime() - timeB.getTime()
-    });
-  }
-
-  const devUI = generalRoomData?.devices?.[0]?.dev_eui
+  const roomsReadings = await readingsGraph({
+    indicator: currentIndicator,
+    unit: currentUnit,
+    date_after: formattedDateAfter,
+    date_before: formattedDateBefore,
+    token: authToken!,
+  })
 
   return (
-    <div>
-      <FiltersContainer>
-        <RoomSelect firstRoom={currentFirstRoom} rooms={rooms} />
-      </FiltersContainer>
-      <div className="flex gap-4 mx-2">
-        <TableComponent
-          data={data}
-          name={name}
-          devUI={devUI}
-          room={currentFirstRoom}
-          status={status}
-        />
-        <ChartComponent
-          results={sortResults(results)}
-          generalRoomData={generalRoomData}
-          indicator={currentIndicator as Indicator}
-          unit={currentUnit as Unit}
-          thresholds={generalRoomData?.thresholds}
-        />
-      </div>
+    <div className="py-4">
+      <MonitoreoMultiSala
+        roomsData={roomsReadings}
+        indicator={currentIndicator}
+        unit={currentUnit}
+        indicators={generalRoomData.indicators_pollutants}
+      />
     </div>
   )
 }

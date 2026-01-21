@@ -7,7 +7,8 @@
       "Bash(grep:*)",
       "Bash(npm run build:*)",
       "Skill(vercel-react-best-practices)",
-      "mcp__ide__getDiagnostics"
+      "mcp__ide__getDiagnostics",
+      "Bash(git restore:*)"
     ],
     "deny": []
   }

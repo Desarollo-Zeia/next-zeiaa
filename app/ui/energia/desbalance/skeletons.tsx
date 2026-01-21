@@ -38,3 +38,18 @@ export function ChartSkeleton() {
     </div>
   )
 }
+
+export function PageSkeleton() {
+  return (
+    <div className="w-full h-auto space-y-6">
+      <FiltersSkeleton />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pl-4">
+        <Top3Skeleton />
+        <div className="lg:col-span-2">
+          <Skeleton className="h-10 w-48 mb-3 bg-gray-200" />
+          <ChartSkeleton />
+        </div>
+      </div>
+    </div>
+  )
+}
