@@ -177,6 +177,7 @@ async function GraphSection({
   unit: string
   last_by: string
 }) {
+
   const [readings, readingsGraph] = await Promise.all([
     consume({
       date_after: formattedDateAfter,
@@ -210,6 +211,7 @@ async function GraphSection({
       readings={readings}
       dateAfter={formattedDateAfter}
       dateBefore={formattedDateBefore}
+      panelId={panelId}
     />
   )
 }

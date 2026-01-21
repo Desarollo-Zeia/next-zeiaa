@@ -32,7 +32,7 @@ const energyToggleArray = [
 ]
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings, dateAfter, dateBefore }: { readingsGraph: any, category: any, indicator: any, last_by: any, readings: any, dateAfter?: string, dateBefore?: string }) => {
+const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings, dateAfter, dateBefore, panelId }: { readingsGraph: any, category: any, indicator: any, last_by: any, readings: any, dateAfter?: string, dateBefore?: string, panelId?: string }) => {
   const [isPending, startTransition] = useTransition()
   const searchParams = useSearchParams()
   const pathname = usePathname()
@@ -172,7 +172,7 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
         }
       },
       annotation: {
-        annotations: category === 'voltage' ? {
+        annotations: category === 'voltage' && panelId === '2' ? {
           line209: {
             type: 'line',
             yMin: 456,
