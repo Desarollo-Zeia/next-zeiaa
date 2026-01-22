@@ -11,8 +11,17 @@ const nextConfig = {
             }
         ]
     },
-    cacheComponents: true
-    
+    cacheComponents: true,
+    experimental: {
+        // Optimiza imports de barrel files para reducir bundle size
+        // Impacto: 15-70% más rápido en dev, 28% builds más rápidos, 40% cold starts más rápidos
+        optimizePackageImports: [
+            'lucide-react',
+            'date-fns', 
+            'recharts',
+            '@radix-ui/react-icons'
+        ]
+    }
 };
 
 export default nextConfig;

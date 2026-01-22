@@ -3,22 +3,9 @@
 import { useState } from "react"
 import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale"
-import { Line } from "react-chartjs-2"
-import {
-  Chart as ChartJS,
-  LineElement,
-  PointElement,
-  LinearScale,
-  CategoryScale,
-  Tooltip,
-  Legend,
-  Filler,
-} from "chart.js"
-import zoomPlugin from "chartjs-plugin-zoom"
+import { DynamicLine } from "@/components/charts"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-
-ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend, Filler, zoomPlugin)
 
 // Define the type for our measurement data
 interface Measurement {
@@ -190,7 +177,7 @@ export function MeasurementStepChart({
       </CardHeader>
       <CardContent className="pb-4">
         <div className="h-[300px]">
-          <Line data={chartData} options={options} />
+          <DynamicLine data={chartData} options={options} />
         </div>
       </CardContent>
     </Card>

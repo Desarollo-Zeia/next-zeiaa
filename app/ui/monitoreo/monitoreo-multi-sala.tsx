@@ -1,18 +1,7 @@
 "use client"
 
 import { useState, useMemo } from "react"
-import { Line } from "react-chartjs-2"
-import {
-  Chart as ChartJS,
-  LineElement,
-  PointElement,
-  LinearScale,
-  CategoryScale,
-  Tooltip,
-  Legend,
-} from "chart.js"
-import zoomPlugin from "chartjs-plugin-zoom"
-import annotationPlugin from "chartjs-plugin-annotation"
+import { DynamicLine } from "@/components/charts"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
@@ -24,8 +13,6 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import IndicatorToggle from "@/app/ui/filters/indicators-toggle"
-
-ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend, zoomPlugin, annotationPlugin)
 
 type CO2Thresholds = { good: number; moderate: number; unhealthy: number; dangerous: number }
 type MinMaxThresholds = { min: number; max: number }
@@ -540,7 +527,7 @@ export default function MonitoreoMultiSala({
         </CardHeader>
         <CardContent>
           <div className="h-[400px] w-full">
-            <Line data={{ labels, datasets }} options={chartOptions} />
+            <DynamicLine data={{ labels, datasets }} options={chartOptions} />
           </div>
 
           {/* Leyenda inferior */}

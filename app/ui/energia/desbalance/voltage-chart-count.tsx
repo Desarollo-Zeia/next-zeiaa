@@ -1,28 +1,7 @@
 'use client'
 import React from 'react'
 import NoResultsFound from '../../no-result'
-import { Bar } from 'react-chartjs-2'
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-  TimeScale,
-} from "chart.js";
-import "chartjs-adapter-date-fns";
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-  TimeScale
-);
+import { DynamicBar } from '@/components/charts'
 
 
 
@@ -94,7 +73,7 @@ export default function VoltageChartCount({ voltageReadings }: { voltageReadings
   return (
     <div className="w-full h-full">
       {results?.length > 0 ? (
-        <Bar options={options} data={data} />
+        <DynamicBar options={options} data={data} />
       ) : (
         <NoResultsFound message={message} />
       )}

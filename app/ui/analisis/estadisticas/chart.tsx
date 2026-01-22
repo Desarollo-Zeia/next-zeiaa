@@ -11,23 +11,14 @@ import {
 } from "@/components/ui/chart"
 import { useCallback, useEffect, useState } from "react"
 import IndicatorToggle from "../../filters/indicators-toggle"
-import 'chart.js/auto';
-import { Line } from 'react-chartjs-2'
-import { Chart, Colors } from 'chart.js/auto'
+import { DynamicLine } from "@/components/charts"
 import { format, getTime, parse } from "date-fns"
-import 'chartjs-adapter-date-fns';
-import annotationPlugin from 'chartjs-plugin-annotation';
 import { STATUS_COLOR, STATUS_COLOR_THRESHOLD_CHART, STATUS_TO_SPANISH, UNIT_CONVERTED } from "@/app/utils/formatter"
-import { es } from 'date-fns/locale';
+import { es } from 'date-fns/locale'
 import { capitalizeFirstLetter, formattedDate } from "@/app/utils/func"
 import { Button } from "@/components/ui/button"
 import { GeneralRoomData, Indicator, Measurement, Unit } from "@/app/type"
-import { TimeRangeSlider } from "@/app/ui/filters/time-range-slider"
-import zoomPlugin from "chartjs-plugin-zoom";
 import NoResultsFound from "../../no-result"
-
-
-Chart.register(Colors, annotationPlugin, zoomPlugin)
 
 
 type Readings = Record<string, Omit<Measurement, 'date'>[]>;
@@ -187,7 +178,7 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
         {
           Object.keys(readings).length > 0 ? (
             <ChartContainer config={chartConfig}>
-              <Line
+              <DynamicLine
                 data={{ datasets: toggleChart ? days(chartRenderReadings) : hours(chartRenderReadings) }}
                 options={{
                   animation: false,
@@ -253,18 +244,17 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
                       rtl: false,
 
                       labels: {
-                        // @ts-expect-error - Ignorar errores de tipo para esta función
-                        generateLabels: (chart: Chart) => {
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        generateLabels: (chart: any) => {
                           const datasets = chart.data.datasets;
 
-                          return datasets.map((dataset, index) => {
+                          return datasets.map((dataset: any, index: number) => { // eslint-disable-line @typescript-eslint/no-explicit-any
                             // Asegurar valores con defaults
                             const borderColor = dataset.borderColor?.toString() || '#000000';
                             const backgroundColor = dataset.backgroundColor?.toString() || '#CCCCCC';
                             const borderWidth = dataset.borderWidth || 1;
 
                             return {
-                              // @ts-expect-error - Ignorar errores de tipo para esta función
                               text: toggleChart ? dataset.label : formattedDate(dataset.label),
                               fillStyle: backgroundColor,
                               strokeStyle: borderColor,

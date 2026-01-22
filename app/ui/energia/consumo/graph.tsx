@@ -1,19 +1,7 @@
 "use client"
 
 import { useTransition } from "react"
-import { Line } from "react-chartjs-2"
-import {
-  Chart as ChartJS,
-  LineElement,
-  PointElement,
-  LinearScale,
-  TimeScale,
-  Tooltip,
-  Legend,
-} from "chart.js"
-import zoomPlugin from "chartjs-plugin-zoom"
-import annotationPlugin from "chartjs-plugin-annotation"
-import "chartjs-adapter-date-fns"
+import { DynamicLine } from "@/components/charts"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
@@ -21,8 +9,6 @@ import { ELECTRIC_PARAMETERS } from "@/app/utils/formatter"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import DeviceReadingsChart from "./measurement-graph"
 import NoResultsFound from "../../no-result"
-
-ChartJS.register(LineElement, PointElement, LinearScale, TimeScale, Tooltip, Legend, zoomPlugin, annotationPlugin)
 
 const energyToggleArray = [
   { label: "Hora", value: "none" },
@@ -261,7 +247,7 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
           {last_by === 'minute' ? (
             <div className="w-full h-[350px]">
               {dataPoints.length > 0 ? (
-                <Line data={chartData} options={options} />
+                <DynamicLine data={chartData} options={options} />
               ) : (
                 <NoResultsFound message="Aun no hay informacion disponible" />
               )}
