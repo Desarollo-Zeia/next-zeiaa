@@ -1,32 +1,10 @@
 'use client'
 import React from 'react'
-// import { Bar } from 'recharts'
 import NoResultsFound from '../../no-result'
-import { Bar } from 'react-chartjs-2'
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-  TimeScale,
-} from "chart.js";
-import "chartjs-adapter-date-fns";
+import { DynamicBar } from '@/components/charts'
 import { capitalizeFirstLetter, formattedWithoutMonth } from '@/app/utils/func'
 import { es } from 'date-fns/locale'
-import { format } from 'date-fns';
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-  TimeScale
-);
+import { format } from 'date-fns'
 
 
 type Result = {
@@ -119,7 +97,7 @@ export default function CurrentChartCount({ currentReadings }: { currentReadings
       {results?.length > 0 ? (
         <div className='flex flex-col items-center'>
           <h3 className='text-xl'>Debalances totales por día</h3>
-          <Bar options={options} data={data} />
+          <DynamicBar options={options} data={data} />
         </div>
       ) : (
         <NoResultsFound message={message} />

@@ -1,21 +1,8 @@
 'use client'
-import React from "react";
-import { Line } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  TimeScale,
-  Tooltip,
-  Legend,
-} from "chart.js";
-import zoomPlugin from "chartjs-plugin-zoom";
-import "chartjs-adapter-date-fns";
-import { es } from 'date-fns/locale';
-import { format } from "date-fns";
+import React from "react"
+import { DynamicLine } from "@/components/charts"
+import { es } from 'date-fns/locale'
+import { format } from "date-fns"
 
 export type VoltageReading = {
     date: string; // Ejemplo: '2025-04-16'
@@ -28,18 +15,7 @@ export type VoltageReading = {
   };
   
 
-// Registrar los componentes de Chart.js
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  TimeScale,
-  zoomPlugin,
-  Legend
-);
+// Registro centralizado en chart-registry
 
 const VoltageChartTest = ({ voltageReadings } : { voltageReadings : VoltageReading[]}) => {
   // Preparar etiquetas y datos
@@ -175,7 +151,7 @@ const VoltageChartTest = ({ voltageReadings } : { voltageReadings : VoltageReadi
     },
   };
 
-  return <Line data={data} options={options} />; 
+  return <DynamicLine data={data} options={options} />; 
 };
 
 export default VoltageChartTest;

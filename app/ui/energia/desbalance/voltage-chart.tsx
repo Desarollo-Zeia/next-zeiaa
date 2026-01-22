@@ -1,21 +1,9 @@
 "use client"
 
-import { Line } from "react-chartjs-2"
-import {
-  Chart as ChartJS,
-  LineElement,
-  PointElement,
-  LinearScale,
-  CategoryScale,
-  Tooltip,
-  Legend,
-} from "chart.js"
-import zoomPlugin from "chartjs-plugin-zoom"
+import { DynamicLine } from "@/components/charts"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
 import NoResultsFound from "../../no-result"
-
-ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend, zoomPlugin)
 
 // TypeScript interfaces for the JSON data
 interface VoltageValues {
@@ -179,7 +167,7 @@ function VoltageLineChart({
 
   return (
     <div className="h-[150px]">
-      <Line data={chartData} options={options} />
+      <DynamicLine data={chartData} options={options} />
     </div>
   )
 }

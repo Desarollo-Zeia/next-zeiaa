@@ -1,30 +1,16 @@
 "use client"
 
-import { useTransition } from "react";
+import { useTransition } from "react"
 import { format } from "date-fns"
 import {
   ToggleGroup,
   ToggleGroupItem,
 } from "@/components/ui/toggle-group"
-import { useSearchParams, usePathname, useRouter } from 'next/navigation';
-import NoResultFound from "../../no-result-found";
-import { Line } from "react-chartjs-2";
-import "chartjs-adapter-date-fns"; // Adaptador para manejo de fechas
-import zoomPlugin from "chartjs-plugin-zoom";
-import { es } from 'date-fns/locale';
-import {
-  Chart as ChartJS,
-  LineElement,
-  PointElement,
-  LinearScale,
-  TimeScale,
-  Tooltip,
-  Legend,
-} from "chart.js"
-import annotationPlugin from 'chartjs-plugin-annotation';
-import { capitalizeFirstLetter } from "@/app/utils/func";
-
-ChartJS.register(LineElement, PointElement, LinearScale, TimeScale, Tooltip, Legend, zoomPlugin, annotationPlugin)
+import { useSearchParams, usePathname, useRouter } from 'next/navigation'
+import NoResultFound from "../../no-result-found"
+import { DynamicLine } from "@/components/charts"
+import { es } from 'date-fns/locale'
+import { capitalizeFirstLetter } from "@/app/utils/func"
 
 interface DeviceInfo {
   id: number
@@ -302,7 +288,7 @@ export default function PowerUsageChart({ readings, group, powers }: { readings:
       <div className="w-[80%] h-[740px] mx-auto flex justify-center items-center">
         {
           readings?.length > 0 ? (
-            <Line data={data} options={options} />
+            <DynamicLine data={data} options={options} />
           ) : (
             <NoResultFound />
           )

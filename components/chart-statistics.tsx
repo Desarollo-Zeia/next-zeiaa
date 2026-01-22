@@ -1,26 +1,13 @@
 "use client"
 
 import { useState, useMemo } from "react"
-import { Line } from "react-chartjs-2"
-import {
-  Chart as ChartJS,
-  LineElement,
-  PointElement,
-  LinearScale,
-  CategoryScale,
-  Tooltip,
-  Legend,
-} from "chart.js"
-import zoomPlugin from "chartjs-plugin-zoom"
-import annotationPlugin from "chartjs-plugin-annotation"
+import { DynamicLine } from "@/components/charts"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import IndicatorToggle from "@/app/ui/filters/indicators-toggle"
 import { DatepickerRange } from "@/app/ui/filters/datepicker-range"
 import FrequencyIntervalFilter from "@/app/ui/filters/frequency-interval-filter"
-
-ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend, zoomPlugin, annotationPlugin)
 
 type CO2Thresholds = { good: number; moderate: number; unhealthy: number; dangerous: number }
 type MinMaxThresholds = { min: number; max: number }
@@ -542,7 +529,7 @@ function ChartWithZoom({
 
   return (
     <div className="h-[450px] w-full">
-      <Line data={data} options={options} />
+      <DynamicLine data={data} options={options} />
     </div>
   )
 }

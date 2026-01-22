@@ -1,18 +1,6 @@
 "use client"
 
-import { Line } from "react-chartjs-2"
-import {
-  Chart as ChartJS,
-  LineElement,
-  PointElement,
-  LinearScale,
-  CategoryScale,
-  Tooltip,
-  Legend,
-} from "chart.js"
-import zoomPlugin from "chartjs-plugin-zoom"
-
-ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend, zoomPlugin)
+import { DynamicLine } from "@/components/charts"
 
 // Definición de tipos para los datos THDU
 interface THDUVoltage {
@@ -152,7 +140,7 @@ export default function VoltageChart({ voltageReadings }: { voltageReadings: THD
   return (
     <div className="w-full p-6 bg-white dark:bg-gray-800 rounded-lg">
       <div className="h-[350px]">
-        <Line data={chartData} options={options} />
+        <DynamicLine data={chartData} options={options} />
       </div>
     </div>
   )

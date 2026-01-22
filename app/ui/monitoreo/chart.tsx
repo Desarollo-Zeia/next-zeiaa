@@ -1,27 +1,14 @@
 'use client'
-import IndicatorToggle from "../filters/indicators-toggle";
-import { Line } from "react-chartjs-2"
-import {
-  Chart as ChartJS,
-  LineElement,
-  PointElement,
-  LinearScale,
-  CategoryScale,
-  Tooltip,
-  Legend,
-} from "chart.js"
-import zoomPlugin from "chartjs-plugin-zoom"
-import annotationPlugin from "chartjs-plugin-annotation"
+import IndicatorToggle from "../filters/indicators-toggle"
+import { DynamicLine } from "@/components/charts"
 import {
   Card,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { INDICATOR_CONVERTED, STATUS_COLOR, STATUS_COLOR_THRESHOLD, STATUS_TO_SPANISH, UNIT_CONVERTED } from "@/app/utils/formatter";
-import { Indicator, Unit } from "@/app/type";
-import NoResultFound from "../no-result-found";
-
-ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend, zoomPlugin, annotationPlugin)
+import { INDICATOR_CONVERTED, STATUS_COLOR, STATUS_COLOR_THRESHOLD, STATUS_TO_SPANISH, UNIT_CONVERTED } from "@/app/utils/formatter"
+import { Indicator, Unit } from "@/app/type"
+import NoResultFound from "../no-result-found"
 
 interface IndicatorStructure {
   indicator: string,
@@ -203,7 +190,7 @@ export default function ChartComponent({ results, generalRoomData, indicator, un
           <NoResultFound />
         ) : (
           <div className="px-6 pb-6 h-[300px]">
-            <Line data={chartData} options={options} />
+            <DynamicLine data={chartData} options={options} />
           </div>
         )
       }

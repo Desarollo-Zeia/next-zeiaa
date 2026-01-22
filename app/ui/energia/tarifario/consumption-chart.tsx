@@ -3,22 +3,8 @@
 import type { TooltipProps } from "recharts"
 import NoResultFound from "../../no-result-found"
 import { format } from "date-fns"
-import { es } from 'date-fns/locale';
-import { Bar } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  LineElement,
-  BarElement,
-  PointElement,
-  LinearScale,
-  TimeScale,
-  Tooltip,
-  Legend,
-} from "chart.js";
-import zoomPlugin from "chartjs-plugin-zoom";
-import "chartjs-adapter-date-fns"; // Adaptador para manejo de fechas
-
-ChartJS.register(LineElement, BarElement, PointElement, LinearScale, TimeScale, Tooltip, Legend, zoomPlugin)
+import { es } from 'date-fns/locale'
+import { DynamicBar } from "@/components/charts"
 
 const dateFormatWithHour = (dateStr: string) => {
   return format(new Date(dateStr), "PP", { locale: es })
@@ -233,7 +219,7 @@ export default function ConsumoChart({ data, group_by } : { data: DataPoint[], g
     <div className="min-w-[640px] min-h-[540px] bg-white rounded-lg shadow">
       {
         data.length > 0 ? (
-          <Bar data={dataLine} options={options} className="w-full h-full"/>
+          <DynamicBar data={dataLine} options={options} className="w-full h-full"/>
         ) : (
           <NoResultFound/>
         )

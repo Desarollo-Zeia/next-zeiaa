@@ -2,23 +2,9 @@
 
 import type { TooltipProps } from "recharts"
 import NoResultFound from "../../no-result-found"
-import {  Bar } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  LineElement,
-  BarElement,
-  PointElement,
-  LinearScale,
-  TimeScale,
-  Tooltip,
-  Legend,
-} from "chart.js";
+import { DynamicBar } from "@/components/charts"
 import { format } from "date-fns"
-import { es } from 'date-fns/locale';
-import zoomPlugin from "chartjs-plugin-zoom";
-import "chartjs-adapter-date-fns"; // Adaptador para manejo de fechas
-
-ChartJS.register(LineElement, BarElement, PointElement, LinearScale, TimeScale, Tooltip, Legend, zoomPlugin)
+import { es } from 'date-fns/locale'
 
 export interface CustomTooltipProps extends TooltipProps<any, any> { // eslint-disable-line @typescript-eslint/no-explicit-any
     active?: boolean
@@ -228,7 +214,7 @@ export default function TarifarioChart({ data, group_by } : { data: DataPoint[],
       {
         data.length > 0 ? 
         (
-           <Bar data={dataLine} options={options}/>
+           <DynamicBar data={dataLine} options={options}/>
         ) : 
         (
           <NoResultFound/>
