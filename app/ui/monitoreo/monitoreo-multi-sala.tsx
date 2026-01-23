@@ -446,9 +446,40 @@ export default function MonitoreoMultiSala({
   }
 
   return (
-    <div className="flex gap-4 mx-2">
+    <div className="flex flex-col gap-4 mx-2">
+      {/* Gráfica */}
+      <Card className="w-full">
+        <CardHeader className="pb-2">
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="text-base">Gráfica de datos</CardTitle>
+              <p className="text-sm text-muted-foreground">Valores en tiempo real</p>
+            </div>
+            <IndicatorToggle indicators={indicators} indicatorParam={indicator} />
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="h-[400px] w-full">
+            <DynamicLine data={{ labels, datasets }} options={chartOptions} />
+          </div>
+
+          {/* Leyenda inferior */}
+          <div className="mt-4 flex flex-wrap gap-4 justify-center">
+            {visibleRoomsData.map((room) => (
+              <div key={room.room_id} className="flex items-center gap-2">
+                <div
+                  className="w-3 h-3 rounded-full"
+                  style={{ backgroundColor: roomColors.get(room.room_id) }}
+                />
+                <span className="text-sm text-muted-foreground">{room.room_name}</span>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Tabla LEYENDA */}
-      <Card className="w-[450px] shrink-0">
+      <Card className="w-full">
         <CardHeader className="pb-2">
           <CardTitle className="text-base">LEYENDA</CardTitle>
         </CardHeader>
@@ -460,9 +491,9 @@ export default function MonitoreoMultiSala({
                 <TableHead className="text-center w-[70px]">Mostrar</TableHead>
                 <TableHead className="text-center" colSpan={2}>
                   <div>Umbral permitido</div>
-                  <div className="flex justify-center gap-4 text-xs font-normal text-muted-foreground">
-                    <span className="text-yellow-600">---Mínimo</span>
-                    <span className="text-red-600">---Máximo</span>
+                  <div className="flex">
+                    <span className="flex-1 text-center text-xs font-normal text-yellow-600">---Mínimo</span>
+                    <span className="flex-1 text-center text-xs font-normal text-red-600">---Máximo</span>
                   </div>
                 </TableHead>
                 <TableHead className="text-center w-[80px]">
@@ -511,37 +542,6 @@ export default function MonitoreoMultiSala({
               })}
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
-
-      {/* Gráfica */}
-      <Card className="flex-1">
-        <CardHeader className="pb-2">
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="text-base">Gráfica de datos</CardTitle>
-              <p className="text-sm text-muted-foreground">Valores en tiempo real</p>
-            </div>
-            <IndicatorToggle indicators={indicators} indicatorParam={indicator} />
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="h-[400px] w-full">
-            <DynamicLine data={{ labels, datasets }} options={chartOptions} />
-          </div>
-
-          {/* Leyenda inferior */}
-          <div className="mt-4 flex flex-wrap gap-4 justify-center">
-            {visibleRoomsData.map((room) => (
-              <div key={room.room_id} className="flex items-center gap-2">
-                <div
-                  className="w-3 h-3 rounded-full"
-                  style={{ backgroundColor: roomColors.get(room.room_id) }}
-                />
-                <span className="text-sm text-muted-foreground">{room.room_name}</span>
-              </div>
-            ))}
-          </div>
         </CardContent>
       </Card>
     </div>
