@@ -104,7 +104,7 @@ export async function readingsPeaksTable({ roomId, indicator, unit, date_after, 
   'use cache'
   cacheLife('minutes')
 
-  const url = new URL(`/readings/api/room/${roomId}/indicator/metrics/high/history`, baseUrl)
+  const url = new URL(`/readings/api/room/${roomId}/indicator/metrics/low/history`, baseUrl)
 
   if (indicator) url.searchParams.set('indicator', indicator)
   if (unit) url.searchParams.set('unit', unit)
@@ -117,28 +117,6 @@ export async function readingsPeaksTable({ roomId, indicator, unit, date_after, 
 
   return res
 }
-
-const _readingsGraphCached = unstable_cache(
-  async (token: string, roomId: string | number, indicator: string, unit: string, date_after?: string, date_before?: string, hour_before?: string, hour_after?: string) => {
-    const url = new URL(`/readings/api/room/${roomId}/indicator/graph`, baseUrl)
-
-    if (indicator) url.searchParams.set('indicator', indicator)
-    if (unit) url.searchParams.set('unit', unit)
-    if (date_after) url.searchParams.set('date_after', date_after)
-    if (date_before) url.searchParams.set('date_before', date_before)
-    if (hour_before) url.searchParams.set('hour_before', hour_before)
-    if (hour_after) url.searchParams.set('hour_after', hour_after)
-
-    const res = await fetchWithAuth(`${url.pathname}${url.search}`, {}, token)
-
-    return res
-  },
-  ['ocupacional-readings-graph'],
-  {
-    tags: [CACHE_TAGS.OCUPACIONAL, CACHE_TAGS.READINGS],
-    revalidate: CACHE_DURATION.MEDIUM, // 5 minutes - graphs can be cached longer
-  }
-)
 
 export async function readingsReal({ roomId, indicator, unit, date_after, date_before, hour_before, hour_after, token }: { roomId: string | number, indicator: string, unit: string, date_after?: string, date_before?: string, hour_before?: string, hour_after?: string, token?: string }) {
   const url = new URL(`/readings/api/room/${roomId}/indicator/graph`, baseUrl)
