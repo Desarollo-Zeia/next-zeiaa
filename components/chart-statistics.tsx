@@ -289,16 +289,16 @@ function ChartWithZoom({
 
   // Cambiar formato de labels según si es el mismo día o rango de fechas
   const monthNames = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
-  
-  const labels = isSameDay 
+
+  const labels = isSameDay
     ? chartData.map((item) => item.hour as string)  // Solo hora: "08:00"
     : chartData.map((item) => {
-        const date = item.date as string
-        if (!date) return item.hour as string
-        const [, month, day] = date.split('-')
-        return `${day} ${monthNames[parseInt(month) - 1]}`  // "07 ene"
-      })
-  
+      const date = item.date as string
+      if (!date) return item.hour as string
+      const [, month, day] = date.split('-')
+      return `${day} ${monthNames[parseInt(month) - 1]}`  // "07 ene"
+    })
+
   const datasets = visibleRoomsData.map((room) => ({
     label: room.room_name,
     data: chartData.map((item) => item[`room_${room.room_id}`] as number | null),
@@ -315,7 +315,7 @@ function ChartWithZoom({
 
   // Crear anotaciones para las líneas de referencia
   const annotations: Record<string, any> = {} // eslint-disable-line @typescript-eslint/no-explicit-any
-  
+
   if (selectedRoom && visibleRooms.size < 2) {
     if (indicator === "CO2") {
       annotations.co2Good = {
@@ -379,7 +379,7 @@ function ChartWithZoom({
           content: `Mín ${selectedRoom.thresholds.temperature.min}${formattedUnit}`,
           position: 'start',
           backgroundColor: 'transparent',
-          color: '#3b82f6',
+          color: '#FA891A',
           font: { size: 11 }
         }
       }
@@ -404,7 +404,7 @@ function ChartWithZoom({
         type: 'line',
         yMin: selectedRoom.thresholds.humidity.min,
         yMax: selectedRoom.thresholds.humidity.min,
-        borderColor: '#3b82f6',
+        borderColor: '#FA891A',
         borderWidth: 2,
         borderDash: [5, 5],
         label: {
@@ -412,7 +412,7 @@ function ChartWithZoom({
           content: `Mín ${selectedRoom.thresholds.humidity.min}${formattedUnit}`,
           position: 'start',
           backgroundColor: 'transparent',
-          color: '#3b82f6',
+          color: '#FA891A',
           font: { size: 11 }
         }
       }
@@ -445,11 +445,11 @@ function ChartWithZoom({
     },
     scales: {
       x: {
-        grid: { 
+        grid: {
           color: '#e5e7eb',
           drawBorder: false,
         },
-        ticks: { 
+        ticks: {
           font: { size: 11 },
           color: '#6b7280',
         }
@@ -457,14 +457,14 @@ function ChartWithZoom({
       y: {
         min: yAxisDomain[0],
         max: yAxisDomain[1],
-        grid: { 
+        grid: {
           color: '#e5e7eb',
           drawBorder: false,
         },
         ticks: {
           font: { size: 12 },
           color: '#6b7280',
-          callback: function(value: number) {
+          callback: function (value: number) {
             return `${value}${formattedUnit === "°C" ? "°" : formattedUnit === "%" ? "%" : ""}`
           }
         }
@@ -480,7 +480,7 @@ function ChartWithZoom({
         padding: 12,
         callbacks: {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          title: function(tooltipItems: any) {
+          title: function (tooltipItems: any) {
             const index = tooltipItems[0].dataIndex
             const item = chartData[index]
             const date = item?.date as string
@@ -491,7 +491,7 @@ function ChartWithZoom({
             return `Hora: ${hour}`
           },
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          label: function(context: any) {
+          label: function (context: any) {
             if (context.parsed.y === null) return null
             return `${context.dataset.label}: ${context.parsed.y} ${formattedUnit}`
           }
@@ -705,14 +705,14 @@ export function ReadingsChart({
           <CO2ThresholdsDisplay
             thresholds={selectedRoom.thresholds.co2}
             roomName={selectedRoom.room_name}
-            roomColor={roomColors.get(selectedRoom.room_id) || "#3b82f6"}
+            roomColor={roomColors.get(selectedRoom.room_id) || "#FA891A"}
           />
         )}
         {selectedRoom && visibleRooms.size < 2 && indicator === "TEMPERATURE" && (
           <MinMaxThresholdsDisplay
             thresholds={selectedRoom.thresholds.temperature}
             roomName={selectedRoom.room_name}
-            roomColor={roomColors.get(selectedRoom.room_id) || "#3b82f6"}
+            roomColor={roomColors.get(selectedRoom.room_id) || "#FA891A"}
             indicatorLabel="Temperatura"
             unit={formattedUnit}
           />
@@ -721,7 +721,7 @@ export function ReadingsChart({
           <MinMaxThresholdsDisplay
             thresholds={selectedRoom.thresholds.humidity}
             roomName={selectedRoom.room_name}
-            roomColor={roomColors.get(selectedRoom.room_id) || "#3b82f6"}
+            roomColor={roomColors.get(selectedRoom.room_id) || "#FA891A"}
             indicatorLabel="Humedad"
             unit={formattedUnit}
           />
