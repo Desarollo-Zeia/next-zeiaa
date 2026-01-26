@@ -100,11 +100,29 @@ export async function readingsPeaks({ roomId, indicator, unit, date_after, date_
   return res
 }
 
-export async function readingsPeaksTable({ roomId, indicator, unit, date_after, date_before, page, status, token }: { roomId: string | number, indicator?: string, unit?: string, date_after?: string, date_before?: string, page?: string, status?: string, token?: string }) {
+export async function readingsPeaksTableLow({ roomId, indicator, unit, date_after, date_before, page, status, token }: { roomId: string | number, indicator?: string, unit?: string, date_after?: string, date_before?: string, page?: string, status?: string, token?: string }) {
   'use cache'
   cacheLife('minutes')
 
   const url = new URL(`/readings/api/room/${roomId}/indicator/metrics/low/history`, baseUrl)
+
+  if (indicator) url.searchParams.set('indicator', indicator)
+  if (unit) url.searchParams.set('unit', unit)
+  if (date_after) url.searchParams.set('date_after', date_after)
+  if (date_before) url.searchParams.set('date_before', date_before)
+  if (status) url.searchParams.set('status', status)
+  if (page) url.searchParams.set('page', page)
+
+  const res = await fetchWithAuth(`${url.pathname}${url.search}`, {}, token)
+
+  return res
+}
+
+export async function readingsPeaksTableHigh({ roomId, indicator, unit, date_after, date_before, page, status, token }: { roomId: string | number, indicator?: string, unit?: string, date_after?: string, date_before?: string, page?: string, status?: string, token?: string }) {
+  'use cache'
+  cacheLife('minutes')
+
+  const url = new URL(`/readings/api/room/${roomId}/indicator/metrics/high/history`, baseUrl)
 
   if (indicator) url.searchParams.set('indicator', indicator)
   if (unit) url.searchParams.set('unit', unit)
@@ -268,20 +286,20 @@ export async function readinsgExcel({
   date_before,
   token
 }: {
-  indicator: string;
-  unit: string;
-  date_after?: string;
-  date_before?: string;
-  token?: string;
+  indicator: string
+  unit: string
+  date_after?: string
+  date_before?: string
+  token?: string
 }) {
   // TODO: Cambiar este headquarterId hardcodeado por un parametro dinamico
   const headquarterId = 49
-  const url = new URL(`/readings/api/headquarter/${headquarterId}/room/indicator/report/all-rooms?frequency=hourly`, baseUrl);
+  const url = new URL(`/readings/api/headquarter/${headquarterId}/room/indicator/report/all-rooms?frequency=hourly`, baseUrl)
 
-  if (indicator) url.searchParams.set('indicator', indicator);
-  if (unit) url.searchParams.set('unit', unit);
-  if (date_after) url.searchParams.set('date_after', date_after);
-  if (date_before) url.searchParams.set('date_before', date_before);
+  if (indicator) url.searchParams.set('indicator', indicator)
+  if (unit) url.searchParams.set('unit', unit)
+  if (date_after) url.searchParams.set('date_after', date_after)
+  if (date_before) url.searchParams.set('date_before', date_before)
 
   const res = await fetchWithAuth(`${url.pathname}${url.search}`, {}, token)
 
@@ -296,19 +314,19 @@ export async function readinsgExcelAmbiental({
   date_before,
   token
 }: {
-  room: string | number;
-  indicator: string;
-  unit: string;
-  date_after?: string;
-  date_before?: string;
-  token?: string;
+  room: string | number
+  indicator: string
+  unit: string
+  date_after?: string
+  date_before?: string
+  token?: string
 }) {
-  const url = new URL(`/readings/api/ambiental/point/${room}/indicator/report`, baseUrl);
+  const url = new URL(`/readings/api/ambiental/point/${room}/indicator/report`, baseUrl)
 
-  if (indicator) url.searchParams.set('indicator', indicator);
-  if (unit) url.searchParams.set('unit', unit);
-  if (date_after) url.searchParams.set('date_after', date_after);
-  if (date_before) url.searchParams.set('date_before', date_before);
+  if (indicator) url.searchParams.set('indicator', indicator)
+  if (unit) url.searchParams.set('unit', unit)
+  if (date_after) url.searchParams.set('date_after', date_after)
+  if (date_before) url.searchParams.set('date_before', date_before)
 
   const res = await fetchWithAuthAmbiental(`${url.pathname}${url.search}`, {}, token)
 

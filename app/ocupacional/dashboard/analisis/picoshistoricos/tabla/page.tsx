@@ -1,15 +1,16 @@
-import { readingsPeaksTable, roomGeneralData } from "@/app/services/readings/data";
-import TableComponent from "@/app/ui/picos/table";
-import { DatepickerRange } from "@/app/ui/filters/datepicker-range";
-import FiltersContainer from "@/app/ui/filters/filters-container";
-import { format } from "date-fns";
-import { getRooms } from "@/app/services/filters/data";
-import RoomSelect from "@/app/ui/filters/room-select";
-import { Indicator } from "@/app/type";
-import StatusSelect from "@/app/ui/filters/status-select";
+import { readingsPeaksTableLow, readingsPeaksTableHigh, roomGeneralData } from "@/app/services/readings/data"
+import TableComponent from "@/app/ui/picos/table"
+import { DatepickerRange } from "@/app/ui/filters/datepicker-range"
+import FiltersContainer from "@/app/ui/filters/filters-container"
+import { format } from "date-fns"
+import { getRooms } from "@/app/services/filters/data"
+import RoomSelect from "@/app/ui/filters/room-select"
+import { Indicator } from "@/app/type"
+import StatusSelect from "@/app/ui/filters/status-select"
 // import { cacheLife } from "next/cache";
-import { getToken } from "@/app/lib/auth";
-import { Suspense } from "react";
+import { getToken } from "@/app/lib/auth"
+import { Suspense } from "react"
+import ToggleHighLow from "@/app/ui/filters/toggle-high-low"
 
 type SearchParams = {
   searchParams: Promise<{ [key: string]: string | undefined }>
@@ -36,7 +37,7 @@ type SearchParams = {
 
 async function PicosHistoricos({ searchParams }: SearchParams) {
 
-  const { room, indicator, unit, date_after = new Date(), date_before = new Date(), page, status } = await searchParams
+  const { room, indicator, unit, date_after = new Date(), date_before = new Date(), page, status, level } = await searchParams
 
   const authToken = await getToken()
 
@@ -53,7 +54,9 @@ async function PicosHistoricos({ searchParams }: SearchParams) {
 
   const currentIndicator = indicator ?? currentFirstIndicator
   const currentUnit = unit ?? currentFirstUnit
-  const readings = await readingsPeaksTable({ roomId: currentFirstRoom, indicator: currentIndicator, unit: currentUnit, date_after: formattedDateAfter, date_before: formattedDateBefore, page, status, token: authToken! })
+  const readingsLow = await readingsPeaksTableLow({ roomId: currentFirstRoom, indicator: currentIndicator, unit: currentUnit, date_after: formattedDateAfter, date_before: formattedDateBefore, page, status, token: authToken! })
+
+  const readingsHigh = await readingsPeaksTableHigh({ roomId: currentFirstRoom, indicator: currentIndicator, unit: currentUnit, date_after: formattedDateAfter, date_before: formattedDateBefore, page, status, token: authToken! })
 
   const thresholdsFilters = generalRoomData?.thresholds_filter[indicator as Indicator]
 
@@ -64,7 +67,7 @@ async function PicosHistoricos({ searchParams }: SearchParams) {
         <StatusSelect status_filter={thresholdsFilters} />
         <DatepickerRange />
       </FiltersContainer>
-      <TableComponent generalRoomData={generalRoomData} readings={readings} indicator={currentIndicator as Indicator} />
+      <TableComponent generalRoomData={generalRoomData} readings={level === 'high' ? readingsHigh : readingsLow} indicator={currentIndicator as Indicator} />
     </div>
   )
 }
