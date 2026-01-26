@@ -1,13 +1,14 @@
 'use client'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import IndicatorToggle from "../filters/indicators-toggle";
-import PaginationNumberComponent from '../pagination-number';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import IndicatorToggle from "../filters/indicators-toggle"
+import PaginationNumberComponent from '../pagination-number'
 import { Wind, Calendar, Clock } from 'lucide-react'
-import { GeneralRoomData, Indicator, Readings } from "@/app/type";
-import { INDICATOR_CONVERTED, STATUS_TO_SPANISH, UNIT_CONVERTED } from "@/app/utils/formatter";
-import { formattedDate } from "@/app/utils/func";
-import NoResultFound from "../no-result-found";
+import { GeneralRoomData, Indicator, Readings } from "@/app/type"
+import { INDICATOR_CONVERTED, STATUS_TO_SPANISH, UNIT_CONVERTED } from "@/app/utils/formatter"
+import { formattedDate } from "@/app/utils/func"
+import NoResultFound from "../no-result-found"
+import ToggleHighLow from "../filters/toggle-high-low"
 
 type TableComponentProps = {
   indicator: Indicator
@@ -78,8 +79,10 @@ export default function TableComponent({ generalRoomData, readings, indicator }:
         }
       </Card>
       <Card className="w-full flex-1">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardHeader className="flex flex-row gap-4 items-center justify-first space-y-0 pb-2">
           <IndicatorToggle indicators={indicators} indicatorParam={indicator} />
+          <ToggleHighLow />
+
         </CardHeader>
         {
           readings.count > 0 ? (
