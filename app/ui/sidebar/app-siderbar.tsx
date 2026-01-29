@@ -18,9 +18,9 @@ import { useEffect, useState } from "react"
 import { accountData } from "@/app/utils/account"
 
 interface EnergyItem {
-  name: string;
-  url: string;
-  is_active?: boolean;
+  name: string
+  url: string
+  is_active?: boolean
   icon: string // El signo de interrogación indica que es opcional
 }
 
@@ -36,8 +36,13 @@ export function AppSidebar() {
     const handleRequest = async () => {
       try {
         const res = await accountData()
+
         const { results } = res
         const user = results[0]
+
+        console.log({
+          results
+        })
         const { email, last_name, energy_modules, enterprise_name } = user
         setUserInfo({ email, name: enterprise_name, avatar: '' })
         setEnergyModules(energy_modules)
