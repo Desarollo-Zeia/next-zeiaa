@@ -8,6 +8,11 @@ export const accountData = async () => {
     return res
 }
 
+export const accountDataEnergy = async () => {
+    const res = await fetchWithAuthEnergy('/api/v1/user/me/')
+    return res
+}
+
 export const accountDataOcupacional = async () => {
     const res = await fetchWithAuth('/enterprise/api/enterprise/detail/')
     return res

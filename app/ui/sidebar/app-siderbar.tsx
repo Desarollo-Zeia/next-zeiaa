@@ -15,7 +15,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import Image from "next/image"
 import { useEffect, useState } from "react"
-import { accountData } from "@/app/utils/account"
+import { accountData, accountDataEnergy } from "@/app/utils/account"
 
 interface EnergyItem {
   name: string
@@ -36,15 +36,11 @@ export function AppSidebar() {
     const handleRequest = async () => {
       try {
         const res = await accountData()
-
+        const userData = await accountDataEnergy()
         const { results } = res
         const user = results[0]
-
-        console.log({
-          results
-        })
         const { email, last_name, energy_modules, enterprise_name } = user
-        setUserInfo({ email, name: enterprise_name, avatar: '' })
+        setUserInfo({ email: userData.email, name: enterprise_name, avatar: '' })
         setEnergyModules(energy_modules)
       } catch {
         // Error silenciado - manejo de errores de carga de usuario
