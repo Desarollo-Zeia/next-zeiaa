@@ -39,7 +39,7 @@ const CurrentChartTest = ({ currentReadings } : { currentReadings : CurrentReadi
         fill: false,
         stepped: true,
         tension: 0,
-        pointRadius: 2, 
+        pointRadius: 2,
       },
       {
         label: "THDIb",
@@ -49,7 +49,7 @@ const CurrentChartTest = ({ currentReadings } : { currentReadings : CurrentReadi
         fill: false,
         stepped: true,
         tension: 0,
-        pointRadius: 2, 
+        pointRadius: 2,
       },
       {
         label: "THDIc",
@@ -59,7 +59,7 @@ const CurrentChartTest = ({ currentReadings } : { currentReadings : CurrentReadi
         fill: false,
         stepped: true,
         tension: 0,
-        pointRadius: 2, 
+        pointRadius: 2,
       },
     ],
   }

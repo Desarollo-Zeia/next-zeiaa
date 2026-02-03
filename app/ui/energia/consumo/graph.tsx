@@ -1,7 +1,7 @@
 "use client"
 
-import { useTransition } from "react"
-import { DynamicLine } from "@/components/charts"
+import { useState, useTransition } from "react"
+import { DynamicLine, DynamicBar } from "@/components/charts"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
@@ -20,6 +20,7 @@ const energyToggleArray = [
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings, dateAfter, dateBefore, panelId }: { readingsGraph: any, category: any, indicator: any, last_by: any, readings: any, dateAfter?: string, dateBefore?: string, panelId?: string }) => {
   const [isPending, startTransition] = useTransition()
+  const [chartType, setChartType] = useState<'line' | 'bar'>('line')
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const { replace } = useRouter()
@@ -69,8 +70,8 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
       label: parameterLabel,
       data: dataPoints,
       borderColor: "#00b0c7",
-      backgroundColor: "rgba(0, 176, 199, 0.1)",
-      stepped: true,
+      backgroundColor: chartType === 'line' ? "rgba(0, 176, 199, 0.1)" : "#00b0c7",
+      stepped: chartType === 'line',
       tension: 0,
       pointRadius: 0,
       borderWidth: 2,
@@ -210,34 +211,65 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
       </div>
 
       {readingsGraph?.length > 0 && (
-        <ToggleGroup
-          type="single"
-          value={last_by}
-          onValueChange={handleFrequency}
-          aria-label="Frequency"
-          className="flex gap-2 mb-4"
-        >
-          {category === 'energy' && (
-            energyToggleArray.map(times => (
+        <div className="flex flex-col gap-4 mb-4">
+          <ToggleGroup
+            type="single"
+            value={last_by}
+            onValueChange={handleFrequency}
+            aria-label="Frequency"
+            className="flex gap-2"
+          >
+            {category === 'energy' && (
+              energyToggleArray.map(times => (
+                <ToggleGroupItem
+                  key={times.value}
+                  value={times.value}
+                  className={`w-[120px] h-[40px] ${times.value === last_by
+                    ? 'bg-[#00b0c7] text-white'
+                    : 'bg-gray-100 text-black'
+                    } ${last_by === 'hour' && times.value === 'none' ? 'bg-[#00b0c7] text-white' : ''}`}
+                >
+                  {isPending ? (
+                    <div className="flex items-center justify-center">
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-current"></div>
+                    </div>
+                  ) : (
+                    times.label
+                  )}
+                </ToggleGroupItem>
+              ))
+            )}
+          </ToggleGroup>
+          
+          {category === 'power' && (
+            <ToggleGroup
+              type="single"
+              value={chartType}
+              onValueChange={(value) => setChartType(value as 'line' | 'bar')}
+              aria-label="Chart Type"
+              className="flex gap-2"
+            >
               <ToggleGroupItem
-                key={times.value}
-                value={times.value}
-                className={`w-[120px] h-[40px] ${times.value === last_by
+                value="line"
+                className={`w-[120px] h-[40px] ${chartType === 'line'
                   ? 'bg-[#00b0c7] text-white'
                   : 'bg-gray-100 text-black'
-                  } ${last_by === 'hour' && times.value === 'none' ? 'bg-[#00b0c7] text-white' : ''}`}
+                  }`}
               >
-                {isPending ? (
-                  <div className="flex items-center justify-center">
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-current"></div>
-                  </div>
-                ) : (
-                  times.label
-                )}
+                Linea
               </ToggleGroupItem>
-            ))
+              <ToggleGroupItem
+                value="bar"
+                className={`w-[120px] h-[40px] ${chartType === 'bar'
+                  ? 'bg-[#00b0c7] text-white'
+                  : 'bg-gray-100 text-black'
+                  }`}
+              >
+                Barras
+              </ToggleGroupItem>
+            </ToggleGroup>
           )}
-        </ToggleGroup>
+        </div>
       )}
 
       {avaibleIndicators?.length === 0 ? (
@@ -247,7 +279,11 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
           {last_by === 'minute' ? (
             <div className="w-full h-[350px]">
               {dataPoints.length > 0 ? (
-                <DynamicLine data={chartData} options={options} />
+                chartType === 'line' ? (
+                  <DynamicLine data={chartData} options={options} />
+                ) : (
+                  <DynamicBar data={chartData} options={options} />
+                )
               ) : (
                 <NoResultsFound message="Aun no hay informacion disponible" />
               )}
