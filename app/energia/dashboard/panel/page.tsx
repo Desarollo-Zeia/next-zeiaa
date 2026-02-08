@@ -5,7 +5,7 @@ import { SearchParams } from '@/app/type'
 import HeadquarterEnergyFilter from '@/app/ui/energia/filters/headquarter-energy-filter'
 import BarChart from '@/app/ui/energia/panel/bar-chart'
 import ChartComponent from '@/app/ui/energia/panel/chart'
-import TableComponent from '@/app/ui/energia/panel/table'
+import PanelViewWrapper from '@/app/ui/energia/panel/panel-view-wrapper'
 import FiltersContainer from '@/app/ui/filters/filters-container'
 import MeasurementPointFilter from '@/app/ui/filters/measurement-points-filter'
 import MonthFilter from '@/app/ui/filters/month-filter'
@@ -148,7 +148,7 @@ async function DashboardContent({ searchParams }: SearchParams) {
       </FiltersContainer>
       {/* <TodayAlertBanner alertToday={alertToday} /> */}
       <ChartComponent electricalPanelData={dashboardPorcentageGraph} />
-      <TableComponent readings={dashboardTableReadings} />
+      <PanelViewWrapper readings={dashboardTableReadings} />
       <div className='w-full'>
         <div className='flex justify-between gap-4'>
 

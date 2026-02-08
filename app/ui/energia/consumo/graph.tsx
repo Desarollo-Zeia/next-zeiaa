@@ -45,6 +45,11 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
       y: item.first_value,
     })) || []
 
+  // Verificar si todos los valores son cero o null/undefined
+  const hasOnlyZeros = dataPoints.length > 0 && dataPoints.every((point: any) =>
+    point.y === 0 || point.y === null || point.y === undefined || point.y === ''
+  )
+
   const unit = readingsGraph?.[0]?.unit || ''
 
   // Determinar si es el mismo día (mostrar solo horas) o rango de fechas
@@ -210,7 +215,7 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
         )}
       </div>
 
-      {readingsGraph?.length > 0 && (
+      {readingsGraph?.length > 0 && !hasOnlyZeros && (
         <div className="flex flex-col gap-4 mb-4">
           <ToggleGroup
             type="single"
@@ -274,6 +279,8 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
 
       {avaibleIndicators?.length === 0 ? (
         <NoResultsFound message="Aun no hay informacion disponible" />
+      ) : hasOnlyZeros ? (
+        <NoResultsFound message="Sin consumo registrado" />
       ) : (
         <>
           {last_by === 'minute' ? (
