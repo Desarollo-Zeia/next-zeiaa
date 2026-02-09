@@ -36,8 +36,8 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
 
   const parameterLabel = ELECTRIC_PARAMETERS[indicator as keyof typeof ELECTRIC_PARAMETERS]?.parameter || indicator
 
-  // Procesar datos para Chart.js y detectar gaps > 1 minuto
-  const processDataWithGaps = (data: any[]) => {
+  // Procesar datos para Chart.js
+  const processData = (data: any[], includeGaps: boolean = false) => {
     if (!data || data.length === 0) return []
     
     const result = []
@@ -51,8 +51,8 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
         y: current.first_value,
       })
       
-      // Si no es el último elemento, verificar si hay un gap
-      if (i < data.length - 1) {
+      // Solo insertar gaps para gráficos de línea
+      if (includeGaps && i < data.length - 1) {
         const next = data[i + 1]
         const currentTime = new Date(current.first_reading).getTime()
         const nextTime = new Date(next.first_reading).getTime()
@@ -71,7 +71,10 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
     return result
   }
   
-  const dataPoints = processDataWithGaps(readingsGraph) || []
+  // Datos sin gaps para barras, con gaps para líneas
+  const dataPointsLine = processData(readingsGraph, true) || []
+  const dataPointsBar = processData(readingsGraph, false) || []
+  const dataPoints = chartType === 'line' ? dataPointsLine : dataPointsBar
 
   // Verificar si todos los valores son cero o null/undefined
   const hasOnlyZeros = dataPoints.length > 0 && dataPoints.every((point: any) =>
@@ -108,7 +111,7 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
       tension: 0,
       pointRadius: 0,
       borderWidth: 2,
-      spanGaps: false,
+      spanGaps: chartType === 'line' ? false : undefined,
     }]
   }
 
