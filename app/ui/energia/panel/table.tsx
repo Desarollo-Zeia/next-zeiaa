@@ -86,7 +86,6 @@ export default function TableComponent({ readings, hoveredPoint, onRowHover }: T
   const [isModalOpen, setIsModalOpen] = useState(false)
   return (
     <div className='flex flex-col'>
-      <h3 className='p-4 font-semibold text-[#6d6c6c]'>Tablero de distribucion</h3>
       <div className='border rounded-lg'>
         <Table>
           <TableHeader>
