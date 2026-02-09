@@ -36,14 +36,42 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
 
   const parameterLabel = ELECTRIC_PARAMETERS[indicator as keyof typeof ELECTRIC_PARAMETERS]?.parameter || indicator
 
-  // Procesar datos para Chart.js
-  const dataPoints = readingsGraph
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    .map((item: any) => ({
-      x: new Date(item.first_reading).toISOString(),
-      y: item.first_value,
-    })) || []
+  // Procesar datos para Chart.js y detectar gaps > 1 minuto
+  const processDataWithGaps = (data: any[]) => {
+    if (!data || data.length === 0) return []
+    
+    const result = []
+    const ONE_MINUTE = 60 * 1000 // 1 minuto en milisegundos
+    const TOLERANCE = 30 * 1000 // 30 segundos de tolerancia
+    
+    for (let i = 0; i < data.length; i++) {
+      const current = data[i]
+      result.push({
+        x: new Date(current.first_reading).toISOString(),
+        y: current.first_value,
+      })
+      
+      // Si no es el último elemento, verificar si hay un gap
+      if (i < data.length - 1) {
+        const next = data[i + 1]
+        const currentTime = new Date(current.first_reading).getTime()
+        const nextTime = new Date(next.first_reading).getTime()
+        const diff = nextTime - currentTime
+        
+        // Si la diferencia es mayor a 1 minuto + tolerancia, insertar null
+        if (diff > ONE_MINUTE + TOLERANCE) {
+          result.push({
+            x: new Date(currentTime + 1).toISOString(), // 1ms después para mantener orden
+            y: null,
+          })
+        }
+      }
+    }
+    
+    return result
+  }
+  
+  const dataPoints = processDataWithGaps(readingsGraph) || []
 
   // Verificar si todos los valores son cero o null/undefined
   const hasOnlyZeros = dataPoints.length > 0 && dataPoints.every((point: any) =>
@@ -76,10 +104,11 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
       data: dataPoints,
       borderColor: "#00b0c7",
       backgroundColor: chartType === 'line' ? "rgba(0, 176, 199, 0.1)" : "#00b0c7",
-      stepped: chartType === 'line',
+      stepped: false,
       tension: 0,
       pointRadius: 0,
       borderWidth: 2,
+      spanGaps: false,
     }]
   }
 
