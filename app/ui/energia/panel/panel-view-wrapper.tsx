@@ -130,16 +130,13 @@ export default function PanelViewWrapper({ readings }: PanelViewWrapperProps) {
             <Table2 className='w-4 h-4' />
             <span className='hidden sm:inline'>Tabla</span>
           </ToggleGroupItem>
-          {/* Temporarily hidden - Planos not complete
           <ToggleGroupItem value='floorplan' className='gap-2'>
             <Map className='w-4 h-4' />
             <span className='hidden sm:inline'>Planos</span>
           </ToggleGroupItem>
-          */}
         </ToggleGroup>
       </div>
 
-      {/* Floor Selector temporarily hidden - Planos not complete
       {viewMode === 'floorplan' && (
         <div className='flex items-center gap-4 px-4 pb-2'>
           <span className='text-sm text-gray-600'>Piso:</span>
@@ -165,14 +162,22 @@ export default function PanelViewWrapper({ readings }: PanelViewWrapperProps) {
           </span>
         </div>
       )}
-      */}
 
-      {/* Content - Table only (Planos temporarily hidden) */}
-      <TableComponent
-        readings={readings}
-        hoveredPoint={hoveredPoint}
-        onRowHover={setHoveredPoint}
-      />
+      {/* Content */}
+      {viewMode === 'table' ? (
+        <TableComponent
+          readings={readings}
+          hoveredPoint={hoveredPoint}
+          onRowHover={setHoveredPoint}
+        />
+      ) : (
+        <FloorPlanViewer
+          floor={selectedFloor}
+          points={currentFloorPoints}
+          hoveredPoint={hoveredPoint}
+          onPointHover={setHoveredPoint}
+        />
+      )}
     </div>
   )
 }
