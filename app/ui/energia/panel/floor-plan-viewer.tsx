@@ -2,10 +2,10 @@
 
 import React, { useMemo } from 'react'
 import Image from 'next/image'
-import { Camera, CameraOff } from 'lucide-react'
+import { Camera, CameraOff, ImageIcon } from 'lucide-react'
 import FloorPlanPin from './floor-plan-pin'
 
-interface PointData {
+interface PanelData {
   id: number
   name: string
   key: string
@@ -16,9 +16,9 @@ interface PointData {
 
 interface FloorPlanViewerProps {
   floor: 'ground' | 'first'
-  points: PointData[]
+  panels: PanelData[]
   hoveredPoint: string | null
-  onPointHover: (pointName: string | null) => void
+  onPointHover: (panelName: string | null) => void
 }
 
 const COLOR_MAP: Record<string, string> = {
@@ -30,55 +30,21 @@ const COLOR_MAP: Record<string, string> = {
   'distribution': '#f97316', // Naranja
 }
 
-const POINT_CATEGORIES: Record<string, string> = {
-  'Llave General': 'llave-general',
-  'Tomógrafo': 'medical',
-  'Resonador': 'medical',
-  'RX': 'medical',
-  'Aire Acondicionado': 'climatization',
-  'Ascensor': 'infrastructure',
-  'Data Center': 'infrastructure',
-  'UPS': 'infrastructure',
-  'Hemodiálisis': 'services',
-  'Sala Operaciones': 'services',
-  'TN-P': 'distribution',
-  'TE-P': 'distribution',
-  'TN-TE': 'distribution',
-  'Pediatría': 'distribution',
-  'Bomba': 'llave-general',
+// Coordenadas de tableros según las imágenes proporcionadas
+// Planta Baja: Cuarto de bombas, TG P1, TGA-N
+const GROUND_FLOOR_PANELS: Record<string, { x: number; y: number }> = {
+  'Cuarto de bombas': { x: 15, y: 45 },
+  'TG P1': { x: 75, y: 25 },
+  'TGA-N': { x: 50, y: 55 },
+  // Fallback para otros tableros que puedan existir
+  'default': { x: 50, y: 50 },
 }
 
-function getPointCategory(name: string): string {
-  for (const [keyword, category] of Object.entries(POINT_CATEGORIES)) {
-    if (name.toLowerCase().includes(keyword.toLowerCase())) {
-      return category
-    }
-  }
-  return 'distribution'
-}
-
-function getPointColor(name: string): string {
-  const category = getPointCategory(name)
-  return COLOR_MAP[category] || COLOR_MAP['distribution']
-}
-
-const GROUND_FLOOR_POINTS: Record<string, { x: number; y: number }> = {
-  'TN-P-12/TE-P-12': { x: 20, y: 30 },
-  'Llave General TGA': { x: 50, y: 20 },
-  'Llave General P1': { x: 75, y: 25 },
-  'Bombas de Fuerza': { x: 85, y: 40 },
-  'Aire Acondicionado TGA': { x: 15, y: 55 },
-  'Ascensor Derecho': { x: 40, y: 60 },
-  'Data Center UPS': { x: 60, y: 50 },
-  'Hemodiálisis': { x: 25, y: 75 },
-  'Resonador': { x: 55, y: 70 },
-  'RX PB': { x: 80, y: 65 },
-  'Sala Operaciones': { x: 45, y: 85 },
-  'Tablero Pediatría Semisótano': { x: 70, y: 80 },
-}
-
-const FIRST_FLOOR_POINTS: Record<string, { x: number; y: number }> = {
-  'Tomógrafo TG-RT': { x: 50, y: 50 },
+// Primer Piso: Tablero en el centro
+const FIRST_FLOOR_PANELS: Record<string, { x: number; y: number }> = {
+  'Tablero Principal': { x: 50, y: 50 },
+  // Fallback
+  'default': { x: 50, y: 50 },
 }
 
 const LEGEND_ITEMS = [
@@ -90,36 +56,49 @@ const LEGEND_ITEMS = [
   { color: COLOR_MAP['distribution'], label: 'Distribución' },
 ]
 
+function getPanelColor(name: string): string {
+  const lowerName = name.toLowerCase()
+  if (lowerName.includes('bombas') || lowerName.includes('fuerza')) return COLOR_MAP['infrastructure']
+  if (lowerName.includes('tg') || lowerName.includes('llave')) return COLOR_MAP['llave-general']
+  if (lowerName.includes('tga') || lowerName.includes('distribución')) return COLOR_MAP['distribution']
+  return COLOR_MAP['distribution']
+}
+
 export default function FloorPlanViewer({
   floor,
-  points,
+  panels,
   hoveredPoint,
   onPointHover,
 }: FloorPlanViewerProps) {
-  const imageSrc = floor === 'ground' 
-    ? '/images/planos/planta-baja.jpg' 
-    : '/images/planos/primer-piso.jpg'
+  const coordinateMap = floor === 'ground' ? GROUND_FLOOR_PANELS : FIRST_FLOOR_PANELS
 
-  const coordinateMap = floor === 'ground' ? GROUND_FLOOR_POINTS : FIRST_FLOOR_POINTS
-
-  const pointsWithCoordinates = useMemo(() => {
-    return points.map((point, index) => {
-      const coords = coordinateMap[point.name] || {
-        x: 20 + (index * 15) % 70,
-        y: 20 + (index * 20) % 60,
+  const panelsWithCoordinates = useMemo(() => {
+    return panels.map((panel, index) => {
+      // Buscar coordenadas específicas o usar posición por defecto
+      const coords = coordinateMap[panel.name] || coordinateMap['default']
+      
+      // Si es default, distribuirlos en grid
+      let finalCoords = coords
+      if (!coordinateMap[panel.name]) {
+        const row = Math.floor(index / 3)
+        const col = index % 3
+        finalCoords = {
+          x: 25 + (col * 25),
+          y: 30 + (row * 20),
+        }
       }
       
       return {
-        ...point,
-        x: coords.x,
-        y: coords.y,
-        color: getPointColor(point.name),
+        ...panel,
+        x: finalCoords.x,
+        y: finalCoords.y,
+        color: getPanelColor(panel.name),
       }
     })
-  }, [points, coordinateMap])
+  }, [panels, coordinateMap])
 
-  const totalPoints = pointsWithCoordinates.length
-  const pointsWithImages = pointsWithCoordinates.filter((p) => p.hasImage).length
+  const totalPanels = panelsWithCoordinates.length
+  const panelsWithImages = panelsWithCoordinates.filter((p) => p.hasImage).length
 
   return (
     <div className='flex flex-col gap-4'>
@@ -129,7 +108,7 @@ export default function FloorPlanViewer({
           {floor === 'ground' ? 'Planta Baja' : 'Primer Piso'}
         </h3>
         <div className='text-sm text-gray-600'>
-          {pointsWithImages} de {totalPoints} puntos con foto
+          {panelsWithImages} de {totalPanels} tableros con foto
         </div>
       </div>
 
@@ -138,29 +117,31 @@ export default function FloorPlanViewer({
         {/* Main Image Area */}
         <div className='relative flex-1 border rounded-lg overflow-hidden bg-gray-100'>
           <div className='relative w-full aspect-[4/3]'>
-            <Image
-              src={imageSrc}
-              alt={`Plano ${floor === 'ground' ? 'Planta Baja' : 'Primer Piso'}`}
-              fill
-              className='object-contain'
-              sizes='(max-width: 1200px) 100vw, 800px'
-              priority
-            />
+            {/* Placeholder cuando no hay imagen */}
+            <div className='absolute inset-0 flex items-center justify-center bg-gray-200'>
+              <div className='text-center'>
+                <ImageIcon className='w-16 h-16 mx-auto text-gray-400 mb-2' />
+                <p className='text-gray-500 text-sm'>Imagen no disponible</p>
+                <p className='text-gray-400 text-xs mt-1'>
+                  {floor === 'ground' ? 'Planta Baja' : 'Primer Piso'}
+                </p>
+              </div>
+            </div>
             
             {/* Pins Layer */}
             <div className='absolute inset-0'>
-              {pointsWithCoordinates.map((point) => (
+              {panelsWithCoordinates.map((panel) => (
                 <FloorPlanPin
-                  key={point.id}
-                  name={point.name}
-                  key_name={point.key}
-                  type={point.type}
-                  hasImage={point.hasImage}
-                  imageUrl={point.imageUrl}
-                  color={point.color}
-                  x={point.x}
-                  y={point.y}
-                  isHovered={hoveredPoint === point.name}
+                  key={panel.id}
+                  name={panel.name}
+                  key_name={panel.key}
+                  type={panel.type}
+                  hasImage={panel.hasImage}
+                  imageUrl={panel.imageUrl}
+                  color={panel.color}
+                  x={panel.x}
+                  y={panel.y}
+                  isHovered={hoveredPoint === panel.name}
                   onHover={onPointHover}
                 />
               ))}
@@ -195,6 +176,25 @@ export default function FloorPlanViewer({
                 <Camera className='w-2 h-2 text-white' />
               </div>
               <span className='text-xs text-gray-600'>Con foto</span>
+            </div>
+          </div>
+          
+          {/* Lista de tableros */}
+          <div className='mt-4 pt-4 border-t border-gray-200'>
+            <h5 className='font-medium text-xs mb-2 text-gray-700'>Tableros en este piso</h5>
+            <div className='space-y-1'>
+              {panelsWithCoordinates.map((panel) => (
+                <div 
+                  key={panel.id}
+                  className='text-xs text-gray-600 flex items-center gap-2'
+                >
+                  <div 
+                    className='w-2 h-2 rounded-full'
+                    style={{ backgroundColor: panel.color }}
+                  />
+                  <span className='truncate'>{panel.name}</span>
+                </div>
+              ))}
             </div>
           </div>
         </div>

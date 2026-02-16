@@ -6,10 +6,24 @@ import { useEffect } from 'react'
 
 export function PostHogProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
-    posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
-      api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
-      defaults: '2026-01-30',
-    })
+    const key = process.env.NEXT_PUBLIC_POSTHOG_KEY
+    const host = process.env.NEXT_PUBLIC_POSTHOG_HOST
+    
+    console.log('[PostHog] Initializing with key:', key ? 'Present' : 'MISSING')
+    console.log('[PostHog] Host:', host)
+    
+    if (key) {
+      posthog.init(key, {
+        api_host: host || 'https://us.i.posthog.com',
+        defaults: '2026-01-30',
+        loaded: (posthog) => {
+          if (process.env.NODE_ENV === 'development') posthog.debug()
+        }
+      })
+      console.log('[PostHog] Initialized successfully')
+    } else {
+      console.error('[PostHog] Missing NEXT_PUBLIC_POSTHOG_KEY')
+    }
   }, [])
 
   return <PHProvider client={posthog}>{children}</PHProvider>

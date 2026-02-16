@@ -148,7 +148,10 @@ async function DashboardContent({ searchParams }: SearchParams) {
       </FiltersContainer>
       {/* <TodayAlertBanner alertToday={alertToday} /> */}
       <ChartComponent electricalPanelData={dashboardPorcentageGraph} />
-      <PanelViewWrapper readings={dashboardTableReadings} />
+      <PanelViewWrapper 
+        readings={dashboardTableReadings} 
+        panels={measurementPointsPanels.results}
+      />
       <div className='w-full'>
         <div className='flex justify-between gap-4'>
 
