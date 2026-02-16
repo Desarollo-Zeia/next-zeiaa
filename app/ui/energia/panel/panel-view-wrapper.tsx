@@ -132,11 +132,17 @@ export default function PanelViewWrapper({ readings, panels }: PanelViewWrapperP
           }}
           className='border rounded-lg p-1'
         >
-          <ToggleGroupItem value='table' className='gap-2'>
+          <ToggleGroupItem 
+            value='table' 
+            className='gap-2 data-[state=on]:bg-[#00b0c7] data-[state=on]:text-white'
+          >
             <Table2 className='w-4 h-4' />
             <span className='hidden sm:inline'>Tabla</span>
           </ToggleGroupItem>
-          <ToggleGroupItem value='floorplan' className='gap-2'>
+          <ToggleGroupItem 
+            value='floorplan' 
+            className='gap-2 data-[state=on]:bg-[#00b0c7] data-[state=on]:text-white'
+          >
             <Map className='w-4 h-4' />
             <span className='hidden sm:inline'>Planos</span>
           </ToggleGroupItem>
