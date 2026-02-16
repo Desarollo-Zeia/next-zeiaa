@@ -16,7 +16,6 @@ import FiltersContainer from "@/app/ui/filters/filters-container"
 import { format } from "date-fns";
 // import { cacheLife } from "next/cache"
 import { getToken } from "@/app/lib/auth"
-import { Suspense } from "react"
 // import TariffTable from "@/app/ui/energia/tarifario/tariff-table"
 // import { BadgeAlert } from "lucide-react"
 
@@ -81,16 +80,6 @@ export default async function Tarifario({ searchParams }: SearchParams) {
           secondmonth={secondmonth || ''}
         />
       </div>
-    </div>
-  )
-}
-
-export async function page({ searchParams }: SearchParams) {
-  return (
-    <div>
-      <Suspense fallback={<div>Cargando...</div>}>
-        <Tarifario searchParams={searchParams} />
-      </Suspense>
     </div>
   )
 }
