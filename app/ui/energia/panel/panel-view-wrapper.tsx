@@ -1,5 +1,5 @@
 'use client'
-
+// Panel view wrapper with floorplan support
 import React, { useState, useMemo } from 'react'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { Table2, Map, Building2 } from 'lucide-react'
