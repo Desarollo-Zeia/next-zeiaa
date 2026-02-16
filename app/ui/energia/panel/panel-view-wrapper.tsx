@@ -1,5 +1,5 @@
 'use client'
-// Panel view wrapper with floorplan support
+
 import React, { useState, useMemo } from 'react'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { Table2, Map, Building2 } from 'lucide-react'
@@ -28,12 +28,6 @@ interface PanelViewWrapperProps {
     previous: string
     results: PointData[]
   }
-  panels: Array<{
-    id: number
-    name: string
-    location?: string
-    floor?: 'ground' | 'first'
-  }>
 }
 
 function getTableroImage(name: string, key: string): string | null {
@@ -88,34 +82,34 @@ function isGroundFloor(name: string): boolean {
   return !firstFloorOnly.some(keyword => lowerName.includes(keyword))
 }
 
-export default function PanelViewWrapper({ readings, panels }: PanelViewWrapperProps) {
+export default function PanelViewWrapper({ readings }: PanelViewWrapperProps) {
   const [viewMode, setViewMode] = useState<'table' | 'floorplan'>('table')
   const [selectedFloor, setSelectedFloor] = useState<'ground' | 'first'>('ground')
   const [hoveredPoint, setHoveredPoint] = useState<string | null>(null)
 
-  // Transform panels for floor plan view
-  const panelsForFloorPlan = useMemo(() => {
-    return panels.map(panel => {
+  const pointsForFloorPlan = useMemo(() => {
+    return readings.results.map(reading => {
+      const imageUrl = getTableroImage(reading.name, reading.key)
       return {
-        id: panel.id,
-        name: panel.name,
-        key: panel.name,
-        type: 'electrical_panel',
-        hasImage: false, // No images yet
-        imageUrl: null,
+        id: reading.id,
+        name: reading.name,
+        key: reading.key,
+        type: reading.type,
+        hasImage: !!imageUrl,
+        imageUrl: imageUrl,
       }
     })
-  }, [panels])
+  }, [readings.results])
 
-  const groundFloorPanels = useMemo(() => {
-    return panelsForFloorPlan.filter(panel => isGroundFloor(panel.name))
-  }, [panelsForFloorPlan])
+  const groundFloorPoints = useMemo(() => {
+    return pointsForFloorPlan.filter(point => isGroundFloor(point.name))
+  }, [pointsForFloorPlan])
 
-  const firstFloorPanels = useMemo(() => {
-    return panelsForFloorPlan.filter(panel => !isGroundFloor(panel.name))
-  }, [panelsForFloorPlan])
+  const firstFloorPoints = useMemo(() => {
+    return pointsForFloorPlan.filter(point => !isGroundFloor(point.name))
+  }, [pointsForFloorPlan])
 
-  const currentFloorPanels = selectedFloor === 'ground' ? groundFloorPanels : firstFloorPanels
+  const currentFloorPoints = selectedFloor === 'ground' ? groundFloorPoints : firstFloorPoints
 
   return (
     <div className='space-y-6'>
@@ -132,17 +126,11 @@ export default function PanelViewWrapper({ readings, panels }: PanelViewWrapperP
           }}
           className='border rounded-lg p-1'
         >
-          <ToggleGroupItem 
-            value='table' 
-            className='gap-2 data-[state=on]:bg-[#00b0c7] data-[state=on]:text-white'
-          >
+          <ToggleGroupItem value='table' className='gap-2'>
             <Table2 className='w-4 h-4' />
             <span className='hidden sm:inline'>Tabla</span>
           </ToggleGroupItem>
-          <ToggleGroupItem 
-            value='floorplan' 
-            className='gap-2 data-[state=on]:bg-[#00b0c7] data-[state=on]:text-white'
-          >
+          <ToggleGroupItem value='floorplan' className='gap-2'>
             <Map className='w-4 h-4' />
             <span className='hidden sm:inline'>Planos</span>
           </ToggleGroupItem>
@@ -170,7 +158,7 @@ export default function PanelViewWrapper({ readings, panels }: PanelViewWrapperP
             </ToggleGroupItem>
           </ToggleGroup>
           <span className='text-sm text-gray-500'>
-            ({currentFloorPanels.length} tableros)
+            ({currentFloorPoints.length} puntos)
           </span>
         </div>
       )}
@@ -185,7 +173,7 @@ export default function PanelViewWrapper({ readings, panels }: PanelViewWrapperP
       ) : (
         <FloorPlanViewer
           floor={selectedFloor}
-          panels={currentFloorPanels}
+          points={currentFloorPoints}
           hoveredPoint={hoveredPoint}
           onPointHover={setHoveredPoint}
         />
