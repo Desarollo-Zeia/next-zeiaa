@@ -4,14 +4,14 @@
 
 ```bash
 # Development
-npm run dev          # Start development server (Next.js 16)
+pnpm dev          # Start development server (Next.js 16)
 
 # Build & Deploy
-npm run build        # Production build
-npm run start        # Start production server
+pnpm build        # Production build
+pnpm start        # Start production server
 
 # Linting
-npm run lint         # Run ESLint (Next.js config)
+pnpm lint         # Run ESLint (Next.js config)
 ```
 
 ## Project Structure
@@ -142,7 +142,7 @@ async function getData(token?: string) {
 
 ```bash
 # Before committing, always run:
-npm run lint
+pnpm lint
 
 # Commit message format:
 # feat: add new feature
