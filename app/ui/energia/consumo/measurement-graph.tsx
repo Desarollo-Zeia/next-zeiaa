@@ -100,7 +100,7 @@ interface ReadingData {
   first_value: number
   last_value: number
   difference: number
-  unit: string
+  unit?: string
 }
 
 export default function DeviceReadingsChart({ data, last_by }: { data: ReadingData[]; last_by: string }) {

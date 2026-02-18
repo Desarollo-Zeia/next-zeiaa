@@ -18,7 +18,7 @@ async function Covid({ searchParams }: SearchParams) {
   const rooms: Room[] = await getRooms()
   const firstRoom = rooms.find((room) => room.is_activated === true)
 
-  const currentFirstRoom = room ? room : firstRoom.id
+  const currentFirstRoom = room ?? String(firstRoom?.id ?? '')
   const readings = await readingsCovid({ roomId: currentFirstRoom, indicator, unit, date_after: formattedDateAfter, date_before: formattedDateBefore, page })
   const covidBaselines = await readingsCovidBaselines({ date_after: formattedDateAfter, date_before: formattedDateBefore, roomId: currentFirstRoom })
 

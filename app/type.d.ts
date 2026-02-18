@@ -24,6 +24,15 @@ export type Readings = {
   top: Measurement[]
 }
 
+export type MeasurementLevel = {
+  value: number
+  level: 'DANGEROUS' | 'UNHEALTHY' | 'MODERATE' | 'GOOD' | 'CRITICAL'
+}
+
+export type ThresholdData = {
+  levels: MeasurementLevel[]
+}
+
 export type GeneralRoomData = {
   headquarter: {
     id: number,
@@ -35,7 +44,8 @@ export type GeneralRoomData = {
   is_activated: boolean,
   name: string,
   status: Status,
-  thresholds: Record<string, unknown>
+  thresholds_filter?: Record<Indicator, ThresholdData>
+  thresholds: Record<Indicator, ThresholdData>
 }
 
 export interface Room {

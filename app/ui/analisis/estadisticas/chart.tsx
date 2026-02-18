@@ -258,16 +258,15 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
 
                           return datasets.map((dataset: ChartDataset, index: number) => {
                             // Asegurar valores con defaults
-                            const borderColor = dataset.borderColor?.toString() || '#000000';
-                            const backgroundColor = dataset.backgroundColor?.toString() || '#CCCCCC';
-                            const borderWidth = dataset.borderWidth || 1;
+                            const borderColor = dataset.borderColor?.toString() ?? '#000000';
+                            const backgroundColor = dataset.backgroundColor?.toString() ?? '#CCCCCC';
+                            const borderWidth = typeof dataset.borderWidth === 'number' ? dataset.borderWidth : 1;
 
                             return {
-                              text: toggleChart ? dataset.label : formattedDate(dataset.label),
+                              text: toggleChart ? (dataset.label ?? '') : formattedDate(dataset.label ?? ''),
                               fillStyle: backgroundColor,
                               strokeStyle: borderColor,
                               color: backgroundColor,
-                              // hidden: chart.isDatasetVisible(index),
                               lineWidth: borderWidth,
                               datasetIndex: index,
                               fontColor: !chart.isDatasetVisible(index) ? '#cccfcc' : '#616161'

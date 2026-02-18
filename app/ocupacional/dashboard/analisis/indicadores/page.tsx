@@ -46,7 +46,7 @@ async function Indicadores({ searchParams }: SearchParams) {
 
   const firstRoom = rooms.find((room) => room.is_activated === true)
 
-  const currentFirstRoom = room ? room : firstRoom.id.toString()
+  const currentFirstRoom = room ?? String(firstRoom?.id ?? '')
   const generalRoomData = await roomGeneralData({ roomId: currentFirstRoom, token: authToken! })
 
   const { indicator: currentFirstIndicator, unit: currentFirstUnit } = generalRoomData.indicators_activated[0]

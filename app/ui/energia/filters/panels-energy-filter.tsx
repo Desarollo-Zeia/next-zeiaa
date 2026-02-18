@@ -4,7 +4,7 @@ import { useSearchParams, useRouter, usePathname } from "next/navigation"
 import { useTransition } from "react"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
-interface ElectricalPanel {
+export interface ElectricalPanel {
   id: number
   name: string
   is_active: boolean

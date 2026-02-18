@@ -2,7 +2,7 @@ import { consume, consumeGraph } from "@/app/services/energy/data"
 import FiltersContainer from "@/app/ui/filters/filters-container"
 import { getEnergyMeasurementPointPanels, getHeadquarters } from "@/app/services/energy/enterprise/data"
 import HeadquarterEnergyFilter from "@/app/ui/energia/filters/headquarter-energy-filter"
-import PanelsFilterEnergy from "@/app/ui/energia/filters/panels-energy-filter"
+import PanelsFilterEnergy, { ElectricalPanel } from "@/app/ui/energia/filters/panels-energy-filter"
 import MeasurementTable from "@/app/ui/energia/consumo/measurement-table"
 import { EnergyHeadquarter, MeasurementPointResults, SearchParams } from "@/app/type"
 import { format } from "date-fns"
@@ -98,15 +98,15 @@ async function FiltersSection({
     getMeasurementPoints({ electricalpanelId: panelId, token })
   ])
 
-  const energyPanel = measurementPointsPanels.results.find((p) => p.id.toString() === panelId)
+  const energyPanel = (measurementPointsPanels.results.find((p) => p.id.toString() === panelId) as ElectricalPanel | undefined) ?? null
   const energyMeasurementPoint = measurementPoints.results
     .flatMap((device) => device.measurement_points)
-    .find((mp) => mp.id.toString() === pointId)?.name
+    .find((mp) => mp.id.toString() === pointId)?.name ?? ''
 
   return (
     <FiltersContainer>
       <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} energy={headquarterId} />
-      <PanelsFilterEnergy energyPanels={measurementPointsPanels.results} panel={panelId} />
+      <PanelsFilterEnergy energyPanels={measurementPointsPanels.results as ElectricalPanel[]} panel={panelId} />
       <MeasurementPointFilter measurementPoints={measurementPoints} point={pointId} />
       <DatepickerRange />
       <DownloadExcel

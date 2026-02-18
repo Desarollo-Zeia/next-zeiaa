@@ -18,8 +18,12 @@ const energyToggleArray = [
 ]
 
 interface ReadingGraphItem {
+  period: string
   first_reading: string
+  last_reading: string
   first_value: number
+  last_value: number
+  difference: number
   unit?: string
 }
 
