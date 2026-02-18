@@ -103,122 +103,138 @@ export default function ChartComponent({ electricalPanelData }: { electricalPane
     <div className='flex flex-col gap-4'>
       {electricalPanelData.results?.length > 0 ? (
         <div className='flex gap-6'>
-          {/* Columna izquierda: Filtros + PieChart - 50% */}
-          <div className='w-1/2 flex flex-col gap-4'>
-            {/* Filtros compactos encima del PieChart */}
-            <div className='flex items-center gap-3 relative'>
-              <DatepickerRange />
-              <ToggleGroup 
-                type="single" 
-                defaultValue='month' 
-                value={currentFrequency} 
-                onValueChange={handleFrequencyChange}
-              >
-                <ToggleGroupItem 
-                  value="month" 
-                  className={`shadow-sm border text-sm px-3 py-1 ${currentFrequency === 'month' ? 'bg-[#00b0c7] text-white border-[#00b0c7]' : 'bg-white border-gray-200'}`}
+          {/* Mostrar mensaje de ancho completo cuando no hay datos de distribución */}
+          {chartData.length === 0 ? (
+            <div className="w-full flex flex-col items-center justify-center py-16 px-4">
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-100 to-purple-100 blur-2xl opacity-30 rounded-full"></div>
+                <svg
+                  className="relative w-24 h-24 text-gray-300 mb-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
                 >
-                  Este mes
-                </ToggleGroupItem>
-                <ToggleGroupItem 
-                  value="week" 
-                  className={`shadow-sm border text-sm px-3 py-1 ${currentFrequency === 'week' ? 'bg-[#00b0c7] text-white border-[#00b0c7]' : 'bg-white border-gray-200'}`}
-                >
-                  Esta semana
-                </ToggleGroupItem>
-              </ToggleGroup>
-              {isPending && (
-                <div className="absolute inset-0 flex items-center justify-center bg-white/50 rounded-lg">
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#00b0c7]"></div>
-                </div>
-              )}
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                No hay datos de distribución
+              </h3>
+              <p className="text-gray-500 text-center max-w-md">
+                Este panel no tiene puntos de monitoreo secundarios configurados.
+              </p>
             </div>
-
-            {/* PieChart */}
-            {chartData.length > 0 ? (
-              <div className="h-[280px] w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={chartData}
-                      dataKey="value"
-                      nameKey="name"
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={70}
-                      outerRadius={130}
-                      paddingAngle={2}
-                      strokeWidth={2}
-                      stroke="#fff"
+          ) : (
+            <>
+              {/* Columna izquierda: Filtros + PieChart - 50% */}
+              <div className='w-1/2 flex flex-col gap-4'>
+                {/* Filtros compactos encima del PieChart */}
+                <div className='flex items-center gap-3 relative'>
+                  <DatepickerRange />
+                  <ToggleGroup 
+                    type="single" 
+                    defaultValue='month' 
+                    value={currentFrequency} 
+                    onValueChange={handleFrequencyChange}
+                  >
+                    <ToggleGroupItem 
+                      value="month" 
+                      className={`shadow-sm border text-sm px-3 py-1 ${currentFrequency === 'month' ? 'bg-[#00b0c7] text-white border-[#00b0c7]' : 'bg-white border-gray-200'}`}
                     >
-                      {chartData.map((_, index) => (
-                        <Cell 
-                          key={`cell-${index}`} 
-                          fill={CHART_COLORS[index % CHART_COLORS.length]} 
-                        />
-                      ))}
-                    </Pie>
-                    <Tooltip content={<CustomTooltip />} />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-            ) : (
-              <div className="h-[280px] w-full flex items-center justify-center">
-                <div className="text-center">
-                  <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
-                    <svg className="w-12 h-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
-                    </svg>
-                  </div>
-                  <p className="text-gray-500 text-sm">Sin datos de distribucion</p>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Columna derecha: Lista de porcentajes - 50% */}
-          <div className='w-1/2'>
-            {mainSwitch && (
-              <div className="border rounded-lg overflow-hidden shadow-sm">
-                {/* Título principal */}
-                <div className="bg-[#00b0c7] text-white px-4 py-3">
-                  <div className="flex justify-between w-full items-center">
-                    <div className="flex items-center gap-3">
-                      <div className="w-3 h-3 rounded-full bg-white/40" />
-                      <span className="font-semibold">{mainSwitch.measurement_point_name}</span>
-                    </div>
-                    <span className="font-bold text-lg">{mainSwitch.consumption_percentage}%</span>
-                  </div>
-                </div>
-                
-                {/* Lista de items secundarios (siempre visible) */}
-                <div className="bg-white">
-                  {secondaryItems.length > 0 ? (
-                    secondaryItems.map((item, index) => (
-                      <div
-                        key={item.measurement_point_id}
-                        className="flex justify-between items-center px-4 py-3 border-b last:border-b-0 hover:bg-gray-50 transition-colors"
-                      >
-                        <div className="flex items-center gap-3">
-                          <div
-                            className="w-3 h-3 rounded-full shrink-0"
-                            style={{ backgroundColor: CHART_COLORS[index % CHART_COLORS.length] }}
-                          />
-                          <span className="font-medium text-gray-700">{item.measurement_point_name}</span>
-                        </div>
-                        <span className="font-semibold text-gray-900">{item.consumption_percentage}%</span>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="px-4 py-6 text-center text-gray-500 text-sm">
-                      No hay puntos de medicion secundarios
+                      Este mes
+                    </ToggleGroupItem>
+                    <ToggleGroupItem 
+                      value="week" 
+                      className={`shadow-sm border text-sm px-3 py-1 ${currentFrequency === 'week' ? 'bg-[#00b0c7] text-white border-[#00b0c7]' : 'bg-white border-gray-200'}`}
+                    >
+                      Esta semana
+                    </ToggleGroupItem>
+                  </ToggleGroup>
+                  {isPending && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-white/50 rounded-lg">
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#00b0c7]"></div>
                     </div>
                   )}
                 </div>
+
+                {/* PieChart */}
+                <div className="h-[280px] w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={chartData}
+                        dataKey="value"
+                        nameKey="name"
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={70}
+                        outerRadius={130}
+                        paddingAngle={2}
+                        strokeWidth={2}
+                        stroke="#fff"
+                      >
+                        {chartData.map((_, index) => (
+                          <Cell 
+                            key={`cell-${index}`} 
+                            fill={CHART_COLORS[index % CHART_COLORS.length]} 
+                          />
+                        ))}
+                      </Pie>
+                      <Tooltip content={<CustomTooltip />} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
               </div>
-            )}
-          </div>
+
+              {/* Columna derecha: Lista de porcentajes - 50% */}
+              <div className='w-1/2'>
+                {mainSwitch && (
+                  <div className="border rounded-lg overflow-hidden shadow-sm">
+                    {/* Título principal */}
+                    <div className="bg-[#00b0c7] text-white px-4 py-3">
+                      <div className="flex justify-between w-full items-center">
+                        <div className="flex items-center gap-3">
+                          <div className="w-3 h-3 rounded-full bg-white/40" />
+                          <span className="font-semibold">{mainSwitch.measurement_point_name}</span>
+                        </div>
+                        <span className="font-bold text-lg">{mainSwitch.consumption_percentage}%</span>
+                      </div>
+                    </div>
+                    
+                    {/* Lista de items secundarios (siempre visible) */}
+                    <div className="bg-white">
+                      {secondaryItems.length > 0 ? (
+                        secondaryItems.map((item, index) => (
+                          <div
+                            key={item.measurement_point_id}
+                            className="flex justify-between items-center px-4 py-3 border-b last:border-b-0 hover:bg-gray-50 transition-colors"
+                          >
+                            <div className="flex items-center gap-3">
+                              <div
+                                className="w-3 h-3 rounded-full shrink-0"
+                                style={{ backgroundColor: CHART_COLORS[index % CHART_COLORS.length] }}
+                              />
+                              <span className="font-medium text-gray-700">{item.measurement_point_name}</span>
+                            </div>
+                            <span className="font-semibold text-gray-900">{item.consumption_percentage}%</span>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="px-4 py-6 text-center text-gray-500 text-sm">
+                          Este panel no tiene puntos de monitoreo secundarios configurados
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center py-16 px-4">
@@ -240,12 +256,10 @@ export default function ChartComponent({ electricalPanelData }: { electricalPane
           </div>
 
           <h3 className="text-xl font-semibold text-gray-800 mb-2">
-            No hay datos disponibles
+            No hay datos de distribución
           </h3>
-
           <p className="text-gray-500 text-center max-w-md">
-            No se encontro informacion para la fecha seleccionada.
-            Intenta seleccionar un rango de fechas diferente.
+            Este panel no tiene puntos de monitoreo secundarios configurados.
           </p>
         </div>
       )}
