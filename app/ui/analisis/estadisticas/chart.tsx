@@ -17,14 +17,21 @@ import { STATUS_COLOR, STATUS_COLOR_THRESHOLD_CHART, STATUS_TO_SPANISH, UNIT_CON
 import { es } from 'date-fns/locale'
 import { capitalizeFirstLetter, formattedDate } from "@/app/utils/func"
 import { Button } from "@/components/ui/button"
-import { GeneralRoomData, Indicator, Measurement, Unit } from "@/app/type"
+import { GeneralRoomData, Indicator, Measurement, Status, Unit } from "@/app/type"
 import NoResultsFound from "../../no-result"
+import { Chart, ChartDataset } from "chart.js"
+import { AnnotationOptions } from "chartjs-plugin-annotation"
 
 
 type Readings = Record<string, Omit<Measurement, 'date'>[]>;
 
+interface Threshold {
+  level: Status;
+  value: number;
+}
+
 type ChartComponentProps = {
-  readings: any, // eslint-disable-line @typescript-eslint/no-explicit-any
+  readings: Readings,
   generalRoomData: GeneralRoomData,
   indicator: Indicator,
   unit: Unit,
@@ -101,7 +108,7 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
   // const [isPending, startTransition] = useTransition()
   const [newReadings, setNewReadings] = useState<Readings>({})
   const [toggleChart, setToggleChart] = useState<boolean>(false)
-  const [annotations, setAnnotations] = useState<any>({}) // eslint-disable-line @typescript-eslint/no-explicit-any
+  const [annotations, setAnnotations] = useState<Record<string, AnnotationOptions>>({})
 
   const dates = Object.keys(readings)
 
@@ -123,20 +130,22 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
   const { indicators_pollutants: indicators, thresholds } = generalRoomData
   // eslint-disable-next-line @next/next/no-assign-module-variable
 
-  const th = thresholds?.[indicator]?.levels;
+  const th = (thresholds?.[indicator] as { levels?: Threshold[] })?.levels;
 
   useEffect(() => {
-    const newAnnotations: any = {}; // eslint-disable-line @typescript-eslint/no-explicit-any
+    const newAnnotations: Record<string, AnnotationOptions> = {};
 
-    for (let i = 0; i < th?.length; i++) {
-      newAnnotations[`line${i + 1}`] = {
-        type: 'line',
-        yMin: th[i].value,
-        yMax: th[i].value,
-        borderColor: STATUS_COLOR_THRESHOLD_CHART[th[i].level as keyof typeof STATUS_COLOR_THRESHOLD_CHART],
-        borderWidth: 2,
-        borderDash: [5, 5]
-      };
+    if (th) {
+      for (let i = 0; i < th.length; i++) {
+        newAnnotations[`line${i + 1}`] = {
+          type: 'line',
+          yMin: th[i].value,
+          yMax: th[i].value,
+          borderColor: STATUS_COLOR_THRESHOLD_CHART[th[i].level as keyof typeof STATUS_COLOR_THRESHOLD_CHART],
+          borderWidth: 2,
+          borderDash: [5, 5]
+        };
+      }
     }
 
     setAnnotations(newAnnotations); // Setear todo de una vez
@@ -158,7 +167,7 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
             <div className="w-full">
               <div className="text-xs font-medium mb-2">Umbrales:</div>
               <div className="flex flex-wrap gap-4">
-                {th?.map((threshold: any, i: any) => {  // eslint-disable-line @typescript-eslint/no-explicit-any
+                {th?.map((threshold: Threshold, i: number) => {
                   return (
                     <div key={i}>
                       <div>
@@ -226,7 +235,7 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
                         display: false
                       },
                       ticks: {
-                        callback: function (val: any) { // eslint-disable-line @typescript-eslint/no-explicit-any 
+                        callback: function (val: string | number) {
                           // Hide every 2nd tick label
                           return `${val} ${UNIT_CONVERTED[unit]}`
                         },
@@ -244,11 +253,10 @@ export function ChartComponent({ readings, generalRoomData, indicator, unit, sta
                       rtl: false,
 
                       labels: {
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        generateLabels: (chart: any) => {
+                        generateLabels: (chart: Chart) => {
                           const datasets = chart.data.datasets;
 
-                          return datasets.map((dataset: any, index: number) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+                          return datasets.map((dataset: ChartDataset, index: number) => {
                             // Asegurar valores con defaults
                             const borderColor = dataset.borderColor?.toString() || '#000000';
                             const backgroundColor = dataset.backgroundColor?.toString() || '#CCCCCC';

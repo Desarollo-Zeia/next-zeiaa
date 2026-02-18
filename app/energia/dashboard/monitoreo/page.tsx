@@ -2,7 +2,7 @@
 import { getToken } from "@/app/lib/auth";
 import { getHeadquarters } from "@/app/services/energy/enterprise/data";
 import { monitoringGraph, monitoringLastThree } from "@/app/services/energy/monitoreo/data";
-import { SearchParams } from "@/app/type";
+import { EnergyHeadquarter, SearchParams } from "@/app/type";
 import HeadquarterEnergyFilter from "@/app/ui/energia/filters/headquarter-energy-filter";
 // import PanelsFilterEnergy from "@/app/ui/energia/filters/panels-energy-filter";
 import ExcessPower from "@/app/ui/energia/monitoreo/excess-power";
@@ -63,7 +63,7 @@ async function MonitoreoContent({ searchParams }: SearchParams) {
     })
   ])
 
-  const { electrical_panels } = headquarters?.results.find((hq: any) => hq.id === Number(firstHeadquarter))  // eslint-disable-line @typescript-eslint/no-explicit-any
+  const { electrical_panels } = headquarters?.results.find((hq: EnergyHeadquarter) => hq.id === Number(firstHeadquarter))
 
   return (
     <div className="w-full">

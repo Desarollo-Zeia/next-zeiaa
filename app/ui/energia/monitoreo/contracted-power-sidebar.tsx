@@ -6,12 +6,18 @@ import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { HelpCircle } from "lucide-react"
 
+interface Thread {
+  id: number
+  name: string
+  type: string
+}
+
 interface Panel {
   id?: number
   name?: string
   is_active?: boolean
-  type: string // O bien: string, en caso de admitir otros tipos.
-  threads?: any[] | null  // eslint-disable-line @typescript-eslint/no-explicit-any
+  type: string
+  threads?: Thread[] | null
 }
 
 interface Powers {

@@ -2,7 +2,7 @@ import { getToken } from "@/app/lib/auth";
 import { alerts } from "@/app/services/alerts/data";
 import { getRooms } from "@/app/services/filters/data";
 import { roomGeneralData } from "@/app/services/readings/data";
-import { Indicator, SearchParams } from "@/app/type";
+import { Indicator, Room, SearchParams } from "@/app/type";
 import TableComponent from "@/app/ui/alertas/table";
 import { DatepickerRange } from "@/app/ui/filters/datepicker-range";
 import FiltersContainer from "@/app/ui/filters/filters-container";
@@ -43,8 +43,8 @@ async function Alertas({ searchParams }: SearchParams) {
   const formattedDateAfter = format(date_after, 'yyyy-MM-dd')
   const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
 
-  const rooms = await getRooms(authToken!)
-  const firstRoom = rooms.find((room: any) => room.is_activated === true)  // eslint-disable-line @typescript-eslint/no-explicit-any
+  const rooms: Room[] = await getRooms(authToken!)
+  const firstRoom = rooms.find((room) => room.is_activated === true)
 
   const currentFirstRoom = room ? room : firstRoom?.id?.toString() ?? rooms[0]?.id?.toString()
 

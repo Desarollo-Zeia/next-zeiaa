@@ -5,7 +5,7 @@ import FiltersContainer from "@/app/ui/filters/filters-container"
 import { format } from "date-fns"
 import { getRooms } from "@/app/services/filters/data"
 import RoomSelect from "@/app/ui/filters/room-select"
-import { Indicator } from "@/app/type"
+import { Indicator, Room } from "@/app/type"
 import StatusSelect from "@/app/ui/filters/status-select"
 // import { cacheLife } from "next/cache";
 import { getToken } from "@/app/lib/auth"
@@ -44,8 +44,8 @@ async function PicosHistoricos({ searchParams }: SearchParams) {
   const formattedDateAfter = format(date_after, 'yyyy-MM-dd')
   const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
 
-  const rooms = await getRooms(authToken!)
-  const firstRoom = rooms.find((room: any) => room.is_activated === true)  // eslint-disable-line @typescript-eslint/no-explicit-any
+  const rooms: Room[] = await getRooms(authToken!)
+  const firstRoom = rooms.find((room) => room.is_activated === true)
 
   const currentFirstRoom = room ? room : firstRoom.id
   const generalRoomData = await roomGeneralData({ roomId: currentFirstRoom, token: authToken! })

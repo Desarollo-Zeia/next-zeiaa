@@ -24,7 +24,7 @@ export async function setToken(token: string): Promise<void> {
   })
 }
 
-export async function setCompanyData(data: any): Promise<void> { // eslint-disable-line @typescript-eslint/no-explicit-any
+export async function setCompanyData(data: Record<string, unknown>): Promise<void> {
   const cookieStore = await cookies()
   cookieStore.set('authData', JSON.stringify(data), { // Serializa el objeto
     httpOnly: true, 
@@ -37,7 +37,7 @@ export async function setCompanyData(data: any): Promise<void> { // eslint-disab
 /**
  * getCompanyData - Obtiene los datos de la empresa con deduplicación por request
  */
-export const getCompanyData = cache(async (): Promise<any> => { // eslint-disable-line @typescript-eslint/no-explicit-any
+export const getCompanyData = cache(async (): Promise<Record<string, unknown> | null> => {
   const cookieStore = await cookies()
   const authData = cookieStore.get('authData')?.value
   return authData ? JSON.parse(authData) : null

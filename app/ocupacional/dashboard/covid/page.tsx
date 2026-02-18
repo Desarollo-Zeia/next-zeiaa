@@ -1,6 +1,6 @@
 import { getRooms } from "@/app/services/filters/data";
 import { readingsCovid, readingsCovidBaselines } from "@/app/services/readings/data";
-import { SearchParams } from "@/app/type";
+import { Room, SearchParams } from "@/app/type";
 import TableComponent from "@/app/ui/covid/table";
 import { DatepickerRange } from "@/app/ui/filters/datepicker-range";
 import FiltersContainer from "@/app/ui/filters/filters-container";
@@ -15,8 +15,8 @@ async function Covid({ searchParams }: SearchParams) {
   const formattedDateAfter = format(date_after, 'yyyy-MM-dd')
   const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
 
-  const rooms = await getRooms()
-  const firstRoom = rooms.find((room: any) => room.is_activated === true)  // eslint-disable-line @typescript-eslint/no-explicit-any
+  const rooms: Room[] = await getRooms()
+  const firstRoom = rooms.find((room) => room.is_activated === true)
 
   const currentFirstRoom = room ? room : firstRoom.id
   const readings = await readingsCovid({ roomId: currentFirstRoom, indicator, unit, date_after: formattedDateAfter, date_before: formattedDateBefore, page })

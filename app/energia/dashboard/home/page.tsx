@@ -4,7 +4,7 @@ import { getEnergyMeasurementPointPanels, getHeadquarters } from "@/app/services
 import HeadquarterEnergyFilter from "@/app/ui/energia/filters/headquarter-energy-filter"
 import PanelsFilterEnergy from "@/app/ui/energia/filters/panels-energy-filter"
 import MeasurementTable from "@/app/ui/energia/consumo/measurement-table"
-import { SearchParams } from "@/app/type"
+import { EnergyHeadquarter, MeasurementPointResults, SearchParams } from "@/app/type"
 import { format } from "date-fns"
 import { DatepickerRange } from "@/app/ui/filters/datepicker-range"
 import Graph from "@/app/ui/energia/consumo/graph"
@@ -88,16 +88,20 @@ async function FiltersSection({
   formattedDateBefore: string
   unit: string
 }) {
-  const [headquarters, measurementPointsPanels, measurementPoints] = await Promise.all([
+  const [headquarters, measurementPointsPanels, measurementPoints]: [
+    { results: EnergyHeadquarter[] },
+    { results: Array<{ id: number; name: string }> },
+    MeasurementPointResults
+  ] = await Promise.all([
     getHeadquarters(token),
     getEnergyMeasurementPointPanels({ headquarterId, token }),
     getMeasurementPoints({ electricalpanelId: panelId, token })
   ])
 
-  const energyPanel = measurementPointsPanels.results.find((p: any) => p.id.toString() === panelId)
+  const energyPanel = measurementPointsPanels.results.find((p) => p.id.toString() === panelId)
   const energyMeasurementPoint = measurementPoints.results
-    .flatMap((device: any) => device.measurement_points)
-    .find((mp: any) => mp.id.toString() === pointId)?.name
+    .flatMap((device) => device.measurement_points)
+    .find((mp) => mp.id.toString() === pointId)?.name
 
   return (
     <FiltersContainer>

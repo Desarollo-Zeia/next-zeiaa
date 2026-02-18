@@ -1,7 +1,7 @@
 import { getEnergyMeasurementPointPanels, getHeadquarters } from '@/app/services/energy/enterprise/data'
 import { getMeasurementPoints } from '@/app/services/filters/data'
 import { dashboardTableAlerts } from '@/app/services/panel/data'
-import { SearchParams } from '@/app/type'
+import { Alert, SearchParams } from '@/app/type'
 import { DatepickerRange } from '@/app/ui/filters/datepicker-range'
 import FiltersContainer from '@/app/ui/filters/filters-container'
 import MeasurementPointFilter from '@/app/ui/filters/measurement-points-filter'
@@ -103,7 +103,7 @@ async function AlertsContent({ searchParams }: SearchParams) {
                         </tr>
                       </thead>
                       <tbody>
-                        {dashboardTableAlertsReadings?.results?.map((alert: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+                        {dashboardTableAlertsReadings?.results?.map((alert: Alert) => {
                           return (
                             <tr key={alert.id} className="border-b hover:bg-muted/50">
                               <td className="py-4 px-4">

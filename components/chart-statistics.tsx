@@ -435,8 +435,7 @@ function ChartWithZoom({
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const options: any = {
+  const options: Record<string, unknown> = {
     responsive: true,
     maintainAspectRatio: false,
     interaction: {
@@ -479,8 +478,7 @@ function ChartWithZoom({
         borderWidth: 1,
         padding: 12,
         callbacks: {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          title: function (tooltipItems: any) {
+          title: function (tooltipItems: Array<{ dataIndex: number }>) {
             const index = tooltipItems[0].dataIndex
             const item = chartData[index]
             const date = item?.date as string
@@ -490,8 +488,7 @@ function ChartWithZoom({
             }
             return `Hora: ${hour}`
           },
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          label: function (context: any) {
+          label: function (context: { parsed: { y: number | null }; dataset: { label: string } }) {
             if (context.parsed.y === null) return null
             return `${context.dataset.label}: ${context.parsed.y} ${formattedUnit}`
           }

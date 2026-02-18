@@ -33,12 +33,18 @@ interface ExcessPowerData {
   results: PowerExceedingEvent[]
 }
 
+interface Thread {
+  id: number
+  name: string
+  type: string
+}
+
 interface Panel {
   id: number
   name: string
   is_active: boolean
-  type: "monofasico" // O bien: string, en caso de admitir otros tipos.
-  threads: any[] | null  // eslint-disable-line @typescript-eslint/no-explicit-any
+  type: "monofasico"
+  threads: Thread[] | null
 }
 
 interface Powers {

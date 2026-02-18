@@ -24,6 +24,17 @@ interface IndicatorToogle {
   unit: string
 }
 
+interface ThresholdLevel {
+  value: number
+  level: string
+}
+
+interface Thresholds {
+  [key: string]: {
+    levels: ThresholdLevel[]
+  }
+}
+
 interface RoomDataStructure {
   id: number,
   name: string,
@@ -35,7 +46,7 @@ interface RoomDataStructure {
   indicators_activated: IndicatorToogle[],
   indicators_pollutants: IndicatorToogle[],
   is_activated: boolean,
-  thresholds: any // eslint-disable-line @typescript-eslint/no-explicit-any
+  thresholds: Thresholds
 }
 
 interface ChartComponentProps {
@@ -43,7 +54,7 @@ interface ChartComponentProps {
   generalRoomData: RoomDataStructure
   indicator: Indicator,
   unit: Unit,
-  thresholds: any // eslint-disable-line @typescript-eslint/no-explicit-any
+  thresholds: Thresholds
 }
 
 export default function ChartComponent({ results, generalRoomData, indicator, unit }: ChartComponentProps) {
@@ -78,8 +89,8 @@ export default function ChartComponent({ results, generalRoomData, indicator, un
   }
 
   // Crear anotaciones dinámicas para los thresholds
-  const annotations: Record<string, any> = {} // eslint-disable-line @typescript-eslint/no-explicit-any
-  th?.forEach((threshold: any, i: number) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+  const annotations: Record<string, Record<string, unknown>> = {}
+  th?.forEach((threshold: ThresholdLevel, i: number) => {
     annotations[`threshold-${i}`] = {
       type: 'line',
       yMin: threshold.value,
@@ -90,8 +101,7 @@ export default function ChartComponent({ results, generalRoomData, indicator, un
     }
   })
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const options: any = {
+  const options: Record<string, unknown> = {
     responsive: true,
     maintainAspectRatio: false,
     interaction: {
@@ -169,7 +179,7 @@ export default function ChartComponent({ results, generalRoomData, indicator, un
             <div className="w-full">
               <div className="text-xs font-medium mb-2">Umbrales:</div>
               <div className="flex flex-wrap gap-4">
-                {th?.map((threshold: any, i: any) => {  // eslint-disable-line @typescript-eslint/no-explicit-any
+                {th?.map((threshold: ThresholdLevel, i: number) => {
                   return (
                     <div key={i}>
                       <div>

@@ -1,7 +1,7 @@
 import { getEnergyMeasurementPointPanels } from '@/app/services/energy/enterprise/data'
 import { getHeadquarters, getMeasurementPoints } from '@/app/services/filters/data'
 import { consumeGraph, dashboardTable, lastAlertToday, porcentageGraph } from '@/app/services/panel/data'
-import { SearchParams } from '@/app/type'
+import { MeasurementPointResults, SearchParams } from '@/app/type'
 import HeadquarterEnergyFilter from '@/app/ui/energia/filters/headquarter-energy-filter'
 import BarChart from '@/app/ui/energia/panel/bar-chart'
 import ChartComponent from '@/app/ui/energia/panel/chart'
@@ -91,7 +91,7 @@ async function DashboardContent({ searchParams }: SearchParams) {
 
   const firstPanel = panel || measurementPointsPanels?.results[0]?.id.toString()
 
-  const measurementPoints = await getMeasurementPoints({
+  const measurementPoints: MeasurementPointResults = await getMeasurementPoints({
     electricalpanelId: firstPanel,
     token: authToken!
   })
@@ -135,8 +135,7 @@ async function DashboardContent({ searchParams }: SearchParams) {
     token: authToken!
   })
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const thresholds = measurementPoints?.results[0]?.measurement_points?.find((mp: any) =>
+  const thresholds = measurementPoints?.results[0]?.measurement_points?.find((mp) =>
     mp.id === Number(firstPoint)
   )?.energy_thresholds?.thresholds_values
 
