@@ -14,8 +14,9 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { useSearchParams, usePathname, useRouter } from "next/navigation"
+import type { DateRange } from "react-day-picker"
 
-function parseISOorUndefined(s?: string | null) {
+function parseISOorUndefined(s?: string | null): Date | undefined {
   if (!s) return undefined
   const t = Date.parse(s)
   return isNaN(t) ? undefined : new Date(t)
@@ -25,7 +26,7 @@ export function DatepickerRange({
   className,
 }: React.HTMLAttributes<HTMLDivElement>) {
   const searchParams = useSearchParams()
-  const params = new URLSearchParams(searchParams as any) // eslint-disable-line @typescript-eslint/no-explicit-any
+  const params = new URLSearchParams(searchParams as unknown as string)
   const pathname = usePathname()
   const { replace } = useRouter()
   const [isPending, startTransition] = React.useTransition()
@@ -34,7 +35,7 @@ export function DatepickerRange({
   const end = params.get("date_before")
 
   // inicializa con parse seguro
-  const [fecha, setFecha] = React.useState<any>({ // eslint-disable-line @typescript-eslint/no-explicit-any
+  const [fecha, setFecha] = React.useState<DateRange | undefined>({
     from: parseISOorUndefined(start),
     to: parseISOorUndefined(end),
   })
@@ -45,7 +46,7 @@ export function DatepickerRange({
     const newTo = parseISOorUndefined(end)
 
     // Usamos el setter funcional para evitar dependencias extra y sólo actualizar si cambió
-    setFecha((prev: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+    setFecha((prev) => {
       const prevFromISO = prev?.from?.toISOString()
       const prevToISO = prev?.to?.toISOString()
       const newFromISO = newFrom?.toISOString()
@@ -62,7 +63,7 @@ export function DatepickerRange({
   const debounceRef = React.useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
   React.useEffect(() => {
-    const nextParams = new URLSearchParams(searchParams as any)  // eslint-disable-line @typescript-eslint/no-explicit-any
+    const nextParams = new URLSearchParams(searchParams?.toString() ?? "")
     if (fecha?.from || fecha?.to) {
       nextParams.delete("page")
     }
@@ -87,7 +88,7 @@ export function DatepickerRange({
       }
 
       const nextQuery = nextParams.toString()
-      const currentQuery = (searchParams as any).toString?.() ?? "" // eslint-disable-line @typescript-eslint/no-explicit-any
+      const currentQuery = searchParams?.toString() ?? ""
 
       // evitar replace si no cambia la query (reduce repeticiones de navegación)
       if (nextQuery !== currentQuery) {

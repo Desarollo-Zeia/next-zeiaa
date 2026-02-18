@@ -51,16 +51,14 @@ export default function CurrentChartCount({ currentReadings }: { currentReadings
   }
 
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const options: any = {
+  const options: Record<string, unknown> = {
     responsive: true,
     scales: {
       x: {
         type: "category",
         time: { unit: "day" },
         ticks: {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          callback: (value: any) => {
+          callback: (value: number) => {
             const dateStr = results[value]?.date
             if (!dateStr) return ''
             return formattedWithoutMonth(`${dateStr}T12:00:00`)
@@ -79,8 +77,7 @@ export default function CurrentChartCount({ currentReadings }: { currentReadings
       legend: { display: false },
       tooltip: {
         callbacks: {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          title: function (tooltipItems: any) {
+          title: function (tooltipItems: Array<{ label: string }>) {
             const label = tooltipItems[0].label
             const date = new Date(label)
             const dateFormatted = capitalizeFirstLetter(format(date, "EEEE d 'de' MMMM", { locale: es }))

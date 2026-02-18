@@ -96,8 +96,7 @@ function CurrentLineChart({
     }]
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const options: any = {
+  const options: Record<string, unknown> = {
     responsive: true,
     maintainAspectRatio: false,
     interaction: {
@@ -124,14 +123,12 @@ function CurrentLineChart({
         padding: 12,
         bodyFont: { weight: 'bold' },
         callbacks: {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          title: function(tooltipItems: any) {
+          title: function(tooltipItems: Array<{ dataIndex: number }>) {
             const index = tooltipItems[0].dataIndex
             const timestamp = data[index].timestamp
             return `Fecha: ${format(new Date(timestamp), "d 'de' MMMM, HH:mm", { locale: es })}`
           },
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          label: function(context: any) {
+          label: function(context: { parsed: { y: number } }) {
             return `${dataKey}: ${context.parsed.y} A`
           }
         }

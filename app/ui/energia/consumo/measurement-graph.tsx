@@ -29,9 +29,28 @@ const formatDateTime = (dateTimeString: string) => {
   return { date: formattedDate, time: formattedTime }
 }
 
+interface TooltipPayloadItem {
+  payload: {
+    last_by: string
+    originalData: {
+      period: string
+      first_reading: string
+      last_reading: string
+      first_value: number
+      last_value: number
+      difference: number
+      unit: string
+    }
+  }
+}
+
+interface CustomTooltipProps {
+  active?: boolean
+  payload?: TooltipPayloadItem[]
+}
+
 // Custom tooltip component
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const CustomTooltip = ({ active, payload }: any) => {
+const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
   if (active && payload && payload.length) {
     const dataLastBy = payload[0].payload.last_by
     const data = payload[0].payload.originalData
@@ -74,11 +93,19 @@ const CustomTooltip = ({ active, payload }: any) => {
 }
 
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default function DeviceReadingsChart({ data, last_by }: { data: any; last_by: string }) {
+interface ReadingData {
+  period: string
+  first_reading: string
+  last_reading: string
+  first_value: number
+  last_value: number
+  difference: number
+  unit: string
+}
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const chartData = data.map((reading: any) => {
+export default function DeviceReadingsChart({ data, last_by }: { data: ReadingData[]; last_by: string }) {
+
+  const chartData = data.map((reading: ReadingData) => {
 
     const weekAndMonthFormat = `${format(new Date(reading.first_reading), "dd", { locale: es })} - ${format(new Date(reading.last_reading), "dd MMM", { locale: es })}`
     const hourLastBy = `${format(new Date(reading.first_reading), "HH:mm", { locale: es })}`

@@ -62,7 +62,7 @@ const VoltageChartTest = ({ voltageReadings } : { voltageReadings : VoltageReadi
     ],
   };
 
-  const options: any = { // eslint-disable-line @typescript-eslint/no-explicit-any
+  const options: Record<string, unknown> = {
     interaction: {
       mode: 'nearest',
       axis: 'x',
@@ -105,7 +105,7 @@ const VoltageChartTest = ({ voltageReadings } : { voltageReadings : VoltageReadi
       },
       tooltip: {
         callbacks: {
-          label: (ctx : any ) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+          label: (ctx: { dataset: { label?: string }; parsed: { y: number } }) => {
             const label = ctx.dataset.label || ''
             const val = ctx.parsed.y
             return `${label}: ${val.toFixed(2)}%`
@@ -129,7 +129,7 @@ const VoltageChartTest = ({ voltageReadings } : { voltageReadings : VoltageReadi
           },
         },
         ticks: {
-          callback: function (value : any) { // eslint-disable-line @typescript-eslint/no-explicit-any
+          callback: function (value: string | number | Date) {
             const date = new Date(value);
             return format(date, "PP", { locale: es });
           }

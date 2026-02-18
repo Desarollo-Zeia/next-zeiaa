@@ -61,8 +61,7 @@ export default function VoltageChart({ voltageReadings }: { voltageReadings: THD
     ],
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const options: any = {
+  const options: Record<string, unknown> = {
     responsive: true,
     maintainAspectRatio: false,
     interaction: {
@@ -95,16 +94,14 @@ export default function VoltageChart({ voltageReadings }: { voltageReadings: THD
         borderWidth: 1,
         padding: 12,
         callbacks: {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          title: function(tooltipItems: any) {
+          title: function(tooltipItems: Array<{ dataIndex: number }>) {
             const index = tooltipItems[0].dataIndex
             const item = voltageReadings[index]
             const date = new Date(item.date)
             const formattedDate = date.toLocaleDateString("es-ES", { day: 'numeric', month: 'short' })
             return `${formattedDate} - ${item.time}`
           },
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          label: function(context: any) {
+          label: function(context: { dataset: { label: string }; parsed: { y: number } }) {
             return `${context.dataset.label}: ${context.parsed.y} %`
           }
         }

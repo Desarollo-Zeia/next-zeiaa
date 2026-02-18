@@ -49,8 +49,7 @@ export default function VoltageChartCount({ voltageReadings }: { voltageReadings
   }
 
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const options: any = {
+  const options: Record<string, unknown> = {
     responsive: true,
     scales: {
       x: {

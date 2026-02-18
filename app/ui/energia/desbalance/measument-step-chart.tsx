@@ -82,8 +82,7 @@ export function MeasurementStepChart({
     }]
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const options: any = {
+  const options: Record<string, unknown> = {
     responsive: true,
     maintainAspectRatio: false,
     interaction: {
@@ -118,14 +117,12 @@ export function MeasurementStepChart({
         padding: 12,
         bodyFont: { weight: 'bold' },
         callbacks: {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          title: function(tooltipItems: any) {
+          title: function(tooltipItems: Array<{ dataIndex: number }>) {
             const index = tooltipItems[0].dataIndex
             const item = processedData[index]
             return `${item.formattedTime}\n${item.deviceName} - ${item.measurementPoint}`
           },
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          label: function(context: any) {
+          label: function(context: { parsed: { y: number } }) {
             return `Fase ${selectedMetric.charAt(1)}: ${context.parsed.y}A`
           }
         }

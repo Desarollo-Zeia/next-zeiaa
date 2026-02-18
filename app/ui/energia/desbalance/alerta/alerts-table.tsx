@@ -6,8 +6,53 @@ import { MetricSelector } from '../metric-selector'
 import PaginationNumberComponent from '@/app/ui/pagination-number'
 import NoResultFound from '@/app/ui/no-result-found'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default function AlertTable({ readings, metric }: any) {
+interface ChannelReading {
+  channel: string
+  values: {
+    Uab: number
+    Ubc: number
+    Uac: number
+    Ia: number
+    Ib: number
+    Ic: number
+  }
+}
+
+interface ReadingResult {
+  id: number
+  created_at: string
+  device: {
+    name: string
+  }
+  values_per_channel: ChannelReading[]
+  balance_status: string
+  cuf_percentage: number
+  vuf_percentage: number
+}
+
+interface ReadingsData {
+  count: number
+  results: ReadingResult[]
+}
+
+interface FlattenedReading {
+  id: number
+  created_at: string
+  device: string
+  channel: string
+  Uab: number
+  Ubc: number
+  Uac: number
+  Ia: number
+  Ib: number
+  Ic: number
+  balance_status: string
+  measurement_point: string
+  cuf_percentage: number
+  vuf_percentage: number
+}
+
+export default function AlertTable({ readings, metric }: { readings: ReadingsData; metric: string }) {
 
   const formatDateTime = (dateTimeString: string) => {
     const date = new Date(dateTimeString)
@@ -33,10 +78,8 @@ export default function AlertTable({ readings, metric }: any) {
   }
 
   // Aplanamos las lecturas, usando "first_reading" en caso de que "period" sea nulo.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const readingsData = readings?.results?.flatMap((reading: any) =>
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    reading.values_per_channel.map((channel: any) => ({
+  const readingsData: FlattenedReading[] = readings?.results?.flatMap((reading: ReadingResult) =>
+    reading.values_per_channel.map((channel: ChannelReading) => ({
       id: reading.id,
       created_at: reading.created_at, // Se asume que first_reading es igual a created_at
       device: reading.device.name,
@@ -52,7 +95,7 @@ export default function AlertTable({ readings, metric }: any) {
       cuf_percentage: reading.cuf_percentage,
       vuf_percentage: reading.vuf_percentage
     }))
-  )
+  ) || []
 
   return (
     <Card className="w-full p-6 flex flex-col gap-4">
@@ -77,9 +120,8 @@ export default function AlertTable({ readings, metric }: any) {
                 </TableHeader>
                 <TableBody>
 
-                  {/* Renderizamos las filas de la tabla usando "readingsDat                                                                                                                                                                                             a" format (date, "hh:mm")*/}
-                  {/* // eslint-disable-next-line @typescript-eslint/no-explicit-any*/}
-                  {readingsData?.map((reading: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+                  {/* Renderizamos las filas de la tabla usando "readingsData" format (date, "hh:mm")*/}
+                  {readingsData?.map((reading: FlattenedReading) => {
                     const { date, time } = formatDateTime(reading.created_at)
                     return (
                       <TableRow key={`${reading.id}-${reading.channel}`}>

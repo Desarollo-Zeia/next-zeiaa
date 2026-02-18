@@ -80,8 +80,7 @@ export default function CurrentChart({ currentReadings }: { currentReadings: THD
     ],
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const options: any = {
+  const options: Record<string, unknown> = {
     responsive: true,
     maintainAspectRatio: false,
     interaction: {
@@ -118,13 +117,11 @@ export default function CurrentChart({ currentReadings }: { currentReadings: THD
         borderWidth: 1,
         padding: 12,
         callbacks: {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          title: function(tooltipItems: any) {
+          title: function(tooltipItems: Array<{ dataIndex: number }>) {
             const index = tooltipItems[0].dataIndex
             return `${formattedDates[index]} - ${labels[index]}`
           },
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          label: function(context: any) {
+          label: function(context: { dataset: { label: string }; parsed: { y: number } }) {
             return `${context.dataset.label}: ${context.parsed.y} %`
           }
         }
