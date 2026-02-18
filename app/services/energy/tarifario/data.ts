@@ -27,9 +27,12 @@ export async function consumptionCalculatorMonthly({ headquarterId, filter_month
 
   if (filter_month) url.searchParams.set('filter_month', filter_month)
 
-  const res = await fetchWithAuthEnergy(`${url.pathname}${url.search}`, {}, token)
-
-  return res
+  try {
+    const res = await fetchWithAuthEnergy(`${url.pathname}${url.search}`, {}, token)
+    return res
+  } catch (error) {
+    return { detail: error instanceof Error ? error.message : 'Error fetching monthly consumption', consumption: null }
+  }
 }
 
 export async function consumptionInvoice({ headquarterId, token }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, token?: string }) {

@@ -49,6 +49,11 @@ const dateFormat = (date: string) => {
     
 }
 
+const formatNumber = (value: number | undefined) => {
+  if (value === undefined) return '-'
+  return value.toFixed(2)
+}
+
 export default function VoltageTable({ readings } : { readings: HarmonicDistortionResponse }) {
 
   const indicators = Object.keys(readings?.results?.[0].voltage) 
@@ -86,9 +91,9 @@ export default function VoltageTable({ readings } : { readings: HarmonicDistorti
                     <TableRow key={index}>
                     <TableCell className="text-sm">{reading.date}</TableCell>
                     <TableCell className="text-sm">{reading.time}</TableCell>
-                    <TableCell className="text-sm">{reading.THDUa}</TableCell>
-                    <TableCell className="text-sm">{reading.THDUb}</TableCell>
-                    <TableCell className="text-sm">{reading.THDUc}</TableCell>
+                    <TableCell className="text-sm">{formatNumber(reading.THDUa)}</TableCell>
+                    <TableCell className="text-sm">{formatNumber(reading.THDUb)}</TableCell>
+                    <TableCell className="text-sm">{formatNumber(reading.THDUc)}</TableCell>
                   </TableRow>
                   ))
                 }

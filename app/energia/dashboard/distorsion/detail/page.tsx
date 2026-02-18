@@ -20,7 +20,7 @@ import { Suspense } from "react"
 
 async function DistorsionContentDetail({ searchParams }: SearchParams) {
 
-    const { headquarter = '1', panel = '1', date_after = new Date(), date_before = new Date(), data_type = 'current', page = '1' } = await searchParams
+    const { headquarter, panel = '1', date_after = new Date(), date_before = new Date(), data_type = 'current', page = '1' } = await searchParams
 
     const authToken = await getToken()
 
@@ -29,7 +29,7 @@ async function DistorsionContentDetail({ searchParams }: SearchParams) {
     const { results } = headquarters
     const firstHeadquarter = headquarter || results[0].id
 
-    const armonicsReadings = await armonics({ headquarterId: firstHeadquarter, panelId: panel, date_after: format(date_after, 'yyyy-MM-dd'), date_before: format(date_before, 'yyyy-MM-dd'), data_type, page })
+    const armonicsReadings = await armonics({ headquarterId: firstHeadquarter, panelId: panel, date_after: format(date_after, 'yyyy-MM-dd'), date_before: format(date_before, 'yyyy-MM-dd'), data_type, page, token: authToken })
 
     return (
         <div className="w-full">

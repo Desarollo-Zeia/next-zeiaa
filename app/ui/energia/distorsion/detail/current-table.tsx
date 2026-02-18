@@ -49,6 +49,11 @@ const dateFormat = (date: string) => {
     
 }
 
+const formatNumber = (value: number | undefined) => {
+  if (value === undefined) return '-'
+  return value.toFixed(2)
+}
+
 
 export default function CurrentTable({ readings } : { readings: HarmonicDistortionResponse }) {
 
@@ -87,9 +92,9 @@ export default function CurrentTable({ readings } : { readings: HarmonicDistorti
                     <TableRow key={index}>
                     <TableCell className="text-sm">{reading.date}</TableCell>
                     <TableCell className="text-sm">{reading.time}</TableCell>
-                    <TableCell className="text-sm">{reading.THDIa}</TableCell>
-                    <TableCell className="text-sm">{reading.THDIb}</TableCell>
-                    <TableCell className="text-sm">{reading.THDIc}</TableCell>
+                    <TableCell className="text-sm">{formatNumber(reading.THDIa)}</TableCell>
+                    <TableCell className="text-sm">{formatNumber(reading.THDIb)}</TableCell>
+                    <TableCell className="text-sm">{formatNumber(reading.THDIc)}</TableCell>
                   </TableRow>
                   ))
                 }

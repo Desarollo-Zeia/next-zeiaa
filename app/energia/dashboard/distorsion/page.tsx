@@ -28,6 +28,7 @@ async function DistorsionContent({ searchParams }: SearchParams) {
 
 
   const headquarters = await getHeadquarters(authToken!)
+
   const { results } = headquarters
   const firstHeadquarter = headquarter || results[0].id.toString()
 

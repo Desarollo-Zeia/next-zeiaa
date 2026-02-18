@@ -3,7 +3,7 @@ import { fetchWithAuthEnergy } from "@/app/lib/api"
 import { baseUrlEnergy } from "@/app/lib/constant"
 import { cacheLife } from "next/cache"
 
-export async function armonics({ headquarterId, date_after, date_before, data_type, page }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, data_type?: string, page?: string }) {
+export async function armonics({ headquarterId, date_after, date_before, data_type, page, token }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, data_type?: string, page?: string, token?: string }) {
 
   'use cache'
   cacheLife('minutes')
@@ -15,7 +15,7 @@ export async function armonics({ headquarterId, date_after, date_before, data_ty
   if (data_type) url.searchParams.set('data_type', data_type)
   if (page) url.searchParams.set('page', page)
 
-  const res = await fetchWithAuthEnergy(`${url.pathname}${url.search}`)
+  const res = await fetchWithAuthEnergy(`${url.pathname}${url.search}`, {}, token)
 
   return res
 }
