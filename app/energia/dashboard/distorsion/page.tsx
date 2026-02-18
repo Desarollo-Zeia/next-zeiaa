@@ -31,7 +31,7 @@ async function DistorsionContent({ searchParams }: SearchParams) {
   const { results } = headquarters
   const firstHeadquarter = headquarter || results[0].id.toString()
 
-  const armonicsGraphReadings = await armonicsGraph({ headquarterId: firstHeadquarter, panelId: panel, date_after: format(date_after, 'yyyy-MM-dd'), date_before: format(date_before, 'yyyy-MM-dd'), data_type })
+  const armonicsGraphReadings = await armonicsGraph({ headquarterId: firstHeadquarter, panelId: panel, date_after: format(date_after, 'yyyy-MM-dd'), date_before: format(date_before, 'yyyy-MM-dd'), data_type, token: authToken! })
 
   return (
     <div className='w-full'>
