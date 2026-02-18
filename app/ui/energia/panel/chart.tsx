@@ -45,9 +45,20 @@ interface ElectricalPanelData {
 
 const CHART_COLORS = ['#00b0c7', '#D9C4B0', '#F7A5A5', '#A5D6A7', '#CE93D8', '#90CAF9', '#FFCC80']
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const CustomTooltip = ({ active, payload }: any) => {
-  if (active && payload && payload.length) {
+interface TooltipPayloadItem {
+  payload: {
+    name: string
+    value: number
+  }
+}
+
+interface CustomTooltipProps {
+  active?: boolean
+  payload?: TooltipPayloadItem[]
+}
+
+const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
+  if (active && payload && payload.length > 0) {
     const data = payload[0].payload
     return (
       <div className="bg-white p-3 border border-gray-200 rounded-lg shadow-md">

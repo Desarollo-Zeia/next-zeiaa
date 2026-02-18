@@ -11,6 +11,9 @@ import {
   Tooltip,
   Legend,
   TimeScale,
+  type ChartOptions,
+  type TooltipItem,
+  type Scale,
 } from "chart.js";
 import "chartjs-adapter-date-fns";
 import NoResultsFound from '../../no-result';
@@ -38,16 +41,20 @@ type VoltageByDay = {
   sunday: DayValues
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default function BarChart({ readingsGraph, weekday, thresholds }: { readingsGraph: any[], weekday?: string, thresholds?: VoltageByDay }) {
+interface ReadingGraphItem {
+  first_reading: string
+  difference: number
+  unit?: string
+}
+
+export default function BarChart({ readingsGraph, weekday, thresholds }: { readingsGraph: ReadingGraphItem[], weekday?: string, thresholds?: VoltageByDay }) {
   const { inferior: inferiorThreshold, superior: superiorThreshold } = useMemo(
     () => getThresholdsByWeekday(thresholds, weekday || ''),
     [thresholds, weekday]
   )
 
   // 🔹 Normalizar fechas como ISO string -> determinista
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const dataPoints = readingsGraph?.map((item: any) => {
+  const dataPoints = readingsGraph?.map((item: ReadingGraphItem) => {
     return (
       {
         x: item.first_reading,
@@ -68,16 +75,13 @@ export default function BarChart({ readingsGraph, weekday, thresholds }: { readi
     ],
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const options: any = {
+  const options: ChartOptions<'bar'> = {
     responsive: true,
     scales: {
       x: {
         type: "category",
-        // time: { unit: "day" },
         ticks: {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          callback: function (value: any, index: any) {
+          callback: function (_value: string | number, index: number) {
             const formattedDateX = formattedWithoutMonth(readingsGraph[index].first_reading)
             return formattedDateX
           }
@@ -86,8 +90,10 @@ export default function BarChart({ readingsGraph, weekday, thresholds }: { readi
       },
       y: {
         ticks: {
-          callback: (val: number) =>
-            `${val.toFixed(2)} ${readingsGraph[0]?.unit || ''}`,
+          callback: function(this: Scale, val: string | number) {
+            const numVal = typeof val === 'string' ? parseFloat(val) : val
+            return `${numVal.toFixed(2)} ${readingsGraph[0]?.unit || ''}`
+          },
         },
       },
     },
@@ -106,7 +112,7 @@ export default function BarChart({ readingsGraph, weekday, thresholds }: { readi
               display: true,
               color: 'white',
               backgroundColor: '#59AC77',
-              content: [`${inferiorThreshold} KWh`],
+              content: `${inferiorThreshold} KWh`,
               xAdjust: 80,
             },
           } : undefined,
@@ -121,7 +127,7 @@ export default function BarChart({ readingsGraph, weekday, thresholds }: { readi
               display: true,
               color: 'white',
               backgroundColor: '#DC143C',
-              content: [`${superiorThreshold} KWh`],
+              content: `${superiorThreshold} KWh`,
               xAdjust: -80,
             },
           } : undefined,
@@ -129,17 +135,14 @@ export default function BarChart({ readingsGraph, weekday, thresholds }: { readi
       },
       tooltip: {
         callbacks: {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          title: function (tooltipItems: any) {
+          title: function (tooltipItems: TooltipItem<'bar'>[]) {
             const formattedDateX = formattedDate(tooltipItems[0].label)
             return `${formattedDateX}`
           },
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          label: function (context: any) {
+          label: function (context: TooltipItem<'bar'>) {
             return `Consumo energético: ${context.formattedValue} kWh`
           }
         },
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       }
     },
   }

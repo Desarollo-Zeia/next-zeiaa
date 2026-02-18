@@ -21,10 +21,19 @@ interface DataPoint {
     timestamp: string;
   }
 
-  export interface ConsumoTooltipProps extends TooltipProps<any, any> { // eslint-disable-line @typescript-eslint/no-explicit-any
-      active?: boolean
-      payload?: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
-    }
+interface TooltipPayloadItem {
+  payload: {
+    date: string
+  }
+  color: string
+  dataKey: string
+  value: number
+}
+
+export interface ConsumoTooltipProps {
+  active?: boolean
+  payload?: TooltipPayloadItem[]
+}
 
 
   export function ConsumoTooltip({ active, payload }: ConsumoTooltipProps) {
@@ -66,10 +75,9 @@ interface DataPoint {
 
 export default function ConsumoChart({ data, group_by } : { data: DataPoint[], group_by?: string } ) {
 
-  const dataPoints = data?.map((item : any ) => ({ // eslint-disable-line @typescript-eslint/no-explicit-any
+  const dataPoints = data?.map((item: DataPoint) => ({
     x: new Date(item.date), // Se convierte la fecha a objeto Date
     y: item.consumption,
-    
   })) || [];
 
    const dataLine = {
@@ -87,7 +95,7 @@ export default function ConsumoChart({ data, group_by } : { data: DataPoint[], g
       ],
     }
 
-      const options : any = {  // eslint-disable-line @typescript-eslint/no-explicit-any
+      const options: Record<string, unknown> = {
         interaction: {
           mode: 'nearest',
           axis: 'x',
@@ -140,15 +148,13 @@ export default function ConsumoChart({ data, group_by } : { data: DataPoint[], g
             bodyColor: "#333", // Color para el contenido del tooltip
             callbacks: {
               // Personalización del título del tooltip (ej. para formatear la fecha)
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              title: function (tooltipItems: any) {
+              title: function (tooltipItems: Array<{ parsed: { x: number } }>) {
                 // tooltipItems es un array de elementos (en este caso de un único punto)
                 const date = new Date(tooltipItems[0].parsed.x);
                 return format(date, "PP p", { locale: es });
               },
               // Personalización de la etiqueta del tooltip
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              label: function (context: any) {
+              label: function (context: { dataset: { label?: string }; parsed: { y: number } }) {
                 let label = context.dataset.label || "";
                 if (label) {
                   label += ": ";

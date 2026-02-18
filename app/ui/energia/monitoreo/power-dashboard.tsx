@@ -89,7 +89,7 @@ export default function PowerUsageChart({ readings, group, powers }: { readings:
   const pathname = usePathname()
   const { replace } = useRouter()
 
-  const dataPoints = readings?.map((item: any) => ({ // eslint-disable-line @typescript-eslint/no-explicit-any
+  const dataPoints = readings?.map((item: PowerReading) => ({
     x: new Date(item?.created_at).toISOString(),
     y: item.values_per_channel?.[0].power,
   })) || []
@@ -126,7 +126,7 @@ export default function PowerUsageChart({ readings, group, powers }: { readings:
     ],
   }
 
-  const options: any = { // eslint-disable-line @typescript-eslint/no-explicit-any
+  const options: Record<string, unknown> = {
     interaction: {
       mode: 'nearest',
       axis: 'x',
@@ -154,7 +154,7 @@ export default function PowerUsageChart({ readings, group, powers }: { readings:
 
         ticks: {
           display: true,
-          callback: function (val: any) { // eslint-disable-line @typescript-eslint/no-explicit-any 
+          callback: function (val: string | number) {
             // Hide every 2nd tick label
             return `${val} kW`
           },
@@ -168,16 +168,14 @@ export default function PowerUsageChart({ readings, group, powers }: { readings:
         bodyColor: "#333", // Color para el contenido del tooltip
         callbacks: {
           // Personalización del título del tooltip (ej. para formatear la fecha)
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          title: function (tooltipItems: any) {
+          title: function (tooltipItems: Array<{ parsed: { x: number } }>) {
             // tooltipItems es un array de elementos (en este caso de un único punto)
             const date = new Date(tooltipItems[0].parsed.x)
             const dateFormatted = capitalizeFirstLetter(format(date, "EEEE d 'de' MMMM", { locale: es }))
             return dateFormatted
           },
           // Personalización de la etiqueta del tooltip
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          label: function (context: any) {
+          label: function (context: { dataset: { label?: string }; parsed: { y: number } }) {
             let label = context.dataset.label || "";
             if (label) {
               label += ": ";

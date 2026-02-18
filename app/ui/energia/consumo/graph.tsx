@@ -17,8 +17,21 @@ const energyToggleArray = [
   { label: "Mes", value: "month" },
 ]
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings, dateAfter, dateBefore, panelId }: { readingsGraph: any, category: any, indicator: any, last_by: any, readings: any, dateAfter?: string, dateBefore?: string, panelId?: string }) => {
+interface ReadingGraphItem {
+  first_reading: string
+  first_value: number
+  unit?: string
+}
+
+interface ReadingsData {
+  results?: Array<{
+    indicators?: {
+      values?: Record<string, unknown>
+    }
+  }>
+}
+
+const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings, dateAfter, dateBefore, panelId }: { readingsGraph: ReadingGraphItem[], category: string, indicator: string, last_by: string, readings: ReadingsData, dateAfter?: string, dateBefore?: string, panelId?: string }) => {
   const [isPending, startTransition] = useTransition()
   const [chartType, setChartType] = useState<'line' | 'bar'>('line')
   const searchParams = useSearchParams()
@@ -37,7 +50,7 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
   const parameterLabel = ELECTRIC_PARAMETERS[indicator as keyof typeof ELECTRIC_PARAMETERS]?.parameter || indicator
 
   // Procesar datos para Chart.js
-  const processData = (data: any[], includeGaps: boolean = false) => {
+  const processData = (data: ReadingGraphItem[], includeGaps: boolean = false) => {
     if (!data || data.length === 0) return []
     
     const result = []
@@ -77,7 +90,7 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
   const dataPoints = chartType === 'line' ? dataPointsLine : dataPointsBar
 
   // Verificar si todos los valores son cero o null/undefined
-  const hasOnlyZeros = dataPoints.length > 0 && dataPoints.every((point: any) =>
+  const hasOnlyZeros = dataPoints.length > 0 && dataPoints.every((point: { y: number | null | undefined | string }) =>
     point.y === 0 || point.y === null || point.y === undefined || point.y === ''
   )
 
@@ -115,8 +128,7 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
     }]
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const options: any = {
+  const options: Record<string, unknown> = {
     responsive: true,
     maintainAspectRatio: false,
     interaction: {
@@ -162,14 +174,12 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
         padding: 12,
         bodyFont: { weight: 'bold' },
         callbacks: {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          title: function (tooltipItems: any) {
+          title: function (tooltipItems: Array<{ parsed: { x: number } }>) {
             const date = new Date(tooltipItems[0].parsed.x)
             const fechaFormateada = format(date, "EEEE d 'de' MMMM, HH:mm", { locale: es })
             return fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1)
           },
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          label: function (context: any) {
+          label: function (context: { parsed: { y: number } }) {
             return `${parameterLabel}: ${context.parsed.y.toFixed(2)} ${unit}`
           }
         }
