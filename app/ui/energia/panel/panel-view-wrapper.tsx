@@ -83,10 +83,13 @@ function isGroundFloor(name: string): boolean {
 }
 
 export default function PanelViewWrapper({ readings }: PanelViewWrapperProps) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [viewMode, setViewMode] = useState<'table' | 'floorplan'>('table')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedFloor, setSelectedFloor] = useState<'ground' | 'first'>('ground')
   const [hoveredPoint, setHoveredPoint] = useState<string | null>(null)
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const pointsForFloorPlan = useMemo(() => {
     return readings.results.map(reading => {
       const imageUrl = getTableroImage(reading.name, reading.key)
@@ -116,9 +119,10 @@ export default function PanelViewWrapper({ readings }: PanelViewWrapperProps) {
       {/* Main Toggle: Table vs Floor Plan */}
       <div className='flex items-center justify-between px-4'>
         <h3 className='font-semibold text-[#6d6c6c]'>
-          {viewMode === 'table' ? 'Tablero de distribución' : 'Planos de ubicación'}
+          Tablero de distribución
         </h3>
-        <ToggleGroup
+        {/* TODO: Enable floor plans when needed - temporarily hidden for client */}
+        {/* <ToggleGroup
           type='single'
           value={viewMode}
           onValueChange={(value) => {
@@ -134,10 +138,11 @@ export default function PanelViewWrapper({ readings }: PanelViewWrapperProps) {
             <Map className='w-4 h-4' />
             <span className='hidden sm:inline'>Planos</span>
           </ToggleGroupItem>
-        </ToggleGroup>
+        </ToggleGroup> */}
       </div>
 
-      {viewMode === 'floorplan' && (
+      {/* TODO: Enable floor selector when floor plans are needed */}
+      {/* {viewMode === 'floorplan' && (
         <div className='flex items-center gap-4 px-4 pb-2'>
           <span className='text-sm text-gray-600'>Piso:</span>
           <ToggleGroup
@@ -161,23 +166,24 @@ export default function PanelViewWrapper({ readings }: PanelViewWrapperProps) {
             ({currentFloorPoints.length} puntos)
           </span>
         </div>
-      )}
+      )} */}
 
       {/* Content */}
-      {viewMode === 'table' ? (
+      {/* viewMode always 'table' - floor plans temporarily disabled */}
+      {/* {viewMode === 'table' ? ( */}
         <TableComponent
           readings={readings}
           hoveredPoint={hoveredPoint}
           onRowHover={setHoveredPoint}
         />
-      ) : (
+      {/* ) : (
         <FloorPlanViewer
           floor={selectedFloor}
           points={currentFloorPoints}
           hoveredPoint={hoveredPoint}
           onPointHover={setHoveredPoint}
         />
-      )}
+      )} */}
     </div>
   )
 }
