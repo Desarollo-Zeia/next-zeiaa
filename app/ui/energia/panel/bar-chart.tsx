@@ -18,7 +18,7 @@ import {
 import "chartjs-adapter-date-fns";
 import NoResultsFound from '../../no-result';
 import { formattedDate, formattedWithoutMonth } from '@/app/utils/func';
-import { getThresholdsByWeekday } from '@/app/utils/thresholds';
+import { getThresholdsByWeekday, type VoltageByDay } from '@/app/utils/thresholds';
 
 ChartJS.register(
   CategoryScale,
@@ -29,17 +29,6 @@ ChartJS.register(
   Legend,
   TimeScale
 );
-
-type DayValues = {
-  superior: number
-  inferior: number
-}
-
-type VoltageByDay = {
-  workdays: DayValues
-  saturday: DayValues
-  sunday: DayValues
-}
 
 interface ReadingGraphItem {
   first_reading: string

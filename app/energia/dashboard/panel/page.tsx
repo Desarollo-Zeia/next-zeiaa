@@ -2,6 +2,7 @@ import { getEnergyMeasurementPointPanels } from '@/app/services/energy/enterpris
 import { getHeadquarters, getMeasurementPoints } from '@/app/services/filters/data'
 import { consumeGraph, dashboardTable, lastAlertToday, porcentageGraph } from '@/app/services/panel/data'
 import { MeasurementPointResults, SearchParams } from '@/app/type'
+import { VoltageByDay } from '@/app/utils/thresholds'
 import HeadquarterEnergyFilter from '@/app/ui/energia/filters/headquarter-energy-filter'
 import BarChart from '@/app/ui/energia/panel/bar-chart'
 import ChartComponent from '@/app/ui/energia/panel/chart'
@@ -137,7 +138,7 @@ async function DashboardContent({ searchParams }: SearchParams) {
 
   const thresholds = measurementPoints?.results[0]?.measurement_points?.find((mp) =>
     mp.id === Number(firstPoint)
-  )?.energy_thresholds?.thresholds_values
+  )?.energy_thresholds?.thresholds_values as VoltageByDay | undefined
 
   return (
     <>

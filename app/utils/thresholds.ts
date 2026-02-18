@@ -7,7 +7,7 @@ interface DayValues {
   superior: number
 }
 
-interface VoltageByDay {
+export interface VoltageByDay {
   workdays: DayValues
   saturday: DayValues
   sunday: DayValues
