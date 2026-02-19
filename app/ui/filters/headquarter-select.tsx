@@ -2,6 +2,7 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import { useTransition } from 'react';
+import { useFiltersStore } from '@/app/lib/stores/filters-store';
 
 interface Headquarter {
   id:number
@@ -21,25 +22,30 @@ export default function HeadquarterSelect({ headquarters } : { headquarters : He
   const [isPending, startTransition] = useTransition();
   const pathname = usePathname()
   const { replace } = useRouter()
+  const { headquarterId, setHeadquarter } = useFiltersStore()
+
+  const currentHeadquarterId = headquarterId || searchParams.get('headquarter') || ''
 
   const handleRoomChange = (headquarter: string) => {
+    setHeadquarter(headquarter === 'none' ? '' : headquarter)
+    
     startTransition(() => {
       const params = new URLSearchParams(searchParams);
-      if (headquarter) {
+      if (headquarter && headquarter !== 'none') {
         params.set('headquarter', headquarter);
       } 
-  
+   
       if (headquarter === 'none') {
         params.delete('headquarter');
       }
-  
+   
       replace(`${pathname}?${params.toString()}`, { scroll: false});
     })
   }
   
   return (
     <div className="relative">
-      <Select onValueChange={handleRoomChange}>
+      <Select onValueChange={handleRoomChange} value={currentHeadquarterId || 'none'}>
         <SelectTrigger className="w-[240px] bg-[#00b0c7]">
           <SelectValue placeholder="Selecciona una sede" className="text-white font-bold"/>
         </SelectTrigger>

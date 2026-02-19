@@ -2,6 +2,7 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import { useTransition } from 'react'
+import { useFiltersStore } from '@/app/lib/stores/filters-store';
 
 interface Room {
   id: number
@@ -18,11 +19,14 @@ export default function RoomSelect({ rooms, firstRoom }: { rooms: Room[], firstR
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const { replace } = useRouter()
+  const { roomId, setRoom } = useFiltersStore()
 
-  const currentRoomId = searchParams.get('room') ?? firstRoom
+  const currentRoomId = roomId || searchParams.get('room') || firstRoom
 
   const handleRoomChange = (newRoomId: string) => {
     if (newRoomId === currentRoomId) return;
+
+    setRoom(newRoomId)
 
     startTransition(() => {
       const newParams = new URLSearchParams(searchParams.toString())
