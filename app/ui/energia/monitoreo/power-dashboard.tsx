@@ -38,48 +38,6 @@ interface Powers {
   power_max: number
 }
 
-// Transformar los datos del JSON al formato esperado por el gráfico
-
-// Convertir los datos al formato esperado por el gráfico
-
-// const CustomTooltip = ({ active, payload, label }: any) => {  
-//   // eslint-disable-line @typescript-eslint/no-explicit-any
-
-//   const date = new Date(label)
-//   const hour = date.getHours()
-//   const minute = date.getMinutes()
-
-//   const hourFormatted = hour.toString().padStart(2, "0")
-//   const minuteFormatted = minute.toString().padStart(2, "0")
-
-//   const current = `${hourFormatted}:${minuteFormatted}`
-
-//   const start = hoursToMinutes('18:00')
-//   const end = hoursToMinutes('23:00')
-//   const compared = hoursToMinutes(current)
-
-//   if (active && payload && payload.length) {  
-
-//     return (
-//       <div className="bg-white p-3 border rounded-lg shadow-sm">
-//         {/* <p className="text-sm font-medium mb-2">{formatTime(label)}</p> */}
-//         <div className="flex items-center gap-2 text-xs">
-//           <span className="w-2 h-2 rounded-full bg-[#0ea5e9]" />
-//           <span>Potencia actual:</span>
-//           <span className="font-medium">{payload[0].value} kW</span>
-//         </div>
-//         {compared > start && compared < end && 
-//           <div className="flex items-center gap-2 text-xs">
-//             <div className="w-2 h-2 rounded-full bg-red-600"/>
-//             <span>Dentro de la hora punta</span>
-//           </div>
-//         }
-//       </div>
-//     )
-//   }
-//   return null
-// }
-
 export default function PowerUsageChart({ readings, group, powers }: { readings: PowerReading[], group?: string, powers: Powers[] }) {
 
   const { power_contracted, power_max } = powers?.[0] ?? {}
@@ -96,17 +54,13 @@ export default function PowerUsageChart({ readings, group, powers }: { readings:
 
   const handleGroupChange = (group: string) => {
     startTransition(() => {
-      const newParams = new URLSearchParams(searchParams);
+      const newParams = new URLSearchParams(searchParams)
 
-      newParams.set('group_by', 'day');
+      newParams.set('group_by', 'day')
 
       if (group) {
-        newParams.set('group_by', group);
+        newParams.set('group_by', group)
       }
-
-      // if (group === 'hour') {
-      //   newParams.delete('group_by');
-      // }
 
       replace(`${pathname}?${newParams.toString()}`, { scroll: false })
     })
@@ -115,13 +69,13 @@ export default function PowerUsageChart({ readings, group, powers }: { readings:
   const data = {
     datasets: [
       {
-        label: readings?.[0]?.values_per_channel?.[0]?.measurement_point_name, // Se utiliza el indicador como label
+        label: readings?.[0]?.values_per_channel?.[0]?.measurement_point_name,
         data: dataPoints,
         fill: false,
         borderColor: "#00b0c7",
-        stepped: true,
+        stepped: false,
         tension: 0,
-        pointRadius: 2,
+        pointRadius: 0,
       },
     ],
   }
@@ -142,20 +96,16 @@ export default function PowerUsageChart({ readings, group, powers }: { readings:
           text: "Hora de Lectura",
         },
         grid: {
-          display: true,
-          tickLength: 50
+          color: '#e5e7eb'
         },
       },
       y: {
         grid: {
-          display: true,
-          tickLength: 50
+          color: '#e5e7eb'
         },
-
         ticks: {
           display: true,
           callback: function (val: string | number) {
-            // Hide every 2nd tick label
             return `${val} kW`
           },
         }
@@ -163,45 +113,34 @@ export default function PowerUsageChart({ readings, group, powers }: { readings:
     },
     plugins: {
       tooltip: {
-        backgroundColor: "rgba(255, 255, 255)", // Cambia el fondo a un color claro
-        titleColor: "#333", // Color para el título del tooltip
-        bodyColor: "#333", // Color para el contenido del tooltip
+        backgroundColor: "white",
+        titleColor: "#666",
+        bodyColor: "#00b0c7",
+        borderColor: "#e5e7eb",
+        borderWidth: 1,
+        padding: 12,
         callbacks: {
-          // Personalización del título del tooltip (ej. para formatear la fecha)
           title: function (tooltipItems: Array<{ parsed: { x: number } }>) {
-            // tooltipItems es un array de elementos (en este caso de un único punto)
             const date = new Date(tooltipItems[0].parsed.x)
             const dateFormatted = capitalizeFirstLetter(format(date, "EEEE d 'de' MMMM", { locale: es }))
             return dateFormatted
           },
-          // Personalización de la etiqueta del tooltip
           label: function (context: { dataset: { label?: string }; parsed: { y: number } }) {
-            let label = context.dataset.label || "";
+            let label = context.dataset.label || ""
             if (label) {
-              label += ": ";
+              label += ": "
             }
-            // Se redondea el valor 'y' a dos decimales
-            label += context.parsed.y.toFixed(2) + ' ' + readings?.[0]?.unit;
-            return label;
+            label += context.parsed.y.toFixed(2) + ' ' + readings?.[0]?.unit
+            return label
           },
         },
       },
       zoom: {
-        // wheel: {
-
-        //   enabled: true,
-        //   mode: "xy"
-        // },
-        // pan: {
-        //   enabled: true,
-        //   mode: "xy", // Permite desplazar (pan) solo en el eje X. También puedes usar "y" o "xy".
-        // },
         pan: {
           enabled: true,
-          mode: "x", // "x", "y" o "xy"
+          mode: "x",
         },
         zoom: {
-
           wheel: {
             enabled: true,
             mode: "x",
@@ -217,7 +156,6 @@ export default function PowerUsageChart({ readings, group, powers }: { readings:
           y: { min: 'original', max: 'original' },
           x: { min: 'original', max: 'original' }
         }
-
       },
       annotation: {
         annotations: {
@@ -256,7 +194,7 @@ export default function PowerUsageChart({ readings, group, powers }: { readings:
       decimation: {
         enabled: true,
         algorithm: 'lttb',
-        samples: 20, // Aumenta este valor para conservar más detalles
+        samples: 20,
         threshold: 5
       },
       legend: {
@@ -295,4 +233,3 @@ export default function PowerUsageChart({ readings, group, powers }: { readings:
     </div>
   )
 }
-

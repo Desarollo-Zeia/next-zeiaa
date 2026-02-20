@@ -1,17 +1,17 @@
 // import { getCompanyData } from "@/app/lib/auth";
-import { getToken } from "@/app/lib/auth";
-import { getHeadquarters } from "@/app/services/energy/enterprise/data";
-import { monitoringGraph, monitoringLastThree } from "@/app/services/energy/monitoreo/data";
-import { EnergyHeadquarter, SearchParams } from "@/app/type";
-import HeadquarterEnergyFilter from "@/app/ui/energia/filters/headquarter-energy-filter";
+import { getToken } from "@/app/lib/auth"
+import { getHeadquarters } from "@/app/services/energy/enterprise/data"
+import { monitoringGraph, monitoringLastThree } from "@/app/services/energy/monitoreo/data"
+import { EnergyHeadquarter, SearchParams } from "@/app/type"
+import HeadquarterEnergyFilter from "@/app/ui/energia/filters/headquarter-energy-filter"
 // import PanelsFilterEnergy from "@/app/ui/energia/filters/panels-energy-filter";
-import ExcessPower from "@/app/ui/energia/monitoreo/excess-power";
-import DownloadExcelMonitoreo from "@/app/ui/energia/monitoreo/potencia-excedente/download-excel";
-import PowerUsageChart from "@/app/ui/energia/monitoreo/power-dashboard";
-import { DatepickerRange } from "@/app/ui/filters/datepicker-range";
-import FiltersContainer from "@/app/ui/filters/filters-container";
-import { format } from "date-fns";
-import { Suspense } from "react";
+import ExcessPower from "@/app/ui/energia/monitoreo/excess-power"
+import DownloadExcelMonitoreo from "@/app/ui/energia/monitoreo/potencia-excedente/download-excel"
+import PowerUsageChart from "@/app/ui/energia/monitoreo/power-dashboard"
+import { DatepickerRange } from "@/app/ui/filters/datepicker-range"
+import FiltersContainer from "@/app/ui/filters/filters-container"
+import { format } from "date-fns"
+import { Suspense } from "react"
 // import { cacheLife } from "next/cache";
 
 // async function GetHeadquarters(token: string) {

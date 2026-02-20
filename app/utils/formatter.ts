@@ -172,28 +172,28 @@ export const ELECTRIC_PARAMETERS = {
   EPtB: { parameter: "Consumo total de energía en la fase S", unit: "KWh" },
   EPtC: { parameter: "Consumo total de energía en la fase T", unit: "KWh" },
 
-  THDUa: {
+  THDVr: {
     parameter: "Distorsión armónica total en voltaje de la fase R",
     unit: "%",
   },
-  THDUb: {
+  THDVs: {
     parameter: "Distorsión armónica total en voltaje de la fase S",
     unit: "%",
   },
-  THDUc: {
+  THDVt: {
     parameter: "Distorsión armónica total en voltaje de la fase T",
     unit: "%",
   },
 
-  THDIa: {
+  THDIr: {
     parameter: "Distorsión armónica total en corriente de la fase R",
     unit: "%",
   },
-  THDIb: {
+  THDIs: {
     parameter: "Distorsión armónica total en corriente de la fase S",
     unit: "%",
   },
-  THDIc: {
+  THDIt: {
     parameter: "Distorsión armónica total en corriente de la fase T",
     unit: "%",
   },

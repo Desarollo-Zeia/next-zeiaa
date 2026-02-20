@@ -19,7 +19,7 @@ export async function setToken(token: string): Promise<void> {
   cookieStore.set('authToken', token, { 
     httpOnly: true, 
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
+    sameSite: 'lax',
     maxAge: 60 * 60 * 24 * 7 
   })
 }
@@ -29,7 +29,7 @@ export async function setCompanyData(data: Record<string, unknown>): Promise<voi
   cookieStore.set('authData', JSON.stringify(data), { // Serializa el objeto
     httpOnly: true, 
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
+    sameSite: 'lax',
     maxAge: 60 * 60 * 24 * 7 
   })
 }

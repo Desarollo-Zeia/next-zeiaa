@@ -1,7 +1,7 @@
 'use client'
 
 import { useTransition } from 'react'
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts'
+import { DynamicPie } from '@/components/charts'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { DatepickerRange } from '../../filters/datepicker-range'
@@ -45,31 +45,6 @@ interface ElectricalPanelData {
 
 const CHART_COLORS = ['#00b0c7', '#D9C4B0', '#F7A5A5', '#A5D6A7', '#CE93D8', '#90CAF9', '#FFCC80']
 
-interface TooltipPayloadItem {
-  payload: {
-    name: string
-    value: number
-  }
-}
-
-interface CustomTooltipProps {
-  active?: boolean
-  payload?: TooltipPayloadItem[]
-}
-
-const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
-  if (active && payload && payload.length > 0) {
-    const data = payload[0].payload
-    return (
-      <div className="bg-white p-3 border border-gray-200 rounded-lg shadow-md">
-        <p className="font-medium text-gray-700">{data.name}</p>
-        <p className="text-[#00b0c7] font-semibold">{data.value.toFixed(1)}%</p>
-      </div>
-    )
-  }
-  return null
-}
-
 export default function ChartComponent({ electricalPanelData }: { electricalPanelData: ElectricalPanelData }) {
   const [isPending, startTransition] = useTransition()
   const searchParams = useSearchParams()
@@ -99,10 +74,37 @@ export default function ChartComponent({ electricalPanelData }: { electricalPane
   }
 
   // Datos para el PieChart (excluyendo la llave general que es el primer elemento)
-  const chartData = electricalPanelData.results.slice(1).map((item) => ({
-    name: item.measurement_point_name,
-    value: item.consumption_percentage
-  }))
+  const chartData = {
+    labels: electricalPanelData.results.slice(1).map((item) => item.measurement_point_name),
+    datasets: [
+      {
+        data: electricalPanelData.results.slice(1).map((item) => item.consumption_percentage),
+        backgroundColor: CHART_COLORS,
+        borderColor: '#ffffff',
+        borderWidth: 2,
+      },
+    ],
+  }
+
+  const options: Record<string, unknown> = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'bottom',
+        labels: {
+          padding: 20,
+          usePointStyle: true,
+        }
+      },
+      tooltip: {
+        callbacks: {
+          label: function(context: { label?: string; parsed: number }) {
+            return `${context.label}: ${context.parsed.toFixed(1)}%`
+          }
+        }
+      }
+    }
+  }
 
   // Llave general (primer elemento)
   const mainSwitch = electricalPanelData.results[0]
@@ -115,7 +117,7 @@ export default function ChartComponent({ electricalPanelData }: { electricalPane
       {electricalPanelData.results?.length > 0 ? (
         <div className='flex gap-6'>
           {/* Mostrar mensaje de ancho completo cuando no hay datos de distribución */}
-          {chartData.length === 0 ? (
+          {chartData.labels.length === 0 ? (
             <div className="w-full flex flex-col items-center justify-center py-16 px-4">
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-100 to-purple-100 blur-2xl opacity-30 rounded-full"></div>
@@ -175,30 +177,7 @@ export default function ChartComponent({ electricalPanelData }: { electricalPane
 
                 {/* PieChart */}
                 <div className="h-[280px] w-full">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={chartData}
-                        dataKey="value"
-                        nameKey="name"
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={70}
-                        outerRadius={130}
-                        paddingAngle={2}
-                        strokeWidth={2}
-                        stroke="#fff"
-                      >
-                        {chartData.map((_, index) => (
-                          <Cell 
-                            key={`cell-${index}`} 
-                            fill={CHART_COLORS[index % CHART_COLORS.length]} 
-                          />
-                        ))}
-                      </Pie>
-                      <Tooltip content={<CustomTooltip />} />
-                    </PieChart>
-                  </ResponsiveContainer>
+                  <DynamicPie data={chartData} options={options} />
                 </div>
               </div>
 

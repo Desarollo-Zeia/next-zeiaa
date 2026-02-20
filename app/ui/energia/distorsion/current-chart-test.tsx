@@ -1,4 +1,3 @@
-// src/components/ThdiLineChart.jsx
 'use client'
 import React from "react"
 import { DynamicLine } from "@/components/charts"
@@ -6,16 +5,14 @@ import { es } from 'date-fns/locale'
 import { format } from "date-fns"
 
 export type CurrentReading = {
-    date: string; // Ejemplo: '2025-04-16'
-    time: string; // Ejemplo: '00:01'
+    date: string;
+    time: string;
     current: {
-        THDIa: number;
-        THDIb: number;
-        THDIc: number;
+        THDIr: number;
+        THDIs: number;
+        THDIt: number;
     };
   }
-
-// Registro centralizado en chart-registry
 
 const CurrentChartTest = ({ currentReadings } : { currentReadings : CurrentReading[]}) => {
 
@@ -24,42 +21,42 @@ const CurrentChartTest = ({ currentReadings } : { currentReadings : CurrentReadi
     (item: CurrentReading) => `${item.date} ${item.time}`
   )
 
-  const thdiaData = currentReadings.map((item) => item.current.THDIa);
-  const thdibData = currentReadings.map((item) => item.current.THDIb);
-  const thdicData = currentReadings.map((item) => item.current.THDIc);
+  const thdirData = currentReadings.map((item) => item.current.THDIr);
+  const thdisData = currentReadings.map((item) => item.current.THDIs);
+  const thditData = currentReadings.map((item) => item.current.THDIt);
 
   const data = {
     labels,
     datasets: [
       {
-        label: "THDIa",
-        data: thdiaData,
+        label: "THDIr",
+        data: thdirData,
         borderColor: "#00c7a2",
         backgroundColor: "#00c7a2",
         fill: false,
-        stepped: true,
+        stepped: false,
         tension: 0,
-        pointRadius: 2,
+        pointRadius: 0,
       },
       {
-        label: "THDIb",
-        data: thdibData,
+        label: "THDIs",
+        data: thdisData,
         borderColor: "#009ec7",
         backgroundColor: "#009ec7",
         fill: false,
-        stepped: true,
+        stepped: false,
         tension: 0,
-        pointRadius: 2,
+        pointRadius: 0,
       },
       {
-        label: "THDIc",
-        data: thdicData,
+        label: "THDIt",
+        data: thditData,
         borderColor: "#00c7b7",
         backgroundColor: "#00c7b7",
         fill: false,
-        stepped: true,
+        stepped: false,
         tension: 0,
-        pointRadius: 2,
+        pointRadius: 0,
       },
     ],
   }
@@ -82,7 +79,7 @@ const CurrentChartTest = ({ currentReadings } : { currentReadings : CurrentReadi
       zoom: {
         pan: {
             enabled: true,
-            mode: "x", // "x", "y" o "xy"
+            mode: "x",
           },
         zoom: {
           wheel: {
@@ -93,7 +90,7 @@ const CurrentChartTest = ({ currentReadings } : { currentReadings : CurrentReadi
           },
            pan: {
             enabled: true,
-            mode: "xy", // Permite desplazar (pan) solo en el eje X. También puedes usar "y" o "xy".
+            mode: "xy",
           },
           pinch: {
             enabled: true,
@@ -107,6 +104,12 @@ const CurrentChartTest = ({ currentReadings } : { currentReadings : CurrentReadi
 
       },
       tooltip: {
+        backgroundColor: "white",
+        titleColor: "#666",
+        bodyColor: "#00b0c7",
+        borderColor: "#e5e7eb",
+        borderWidth: 1,
+        padding: 12,
         callbacks: {
           label: (ctx: { dataset: { label?: string }; parsed: { y: number } }) => {
             const label = ctx.dataset.label || ''
@@ -122,11 +125,11 @@ const CurrentChartTest = ({ currentReadings } : { currentReadings : CurrentReadi
           display: true,
         },
         grid: {
-            display: false
+            color: '#e5e7eb'
         },
         type: "time",
         time: {
-          unit: "day", // Puedes ajustar la unidad a 'hour', 'day', etc.
+          unit: "day",
           displayFormats: {
             minute: "HH:mm",
           },
@@ -134,7 +137,7 @@ const CurrentChartTest = ({ currentReadings } : { currentReadings : CurrentReadi
         ticks: {
             callback: function (value: string | number | Date) {
             const date = new Date(value)
-            return format(date, "PP", { locale: es }) // Formato de fecha
+            return format(date, "PP", { locale: es })
             }
         },
       },
@@ -145,9 +148,9 @@ const CurrentChartTest = ({ currentReadings } : { currentReadings : CurrentReadi
           text: "THDI (%)",
         },
         grid: {
-            display: false
+            color: '#e5e7eb'
         },
-        tricks: {
+        ticks: {
             display: true
         }
       },

@@ -53,21 +53,24 @@ export default function CurrentChartCount({ currentReadings }: { currentReadings
 
   const options: Record<string, unknown> = {
     responsive: true,
+    maintainAspectRatio: false,
     scales: {
       x: {
         type: "category",
-        time: { unit: "day" },
+        grid: {
+          display: false
+        },
         ticks: {
-          callback: (value: number) => {
-            const dateStr = results[value]?.date
-            if (!dateStr) return ''
-            return formattedWithoutMonth(`${dateStr}T12:00:00`)
-          }
+          font: { size: 11 }
         }
 
       },
       y: {
+        grid: {
+          color: '#e5e7eb'
+        },
         ticks: {
+          font: { size: 11 },
           callback: (val: number) =>
             `${val}`,
         },
@@ -76,6 +79,12 @@ export default function CurrentChartCount({ currentReadings }: { currentReadings
     plugins: {
       legend: { display: false },
       tooltip: {
+        backgroundColor: "white",
+        titleColor: "#666",
+        bodyColor: "#00b0c7",
+        borderColor: "#e5e7eb",
+        borderWidth: 1,
+        padding: 12,
         callbacks: {
           title: function (tooltipItems: Array<{ label: string }>) {
             const label = tooltipItems[0].label
@@ -89,16 +98,17 @@ export default function CurrentChartCount({ currentReadings }: { currentReadings
 
   }
 
+  if (results?.length === 0 || !results) {
+    return (
+      <div className="w-full h-full">
+        <NoResultsFound message={message} />
+      </div>
+    )
+  }
+
   return (
     <div className="w-full h-full">
-      {results?.length > 0 ? (
-        <div className='flex flex-col items-center'>
-          <h3 className='text-xl'>Debalances totales por día</h3>
-          <DynamicBar options={options} data={data} />
-        </div>
-      ) : (
-        <NoResultsFound message={message} />
-      )}
+      <DynamicBar options={options} data={data} />
     </div>
   )
 }

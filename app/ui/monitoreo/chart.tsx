@@ -82,7 +82,7 @@ export default function ChartComponent({ results, generalRoomData, indicator, un
       data: dataPoints,
       borderColor: "#00b0c7",
       backgroundColor: "rgba(0, 176, 199, 0.1)",
-      tension: 0.4, // type="natural"
+      tension: 0.4,
       pointRadius: 0,
       borderWidth: 2,
     }]

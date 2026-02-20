@@ -18,15 +18,15 @@ export interface HarmonicDistortionRecord {
 }
 
 export interface Current {
-  THDIa?: number;
-  THDIb?: number;
-  THDIc?: number;
+  THDIr?: number;
+  THDIs?: number;
+  THDIt?: number;
 }
 
 export interface Voltage {
-  THDUa?: number;
-  THDUb?: number;
-  THDUc?: number;
+  THDVr?: number;
+  THDVs?: number;
+  THDVt?: number;
 }
 
 const dateFormat = (date: string) => {
@@ -91,9 +91,9 @@ export default function VoltageTable({ readings } : { readings: HarmonicDistorti
                     <TableRow key={index}>
                     <TableCell className="text-sm">{reading.date}</TableCell>
                     <TableCell className="text-sm">{reading.time}</TableCell>
-                    <TableCell className="text-sm">{formatNumber(reading.THDUa)}</TableCell>
-                    <TableCell className="text-sm">{formatNumber(reading.THDUb)}</TableCell>
-                    <TableCell className="text-sm">{formatNumber(reading.THDUc)}</TableCell>
+                    <TableCell className="text-sm">{formatNumber(reading.THDVr)}</TableCell>
+                    <TableCell className="text-sm">{formatNumber(reading.THDVs)}</TableCell>
+                    <TableCell className="text-sm">{formatNumber(reading.THDVt)}</TableCell>
                   </TableRow>
                   ))
                 }
