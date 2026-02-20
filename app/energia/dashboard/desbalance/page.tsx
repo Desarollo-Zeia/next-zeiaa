@@ -31,7 +31,6 @@ async function DesbalanceContent({ searchParams }: SearchParams) {
   const formattedDateAfter = format(date_after, 'yyyy-MM-dd')
   const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
 
-  // Waterfall necesario para resolver IDs default
   const headquarters = await getHeadquarters(authToken!)
   const headquarterId = headquarter || headquarters.results[0]?.id.toString()
 
@@ -41,7 +40,6 @@ async function DesbalanceContent({ searchParams }: SearchParams) {
   const measurementPoints = await getMeasurementPoints({ electricalpanelId: panelId, token: authToken! })
   const pointId = point || measurementPoints?.results[0]?.measurement_points[0]?.id.toString()
 
-  // Paralelizar las cargas de datos (async-parallel)
   const [threeUnbalanced, chartData] = await Promise.all([
     threeMostUnbalanced({ headquarterId, token: authToken! }),
     metric === 'current'
@@ -66,7 +64,7 @@ async function DesbalanceContent({ searchParams }: SearchParams) {
   const { top_unbalanced_measurement_points: [first, second, third] } = threeUnbalanced
 
   return (
-    <div className="w-full h-auto space-y-6">
+    <div className="w-full space-y-4">
       <FiltersContainer>
         <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} energy={headquarterId} />
         <PanelsFilterEnergy energyPanels={measurementPointsPanels.results} panel={panelId} />
@@ -74,23 +72,28 @@ async function DesbalanceContent({ searchParams }: SearchParams) {
         <DatepickerRange />
       </FiltersContainer>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pl-4">
-        <div>
-          <h3 className="text-lg font-medium text-center mb-3">Top 3 equipos con mayor desbalance del día</h3>
-          <div className="flex flex-col gap-3">
-            <MostThreeUnbalanced title={first.measurement_point_name} frequency={first.total_readings} cup={first.current_unbalanced} vup={first.voltage_unbalanced} />
-            <MostThreeUnbalanced title={second.measurement_point_name} frequency={second.total_readings} cup={second.current_unbalanced} vup={second.voltage_unbalanced} />
-            <MostThreeUnbalanced title={third.measurement_point_name} frequency={third.total_readings} cup={third.current_unbalanced} vup={third.voltage_unbalanced} />
+      <div className="px-4 space-y-4">
+        <div className="flex flex-col lg:flex-row gap-4">
+          <div className="w-full lg:w-1/3 space-y-2">
+            <h3 className="text-lg font-medium text-gray-700">Top 3 equipos con mayor desbalance</h3>
+            <div className="grid grid-cols-1 gap-2">
+              <MostThreeUnbalanced title={first.measurement_point_name} frequency={first.total_readings} cup={first.current_unbalanced} vup={first.voltage_unbalanced} />
+              <MostThreeUnbalanced title={second.measurement_point_name} frequency={second.total_readings} cup={second.current_unbalanced} vup={second.voltage_unbalanced} />
+              <MostThreeUnbalanced title={third.measurement_point_name} frequency={third.total_readings} cup={third.current_unbalanced} vup={third.voltage_unbalanced} />
+            </div>
           </div>
-        </div>
 
-        <div className="lg:col-span-2">
-          <MetricSelector />
-          <div className="w-full mt-3">
-            {metric === 'current'
-              ? <CurrentChartCount currentReadings={chartData} />
-              : <VoltageChartCount voltageReadings={chartData} />
-            }
+          <div className="w-full lg:w-2/3 space-y-2">
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-medium text-gray-700">Desbalances totales por día</h3>
+              <MetricSelector />
+            </div>
+            <div className="w-full h-[400px]">
+              {metric === 'current'
+                ? <CurrentChartCount currentReadings={chartData} />
+                : <VoltageChartCount voltageReadings={chartData} />
+              }
+            </div>
           </div>
         </div>
       </div>

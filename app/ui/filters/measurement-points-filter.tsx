@@ -11,6 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { useFiltersStore } from '@/app/lib/stores/filters-store'
 
 type MeasurementPoint = {
   id: number,
@@ -40,14 +41,19 @@ export default function MeasurementPointFilter({ measurementPoints, point }: { m
   const searchParams = useSearchParams();
   const pathname = usePathname()
   const { replace } = useRouter()
+  const { pointId, setPoint } = useFiltersStore()
+
+  const currentPointId = pointId || searchParams.get('point') || point
 
   const handlePointChange = (point: string) => {
+    setPoint(point === 'none' ? '' : point)
+    
     startTransition(() => {
       const newParams = new URLSearchParams(searchParams);
 
       newParams.set('page', '1');
 
-      if (point) {
+      if (point && point !== 'none') {
         newParams.set('point', point);
       }
 
@@ -66,7 +72,7 @@ export default function MeasurementPointFilter({ measurementPoints, point }: { m
       <Select
         onValueChange={handlePointChange}
         disabled={isPending}
-        value={point}
+        value={currentPointId || point}
       >
         <SelectTrigger className="w-[240px] bg-[#00b0c7]">
           <SelectValue placeholder="Puntos de medición" />

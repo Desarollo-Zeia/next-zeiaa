@@ -56,25 +56,25 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
   // Procesar datos para Chart.js
   const processData = (data: ReadingGraphItem[], includeGaps: boolean = false) => {
     if (!data || data.length === 0) return []
-    
+
     const result = []
     const ONE_MINUTE = 60 * 1000 // 1 minuto en milisegundos
     const TOLERANCE = 30 * 1000 // 30 segundos de tolerancia
-    
+
     for (let i = 0; i < data.length; i++) {
       const current = data[i]
       result.push({
         x: new Date(current.first_reading).toISOString(),
         y: current.first_value,
       })
-      
+
       // Solo insertar gaps para gráficos de línea
       if (includeGaps && i < data.length - 1) {
         const next = data[i + 1]
         const currentTime = new Date(current.first_reading).getTime()
         const nextTime = new Date(next.first_reading).getTime()
         const diff = nextTime - currentTime
-        
+
         // Si la diferencia es mayor a 1 minuto + tolerancia, insertar null
         if (diff > ONE_MINUTE + TOLERANCE) {
           result.push({
@@ -84,10 +84,10 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
         }
       }
     }
-    
+
     return result
   }
-  
+
   // Datos sin gaps para barras, con gaps para líneas
   const dataPointsLine = processData(readingsGraph, true) || []
   const dataPointsBar = processData(readingsGraph, false) || []
@@ -291,7 +291,7 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
               ))
             )}
           </ToggleGroup>
-          
+
           {category === 'power' && (
             <ToggleGroup
               type="single"

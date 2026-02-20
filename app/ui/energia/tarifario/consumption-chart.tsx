@@ -1,6 +1,5 @@
 "use client"
 
-import type { TooltipProps } from "recharts"
 import NoResultFound from "../../no-result-found"
 import { format } from "date-fns"
 import { es } from 'date-fns/locale'

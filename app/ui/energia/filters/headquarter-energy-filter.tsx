@@ -3,6 +3,7 @@
 import { useSearchParams, useRouter, usePathname } from "next/navigation"
 import { useTransition } from "react"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useFiltersStore } from "@/app/lib/stores/filters-store"
 
 type EnergyHeadquarter = {
   id: number
@@ -33,9 +34,14 @@ export default function HeadquarterEnergyFilter({ energyHeadquarter = [], energy
   const searchParams = useSearchParams()
   const { replace } = useRouter()
   const pathname = usePathname()
+  const { headquarterId, setHeadquarter } = useFiltersStore()
+
+  const currentHeadquarterId = headquarterId || searchParams.get('headquarter') || energy
 
 
   const handleHeadquarterChange = (headquarterId: string) => {
+    setHeadquarter(headquarterId)
+    
     startTransition(() => {
       const params = new URLSearchParams(searchParams)
       params.set("headquarter", headquarterId)
@@ -48,7 +54,7 @@ export default function HeadquarterEnergyFilter({ energyHeadquarter = [], energy
 
   return (
     <div>
-      <Select defaultValue={energy.toString()} onValueChange={handleHeadquarterChange}>
+      <Select value={currentHeadquarterId || energy} onValueChange={handleHeadquarterChange}>
         <SelectTrigger className="w-[240px] bg-[#00b0c7]">
           <SelectValue placeholder="Seleccionar sede" />
         </SelectTrigger>

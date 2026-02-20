@@ -1,6 +1,6 @@
 "use client"
 
-import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
+import { DynamicBar } from "@/components/charts"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
 import NoResultsFound from "../../no-result"
@@ -29,69 +29,6 @@ const formatDateTime = (dateTimeString: string) => {
   return { date: formattedDate, time: formattedTime }
 }
 
-interface TooltipPayloadItem {
-  payload: {
-    last_by: string
-    originalData: {
-      period: string
-      first_reading: string
-      last_reading: string
-      first_value: number
-      last_value: number
-      difference: number
-      unit: string
-    }
-  }
-}
-
-interface CustomTooltipProps {
-  active?: boolean
-  payload?: TooltipPayloadItem[]
-}
-
-// Custom tooltip component
-const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
-  if (active && payload && payload.length) {
-    const dataLastBy = payload[0].payload.last_by
-    const data = payload[0].payload.originalData
-    const { date } = formatDateTime(data.period)
-    const firstReading = formatDateTime(data.first_reading)
-    const secondReading = formatDateTime(data.last_reading)
-
-    return (
-      <div className="bg-white p-4 border rounded-md shadow-md text-sm">
-        <p className="font-semibold mb-2">{date}</p>
-        <div className="border-t my-2"></div>
-        <p className="text-gray-700 mb-1">
-          <span className="font-medium">Primera lectura:</span> {data.first_value.toFixed(2)} {data.unit}
-        </p>
-        <p className="text-gray-700 mb-1">
-          <span className="font-medium">Fecha:</span>{" "}
-          {firstReading.date} {dataLastBy === 'hour' && firstReading.time}
-        </p>
-        <div className="border-t my-2"></div>
-        <p className="text-gray-700 mb-1">
-          <span className="font-medium">Última lectura:</span> {data.last_value.toFixed(2)} {data.unit}
-        </p>
-        <p className="text-gray-700 mb-1">
-          <span className="font-medium">Fecha:</span>{" "}
-          {secondReading.date} {dataLastBy === 'hour' && secondReading.time}
-        </p>
-        <div className="border-t my-2"></div>
-        <p
-          className={`font-semibold ${data.difference > 0 ? "text-green-500" : data.difference < 0 ? "text-red-500" : "text-gray-500"
-            }`}
-        >
-          <span className="font-medium">Consumo:</span> {data.difference > 0 ? "+" : ""}
-          {data.difference.toFixed(2)} {data.unit}
-        </p>
-      </div>
-    )
-  }
-
-  return null
-}
-
 
 interface ReadingData {
   period: string
@@ -114,7 +51,6 @@ export default function DeviceReadingsChart({ data, last_by }: { data: ReadingDa
       {
         name: format(new Date(reading.period), "dd MMM", { locale: es }),
         value: reading.difference,
-        // Almacena los datos originales para el tooltip
         originalData: reading,
         weekAndMonthFormat,
         hourLastBy,
@@ -123,29 +59,111 @@ export default function DeviceReadingsChart({ data, last_by }: { data: ReadingDa
     )
   })
 
+  const labels = chartData.map((item) => {
+    if (last_by === 'day') return item.name
+    if (last_by === 'hour') return item.hourLastBy
+    return item.weekAndMonthFormat
+  })
+
+  const values = chartData.map((item) => item.value)
+
+  const chartJsData = {
+    labels,
+    datasets: [
+      {
+        label: 'Consumo',
+        data: values,
+        backgroundColor: "#00b0c7",
+        borderColor: "#00b0c7",
+        borderRadius: 4,
+      },
+    ],
+  }
+
+  const options: Record<string, unknown> = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false,
+      },
+      tooltip: {
+        backgroundColor: "white",
+        titleColor: "#333",
+        bodyColor: "#333",
+        borderColor: "#e5e7eb",
+        borderWidth: 1,
+        padding: 12,
+        callbacks: {
+          title: function(context: Array<{ dataIndex: number }>) {
+            const index = context[0]?.dataIndex ?? 0
+            const item = chartData[index]
+            if (!item) return ''
+            
+            const { date } = formatDateTime(item.originalData.period)
+            return date
+          },
+          label: function(context: { dataIndex: number; parsed: { y: number } }) {
+            const index = context.dataIndex
+            const item = chartData[index]
+            if (!item) return ''
+            
+            const data = item.originalData
+            return [
+              `Primera lectura: ${data.first_value.toFixed(2)} ${data.unit}`,
+              `Última lectura: ${data.last_value.toFixed(2)} ${data.unit}`,
+              `Consumo: ${data.difference > 0 ? "+" : ""}${data.difference.toFixed(2)} ${data.unit}`
+            ]
+          },
+          afterLabel: function(context: { dataIndex: number }) {
+            const index = context.dataIndex
+            const item = chartData[index]
+            if (!item) return ''
+            
+            const dataLastBy = item.last_by
+            const data = item.originalData
+            const firstReading = formatDateTime(data.first_reading)
+            const secondReading = formatDateTime(data.last_reading)
+            
+            const firstDate = `${firstReading.date} ${dataLastBy === 'hour' ? firstReading.time : ''}`
+            const secondDate = `${secondReading.date} ${dataLastBy === 'hour' ? secondReading.time : ''}`
+            
+            return [
+              `Fecha primera: ${firstDate}`,
+              `Fecha última: ${secondDate}`
+            ]
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        grid: {
+          display: false
+        },
+        ticks: {
+          font: { size: 11 }
+        }
+      },
+      y: {
+        grid: {
+          color: '#e5e7eb'
+        },
+        ticks: {
+          font: { size: 12 },
+          callback: function(val: number) {
+            return `${val.toFixed(0)} KWh`
+          }
+        }
+      }
+    }
+  }
 
   return (
     <div className="h-[300px] w-full">
       {
         data.length > 0 ? (
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart
-              data={chartData}
-              margin={{
-                top: 20,
-                right: 30,
-                left: 20,
-                bottom: 20,
-              }}
-            >
-              <CartesianGrid vertical={false} strokeDasharray="3 3" />
-              <XAxis dataKey={`${last_by === 'day' ? 'name' : last_by === 'hour' ? 'hourLastBy' : 'weekAndMonthFormat'}`} tickLine={false} axisLine={false} className="text-xs" />
-              <YAxis tickLine={false} axisLine={false} tickFormatter={(value) => `${value.toFixed(0)} KWh`} fontSize={12} />
-              <Tooltip content={<CustomTooltip />} cursor={false} />
-              {/* Utilizamos un color fijo "#00b0c7" en todas las barras */}
-              <Bar dataKey="value" radius={[4, 4, 0, 0]} fill="#00b0c7" />
-            </BarChart>
-          </ResponsiveContainer>
+          <DynamicBar data={chartJsData} options={options} />
         ) : (
           <NoResultsFound message="Aún no hay información disponible" />
         )

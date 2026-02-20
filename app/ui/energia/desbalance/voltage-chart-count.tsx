@@ -51,14 +51,24 @@ export default function VoltageChartCount({ voltageReadings }: { voltageReadings
 
   const options: Record<string, unknown> = {
     responsive: true,
+    maintainAspectRatio: false,
     scales: {
       x: {
         type: "time",
-        time: { unit: "day" },
+        grid: {
+          display: false
+        },
+        ticks: {
+          font: { size: 11 }
+        }
 
       },
       y: {
+        grid: {
+          color: '#e5e7eb'
+        },
         ticks: {
+          font: { size: 11 },
           callback: (val: number) =>
             `${val}`,
         },
@@ -69,13 +79,17 @@ export default function VoltageChartCount({ voltageReadings }: { voltageReadings
     }
   }
 
+  if (results?.length === 0 || !results) {
+    return (
+      <div className="w-full h-full">
+        <NoResultsFound message={message} />
+      </div>
+    )
+  }
+
   return (
     <div className="w-full h-full">
-      {results?.length > 0 ? (
-        <DynamicBar options={options} data={data} />
-      ) : (
-        <NoResultsFound message={message} />
-      )}
+      <DynamicBar options={options} data={data} />
     </div>
   )
 }

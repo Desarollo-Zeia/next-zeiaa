@@ -3,6 +3,7 @@
 import { useSearchParams, useRouter, usePathname } from "next/navigation"
 import { useTransition } from "react"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useFiltersStore } from "@/app/lib/stores/filters-store"
 
 export interface ElectricalPanel {
   id: number
@@ -21,8 +22,13 @@ export default function PanelsFilterEnergy({ energyPanels = [], panel }: PanelsF
   const searchParams = useSearchParams()
   const { replace } = useRouter()
   const pathname = usePathname()
+  const { panelId, setPanel } = useFiltersStore()
+
+  const currentPanelId = panelId || searchParams.get('panel') || panel
 
   const handlePanelChange = (panelId: string) => {
+    setPanel(panelId)
+    
     startTransition(() => {
       const params = new URLSearchParams(searchParams)
 
@@ -35,7 +41,7 @@ export default function PanelsFilterEnergy({ energyPanels = [], panel }: PanelsF
 
   return (
     <div className="relative">
-      <Select defaultValue={panel.toString()} onValueChange={handlePanelChange}>
+      <Select value={currentPanelId || panel} onValueChange={handlePanelChange}>
         <SelectTrigger className="w-[240px] bg-[#00b0c7]">
           <SelectValue placeholder="Seleccionar panel" />
         </SelectTrigger>

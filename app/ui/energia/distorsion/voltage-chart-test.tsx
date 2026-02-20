@@ -5,59 +5,57 @@ import { es } from 'date-fns/locale'
 import { format } from "date-fns"
 
 export type VoltageReading = {
-    date: string; // Ejemplo: '2025-04-16'
-    time: string; // Ejemplo: '00:01'
+    date: string;
+    time: string;
     voltage: {
-      THDUa: number;
-      THDUb: number;
-      THDUc: number;
+      THDVr: number;
+      THDVs: number;
+      THDVt: number;
     };
   };
   
-
-// Registro centralizado en chart-registry
 
 const VoltageChartTest = ({ voltageReadings } : { voltageReadings : VoltageReading[]}) => {
   // Preparar etiquetas y datos
   const labels = voltageReadings.map(
     (item) => `${item.date} ${item.time}`
   );
-  const thduaData = voltageReadings.map((item) => item.voltage.THDUa);
-  const thdubData = voltageReadings.map((item) => item.voltage.THDUb);
-  const thducData = voltageReadings.map((item) => item.voltage.THDUc);
+  const thdvrData = voltageReadings.map((item) => item.voltage.THDVr);
+  const thdvsData = voltageReadings.map((item) => item.voltage.THDVs);
+  const thdvtData = voltageReadings.map((item) => item.voltage.THDVt);
 
   const data = {
     labels,
     datasets: [
       {
-        label: "THDUa",
-        data: thduaData,
+        label: "THDVr",
+        data: thdvrData,
         borderColor: "#ff7043",
         backgroundColor: "#ff7043",
         fill: false,
-        stepped: true,
+        stepped: false,
         tension: 0,
-        pointRadius: 2,
+        pointRadius: 0,
       },
       {
-        label: "THDUb",
-        data: thdubData,
+        label: "THDVs",
+        data: thdvsData,
         borderColor: "#ffb26b",
         backgroundColor: "#ffb26b",
         fill: false,
-        stepped: true,
+        stepped: false,
         tension: 0,
-        pointRadius: 2,
+        pointRadius: 0,
       },
       {
-        label: "THDUc",
-        data: thducData,
+        label: "THDVt",
+        data: thdvtData,
         borderColor: "#00b0c7",
         backgroundColor: "#00b0c7",
         fill: false,
-        stepped: true,
+        stepped: false,
         tension: 0,
-        pointRadius: 2,
+        pointRadius: 0,
       },
     ],
   };
@@ -75,7 +73,7 @@ const VoltageChartTest = ({ voltageReadings } : { voltageReadings : VoltageReadi
       },
       title: {
         display: false,
-        text: "THDU por Fase",
+        text: "THDV por Fase",
       },
       zoom: {
         pan: {
@@ -104,6 +102,12 @@ const VoltageChartTest = ({ voltageReadings } : { voltageReadings : VoltageReadi
         }
       },
       tooltip: {
+        backgroundColor: "white",
+        titleColor: "#666",
+        bodyColor: "#00b0c7",
+        borderColor: "#e5e7eb",
+        borderWidth: 1,
+        padding: 12,
         callbacks: {
           label: (ctx: { dataset: { label?: string }; parsed: { y: number } }) => {
             const label = ctx.dataset.label || ''
@@ -119,7 +123,7 @@ const VoltageChartTest = ({ voltageReadings } : { voltageReadings : VoltageReadi
           display: true,
         },
         grid: {
-          display: false
+          color: '#e5e7eb'
         },
         type: "time",
         time: {
@@ -139,12 +143,12 @@ const VoltageChartTest = ({ voltageReadings } : { voltageReadings : VoltageReadi
         display: true,
         title: {
           display: true,
-          text: "THDU (%)",
+          text: "THDV (%)",
         },
         grid: {
-          display: false
+          color: '#e5e7eb'
         },
-        tricks: {
+        ticks: {
           display: true
         }
       },
