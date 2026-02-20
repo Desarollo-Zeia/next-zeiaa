@@ -21,7 +21,7 @@ export default function RoomSelect({ rooms, firstRoom }: { rooms: Room[], firstR
   const { replace } = useRouter()
   const { roomId, setRoom } = useFiltersStore()
 
-  const currentRoomId = roomId || searchParams.get('room') || firstRoom
+  const currentRoomId = searchParams.get('room') || roomId || firstRoom
 
   const handleRoomChange = (newRoomId: string) => {
     if (newRoomId === currentRoomId) return;
