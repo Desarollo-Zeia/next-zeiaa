@@ -75,7 +75,7 @@ export default function ChartComponent({ electricalPanelData }: { electricalPane
 
   // Datos para el PieChart (excluyendo la llave general que es el primer elemento)
   const secondaryItems = electricalPanelData.results.slice(1)
-  
+
   const chartData = {
     labels: secondaryItems.map((item) => item.measurement_point_name),
     datasets: [
@@ -92,8 +92,8 @@ export default function ChartComponent({ electricalPanelData }: { electricalPane
   const getTooltipData = (index: number) => {
     const item = secondaryItems[index]
     if (!item) return ''
-    const kwh = item.daily_consumption_kwh !== undefined 
-      ? `${item.daily_consumption_kwh.toFixed(2)} kWh` 
+    const kwh = item.daily_consumption_kwh !== undefined
+      ? `${item.daily_consumption_kwh.toFixed(2)} kWh`
       : 'N/A'
     return `${item.measurement_point_name}: ${item.consumption_percentage}% (${kwh})`
   }
@@ -102,6 +102,9 @@ export default function ChartComponent({ electricalPanelData }: { electricalPane
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
+      legend: {
+        display: false
+      },
       tooltip: {
         callbacks: {
           label: function (context: { dataIndex?: number; label?: string; parsed: number }) {
