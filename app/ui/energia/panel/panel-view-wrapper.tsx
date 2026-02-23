@@ -118,7 +118,8 @@ export default function PanelViewWrapper({ readings }: PanelViewWrapperProps) {
         <h3 className='font-semibold text-[#6d6c6c]'>
           Tablero de distribución
         </h3>
-        <ToggleGroup
+        {/* Floor plans temporarily disabled for local development */}
+        {/* <ToggleGroup
           type='single'
           value={viewMode}
           onValueChange={(value) => {
@@ -134,10 +135,10 @@ export default function PanelViewWrapper({ readings }: PanelViewWrapperProps) {
             <Map className='w-4 h-4' />
             <span className='hidden sm:inline'>Planos</span>
           </ToggleGroupItem>
-        </ToggleGroup>
+        </ToggleGroup> */}
       </div>
 
-      {viewMode === 'floorplan' && (
+      {/* {viewMode === 'floorplan' && (
         <div className='flex items-center gap-4 px-4 pb-2'>
           <span className='text-sm text-gray-600'>Piso:</span>
           <ToggleGroup
@@ -161,23 +162,24 @@ export default function PanelViewWrapper({ readings }: PanelViewWrapperProps) {
             ({currentFloorPoints.length} puntos)
           </span>
         </div>
-      )}
+      )} */}
 
       {/* Content */}
-      {viewMode === 'table' ? (
+      {/* viewMode always 'table' - floor plans disabled for local development */}
+      {/* {viewMode === 'table' ? ( */}
         <TableComponent
           readings={readings}
           hoveredPoint={hoveredPoint}
           onRowHover={setHoveredPoint}
         />
-      ) : (
+      {/* ) : (
         <FloorPlanViewer
           floor={selectedFloor}
           points={currentFloorPoints}
           hoveredPoint={hoveredPoint}
           onPointHover={setHoveredPoint}
         />
-      )}
+      )} */}
     </div>
   )
 }
