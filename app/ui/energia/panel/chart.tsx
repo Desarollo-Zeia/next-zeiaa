@@ -74,16 +74,25 @@ export default function ChartComponent({ electricalPanelData }: { electricalPane
   }
 
   // Datos para el PieChart (excluyendo la llave general que es el primer elemento)
+  const secondaryItems = electricalPanelData.results.slice(1)
+  
   const chartData = {
-    labels: electricalPanelData.results.slice(1).map((item) => item.measurement_point_name),
+    labels: secondaryItems.map((item) => item.measurement_point_name),
     datasets: [
       {
-        data: electricalPanelData.results.slice(1).map((item) => item.consumption_percentage),
+        data: secondaryItems.map((item) => item.consumption_percentage),
         backgroundColor: CHART_COLORS,
         borderColor: '#ffffff',
         borderWidth: 2,
       },
     ],
+  }
+
+  // Extraer datos adicionales para tooltip
+  const getTooltipData = (index: number) => {
+    const item = secondaryItems[index]
+    if (!item) return ''
+    return `${item.measurement_point_name}: ${item.consumption_percentage}% (${item.daily_consumption_kwh.toFixed(2)} kWh)`
   }
 
   const options: Record<string, unknown> = {
@@ -92,7 +101,11 @@ export default function ChartComponent({ electricalPanelData }: { electricalPane
     plugins: {
       tooltip: {
         callbacks: {
-          label: function (context: { label?: string; parsed: number }) {
+          label: function (context: { dataIndex?: number; label?: string; parsed: number }) {
+            const dataIndex = context.dataIndex
+            if (dataIndex !== undefined) {
+              return getTooltipData(dataIndex)
+            }
             return `${context.label}: ${context.parsed.toFixed(1)}%`
           }
         }
@@ -102,9 +115,6 @@ export default function ChartComponent({ electricalPanelData }: { electricalPane
 
   // Llave general (primer elemento)
   const mainSwitch = electricalPanelData.results[0]
-
-  // Items secundarios para el accordion
-  const secondaryItems = electricalPanelData.results.slice(1)
 
   return (
     <div className='flex flex-col gap-4'>
