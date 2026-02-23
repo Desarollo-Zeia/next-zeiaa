@@ -92,7 +92,10 @@ export default function ChartComponent({ electricalPanelData }: { electricalPane
   const getTooltipData = (index: number) => {
     const item = secondaryItems[index]
     if (!item) return ''
-    return `${item.measurement_point_name}: ${item.consumption_percentage}% (${item.daily_consumption_kwh.toFixed(2)} kWh)`
+    const kwh = item.daily_consumption_kwh !== undefined 
+      ? `${item.daily_consumption_kwh.toFixed(2)} kWh` 
+      : 'N/A'
+    return `${item.measurement_point_name}: ${item.consumption_percentage}% (${kwh})`
   }
 
   const options: Record<string, unknown> = {
