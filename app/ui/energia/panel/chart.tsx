@@ -88,6 +88,7 @@ export default function ChartComponent({ electricalPanelData }: { electricalPane
 
   const options: Record<string, unknown> = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         position: 'bottom',
