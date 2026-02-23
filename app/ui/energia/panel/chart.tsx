@@ -144,8 +144,8 @@ export default function ChartComponent({ electricalPanelData }: { electricalPane
             </div>
           ) : (
             <>
-              {/* Columna izquierda: Filtros + PieChart - 50% */}
-              <div className='w-1/2 flex flex-col gap-4'>
+              {/* Columna izquierda: Filtros + PieChart - 60% */}
+              <div className='w-3/5 flex flex-col gap-4'>
                 {/* Filtros compactos encima del PieChart */}
                 <div className='flex items-center gap-3 relative'>
                   <DatepickerRange />
@@ -176,13 +176,13 @@ export default function ChartComponent({ electricalPanelData }: { electricalPane
                 </div>
 
                 {/* PieChart */}
-                <div className="h-[280px] w-full">
+                <div className="h-[420px] w-full">
                   <DynamicPie data={chartData} options={options} />
                 </div>
               </div>
 
-              {/* Columna derecha: Lista de porcentajes - 50% */}
-              <div className='w-1/2'>
+              {/* Columna derecha: Lista de porcentajes - 40% */}
+              <div className='w-2/5'>
                 {mainSwitch && (
                   <div className="border rounded-lg overflow-hidden shadow-sm">
                     {/* Título principal */}
