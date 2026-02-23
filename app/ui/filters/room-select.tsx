@@ -1,7 +1,7 @@
 'use client'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
-import { useTransition } from 'react'
+import { useTransition, useEffect, useState, useMemo } from 'react'
 import { useFiltersStore } from '@/app/lib/stores/filters-store';
 
 interface Room {
@@ -14,6 +14,12 @@ interface Room {
   is_activated: boolean
 }
 
+function useRoomParam() {
+  const searchParams = useSearchParams()
+  const roomParam = searchParams.get('room')
+  return useMemo(() => roomParam, [roomParam])
+}
+
 export default function RoomSelect({ rooms, firstRoom }: { rooms: Room[], firstRoom: string }) {
   const [isPending, startTransition] = useTransition()
   const searchParams = useSearchParams()
@@ -21,10 +27,19 @@ export default function RoomSelect({ rooms, firstRoom }: { rooms: Room[], firstR
   const { replace } = useRouter()
   const { roomId, setRoom } = useFiltersStore()
 
-  const currentRoomId = searchParams.get('room') || roomId || firstRoom
+  const roomParam = useRoomParam()
+  const [selectedRoom, setSelectedRoom] = useState<string>(roomParam ?? firstRoom)
+
+  useEffect(() => {
+    if (roomParam && roomParam !== selectedRoom) {
+      setSelectedRoom(roomParam)
+    }
+  }, [roomParam, selectedRoom])
 
   const handleRoomChange = (newRoomId: string) => {
-    if (newRoomId === currentRoomId) return;
+    if (newRoomId === selectedRoom) return;
+
+    setSelectedRoom(newRoomId)
 
     setRoom(newRoomId)
 
@@ -32,7 +47,6 @@ export default function RoomSelect({ rooms, firstRoom }: { rooms: Room[], firstR
       const newParams = new URLSearchParams(searchParams.toString())
 
       newParams.set('room', newRoomId)
-
       newParams.set('page', '1')
 
       replace(`${pathname}?${newParams.toString()}`, { scroll: false })
@@ -43,7 +57,7 @@ export default function RoomSelect({ rooms, firstRoom }: { rooms: Room[], firstR
     <div className="relative">
       <Select
         onValueChange={handleRoomChange}
-        value={currentRoomId.toString()}
+        value={roomParam ?? selectedRoom ?? firstRoom}
         disabled={isPending}
       >
         <SelectTrigger className="w-[240px] bg-[#00b0c7]">

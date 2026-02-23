@@ -12,6 +12,13 @@ pnpm start        # Start production server
 
 # Linting
 pnpm lint         # Run ESLint (Next.js config)
+
+# Testing
+# Note: Currently no test suite configured. Do NOT create tests.
+# If tests are added in the future, run with:
+# pnpm test              # Run all tests
+# pnpm test -- --watch   # Watch mode
+# pnpm test path/to/file # Run single test file
 ```
 
 ## Project Structure
@@ -115,7 +122,46 @@ try {
 }
 
 // Components - use error.tsx boundaries
+
+// Never expose sensitive info in error messages
+// Good: 'Failed to load data'
+// Bad: 'HTTP error 401 - Invalid token abc123'
 ```
+
+### State Management
+
+- Use **Zustand** for global client state (see `app/lib/store/`)
+- Prefer React `useState` for local component state
+- Use `use-debounce` for search inputs and filters
+
+```tsx
+import { create } from 'zustand'
+
+interface AppState {
+  selectedPanel: string | null
+  setSelectedPanel: (id: string) => void
+}
+
+export const useAppStore = create<AppState>((set) => ({
+  selectedPanel: null,
+  setSelectedPanel: (id) => set({ selectedPanel: id }),
+}))
+```
+
+### Analytics
+
+- Project uses **PostHog** for analytics (configured in `app/lib/analytics.ts`)
+- Identify users with `posthog.identify(userId, userProperties)`
+- Track events with `posthog.capture(eventName, properties)`
+- See `app/instrumentation.client.js` for client-side setup
+
+### Environment Variables
+
+Required environment variables (see `.env.example` or deployment docs):
+- `NEXT_PUBLIC_API_URL` - Main API endpoint
+- `NEXT_PUBLIC_API_URL_ENERGY` - Energy module API
+- `NEXT_PUBLIC_API_URL_AMBIENTAL` - Environmental module API
+- `POSTHOG_KEY` - PostHog analytics key
 
 ### Data Fetching
 
