@@ -63,18 +63,7 @@ function getPointColor(name: string): string {
 }
 
 const GROUND_FLOOR_POINTS: Record<string, { x: number; y: number }> = {
-  'TN-P-12/TE-P-12': { x: 20, y: 30 },
   'Llave General TGA': { x: 50, y: 20 },
-  'Llave General P1': { x: 75, y: 25 },
-  'Bombas de Fuerza': { x: 85, y: 40 },
-  'Aire Acondicionado TGA': { x: 15, y: 55 },
-  'Ascensor Derecho': { x: 40, y: 60 },
-  'Data Center UPS': { x: 60, y: 50 },
-  'Hemodiálisis': { x: 25, y: 75 },
-  'Resonador': { x: 55, y: 70 },
-  'RX PB': { x: 80, y: 65 },
-  'Sala Operaciones': { x: 45, y: 85 },
-  'Tablero Pediatría Semisótano': { x: 70, y: 80 },
 }
 
 const FIRST_FLOOR_POINTS: Record<string, { x: number; y: number }> = {
