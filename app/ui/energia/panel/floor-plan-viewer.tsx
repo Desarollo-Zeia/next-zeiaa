@@ -92,19 +92,17 @@ export default function FloorPlanViewer({
   const coordinateMap = floor === 'ground' ? GROUND_FLOOR_POINTS : FIRST_FLOOR_POINTS
 
   const pointsWithCoordinates = useMemo(() => {
-    return points.map((point, index) => {
-      const coords = coordinateMap[point.name] || {
-        x: 20 + (index * 15) % 70,
-        y: 20 + (index * 20) % 60,
-      }
-      
-      return {
-        ...point,
-        x: coords.x,
-        y: coords.y,
-        color: getPointColor(point.name),
-      }
-    })
+    return points
+      .filter((point) => coordinateMap[point.name])
+      .map((point) => {
+        const coords = coordinateMap[point.name]
+        return {
+          ...point,
+          x: coords.x,
+          y: coords.y,
+          color: getPointColor(point.name),
+        }
+      })
   }, [points, coordinateMap])
 
   const totalPoints = pointsWithCoordinates.length
