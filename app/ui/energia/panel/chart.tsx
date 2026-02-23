@@ -90,16 +90,9 @@ export default function ChartComponent({ electricalPanelData }: { electricalPane
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: {
-        position: 'bottom',
-        labels: {
-          padding: 20,
-          usePointStyle: true,
-        }
-      },
       tooltip: {
         callbacks: {
-          label: function(context: { label?: string; parsed: number }) {
+          label: function (context: { label?: string; parsed: number }) {
             return `${context.label}: ${context.parsed.toFixed(1)}%`
           }
         }
@@ -150,20 +143,20 @@ export default function ChartComponent({ electricalPanelData }: { electricalPane
                 {/* Filtros compactos encima del PieChart */}
                 <div className='flex items-center gap-3 relative'>
                   <DatepickerRange />
-                  <ToggleGroup 
-                    type="single" 
-                    defaultValue='month' 
-                    value={currentFrequency} 
+                  <ToggleGroup
+                    type="single"
+                    defaultValue='month'
+                    value={currentFrequency}
                     onValueChange={handleFrequencyChange}
                   >
-                    <ToggleGroupItem 
-                      value="month" 
+                    <ToggleGroupItem
+                      value="month"
                       className={`shadow-sm border text-sm px-3 py-1 ${currentFrequency === 'month' ? 'bg-[#00b0c7] text-white border-[#00b0c7]' : 'bg-white border-gray-200'}`}
                     >
                       Este mes
                     </ToggleGroupItem>
-                    <ToggleGroupItem 
-                      value="week" 
+                    <ToggleGroupItem
+                      value="week"
                       className={`shadow-sm border text-sm px-3 py-1 ${currentFrequency === 'week' ? 'bg-[#00b0c7] text-white border-[#00b0c7]' : 'bg-white border-gray-200'}`}
                     >
                       Esta semana
@@ -196,7 +189,7 @@ export default function ChartComponent({ electricalPanelData }: { electricalPane
                         <span className="font-bold text-lg">{mainSwitch.consumption_percentage}%</span>
                       </div>
                     </div>
-                    
+
                     {/* Lista de items secundarios (siempre visible) */}
                     <div className="bg-white">
                       {secondaryItems.length > 0 ? (
