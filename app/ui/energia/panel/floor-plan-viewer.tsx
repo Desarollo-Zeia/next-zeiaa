@@ -1,112 +1,68 @@
 'use client'
 
-import React, { useMemo } from 'react'
+import React from 'react'
 import Image from 'next/image'
-import { Camera, CameraOff } from 'lucide-react'
 import FloorPlanPin from './floor-plan-pin'
-
-interface PointData {
-  id: number
-  name: string
-  key: string
-  type: string
-  hasImage: boolean
-  imageUrl: string | null
-}
 
 interface FloorPlanViewerProps {
   floor: 'ground' | 'first'
-  points: PointData[]
-  hoveredPoint: string | null
-  onPointHover: (pointName: string | null) => void
+  points?: { name: string; key: string; type: string }[]
+  hoveredPoint?: string | null
+  onPointHover?: (pointName: string | null) => void
 }
 
-const COLOR_MAP: Record<string, string> = {
-  'llave-general': '#ef4444', // Rojo
-  'medical': '#3b82f6', // Azul
-  'climatization': '#22c55e', // Verde
-  'infrastructure': '#eab308', // Amarillo
-  'services': '#a855f7', // Púrpura
-  'distribution': '#f97316', // Naranja
-}
-
-const POINT_CATEGORIES: Record<string, string> = {
-  'Llave General': 'llave-general',
-  'Tomógrafo': 'medical',
-  'Resonador': 'medical',
-  'RX': 'medical',
-  'Aire Acondicionado': 'climatization',
-  'Ascensor': 'infrastructure',
-  'Data Center': 'infrastructure',
-  'UPS': 'infrastructure',
-  'Hemodiálisis': 'services',
-  'Sala Operaciones': 'services',
-  'TN-P': 'distribution',
-  'TE-P': 'distribution',
-  'TN-TE': 'distribution',
-  'Pediatría': 'distribution',
-  'Bomba': 'llave-general',
-}
-
-function getPointCategory(name: string): string {
-  for (const [keyword, category] of Object.entries(POINT_CATEGORIES)) {
-    if (name.toLowerCase().includes(keyword.toLowerCase())) {
-      return category
-    }
-  }
-  return 'distribution'
-}
-
-function getPointColor(name: string): string {
-  const category = getPointCategory(name)
-  return COLOR_MAP[category] || COLOR_MAP['distribution']
-}
-
-const GROUND_FLOOR_POINTS: Record<string, { x: number; y: number }> = {
-  'Llave General TGA': { x: 50, y: 20 },
-}
-
-const FIRST_FLOOR_POINTS: Record<string, { x: number; y: number }> = {
-  'Tomógrafo TG-RT': { x: 50, y: 50 },
-}
-
-const LEGEND_ITEMS = [
-  { color: COLOR_MAP['llave-general'], label: 'Llaves Generales' },
-  { color: COLOR_MAP['medical'], label: 'Equipos Médicos' },
-  { color: COLOR_MAP['climatization'], label: 'Climatización' },
-  { color: COLOR_MAP['infrastructure'], label: 'Infraestructura' },
-  { color: COLOR_MAP['services'], label: 'Servicios' },
-  { color: COLOR_MAP['distribution'], label: 'Distribución' },
+// ============================================
+// PINS DE PRUEBA - COMENTADOS PARA PRODUCCIÓN
+// Descomenta para probar en desarrollo
+// ============================================
+/*
+const TEST_PINS_GROUND = [
+  {
+    name: 'Pin Prueba 1',
+    key: 'test1',
+    type: 'test',
+    x: 28,
+    y: 52,
+    color: '#ef4444'
+  },
+  {
+    name: 'Pin Prueba 2',
+    key: 'test2',
+    type: 'test',
+    x: 70,
+    y: 50,
+    color: '#3b82f6'
+  },
+  {
+    name: 'Pin Prueba 3',
+    key: 'test3',
+    type: 'test',
+    x: 56,
+    y: 58,
+    color: '#22c55e'
+  },
 ]
 
-export default function FloorPlanViewer({
-  floor,
-  points,
-  hoveredPoint,
-  onPointHover,
-}: FloorPlanViewerProps) {
-  const imageSrc = floor === 'ground' 
-    ? '/images/planos/planta-baja.jpg' 
+const TEST_PINS_FIRST = [
+  {
+    name: 'Pin Prueba 1',
+    key: 'test1',
+    type: 'test',
+    x: 55,
+    y: 65,
+    color: '#3b82f6'
+  },
+]
+*/
+// ============================================
+
+export default function FloorPlanViewer({ floor }: FloorPlanViewerProps) {
+  const imageSrc = floor === 'ground'
+    ? '/images/planos/planta-baja.jpg'
     : '/images/planos/primer-piso.jpg'
 
-  const coordinateMap = floor === 'ground' ? GROUND_FLOOR_POINTS : FIRST_FLOOR_POINTS
-
-  const pointsWithCoordinates = useMemo(() => {
-    return points
-      .filter((point) => coordinateMap[point.name])
-      .map((point) => {
-        const coords = coordinateMap[point.name]
-        return {
-          ...point,
-          x: coords.x,
-          y: coords.y,
-          color: getPointColor(point.name),
-        }
-      })
-  }, [points, coordinateMap])
-
-  const totalPoints = pointsWithCoordinates.length
-  const pointsWithImages = pointsWithCoordinates.filter((p) => p.hasImage).length
+  // const testPins = floor === 'ground' ? TEST_PINS_GROUND : TEST_PINS_FIRST
+  const testPins: { name: string; key: string; type: string; x: number; y: number; color: string }[] = []
 
   return (
     <div className='flex flex-col gap-4'>
@@ -115,9 +71,6 @@ export default function FloorPlanViewer({
         <h3 className='font-semibold text-[#6d6c6c]'>
           {floor === 'ground' ? 'Planta Baja' : 'Primer Piso'}
         </h3>
-        <div className='text-sm text-gray-600'>
-          {pointsWithImages} de {totalPoints} puntos con foto
-        </div>
       </div>
 
       {/* Floor Plan Container */}
@@ -133,58 +86,46 @@ export default function FloorPlanViewer({
               sizes='(max-width: 1200px) 100vw, 800px'
               priority
             />
-            
-            {/* Pins Layer */}
-            <div className='absolute inset-0'>
-              {pointsWithCoordinates.map((point) => (
-                <FloorPlanPin
-                  key={point.id}
-                  name={point.name}
-                  key_name={point.key}
-                  type={point.type}
-                  hasImage={point.hasImage}
-                  imageUrl={point.imageUrl}
-                  color={point.color}
-                  x={point.x}
-                  y={point.y}
-                  isHovered={hoveredPoint === point.name}
-                  onHover={onPointHover}
-                />
-              ))}
-            </div>
+
+            {/* Test Pins - Commented for production */}
+            {testPins.length > 0 && (
+              <div className='absolute inset-0'>
+                {testPins.map((pin, index) => (
+                  <FloorPlanPin
+                    key={index}
+                    name={pin.name}
+                    key_name={pin.key}
+                    type={pin.type}
+                    hasImage={false}
+                    imageUrl={null}
+                    color={pin.color}
+                    x={pin.x}
+                    y={pin.y}
+                    isHovered={false}
+                    onHover={() => { }}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Legend */}
-        <div className='w-64 bg-gray-50 rounded-lg p-4 h-fit'>
-          <h4 className='font-semibold text-sm mb-3 text-gray-700'>Leyenda</h4>
-          <div className='space-y-2'>
-            {LEGEND_ITEMS.map((item) => (
-              <div key={item.label} className='flex items-center gap-2'>
-                <div
-                  className='w-4 h-4 rounded-full border border-white shadow'
-                  style={{ backgroundColor: item.color }}
-                />
-                <span className='text-xs text-gray-600'>{item.label}</span>
-              </div>
-            ))}
-          </div>
-          
-          <div className='mt-4 pt-4 border-t border-gray-200'>
-            <div className='flex items-center gap-2 mb-2'>
-              <div className='w-4 h-4 rounded-full bg-gray-400 border border-white shadow flex items-center justify-center'>
-                <CameraOff className='w-2 h-2 text-white' />
-              </div>
-              <span className='text-xs text-gray-600'>Sin foto</span>
-            </div>
-            <div className='flex items-center gap-2'>
-              <div className='w-4 h-4 rounded-full bg-gray-400 border border-white shadow flex items-center justify-center'>
-                <Camera className='w-2 h-2 text-white' />
-              </div>
-              <span className='text-xs text-gray-600'>Con foto</span>
+        {/* Instructions - Commented for production */}
+        {testPins.length > 0 && (
+          <div className='w-64 bg-gray-50 rounded-lg p-4 h-fit'>
+            <h4 className='font-semibold text-sm mb-3 text-gray-700'>Coordenadas</h4>
+            <div className='text-xs text-gray-600 space-y-2'>
+              {testPins.map((pin, index) => (
+                <div key={index}>
+                  <p><strong>{pin.name}:</strong></p>
+                  <p>X: {pin.x}%, Y: {pin.y}%</p>
+                </div>
+              ))}
+              <hr className='my-2' />
+              <p className='italic'>Edita las coordenadas en el código para posicionar los pines</p>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   )

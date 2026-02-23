@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useMemo } from 'react'
+import React, { useState } from 'react'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { Table2, Map, Building2 } from 'lucide-react'
 import TableComponent from './table'
@@ -87,30 +87,6 @@ export default function PanelViewWrapper({ readings }: PanelViewWrapperProps) {
   const [selectedFloor, setSelectedFloor] = useState<'ground' | 'first'>('ground')
   const [hoveredPoint, setHoveredPoint] = useState<string | null>(null)
 
-  const pointsForFloorPlan = useMemo(() => {
-    return readings.results.map(reading => {
-      const imageUrl = getTableroImage(reading.name, reading.key)
-      return {
-        id: reading.id,
-        name: reading.name,
-        key: reading.key,
-        type: reading.type,
-        hasImage: !!imageUrl,
-        imageUrl: imageUrl,
-      }
-    })
-  }, [readings.results])
-
-  const groundFloorPoints = useMemo(() => {
-    return pointsForFloorPlan.filter(point => isGroundFloor(point.name))
-  }, [pointsForFloorPlan])
-
-  const firstFloorPoints = useMemo(() => {
-    return pointsForFloorPlan.filter(point => !isGroundFloor(point.name))
-  }, [pointsForFloorPlan])
-
-  const currentFloorPoints = selectedFloor === 'ground' ? groundFloorPoints : firstFloorPoints
-
   return (
     <div className='space-y-6'>
       {/* Main Toggle: Table vs Floor Plan */}
@@ -118,8 +94,7 @@ export default function PanelViewWrapper({ readings }: PanelViewWrapperProps) {
         <h3 className='font-semibold text-[#6d6c6c]'>
           Tablero de distribución
         </h3>
-        {/* Floor plans temporarily disabled for local development */}
-        {/* <ToggleGroup
+        <ToggleGroup
           type='single'
           value={viewMode}
           onValueChange={(value) => {
@@ -135,10 +110,10 @@ export default function PanelViewWrapper({ readings }: PanelViewWrapperProps) {
             <Map className='w-4 h-4' />
             <span className='hidden sm:inline'>Planos</span>
           </ToggleGroupItem>
-        </ToggleGroup> */}
+        </ToggleGroup>
       </div>
 
-      {/* {viewMode === 'floorplan' && (
+      {viewMode === 'floorplan' && (
         <div className='flex items-center gap-4 px-4 pb-2'>
           <span className='text-sm text-gray-600'>Piso:</span>
           <ToggleGroup
@@ -158,28 +133,21 @@ export default function PanelViewWrapper({ readings }: PanelViewWrapperProps) {
               <span>Primer Piso</span>
             </ToggleGroupItem>
           </ToggleGroup>
-          <span className='text-sm text-gray-500'>
-            ({currentFloorPoints.length} puntos)
-          </span>
         </div>
-      )} */}
+      )}
 
       {/* Content */}
-      {/* viewMode always 'table' - floor plans disabled for local development */}
-      {/* {viewMode === 'table' ? ( */}
+      {viewMode === 'table' ? (
         <TableComponent
           readings={readings}
           hoveredPoint={hoveredPoint}
           onRowHover={setHoveredPoint}
         />
-      {/* ) : (
+      ) : (
         <FloorPlanViewer
           floor={selectedFloor}
-          points={currentFloorPoints}
-          hoveredPoint={hoveredPoint}
-          onPointHover={setHoveredPoint}
         />
-      )} */}
+      )}
     </div>
   )
 }
