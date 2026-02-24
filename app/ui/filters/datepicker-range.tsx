@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/popover"
 import { useSearchParams, usePathname, useRouter } from "next/navigation"
 import type { DateRange } from "react-day-picker"
+import posthog from "posthog-js"
 
 function parseISOorUndefined(s?: string | null): Date | undefined {
   if (!s) return undefined
@@ -92,6 +93,25 @@ export function DatepickerRange({
 
       // evitar replace si no cambia la query (reduce repeticiones de navegación)
       if (nextQuery !== currentQuery) {
+        const prevDateRange = {
+          from: start ? parseISOorUndefined(start)?.toISOString() : null,
+          to: end ? parseISOorUndefined(end)?.toISOString() : null,
+        }
+        const newDateRange = {
+          from: fecha?.from?.toISOString() ?? null,
+          to: fecha?.to?.toISOString() ?? null,
+        }
+        
+        if (JSON.stringify(prevDateRange) !== JSON.stringify(newDateRange)) {
+          posthog.capture('filter_used', {
+            filter_type: 'date_range',
+            previous_value: prevDateRange,
+            new_value: newDateRange,
+            pathname: pathname,
+            timestamp: new Date().toISOString(),
+          })
+        }
+        
         startTransition(() => {
           replace(`${pathname}?${nextQuery}`, { scroll: false })
         })

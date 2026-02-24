@@ -3,6 +3,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import { useTransition } from 'react';
 import { useFiltersStore } from '@/app/lib/stores/filters-store';
+import posthog from "posthog-js";
 
 interface Headquarter {
   id:number
@@ -27,6 +28,19 @@ export default function HeadquarterSelect({ headquarters } : { headquarters : He
   const currentHeadquarterId = headquarterId || searchParams.get('headquarter') || ''
 
   const handleRoomChange = (headquarter: string) => {
+    const previousValue = currentHeadquarterId
+    const newValue = headquarter === 'none' ? '' : headquarter
+    
+    if (previousValue !== newValue) {
+      posthog.capture('filter_used', {
+        filter_type: 'headquarter',
+        previous_value: previousValue,
+        new_value: newValue,
+        pathname: pathname,
+        timestamp: new Date().toISOString(),
+      })
+    }
+    
     setHeadquarter(headquarter === 'none' ? '' : headquarter)
     
     startTransition(() => {
@@ -34,11 +48,11 @@ export default function HeadquarterSelect({ headquarters } : { headquarters : He
       if (headquarter && headquarter !== 'none') {
         params.set('headquarter', headquarter);
       } 
-   
+ 
       if (headquarter === 'none') {
         params.delete('headquarter');
       }
-   
+ 
       replace(`${pathname}?${params.toString()}`, { scroll: false});
     })
   }

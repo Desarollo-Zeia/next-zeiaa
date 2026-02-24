@@ -16,12 +16,13 @@ import { usePathname } from "next/navigation"
 import Image from "next/image"
 import { useEffect, useState } from "react"
 import { accountData, accountDataEnergy } from "@/app/utils/account"
+import posthog from "posthog-js"
 
 interface EnergyItem {
   name: string
   url: string
   is_active?: boolean
-  icon: string // El signo de interrogación indica que es opcional
+  icon: string
 }
 
 
@@ -30,6 +31,17 @@ export function AppSidebar() {
   const pathname = usePathname()
   const [userInfo, setUserInfo] = useState<object>({ email: '', name: '', avatar: '' })
   const [energyModules, setEnergyModules] = useState<EnergyItem[]>([])
+
+  const handleModuleClick = (moduleName: string, moduleUrl: string) => {
+    if (moduleUrl === '#') return
+    
+    posthog.capture('section_viewed', {
+      section: moduleName,
+      portal: 'energia',
+      url: moduleUrl,
+      timestamp: new Date().toISOString(),
+    })
+  }
 
   useEffect(() => {
 
@@ -62,7 +74,13 @@ export function AppSidebar() {
             <SidebarMenu>
               {energyModules?.map((item) => (
                 <SidebarMenuItem key={item.name}>
-                  <SidebarMenuButton asChild data-active={pathname.includes(item.url) && 'true'} tooltip={item.name} disabled={item.is_active}>
+                  <SidebarMenuButton 
+                    asChild 
+                    data-active={pathname.includes(item.url) && 'true'} 
+                    tooltip={item.name} 
+                    disabled={item.is_active}
+                    onClick={() => handleModuleClick(item.name, item.url)}
+                  >
                     <Link href={item.is_active === false ? "#" : item.url} className={item.is_active === false ? "pointer-events-none opacity-50 cursor-not-allowed" : ""}>
                       {/* <item.icon /> */}
                       <Image src={item.icon} alt={item.icon} width={16} height={16} className="w-4 h-4 text-white" priority />
