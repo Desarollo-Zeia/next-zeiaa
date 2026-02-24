@@ -2,6 +2,7 @@
 import React, { useTransition } from 'react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useSearchParams, usePathname, useRouter } from 'next/navigation'
+import posthog from 'posthog-js'
 
 const ENERGY_INDICATORS = [
   { value: 'EPpos', label: 'Energía activa consumida (KWh)' },
@@ -17,6 +18,14 @@ export default function IndicatorEnergyFilter({ indicador }: { indicador: string
   const { replace } = useRouter()
 
   const handleIndicatorChange = (selectedIndicator: string) => {
+    posthog.capture('filter_used', {
+      filter_type: 'indicator',
+      previous_value: indicador,
+      new_value: selectedIndicator,
+      pathname: pathname,
+      timestamp: new Date().toISOString(),
+    })
+    
     startTransition(() => {
       const params = new URLSearchParams(searchParams)
       params.set('indicador', selectedIndicator)

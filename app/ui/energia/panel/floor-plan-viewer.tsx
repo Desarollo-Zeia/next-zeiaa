@@ -11,121 +11,107 @@ interface FloorPlanViewerProps {
   onPointHover?: (pointName: string | null) => void
 }
 
-// ============================================
-// PINS DE PRUEBA - COMENTADOS PARA PRODUCCIÓN
-// Descomenta para probar en desarrollo
-// ============================================
-/*
-const TEST_PINS_GROUND = [
+interface Pin {
+  name: string
+  key: string
+  type: string
+  x: number
+  y: number
+  color: string
+  imageUrl: string
+}
+
+const PINS_GROUND: Pin[] = [
   {
-    name: 'Pin Prueba 1',
-    key: 'test1',
-    type: 'test',
+    name: 'Cuarto de Bombas',
+    key: 'cuarto-bombas',
+    type: 'electrico',
     x: 28,
     y: 52,
-    color: '#ef4444'
+    color: '#ef4444',
+    imageUrl: '/images/tableros/CUARTO-DE-BOMBAS.jpg'
   },
   {
-    name: 'Pin Prueba 2',
-    key: 'test2',
-    type: 'test',
+    name: 'TG P1',
+    key: 'tg-p1',
+    type: 'electrico',
     x: 70,
     y: 50,
-    color: '#3b82f6'
+    color: '#3b82f6',
+    imageUrl: '/images/tableros/TG-P1.jpeg'
   },
   {
-    name: 'Pin Prueba 3',
-    key: 'test3',
-    type: 'test',
+    name: 'TGA N',
+    key: 'tga-n',
+    type: 'electrico',
     x: 56,
     y: 58,
-    color: '#22c55e'
+    color: '#22c55e',
+    imageUrl: '/images/tableros/TGA-N.JPG'
   },
 ]
 
-const TEST_PINS_FIRST = [
+const PINS_FIRST: Pin[] = [
   {
-    name: 'Pin Prueba 1',
-    key: 'test1',
-    type: 'test',
+    name: 'TG RT',
+    key: 'tg-rt',
+    type: 'electrico',
     x: 55,
     y: 65,
-    color: '#3b82f6'
+    color: '#3b82f6',
+    imageUrl: '/images/tableros/TOMOGRAFO-TG-RT.jpg'
   },
 ]
-*/
-// ============================================
 
 export default function FloorPlanViewer({ floor }: FloorPlanViewerProps) {
   const imageSrc = floor === 'ground'
     ? '/images/planos/planta-baja.jpg'
     : '/images/planos/primer-piso.jpg'
 
-  // const testPins = floor === 'ground' ? TEST_PINS_GROUND : TEST_PINS_FIRST
-  const testPins: { name: string; key: string; type: string; x: number; y: number; color: string }[] = []
+  const pins = floor === 'ground' ? PINS_GROUND : PINS_FIRST
 
   return (
     <div className='flex flex-col gap-4'>
       {/* Header */}
-      <div className='flex items-center justify-between px-4'>
+      <div className='flex items-center justify-between'>
         <h3 className='font-semibold text-[#6d6c6c]'>
           {floor === 'ground' ? 'Planta Baja' : 'Primer Piso'}
         </h3>
       </div>
 
       {/* Floor Plan Container */}
-      <div className='flex gap-6'>
-        {/* Main Image Area */}
-        <div className='relative flex-1 border rounded-lg overflow-hidden bg-gray-100'>
-          <div className='relative w-full aspect-[4/3]'>
-            <Image
-              src={imageSrc}
-              alt={`Plano ${floor === 'ground' ? 'Planta Baja' : 'Primer Piso'}`}
-              fill
-              className='object-contain'
-              sizes='(max-width: 1200px) 100vw, 800px'
-              priority
-            />
+      <div className='rounded-lg overflow-hidden bg-gray-100'>
+        <div className='relative w-full aspect-[4/3]'>
+          <Image
+            src={imageSrc}
+            alt={`Plano ${floor === 'ground' ? 'Planta Baja' : 'Primer Piso'}`}
+            fill
+            className='object-contain'
+            sizes='(max-width: 1200px) 100vw, 800px'
+            priority
+          />
 
-            {/* Test Pins - Commented for production */}
-            {testPins.length > 0 && (
-              <div className='absolute inset-0'>
-                {testPins.map((pin, index) => (
-                  <FloorPlanPin
-                    key={index}
-                    name={pin.name}
-                    key_name={pin.key}
-                    type={pin.type}
-                    hasImage={false}
-                    imageUrl={null}
-                    color={pin.color}
-                    x={pin.x}
-                    y={pin.y}
-                    isHovered={false}
-                    onHover={() => { }}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Instructions - Commented for production */}
-        {testPins.length > 0 && (
-          <div className='w-64 bg-gray-50 rounded-lg p-4 h-fit'>
-            <h4 className='font-semibold text-sm mb-3 text-gray-700'>Coordenadas</h4>
-            <div className='text-xs text-gray-600 space-y-2'>
-              {testPins.map((pin, index) => (
-                <div key={index}>
-                  <p><strong>{pin.name}:</strong></p>
-                  <p>X: {pin.x}%, Y: {pin.y}%</p>
-                </div>
+          {/* Pins */}
+          {pins.length > 0 && (
+            <div className='absolute inset-0'>
+              {pins.map((pin: Pin, index: number) => (
+                <FloorPlanPin
+                  key={index}
+                  name={pin.name}
+                  key_name={pin.key}
+                  type={pin.type}
+                  hasImage={true}
+                  imageUrl={pin.imageUrl}
+                  color={pin.color}
+                  x={pin.x}
+                  y={pin.y}
+                  isHovered={false}
+                  onHover={() => { }}
+                />
               ))}
-              <hr className='my-2' />
-              <p className='italic'>Edita las coordenadas en el código para posicionar los pines</p>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   )

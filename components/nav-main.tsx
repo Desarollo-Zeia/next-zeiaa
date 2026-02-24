@@ -19,6 +19,7 @@ import {
 import Link from "next/link"
 import { usePathname } from 'next/navigation'
 import { useRoom } from "@/app/utils/func"
+import posthog from "posthog-js"
 
 
 
@@ -36,19 +37,39 @@ export function NavMain({
       url: string,
       items: { title: string, url: string }[]
     }
-  } // Agrega userdata aq
+  }
 }) {
 
   const pathname = usePathname()
-
   const { roomId } = useRoom()
+
+  const getPortal = () => {
+    if (pathname.includes('/ambiental')) return 'ambiental'
+    if (pathname.includes('/ocupacional')) return 'ocupacional'
+    return 'unknown'
+  }
+
+  const handleNavigation = (sectionName: string, url: string) => {
+    const portal = getPortal()
+    posthog.capture('section_viewed', {
+      section: sectionName,
+      portal: portal,
+      url: url,
+      timestamp: new Date().toISOString(),
+    })
+  }
 
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Módulos</SidebarGroupLabel>
       <SidebarMenu>
         <SidebarMenuItem>
-          <SidebarMenuButton asChild tooltip={'Listado de salas'} data-active={pathname.includes(module.rooms) && 'true'}>
+          <SidebarMenuButton 
+            asChild 
+            tooltip={'Listado de salas'} 
+            data-active={pathname.includes(module.rooms) && 'true'}
+            onClick={() => handleNavigation('Listado de salas', module.rooms)}
+          >
             <Link href={module.rooms} prefetch>
               <LayoutList />
               <span>Listado de salas</span>
@@ -56,7 +77,12 @@ export function NavMain({
           </SidebarMenuButton>
         </SidebarMenuItem>
         <SidebarMenuItem>
-          <SidebarMenuButton asChild tooltip={'Monitoreo de salas'} data-active={pathname.includes(module.monitoreo) && 'true'}>
+          <SidebarMenuButton 
+            asChild 
+            tooltip={'Monitoreo de salas'} 
+            data-active={pathname.includes(module.monitoreo) && 'true'}
+            onClick={() => handleNavigation('Monitoreo de salas', module.monitoreo)}
+          >
             <Link href={module.monitoreo} prefetch>
               <Activity />
               <span>Monitoreo de salas</span>
@@ -85,7 +111,11 @@ export function NavMain({
               <SidebarMenuSub>
                 {module.analisis.items?.map((subItem) => (
                   <SidebarMenuSubItem key={subItem.title}>
-                    <SidebarMenuSubButton asChild data-active={pathname.includes(subItem.url) && 'true'}>
+                    <SidebarMenuSubButton 
+                      asChild 
+                      data-active={pathname.includes(subItem.url) && 'true'}
+                      onClick={() => handleNavigation(subItem.title, subItem.url)}
+                    >
                       <Link href={{
                         pathname: subItem.url,
                         query: roomId ? { room: roomId } : {}
@@ -105,7 +135,12 @@ export function NavMain({
         {
           module.covid && (
             <SidebarMenuItem>
-              <SidebarMenuButton asChild tooltip={'Normativa covid'} data-active={pathname.includes(module.covid) && 'true'}>
+              <SidebarMenuButton 
+                asChild 
+                tooltip={'Normativa covid'} 
+                data-active={pathname.includes(module.covid) && 'true'}
+                onClick={() => handleNavigation('Normativa covid', module.covid ?? '#')}
+              >
                 <Link href={module.covid ?? "#"} prefetch>
                   <ShieldAlert />
                   <span>Normativa covid</span>
@@ -115,7 +150,12 @@ export function NavMain({
           )
         }
         <SidebarMenuItem>
-          <SidebarMenuButton asChild tooltip={'Alertas'} data-active={pathname.includes(module.alertas) && 'true'}>
+          <SidebarMenuButton 
+            asChild 
+            tooltip={'Alertas'} 
+            data-active={pathname.includes(module.alertas) && 'true'}
+            onClick={() => handleNavigation('Alertas', module.alertas)}
+          >
             <Link href={module.alertas} prefetch>
               <Megaphone />
               <span>Alertas</span>

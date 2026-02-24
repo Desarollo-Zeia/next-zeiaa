@@ -1,6 +1,6 @@
 'use client'
 
-import { usePostHog } from '@posthog/react'
+import posthog from 'posthog-js'
 import { useEffect } from 'react'
 
 interface User {
@@ -10,10 +10,8 @@ interface User {
 }
 
 export function PostHogIdentifier({ user }: { user: User | null }) {
-  const posthog = usePostHog()
-
   useEffect(() => {
-    if (user && user.email && posthog) {
+    if (user && user.email) {
       console.log('[PostHog] Identifying user:', user.email)
       
       posthog.identify(user.email, {
@@ -35,7 +33,7 @@ export function PostHogIdentifier({ user }: { user: User | null }) {
 
       console.log('[PostHog] User identified successfully!')
     }
-  }, [user, posthog])
+  }, [user])
 
   return null
 }

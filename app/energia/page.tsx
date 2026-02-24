@@ -6,6 +6,7 @@ import Link from "next/link"
 import { useState, useTransition } from "react"
 import { useActionState } from "react"
 import { actionEnergy } from "../actions/validation"
+import posthog from "posthog-js"
 
 export default function Page() {
   const [showPassword, setShowPassword] = useState(false)
@@ -13,6 +14,10 @@ export default function Page() {
   const [state, formAction] = useActionState(actionEnergy, { message: "" })
 
   const handleSubmit = (formData: FormData) => {
+    posthog.capture('login_submit', {
+      portal: 'energia',
+      timestamp: new Date().toISOString(),
+    })
     startTransition(() => formAction(formData))
   }
 

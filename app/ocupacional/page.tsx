@@ -6,6 +6,7 @@ import Link from "next/link"
 import { useState, useTransition } from "react"
 import { useActionState } from "react"
 import { actionOccupational } from "../actions/validation"
+import posthog from "posthog-js"
 
 interface FormErrors {
   email?: string
@@ -19,6 +20,11 @@ export default function Page() {
   const [state, formAction] = useActionState(actionOccupational, { message: "" })
 
   const handleSubmit = (formData: FormData) => {
+    posthog.capture('login_submit', {
+      portal: 'ocupacional',
+      timestamp: new Date().toISOString(),
+    })
+    
     const email = formData.get("email") as string
     const password = formData.get("password") as string
 
