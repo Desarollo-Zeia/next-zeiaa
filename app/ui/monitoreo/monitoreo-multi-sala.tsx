@@ -13,11 +13,60 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import IndicatorToggle from "@/app/ui/filters/indicators-toggle"
-import { sendAlertEmail, AlertType } from "@/app/lib/resend-alert"
-import { AlertToast, AlertToastType } from "./alert-toast"
-import { AlertPanel, ActiveAlert, ResolvedAlert } from "./alert-panel"
-import { Bell } from "lucide-react"
-import { Button } from "@/components/ui/button"
+
+// Alerts feature - disabled for production
+// import { sendAlertEmail, AlertType } from "@/app/lib/resend-alert"
+// import { AlertToast, AlertToastType } from "./alert-toast"
+// import { AlertPanel, ActiveAlert, ResolvedAlert } from "./alert-panel"
+// import { Bell } from "lucide-react"
+// import { Button } from "@/components/ui/button"
+
+type AlertToastType = 'DETECTED' | 'AVISO' | 'PERSISTENCIA' | 'RESOLVED'
+
+interface ActiveAlert {
+  id: string
+  roomId: number
+  roomName: string
+  indicator: string
+  value: number
+  threshold: number
+  unit: string
+  exceededAt: string
+  avisoSent: boolean
+  persistenciaSent: boolean
+}
+
+interface ResolvedAlert {
+  id: string
+  roomName: string
+  indicator: string
+  maxValue: number
+  threshold: number
+  unit: string
+  startedAt: string
+  resolvedAt: string
+  duration: number
+  avisoSent: boolean
+  persistenciaSent: boolean
+}
+
+interface ToastItem {
+  id: string
+  roomName: string
+  indicator: string
+  value: number
+  threshold: number
+  unit: string
+  type: AlertToastType
+}
+
+interface AlertState {
+  exceededAt: Date | null
+  avisoSent: boolean
+  persistenciaSent: boolean
+}
+
+type RoomAlertState = Record<number, AlertState>
 
 type CO2Thresholds = { good: number; moderate: number; unhealthy: number; dangerous: number }
 type MinMaxThresholds = { min: number; max: number }
