@@ -2,9 +2,10 @@
 
 import React, { useState } from 'react'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import { Table2, Map, Building2 } from 'lucide-react'
+import { Table2 } from 'lucide-react'
 import TableComponent from './table'
-import FloorPlanViewer from './floor-plan-viewer'
+// FloorPlanViewer import hidden - not ready yet
+// import FloorPlanViewer from './floor-plan-viewer'
 
 interface PointData {
   id: number
@@ -106,14 +107,16 @@ export default function PanelViewWrapper({ readings }: PanelViewWrapperProps) {
             <Table2 className='w-4 h-4' />
             <span className='hidden sm:inline'>Tabla</span>
           </ToggleGroupItem>
-          <ToggleGroupItem value='floorplan' className='gap-2'>
+          {/* FloorPlanViewer option hidden - not ready yet */}
+          {/* <ToggleGroupItem value='floorplan' className='gap-2'>
             <Map className='w-4 h-4' />
             <span className='hidden sm:inline'>Planos</span>
-          </ToggleGroupItem>
+          </ToggleGroupItem> */}
         </ToggleGroup>
       </div>
 
-      {viewMode === 'floorplan' && (
+      {/* Floor selector - hidden - not ready yet */}
+      {/* {viewMode === 'floorplan' && (
         <div className='flex items-center gap-4 px-4 pb-2'>
           <span className='text-sm text-gray-600'>Piso:</span>
           <ToggleGroup
@@ -134,7 +137,7 @@ export default function PanelViewWrapper({ readings }: PanelViewWrapperProps) {
             </ToggleGroupItem>
           </ToggleGroup>
         </div>
-      )}
+      )} */}
 
       {/* Content */}
       {viewMode === 'table' ? (
@@ -144,8 +147,14 @@ export default function PanelViewWrapper({ readings }: PanelViewWrapperProps) {
           onRowHover={setHoveredPoint}
         />
       ) : (
-        <FloorPlanViewer
+        /* FloorPlanViewer hidden - not ready yet */
+        /* <FloorPlanViewer
           floor={selectedFloor}
+        /> */
+        <TableComponent
+          readings={readings}
+          hoveredPoint={hoveredPoint}
+          onRowHover={setHoveredPoint}
         />
       )}
     </div>
