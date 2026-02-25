@@ -2,6 +2,7 @@ import "./globals.css";
 import { poppins } from '@/app/ui/fonts'
 import { PostHogAuthWrapper } from '@/app/components/posthog-auth-wrapper'
 import { PostHogPageTracker } from '@/app/components/posthog-page-tracker'
+import { Suspense } from 'react'
 
 export default function RootLayout({
   children,
@@ -11,7 +12,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${poppins.className} antialiased`}>
-        <PostHogPageTracker />
+        <Suspense fallback={null}>
+          <PostHogPageTracker />
+        </Suspense>
         <PostHogAuthWrapper>
           {children}
         </PostHogAuthWrapper>
