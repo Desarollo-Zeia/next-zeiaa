@@ -23,6 +23,7 @@ import {
   ArcElement,
 } from "chart.js"
 import zoomPlugin from "chartjs-plugin-zoom"
+import annotationPlugin from "chartjs-plugin-annotation"
 import "chartjs-adapter-date-fns"
 
 // Registrar todos los componentes una sola vez
@@ -38,7 +39,8 @@ ChartJS.register(
   Legend,
   Filler,
   ArcElement,
-  zoomPlugin
+  zoomPlugin,
+  annotationPlugin
 )
 
 // Exportar Chart.js configurado y los componentes de react-chartjs-2
