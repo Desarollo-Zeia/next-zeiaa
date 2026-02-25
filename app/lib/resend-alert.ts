@@ -1,0 +1,189 @@
+'use server'
+
+import { Resend } from 'resend'
+
+const resend = new Resend('re_VjtPGRVm_4WyxKjjDpL7wEo1474ickXhn')
+
+export type AlertType = 'AVISO' | 'PERSISTENCIA'
+
+interface AlertEmailParams {
+  roomName: string
+  indicator: string
+  value: number
+  threshold: number
+  unit: string
+  alertType: AlertType
+  detectedAt: string
+}
+
+export async function sendAlertEmail({
+  roomName,
+  indicator,
+  value,
+  threshold,
+  unit,
+  alertType,
+  detectedAt,
+}: AlertEmailParams): Promise<{ success: boolean; error?: string }> {
+  const indicatorSpanish = {
+    CO2: 'CO₂ (Dióxido de Carbono)',
+    TEMPERATURE: 'Temperatura',
+    HUMIDITY: 'Humedad Relativa',
+  }[indicator] || indicator
+
+  const alertTypeColors = {
+    AVISO: {
+      bg: '#fff7ed',
+      border: '#f97316',
+      text: '#c2410c',
+      badge: '#f97316',
+    },
+    PERSISTENCIA: {
+      bg: '#fef2f2',
+      border: '#dc2626',
+      text: '#b91c1c',
+      badge: '#dc2626',
+    },
+  }
+
+  const style = alertTypeColors[alertType]
+
+  const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alerta ZEIA - ${indicatorSpanish}</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f8fafc; padding: 40px 20px;">
+    <tr>
+      <td align="center">
+        <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 520px; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);">
+          <!-- Header -->
+          <tr>
+            <td style="background: linear-gradient(135deg, #00b0c7 0%, #0891b2 100%); padding: 32px 32px 24px;">
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td>
+                    <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: 700; letter-spacing: -0.025em;">
+                      ⚠️ Alerta ZEIA
+                    </h1>
+                    <p style="margin: 8px 0 0; color: rgba(255, 255, 255, 0.85); font-size: 14px;">
+                      Sistema de Monitoreo en Tiempo Real
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Alert Type Badge -->
+          <tr>
+            <td style="padding: 24px 32px 0;">
+              <table cellpadding="0" cellspacing="0">
+                <tr>
+                  <td style="background-color: ${style.bg}; border: 2px solid ${style.border}; border-radius: 8px; padding: 8px 16px;">
+                    <span style="color: ${style.badge}; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">
+                      ${alertType === 'AVISO' ? '📌 Primera Alerta' : '🔴 Alerta Persistente'}
+                    </span>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Main Content -->
+          <tr>
+            <td style="padding: 24px 32px;">
+              <p style="margin: 0 0 20px; color: #334155; font-size: 15px; line-height: 1.6;">
+                Se ha detectado que un valor ha superado el umbral permitido en el sistema de monitoreo.
+              </p>
+
+              <!-- Alert Details Card -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="background-color: ${style.bg}; border: 1px solid ${style.border}; border-radius: 12px; overflow: hidden;">
+                <tr>
+                  <td style="padding: 20px;">
+                    <table width="100%" cellpadding="0" cellspacing="0">
+                      <!-- Room -->
+                      <tr>
+                        <td style="padding: 8px 0; border-bottom: 1px solid ${style.border}40;">
+                          <span style="color: #64748b; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em;">Sala / Ubicación</span>
+                          <p style="margin: 4px 0 0; color: ${style.text}; font-size: 18px; font-weight: 600;">${roomName}</p>
+                        </td>
+                      </tr>
+                      <!-- Indicator -->
+                      <tr>
+                        <td style="padding: 12px 0 8px; border-bottom: 1px solid ${style.border}40;">
+                          <span style="color: #64748b; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em;">Indicador</span>
+                          <p style="margin: 4px 0 0; color: #1e293b; font-size: 16px; font-weight: 600;">${indicatorSpanish}</p>
+                        </td>
+                      </tr>
+                      <!-- Values -->
+                      <tr>
+                        <td style="padding: 12px 0 8px;">
+                          <span style="color: #64748b; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em;">Valores</span>
+                          <table width="100%" cellpadding="0" cellspacing="0" style="margin-top: 8px;">
+                            <tr>
+                              <td style="padding: 8px 12px; background-color: rgba(220, 38, 38, 0.1); border-radius: 6px;">
+                                <span style="color: #dc2626; font-size: 11px; text-transform: uppercase;">Valor Actual</span>
+                                <p style="margin: 2px 0 0; color: #dc2626; font-size: 20px; font-weight: 700;">${value} ${unit}</p>
+                              </td>
+                              <td style="width: 12px;"></td>
+                              <td style="padding: 8px 12px; background-color: rgba(34, 197, 94, 0.1); border-radius: 6px;">
+                                <span style="color: #16a34a; font-size: 11px; text-transform: uppercase;">Umbral Límite</span>
+                                <p style="margin: 2px 0 0; color: #16a34a; font-size: 20px; font-weight: 700;">${threshold} ${unit}</p>
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+                      </tr>
+                      <!-- Time -->
+                      <tr>
+                        <td style="padding: 12px 0 8px;">
+                          <span style="color: #64748b; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em;">Detectado</span>
+                          <p style="margin: 4px 0 0; color: #1e293b; font-size: 14px; font-weight: 500;">${detectedAt}</p>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="padding: 0 32px 32px;">
+              <p style="margin: 0; color: #94a3b8; font-size: 12px; text-align: center;">
+                Este correo fue enviado automáticamente por el sistema de monitoreo ZEIA.<br>
+                No responder a este mensaje.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+`
+
+  try {
+    await resend.emails.send({
+      from: 'Alertas ZEIA <onboarding@resend.dev>',
+      to: ['alonsomorante11@gmail.com'],
+      subject: `[ZEIA] ${alertType === 'AVISO' ? '⚠️' : '🚨'} Alerta: ${indicatorSpanish} excedido en ${roomName}`,
+      html,
+    })
+
+    return { success: true }
+  } catch (error) {
+    console.error('Error sending alert email:', error)
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
+    }
+  }
+}

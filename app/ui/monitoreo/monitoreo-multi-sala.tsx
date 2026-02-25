@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect, useRef, useCallback } from "react"
 import { DynamicLine } from "@/components/charts"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -13,6 +13,11 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import IndicatorToggle from "@/app/ui/filters/indicators-toggle"
+import { sendAlertEmail, AlertType } from "@/app/lib/resend-alert"
+import { AlertToast, AlertToastType } from "./alert-toast"
+import { AlertPanel, ActiveAlert, ResolvedAlert } from "./alert-panel"
+import { Bell } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 type CO2Thresholds = { good: number; moderate: number; unhealthy: number; dangerous: number }
 type MinMaxThresholds = { min: number; max: number }
@@ -44,6 +49,24 @@ interface MonitoreoMultiSalaProps {
   indicator: IndicatorType
   unit: string
   indicators: Array<{ indicator: string; unit: string }>
+}
+
+interface AlertState {
+  exceededAt: Date | null
+  avisoSent: boolean
+  persistenciaSent: boolean
+}
+
+type RoomAlertState = Record<number, AlertState>
+
+interface ToastItem {
+  id: string
+  roomName: string
+  indicator: string
+  value: number
+  threshold: number
+  unit: string
+  type: AlertToastType
 }
 
 const colorPalette = [
@@ -154,6 +177,66 @@ export default function MonitoreoMultiSala({
     return filteredRoomsData.length > 0 ? new Set([filteredRoomsData[0].room_id]) : new Set()
   })
 
+  const [alertStates, setAlertStates] = useState<RoomAlertState>({})
+  const [toasts, setToasts] = useState<ToastItem[]>([])
+  const [isPanelOpen, setIsPanelOpen] = useState(false)
+  const [activeAlerts, setActiveAlerts] = useState<ActiveAlert[]>([])
+  const [resolvedAlerts, setResolvedAlerts] = useState<ResolvedAlert[]>([])
+  const lastCheckRef = useRef<number>(0)
+  const isCheckingRef = useRef<boolean>(false)
+
+  useEffect(() => {
+    const stored = localStorage.getItem('zeia-resolved-alerts')
+    if (stored) {
+      try {
+        const alerts = JSON.parse(stored) as ResolvedAlert[]
+        const today = new Date().toDateString()
+        const todayAlerts = alerts.filter(a => new Date(a.resolvedAt).toDateString() === today)
+        setResolvedAlerts(todayAlerts)
+      } catch {
+        console.error('Error parsing stored alerts')
+      }
+    }
+  }, [])
+
+  const saveResolvedAlerts = useCallback((alerts: ResolvedAlert[]) => {
+    localStorage.setItem('zeia-resolved-alerts', JSON.stringify(alerts))
+  }, [])
+
+  const handleToastClose = useCallback((id: string) => {
+    setToasts(prev => prev.filter(t => t.id !== id))
+  }, [])
+
+  const handleDismissAlert = useCallback((id: string) => {
+    const alert = activeAlerts.find(a => a.id === id)
+    if (alert) {
+      const newActive = activeAlerts.filter(a => a.id !== id)
+      setActiveAlerts(newActive)
+      
+      const resolved: ResolvedAlert = {
+        id: alert.id,
+        roomName: alert.roomName,
+        indicator: alert.indicator,
+        maxValue: alert.value,
+        threshold: alert.threshold,
+        unit: alert.unit,
+        startedAt: alert.exceededAt,
+        resolvedAt: new Date().toISOString(),
+        duration: Math.floor((Date.now() - new Date(alert.exceededAt).getTime()) / 60000),
+        avisoSent: alert.avisoSent,
+        persistenciaSent: alert.persistenciaSent,
+      }
+      const newResolved = [...resolvedAlerts, resolved]
+      setResolvedAlerts(newResolved)
+      saveResolvedAlerts(newResolved)
+    }
+  }, [activeAlerts, resolvedAlerts, saveResolvedAlerts])
+
+  const handleClearHistory = useCallback(() => {
+    setResolvedAlerts([])
+    localStorage.removeItem('zeia-resolved-alerts')
+  }, [])
+
   const roomColors = useMemo(() => {
     const colors = new Map<number, string>()
     filteredRoomsData.forEach((room, index) => {
@@ -228,6 +311,170 @@ export default function MonitoreoMultiSala({
   }
 
   const formattedUnit = formatUnit(unit)
+
+  const checkAlerts = useCallback(async () => {
+    if (isCheckingRef.current) return
+    isCheckingRef.current = true
+
+    const now = Date.now()
+    if (now - lastCheckRef.current < 30000) {
+      isCheckingRef.current = false
+      return
+    }
+    lastCheckRef.current = now
+
+    const currentAlertStates = { ...alertStates }
+    const newActiveAlerts: ActiveAlert[] = []
+    const newToasts: ToastItem[] = []
+
+    for (const room of filteredRoomsData) {
+      const thresholds = getThresholdsForIndicator(room.thresholds, indicator)
+      const latestReading = room.readings[room.readings.length - 1]
+
+      if (!latestReading) continue
+
+      const isExceeded = latestReading.value > thresholds.max
+      const currentState = currentAlertStates[room.room_id] || {
+        exceededAt: null,
+        avisoSent: false,
+        persistenciaSent: false,
+      }
+
+      if (isExceeded) {
+        const exceededDuration = currentState.exceededAt
+          ? now - currentState.exceededAt.getTime()
+          : 0
+        const fiveMinutes = 5 * 60 * 1000
+        const tenMinutes = 10 * 60 * 1000
+
+        if (!currentState.exceededAt) {
+          currentAlertStates[room.room_id] = {
+            ...currentState,
+            exceededAt: new Date(),
+          }
+          newToasts.push({
+            id: `${room.room_id}-${indicator}-${Date.now()}`,
+            roomName: room.room_name,
+            indicator,
+            value: latestReading.value,
+            threshold: thresholds.max,
+            unit: formattedUnit,
+            type: 'DETECTED',
+          })
+        } else if (exceededDuration >= tenMinutes && !currentState.persistenciaSent) {
+          const detectedAt = currentState.exceededAt.toLocaleString('es-PE', {
+            timeZone: 'America/Lima',
+          })
+          await sendAlertEmail({
+            roomName: room.room_name,
+            indicator,
+            value: latestReading.value,
+            threshold: thresholds.max,
+            unit: formattedUnit,
+            alertType: 'PERSISTENCIA' as AlertType,
+            detectedAt,
+          })
+          currentAlertStates[room.room_id] = {
+            ...currentState,
+            persistenciaSent: true,
+          }
+          newToasts.push({
+            id: `${room.room_id}-${indicator}-persistencia-${Date.now()}`,
+            roomName: room.room_name,
+            indicator,
+            value: latestReading.value,
+            threshold: thresholds.max,
+            unit: formattedUnit,
+            type: 'PERSISTENCIA',
+          })
+        } else if (exceededDuration >= fiveMinutes && !currentState.avisoSent) {
+          const detectedAt = currentState.exceededAt.toLocaleString('es-PE', {
+            timeZone: 'America/Lima',
+          })
+          await sendAlertEmail({
+            roomName: room.room_name,
+            indicator,
+            value: latestReading.value,
+            threshold: thresholds.max,
+            unit: formattedUnit,
+            alertType: 'AVISO' as AlertType,
+            detectedAt,
+          })
+          currentAlertStates[room.room_id] = {
+            ...currentState,
+            avisoSent: true,
+          }
+          newToasts.push({
+            id: `${room.room_id}-${indicator}-aviso-${Date.now()}`,
+            roomName: room.room_name,
+            indicator,
+            value: latestReading.value,
+            threshold: thresholds.max,
+            unit: formattedUnit,
+            type: 'AVISO',
+          })
+        }
+
+        newActiveAlerts.push({
+          id: `${room.room_id}-${indicator}`,
+          roomId: room.room_id,
+          roomName: room.room_name,
+          indicator,
+          value: latestReading.value,
+          threshold: thresholds.max,
+          unit: formattedUnit,
+          exceededAt: currentState.exceededAt?.toISOString() || new Date().toISOString(),
+          avisoSent: currentState.avisoSent || exceededDuration >= fiveMinutes,
+          persistenciaSent: currentState.persistenciaSent || exceededDuration >= tenMinutes,
+        })
+      } else {
+        if (currentState.exceededAt) {
+          const existingAlert = activeAlerts.find(a => a.roomId === room.room_id && a.indicator === indicator)
+          if (existingAlert) {
+            const resolved: ResolvedAlert = {
+              id: existingAlert.id,
+              roomName: room.room_name,
+              indicator,
+              maxValue: existingAlert.value,
+              threshold: existingAlert.threshold,
+              unit: formattedUnit,
+              startedAt: existingAlert.exceededAt,
+              resolvedAt: new Date().toISOString(),
+              duration: Math.floor((Date.now() - new Date(existingAlert.exceededAt).getTime()) / 60000),
+              avisoSent: existingAlert.avisoSent,
+              persistenciaSent: existingAlert.persistenciaSent,
+            }
+            const newResolved = [...resolvedAlerts, resolved]
+            setResolvedAlerts(newResolved)
+            saveResolvedAlerts(newResolved)
+            newToasts.push({
+              id: `${room.room_id}-${indicator}-resolved-${Date.now()}`,
+              roomName: room.room_name,
+              indicator,
+              value: existingAlert.value,
+              threshold: existingAlert.threshold,
+              unit: formattedUnit,
+              type: 'RESOLVED',
+            })
+          }
+          delete currentAlertStates[room.room_id]
+        }
+      }
+    }
+
+    setAlertStates(currentAlertStates)
+    setActiveAlerts(newActiveAlerts)
+    if (newToasts.length > 0) {
+      setToasts(prev => [...newToasts, ...prev])
+    }
+    isCheckingRef.current = false
+  }, [filteredRoomsData, alertStates, indicator, formattedUnit, activeAlerts, resolvedAlerts, saveResolvedAlerts])
+
+  useEffect(() => {
+    checkAlerts()
+    const intervalId = setInterval(checkAlerts, 30000)
+    return () => clearInterval(intervalId)
+  }, [checkAlerts])
 
   // Crear datasets para la gráfica
   const labels = chartData.map((item) => item.hour as string)
@@ -447,6 +694,29 @@ export default function MonitoreoMultiSala({
 
   return (
     <div className="flex flex-col gap-4 mx-2">
+      {/* Toast Container */}
+      {toasts.length > 0 && (
+        <div className="fixed top-4 right-4 z-50 flex flex-col gap-2 w-80">
+          {toasts.slice(0, 3).map((toast) => (
+            <AlertToast
+              key={toast.id}
+              {...toast}
+              onClose={handleToastClose}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Alert Panel */}
+      <AlertPanel
+        isOpen={isPanelOpen}
+        onClose={() => setIsPanelOpen(false)}
+        activeAlerts={activeAlerts}
+        resolvedAlerts={resolvedAlerts}
+        onDismiss={handleDismissAlert}
+        onClearHistory={handleClearHistory}
+      />
+
       {/* Gráfica */}
       <Card className="w-full">
         <CardHeader className="pb-2">
@@ -455,7 +725,22 @@ export default function MonitoreoMultiSala({
               <CardTitle className="text-base">Gráfica de datos</CardTitle>
               <p className="text-sm text-muted-foreground">Valores en tiempo real</p>
             </div>
-            <IndicatorToggle indicators={indicators} indicatorParam={indicator} />
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="icon"
+                className="relative"
+                onClick={() => setIsPanelOpen(true)}
+              >
+                <Bell className="w-4 h-4" />
+                {activeAlerts.length > 0 && (
+                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                    {activeAlerts.length}
+                  </span>
+                )}
+              </Button>
+              <IndicatorToggle indicators={indicators} indicatorParam={indicator} />
+            </div>
           </div>
         </CardHeader>
         <CardContent>
