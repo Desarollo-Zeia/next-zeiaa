@@ -19,37 +19,9 @@ import IndicatorToggle from "@/app/ui/filters/indicators-toggle"
 // import { AlertToast, AlertToastType } from "./alert-toast"
 // import { AlertPanel, ActiveAlert, ResolvedAlert } from "./alert-panel"
 // import { Bell } from "lucide-react"
-// import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button"
 
-type AlertToastType = 'DETECTED' | 'AVISO' | 'PERSISTENCIA' | 'RESOLVED'
-
-interface ActiveAlert {
-  id: string
-  roomId: number
-  roomName: string
-  indicator: string
-  value: number
-  threshold: number
-  unit: string
-  exceededAt: string
-  avisoSent: boolean
-  persistenciaSent: boolean
-}
-
-interface ResolvedAlert {
-  id: string
-  roomName: string
-  indicator: string
-  maxValue: number
-  threshold: number
-  unit: string
-  startedAt: string
-  resolvedAt: string
-  duration: number
-  avisoSent: boolean
-  persistenciaSent: boolean
-}
-
+/*
 interface ToastItem {
   id: string
   roomName: string
@@ -57,7 +29,7 @@ interface ToastItem {
   value: number
   threshold: number
   unit: string
-  type: AlertToastType
+  type: unknown
 }
 
 interface AlertState {
@@ -67,6 +39,7 @@ interface AlertState {
 }
 
 type RoomAlertState = Record<number, AlertState>
+*/
 
 type CO2Thresholds = { good: number; moderate: number; unhealthy: number; dangerous: number }
 type MinMaxThresholds = { min: number; max: number }
@@ -100,14 +73,7 @@ interface MonitoreoMultiSalaProps {
   indicators: Array<{ indicator: string; unit: string }>
 }
 
-interface AlertState {
-  exceededAt: Date | null
-  avisoSent: boolean
-  persistenciaSent: boolean
-}
-
-type RoomAlertState = Record<number, AlertState>
-
+/*
 interface ToastItem {
   id: string
   roomName: string
@@ -115,8 +81,9 @@ interface ToastItem {
   value: number
   threshold: number
   unit: string
-  type: AlertToastType
+  type: unknown
 }
+*/
 
 const colorPalette = [
   "#3b82f6",
@@ -226,14 +193,16 @@ export default function MonitoreoMultiSala({
     return filteredRoomsData.length > 0 ? new Set([filteredRoomsData[0].room_id]) : new Set()
   })
 
-  const [alertStates, setAlertStates] = useState<RoomAlertState>({})
-  const [toasts, setToasts] = useState<ToastItem[]>([])
-  const [isPanelOpen, setIsPanelOpen] = useState(false)
-  const [activeAlerts, setActiveAlerts] = useState<ActiveAlert[]>([])
-  const [resolvedAlerts, setResolvedAlerts] = useState<ResolvedAlert[]>([])
+  // Alerts disabled for production
+  // const [alertStates, setAlertStates] = useState<RoomAlertState>({})
+  // const [toasts, setToasts] = useState<ToastItem[]>([])
+  // const [isPanelOpen, setIsPanelOpen] = useState(false)
+  // const [activeAlerts, setActiveAlerts] = useState<ActiveAlert[]>([])
+  // const [resolvedAlerts, setResolvedAlerts] = useState<ResolvedAlert[]>([])
   const lastCheckRef = useRef<number>(0)
   const isCheckingRef = useRef<boolean>(false)
 
+  /*
   useEffect(() => {
     const stored = localStorage.getItem('zeia-resolved-alerts')
     if (stored) {
@@ -285,6 +254,7 @@ export default function MonitoreoMultiSala({
     setResolvedAlerts([])
     localStorage.removeItem('zeia-resolved-alerts')
   }, [])
+  */
 
   const roomColors = useMemo(() => {
     const colors = new Map<number, string>()
@@ -361,6 +331,8 @@ export default function MonitoreoMultiSala({
 
   const formattedUnit = formatUnit(unit)
 
+  // Alerts disabled for production
+  /*
   const checkAlerts = useCallback(async () => {
     if (isCheckingRef.current) return
     isCheckingRef.current = true
@@ -524,6 +496,7 @@ export default function MonitoreoMultiSala({
     const intervalId = setInterval(checkAlerts, 30000)
     return () => clearInterval(intervalId)
   }, [checkAlerts])
+  */
 
   // Crear datasets para la gráfica
   const labels = chartData.map((item) => item.hour as string)
@@ -743,8 +716,8 @@ export default function MonitoreoMultiSala({
 
   return (
     <div className="flex flex-col gap-4 mx-2">
-      {/* Toast Container */}
-      {toasts.length > 0 && (
+      {/* Toast Container - disabled for production */}
+      {/* {toasts.length > 0 && (
         <div className="fixed top-4 right-4 z-50 flex flex-col gap-2 w-80">
           {toasts.slice(0, 3).map((toast) => (
             <AlertToast
@@ -756,7 +729,7 @@ export default function MonitoreoMultiSala({
         </div>
       )}
 
-      {/* Alert Panel */}
+      {/ * Alert Panel * /}
       <AlertPanel
         isOpen={isPanelOpen}
         onClose={() => setIsPanelOpen(false)}
@@ -765,7 +738,7 @@ export default function MonitoreoMultiSala({
         onDismiss={handleDismissAlert}
         onClearHistory={handleClearHistory}
       />
-
+      */}
       {/* Gráfica */}
       <Card className="w-full">
         <CardHeader className="pb-2">
@@ -775,6 +748,7 @@ export default function MonitoreoMultiSala({
               <p className="text-sm text-muted-foreground">Valores en tiempo real</p>
             </div>
             <div className="flex items-center gap-2">
+              {/* Bell button disabled for production
               <Button
                 variant="outline"
                 size="icon"
@@ -788,6 +762,7 @@ export default function MonitoreoMultiSala({
                   </span>
                 )}
               </Button>
+              */}
               <IndicatorToggle indicators={indicators} indicatorParam={indicator} />
             </div>
           </div>
