@@ -9,7 +9,9 @@ export async function POST(request: NextRequest) {
       headquarterName,
       headquarterId,
       panelId,
+      panelName,
       measurementPointId,
+      measurementPointName,
       capacity,
       currentValue,
       thresholdType,
@@ -21,7 +23,9 @@ export async function POST(request: NextRequest) {
       !headquarterName ||
       !headquarterId ||
       !panelId ||
+      !panelName ||
       !measurementPointId ||
+      !measurementPointName ||
       !capacity ||
       currentValue === undefined ||
       !thresholdType ||
@@ -38,7 +42,9 @@ export async function POST(request: NextRequest) {
       headquarterName,
       headquarterId,
       panelId,
+      panelName,
       measurementPointId,
+      measurementPointName,
       capacity,
       currentValue,
       thresholdType,

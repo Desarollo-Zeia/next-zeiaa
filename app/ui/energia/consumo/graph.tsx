@@ -35,7 +35,7 @@ interface ReadingsData {
   }>
 }
 
-const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings, dateAfter, dateBefore, panelId, headquarterId, measurementPointId, capacity, thresholdLower, thresholdUpper }: { readingsGraph: ReadingGraphItem[], category: string, indicator: string, last_by: string, readings: ReadingsData, dateAfter?: string, dateBefore?: string, panelId?: string, headquarterId?: string, measurementPointId?: string, capacity?: string, thresholdLower?: number, thresholdUpper?: number }) => {
+const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings, dateAfter, dateBefore, panelId, headquarterId, measurementPointId, capacity, thresholdLower, thresholdUpper, panelName, measurementPointName, headquarterName }: { readingsGraph: ReadingGraphItem[], category: string, indicator: string, last_by: string, readings: ReadingsData, dateAfter?: string, dateBefore?: string, panelId?: string, headquarterId?: string, measurementPointId?: string, capacity?: string, thresholdLower?: number, thresholdUpper?: number, panelName?: string, measurementPointName?: string, headquarterName?: string }) => {
   const [isPending, startTransition] = useTransition()
   const [chartType, setChartType] = useState<'line' | 'bar'>('line')
   const searchParams = useSearchParams()
@@ -76,14 +76,39 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              headquarterName: headquarterId,
+              headquarterName: headquarterName || headquarterId,
               headquarterId,
               panelId,
+              panelName: panelName || panelId,
               measurementPointId,
+              measurementPointName: measurementPointName || measurementPointId,
               capacity,
               currentValue,
               thresholdType: 'inferior',
               thresholdValue: thresholdLower,
+              detectedAt,
+            }),
+          })
+        } catch (error) {
+          console.error('Error sending voltage alert:', error)
+        }
+      } else if (currentValue > thresholdUpper) {
+        lastAlertTime.current[alertKey] = now
+        try {
+          await fetch('/api/alerts/voltage', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              headquarterName: headquarterName || headquarterId,
+              headquarterId,
+              panelId,
+              panelName: panelName || panelId,
+              measurementPointId,
+              measurementPointName: measurementPointName || measurementPointId,
+              capacity,
+              currentValue,
+              thresholdType: 'superior',
+              thresholdValue: thresholdUpper,
               detectedAt,
             }),
           })

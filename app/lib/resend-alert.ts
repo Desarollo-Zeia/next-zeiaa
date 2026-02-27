@@ -21,7 +21,9 @@ interface VoltageAlertEmailParams {
   headquarterName: string
   headquarterId: string
   panelId: string
+  panelName: string
   measurementPointId: string
+  measurementPointName: string
   capacity: string
   currentValue: number
   thresholdType: 'inferior' | 'superior'
@@ -205,7 +207,9 @@ export async function sendVoltageAlertEmail({
   headquarterName,
   headquarterId,
   panelId,
+  panelName,
   measurementPointId,
+  measurementPointName,
   capacity,
   currentValue,
   thresholdType,
@@ -282,14 +286,20 @@ export async function sendVoltageAlertEmail({
                     <table width="100%" cellpadding="0" cellspacing="0">
                       <tr>
                         <td style="padding: 8px 0; border-bottom: 1px solid #e2e8f0;">
-                          <span style="color: #64748b; font-size: 11px; text-transform: uppercase;">ID Punto</span>
-                          <p style="margin: 2px 0 0; color: #1e293b; font-size: 14px; font-weight: 600; font-family: monospace;">${measurementPointId}</p>
+                          <span style="color: #64748b; font-size: 11px; text-transform: uppercase;">Sede</span>
+                          <p style="margin: 2px 0 0; color: #1e293b; font-size: 14px; font-weight: 600;">${headquarterName}</p>
                         </td>
                       </tr>
                       <tr>
                         <td style="padding: 8px 0; border-bottom: 1px solid #e2e8f0;">
-                          <span style="color: #64748b; font-size: 11px; text-transform: uppercase;">Sede</span>
-                          <p style="margin: 2px 0 0; color: #1e293b; font-size: 14px;">${headquarterName}</p>
+                          <span style="color: #64748b; font-size: 11px; text-transform: uppercase;">Panel</span>
+                          <p style="margin: 2px 0 0; color: #1e293b; font-size: 14px; font-weight: 600;">${panelName}</p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 8px 0; border-bottom: 1px solid #e2e8f0;">
+                          <span style="color: #64748b; font-size: 11px; text-transform: uppercase;">Punto de Medición</span>
+                          <p style="margin: 2px 0 0; color: #0891b2; font-size: 14px; font-weight: 600;">${measurementPointName}</p>
                         </td>
                       </tr>
                       <tr>
@@ -360,7 +370,7 @@ export async function sendVoltageAlertEmail({
     await resend.emails.send({
       from: 'Alertas ZEIA <onboarding@resend.dev>',
       to: ['alonsomorante11@gmail.com'],
-      subject: `[ZEIA] ${isLower ? '⚠️' : '⚠️'} Alerta: ${alertTitle} (${currentValue.toFixed(1)}V) - Punto ${measurementPointId}`,
+      subject: `[ZEIA] ${isLower ? '⚠️' : '⚠️'} Alerta: ${alertTitle} - ${headquarterName} / ${panelName}`,
       html,
     })
 

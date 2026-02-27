@@ -27,6 +27,9 @@ interface ResolvedParams {
   page: string
   last_by: string
   category: string
+  headquarterName?: string
+  panelName?: string
+  measurementPointName?: string
 }
 
 async function resolveFilterIds(
@@ -51,12 +54,17 @@ async function resolveFilterIds(
 
   const headquarters = await getHeadquarters(token)
   const headquarterId = headquarter || headquarters.results[0]?.id.toString()
+  const headquarterName = headquarters.results.find((h: EnergyHeadquarter) => h.id.toString() === headquarterId)?.name
 
   const measurementPointsPanels = await getEnergyMeasurementPointPanels({ headquarterId, token })
   const panelId = panel || measurementPointsPanels?.results[0]?.id.toString()
+  const panelName = measurementPointsPanels.results.find((p: { id: number; name: string }) => p.id.toString() === panelId)?.name
 
   const measurementPoints = await getMeasurementPoints({ electricalpanelId: panelId, token })
   const pointId = point || measurementPoints?.results[0]?.measurement_points[0]?.id.toString()
+  const measurementPointName = measurementPoints.results
+    .flatMap((d: { measurement_points: Array<{ id: number; name: string }> }) => d.measurement_points)
+    .find((mp: { id: number; name: string }) => mp.id.toString() === pointId)?.name
 
   return {
     headquarterId,
@@ -68,7 +76,10 @@ async function resolveFilterIds(
     indicator,
     page,
     last_by,
-    category
+    category,
+    headquarterName,
+    panelName,
+    measurementPointName
   }
 }
 
@@ -169,7 +180,10 @@ async function GraphSection({
   category,
   indicator,
   unit,
-  last_by
+  last_by,
+  headquarterName,
+  panelName,
+  measurementPointName
 }: {
   token: string
   headquarterId: string
@@ -181,6 +195,9 @@ async function GraphSection({
   indicator: string
   unit: string
   last_by: string
+  headquarterName?: string
+  panelName?: string
+  measurementPointName?: string
 }) {
 
   const [readings, readingsGraph, tableData] = await Promise.all([
@@ -245,6 +262,9 @@ async function GraphSection({
       capacity={capacity}
       thresholdLower={thresholdLower}
       thresholdUpper={thresholdUpper}
+      panelName={panelName}
+      measurementPointName={measurementPointName}
+      headquarterName={headquarterName}
     />
   )
 }
@@ -298,6 +318,9 @@ export default async function page({ searchParams }: SearchParams) {
               indicator={resolved.indicator}
               unit={resolved.unit}
               last_by={resolved.last_by}
+              headquarterName={resolved.headquarterName}
+              panelName={resolved.panelName}
+              measurementPointName={resolved.measurementPointName}
             />
           </Suspense>
         </div>
