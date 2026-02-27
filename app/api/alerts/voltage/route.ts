@@ -17,6 +17,8 @@ export async function POST(request: NextRequest) {
       thresholdType,
       thresholdValue,
       detectedAt,
+      indicator,
+      indicatorName,
     } = body
 
     if (
@@ -30,7 +32,9 @@ export async function POST(request: NextRequest) {
       currentValue === undefined ||
       !thresholdType ||
       !thresholdValue ||
-      !detectedAt
+      !detectedAt ||
+      !indicator ||
+      !indicatorName
     ) {
       return NextResponse.json(
         { success: false, error: 'Missing required fields' },
@@ -50,6 +54,8 @@ export async function POST(request: NextRequest) {
       thresholdType,
       thresholdValue,
       detectedAt,
+      indicator,
+      indicatorName,
     })
 
     if (!result.success) {

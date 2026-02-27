@@ -36,6 +36,8 @@ interface ReadingsData {
 }
 
 const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings, dateAfter, dateBefore, panelId, headquarterId, measurementPointId, capacity, thresholdLower, thresholdUpper, panelName, measurementPointName, headquarterName }: { readingsGraph: ReadingGraphItem[], category: string, indicator: string, last_by: string, readings: ReadingsData, dateAfter?: string, dateBefore?: string, panelId?: string, headquarterId?: string, measurementPointId?: string, capacity?: string, thresholdLower?: number, thresholdUpper?: number, panelName?: string, measurementPointName?: string, headquarterName?: string }) => {
+  const indicatorInfo = ELECTRIC_PARAMETERS[indicator as keyof typeof ELECTRIC_PARAMETERS]
+  const indicatorName = indicatorInfo?.parameter || indicator
   const [isPending, startTransition] = useTransition()
   const [chartType, setChartType] = useState<'line' | 'bar'>('line')
   const searchParams = useSearchParams()
@@ -87,6 +89,8 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
               thresholdType: 'inferior',
               thresholdValue: thresholdLower,
               detectedAt,
+              indicator,
+              indicatorName,
             }),
           })
         } catch (error) {
@@ -110,6 +114,8 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
               thresholdType: 'superior',
               thresholdValue: thresholdUpper,
               detectedAt,
+              indicator,
+              indicatorName,
             }),
           })
         } catch (error) {
@@ -122,15 +128,19 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              headquarterName: headquarterId,
+              headquarterName: headquarterName || headquarterId,
               headquarterId,
               panelId,
+              panelName: panelName || panelId,
               measurementPointId,
+              measurementPointName: measurementPointName || measurementPointId,
               capacity,
               currentValue,
               thresholdType: 'superior',
               thresholdValue: thresholdUpper,
               detectedAt,
+              indicator,
+              indicatorName,
             }),
           })
         } catch (error) {
@@ -140,7 +150,7 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
     }
 
     checkThresholds()
-  }, [readingsGraph, category, thresholdLower, thresholdUpper, headquarterId, measurementPointId, capacity, panelId])
+  }, [readingsGraph, category, thresholdLower, thresholdUpper, headquarterId, measurementPointId, capacity, panelId, indicator])
 
   const indicatorsObject = readings?.results?.[0]?.indicators?.values
   const avaibleIndicators = [] as Array<string>
