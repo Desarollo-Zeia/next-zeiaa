@@ -1,4 +1,5 @@
 import { consume, consumeGraph } from "@/app/services/energy/data"
+import { dashboardTable } from "@/app/services/panel/data"
 import FiltersContainer from "@/app/ui/filters/filters-container"
 import { getEnergyMeasurementPointPanels, getHeadquarters } from "@/app/services/energy/enterprise/data"
 import HeadquarterEnergyFilter from "@/app/ui/energia/filters/headquarter-energy-filter"
@@ -182,7 +183,7 @@ async function GraphSection({
   last_by: string
 }) {
 
-  const [readings, readingsGraph] = await Promise.all([
+  const [readings, readingsGraph, tableData] = await Promise.all([
     consume({
       date_after: formattedDateAfter,
       date_before: formattedDateBefore,
@@ -203,8 +204,31 @@ async function GraphSection({
       unit,
       last_by,
       token
+    }),
+    dashboardTable({
+      headquarterId,
+      panelId,
+      point: pointId,
+      token
     })
   ])
+
+  let thresholdLower: number | undefined
+  let thresholdUpper: number | undefined
+  let capacity: string | undefined
+
+  if (category === 'voltage' && tableData?.results) {
+    const pointData = tableData.results.find((p: { id: number }) => p.id.toString() === pointId)
+    if (pointData?.capacity) {
+      capacity = pointData.capacity
+      const voltageMatch = pointData.capacity.match(/^(\d+)v\//i)
+      if (voltageMatch) {
+        const voltage = parseInt(voltageMatch[1], 10)
+        thresholdLower = voltage * 0.95
+        thresholdUpper = voltage * 1.05
+      }
+    }
+  }
 
   return (
     <Graph
@@ -216,6 +240,11 @@ async function GraphSection({
       dateAfter={formattedDateAfter}
       dateBefore={formattedDateBefore}
       panelId={panelId}
+      headquarterId={headquarterId}
+      measurementPointId={pointId}
+      capacity={capacity}
+      thresholdLower={thresholdLower}
+      thresholdUpper={thresholdUpper}
     />
   )
 }

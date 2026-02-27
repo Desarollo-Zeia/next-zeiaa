@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useTransition } from "react"
+import { useState, useTransition, useEffect, useRef } from "react"
 import { DynamicLine, DynamicBar } from "@/components/charts"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
@@ -35,12 +35,87 @@ interface ReadingsData {
   }>
 }
 
-const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings, dateAfter, dateBefore, panelId }: { readingsGraph: ReadingGraphItem[], category: string, indicator: string, last_by: string, readings: ReadingsData, dateAfter?: string, dateBefore?: string, panelId?: string }) => {
+const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings, dateAfter, dateBefore, panelId, headquarterId, measurementPointId, capacity, thresholdLower, thresholdUpper }: { readingsGraph: ReadingGraphItem[], category: string, indicator: string, last_by: string, readings: ReadingsData, dateAfter?: string, dateBefore?: string, panelId?: string, headquarterId?: string, measurementPointId?: string, capacity?: string, thresholdLower?: number, thresholdUpper?: number }) => {
   const [isPending, startTransition] = useTransition()
   const [chartType, setChartType] = useState<'line' | 'bar'>('line')
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const { replace } = useRouter()
+
+  const lastAlertTime = useRef<Record<string, number>>({})
+
+  useEffect(() => {
+    if (category !== 'voltage' || !thresholdLower || !thresholdUpper || !headquarterId || !measurementPointId || !capacity) {
+      return
+    }
+
+    const checkThresholds = async () => {
+      if (!readingsGraph || readingsGraph.length === 0) return
+
+      const latestReading = readingsGraph[readingsGraph.length - 1]
+      const currentValue = latestReading.first_value
+      const detectedAt = new Date(latestReading.first_reading).toLocaleString('es-PE', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+
+      const alertKey = `${measurementPointId}-${Math.floor(Date.now() / 300000)}`
+      const now = Date.now()
+
+      if (lastAlertTime.current[alertKey] && now - lastAlertTime.current[alertKey] < 300000) {
+        return
+      }
+
+      if (currentValue < thresholdLower) {
+        lastAlertTime.current[alertKey] = now
+        try {
+          await fetch('/api/alerts/voltage', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              headquarterName: headquarterId,
+              headquarterId,
+              panelId,
+              measurementPointId,
+              capacity,
+              currentValue,
+              thresholdType: 'inferior',
+              thresholdValue: thresholdLower,
+              detectedAt,
+            }),
+          })
+        } catch (error) {
+          console.error('Error sending voltage alert:', error)
+        }
+      } else if (currentValue > thresholdUpper) {
+        lastAlertTime.current[alertKey] = now
+        try {
+          await fetch('/api/alerts/voltage', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              headquarterName: headquarterId,
+              headquarterId,
+              panelId,
+              measurementPointId,
+              capacity,
+              currentValue,
+              thresholdType: 'superior',
+              thresholdValue: thresholdUpper,
+              detectedAt,
+            }),
+          })
+        } catch (error) {
+          console.error('Error sending voltage alert:', error)
+        }
+      }
+    }
+
+    checkThresholds()
+  }, [readingsGraph, category, thresholdLower, thresholdUpper, headquarterId, measurementPointId, capacity, panelId])
 
   const indicatorsObject = readings?.results?.[0]?.indicators?.values
   const avaibleIndicators = [] as Array<string>
@@ -210,35 +285,35 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
         }
       },
       annotation: {
-        annotations: category === 'voltage' && panelId === '2' ? {
-          line209: {
+        annotations: thresholdLower !== undefined && thresholdUpper !== undefined ? {
+          lineLower: {
             type: 'line',
-            yMin: 456,
-            yMax: 456,
+            yMin: thresholdLower,
+            yMax: thresholdLower,
             borderColor: '#000',
             borderWidth: 1,
             borderDash: [5, 5],
             label: {
               display: true,
-              content: '456 v',
-              position: 'end',
-              backgroundColor: 'transparent',
+              content: `${thresholdLower.toFixed(0)} V`,
+              position: 'start',
+              backgroundColor: '#fff',
               color: '#000',
               font: { size: 12 }
             }
           },
-          line231: {
+          lineUpper: {
             type: 'line',
-            yMin: 504,
-            yMax: 504,
+            yMin: thresholdUpper,
+            yMax: thresholdUpper,
             borderColor: '#000',
             borderWidth: 1,
             borderDash: [5, 5],
             label: {
               display: true,
-              content: '504 v',
-              position: 'end',
-              backgroundColor: 'transparent',
+              content: `${thresholdUpper.toFixed(0)} V`,
+              position: 'start',
+              backgroundColor: '#fff',
               color: '#000',
               font: { size: 12 }
             }
