@@ -74,13 +74,13 @@ export default function ChartComponent({ electricalPanelData }: { electricalPane
   }
 
   // Datos para el PieChart (excluyendo la llave general que es el primer elemento)
-  const secondaryItems = electricalPanelData.results.slice(1)
+  const secondaryItems = electricalPanelData?.results?.slice(1) || []
 
   const chartData = {
-    labels: secondaryItems.map((item) => item.measurement_point_name),
+    labels: secondaryItems.map((item) => item?.measurement_point_name),
     datasets: [
       {
-        data: secondaryItems.map((item) => item.consumption_percentage),
+        data: secondaryItems.map((item) => item?.consumption_percentage),
         backgroundColor: CHART_COLORS,
         borderColor: '#ffffff',
         borderWidth: 2,
@@ -120,7 +120,7 @@ export default function ChartComponent({ electricalPanelData }: { electricalPane
   }
 
   // Llave general (primer elemento)
-  const mainSwitch = electricalPanelData.results[0]
+  const mainSwitch = electricalPanelData?.results?.[0]
 
   return (
     <div className='flex flex-col gap-4'>
@@ -200,9 +200,9 @@ export default function ChartComponent({ electricalPanelData }: { electricalPane
                       <div className="flex justify-between w-full items-center">
                         <div className="flex items-center gap-3">
                           <div className="w-3 h-3 rounded-full bg-white/40" />
-                          <span className="font-semibold">{mainSwitch.measurement_point_name}</span>
+                          <span className="font-semibold">{mainSwitch?.measurement_point_name}</span>
                         </div>
-                        <span className="font-bold text-lg">{mainSwitch.consumption_percentage}%</span>
+                        <span className="font-bold text-lg">{mainSwitch?.consumption_percentage}%</span>
                       </div>
                     </div>
 
