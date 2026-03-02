@@ -84,12 +84,10 @@ async function TariffDataContent({
     }),
     consumptionInvoice({
       headquarterId,
-      panelId: panel,
       token: authToken!
     }),
     consumptionTariff({
       headquarterId,
-      panelId: panel,
       token: authToken!
     })
   ])

@@ -77,9 +77,9 @@ async function DesbalanceContent({ searchParams }: SearchParams) {
           <div className="w-full lg:w-1/3 space-y-2">
             <h3 className="text-lg font-medium text-gray-700">Top 3 equipos con mayor desbalance</h3>
             <div className="grid grid-cols-1 gap-2">
-              <MostThreeUnbalanced title={first.measurement_point_name} frequency={first.total_readings} cup={first.current_unbalanced} vup={first.voltage_unbalanced} />
-              <MostThreeUnbalanced title={second.measurement_point_name} frequency={second.total_readings} cup={second.current_unbalanced} vup={second.voltage_unbalanced} />
-              <MostThreeUnbalanced title={third.measurement_point_name} frequency={third.total_readings} cup={third.current_unbalanced} vup={third.voltage_unbalanced} />
+              <MostThreeUnbalanced title={first?.measurement_point_name} frequency={first?.total_readings} cup={first?.current_unbalanced} vup={first?.voltage_unbalanced} />
+              <MostThreeUnbalanced title={second?.measurement_point_name} frequency={second?.total_readings} cup={second?.current_unbalanced} vup={second?.voltage_unbalanced} />
+              <MostThreeUnbalanced title={third?.measurement_point_name} frequency={third?.total_readings} cup={third?.current_unbalanced} vup={third?.voltage_unbalanced} />
             </div>
           </div>
 

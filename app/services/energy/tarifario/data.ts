@@ -35,12 +35,12 @@ export async function consumptionCalculatorMonthly({ headquarterId, filter_month
   }
 }
 
-export async function consumptionInvoice({ headquarterId, panelId, token }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, token?: string }) {
+export async function consumptionInvoice({ headquarterId, token }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, token?: string }) {
 
   'use cache'
   cacheLife('minutes')
 
-  const res = await fetchWithAuthEnergy(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/rate-consumption/cycle`, {}, token)
+  const res = await fetchWithAuthEnergy(`/api/v1/headquarter/${headquarterId}/electrical_panel/rate-consumption/cycle`, {}, token)
 
   return res
 }
@@ -78,12 +78,12 @@ export async function consumptionGraph({ headquarterId, group_by, date_after, da
   return res
 }
 
-export async function consumptionTariff({ headquarterId, panelId, token }: { panelId?: string, headquarterId?: string, token?: string }) {
+export async function consumptionTariff({ headquarterId, token }: { panelId?: string, headquarterId?: string, token?: string }) {
 
   'use cache'
   cacheLife('minutes')
 
-  const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/rate-consumption/detail-tariff`, baseUrlEnergy)
+  const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/rate-consumption/detail-tariff`, baseUrlEnergy)
 
   const res = await fetchWithAuthEnergy(`${url.pathname}`, {}, token)
 
