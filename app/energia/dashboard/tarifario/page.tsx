@@ -1,5 +1,5 @@
 // import { getCompanyData } from "@/app/lib/auth"
-import { getHeadquarters } from "@/app/services/energy/enterprise/data"
+import { getHeadquarters, getEnergyMeasurementPointPanels } from "@/app/services/energy/enterprise/data"
 import TariffData from "./components/tariff-data"
 import { SearchParams } from "@/app/type"
 import HeadquarterEnergyFilter from "@/app/ui/energia/filters/headquarter-energy-filter"
@@ -63,6 +63,13 @@ export default async function Tarifario({ searchParams }: SearchParams) {
   const { results } = headquarters
   const firstHeadquarter = headquarter || results[0].id.toString()
 
+  const measurementPointsPanels = await getEnergyMeasurementPointPanels({
+    headquarterId: firstHeadquarter,
+    token: authToken!
+  })
+
+  const firstPanel = panel || measurementPointsPanels?.results[0]?.id.toString()
+
 
   return (
     <div className="w-full">
@@ -73,7 +80,7 @@ export default async function Tarifario({ searchParams }: SearchParams) {
       <div className="w-full flex flex-col gap-4 px-6">
         <TariffData
           headquarterId={firstHeadquarter}
-          panel={panel}
+          panel={firstPanel}
           formattedDateAfter={formattedDateAfter}
           formattedDateBefore={formattedDateBefore}
           firstmonth={firstmonth || ''}
