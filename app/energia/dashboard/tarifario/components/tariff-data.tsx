@@ -101,7 +101,7 @@ async function TariffDataContent({
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-              <h3 className="font-semibold text-green-800">Consumo del día transcurrido</h3>
+              <h3 className="font-semibold text-green-800">Consumo de energía</h3>
             </div>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -136,9 +136,13 @@ async function TariffDataContent({
           />
         </>
       )}
+      <div className="py-2">
+        <h2 className="text-lg font-semibold">Facturación Actual</h2>
+      </div>
 
       <div className="w-full shadow-md">
         <CycleClientInfoTable tariffData={invoiceResult} />
+
         <TariffTable tariffData={tariffResult} />
       </div>
     </>
