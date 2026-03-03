@@ -2,7 +2,7 @@
 import React from 'react'
 import NoResultsFound from '../../no-result'
 import { DynamicBar } from '@/components/charts'
-import { capitalizeFirstLetter, formattedWithoutMonth } from '@/app/utils/func'
+import { capitalizeFirstLetter } from '@/app/utils/func'
 import { es } from 'date-fns/locale'
 import { format } from 'date-fns'
 
@@ -35,7 +35,7 @@ export default function CurrentChartCount({ currentReadings }: { currentReadings
   const { results = [], message } = currentReadings?.[0] ?? {}
 
   const dataPoints = results?.map((item: Result) => ({
-    x: item.date ? `${item.date}T12:00:00` : '',
+    x: item.date ? `${item.date}T12:00:00Z` : '',
     y: item.unbalanced_count,
   })) || []
 
@@ -56,12 +56,30 @@ export default function CurrentChartCount({ currentReadings }: { currentReadings
     maintainAspectRatio: false,
     scales: {
       x: {
-        type: "category",
+        type: "time",
+        adapters: {
+          date: {
+            locale: es,
+          },
+        },
+        time: {
+          unit: 'day',
+          displayFormats: {
+            day: "d 'de' MMMM",
+          },
+        },
         grid: {
           display: false
         },
         ticks: {
-          font: { size: 11 }
+          font: { size: 11 },
+          callback: function (val: number | string) {
+            const date = new Date(Number(val))
+            if (Number.isNaN(date.getTime())) return ''
+            const formattedDate = format(date, "d 'de' MMMM", { locale: es })
+            const [day, month] = formattedDate.split(' de ')
+            return month ? `${day} de ${capitalizeFirstLetter(month)}` : formattedDate
+          },
         }
 
       },
@@ -86,9 +104,11 @@ export default function CurrentChartCount({ currentReadings }: { currentReadings
         borderWidth: 1,
         padding: 12,
         callbacks: {
-          title: function (tooltipItems: Array<{ label: string }>) {
-            const label = tooltipItems[0].label
-            const date = new Date(label)
+          title: function (tooltipItems: Array<{ parsed?: { x?: number } }>) {
+            const x = tooltipItems?.[0]?.parsed?.x
+            if (!x) return ''
+            const date = new Date(x)
+            if (Number.isNaN(date.getTime())) return ''
             const dateFormatted = capitalizeFirstLetter(format(date, "EEEE d 'de' MMMM", { locale: es }))
             return dateFormatted
           },

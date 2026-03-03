@@ -3,8 +3,6 @@
 import { Button } from "@/components/ui/button"
 import { Eye } from "lucide-react"
 import Link from "next/link"
-import ContractedPowerSidebar from "./contracted-power-sidebar"
-import { Card, CardContent, CardTitle } from "@/components/ui/card"
 import NoResultFound from "../../no-result-found"
 
 interface DeviceInfo {
@@ -79,13 +77,13 @@ const formatDateTime = (dateString: string) => {
 
 export default function ExcessPower({ excessPowerData, panel, powers }: { excessPowerData: ExcessPowerData, panel: Panel; powers: Powers[] }) {
 
-  
+
 
   const excessPowerEvents = excessPowerData.results.map((item) => {
     const { date, time } = formatDateTime(item.created_at)
     const power = item.indicators[0]?.power || 0
     const exceededThresholds = item.indicators[0]?.exceeded_thresholds || []
-  
+
     return {
       date,
       time,
@@ -96,49 +94,35 @@ export default function ExcessPower({ excessPowerData, panel, powers }: { excess
   })
 
   return (
-    <div className="w-full flex">
-      <div>
-        <Card className="w-full max-w-xs mx-auto">
-          <CardContent className="flex flex-col items-center justify-center p-6 space-y-3">
-            <CardTitle className="text-xl">Rango de hora punta</CardTitle>
-            <div className="flex items-center gap-4">
-              <p className="text-lg font-medium">18:00 a 23:00</p>
-              <div className="w-4 h-4 rounded-full bg-red-600"/>
-            </div>
-          </CardContent>
-        </Card>
-        <ContractedPowerSidebar panel={panel} powers={powers}/>
-      </div>
-      <div className="p-4 space-y-4 flex-1">
-        <div className="flex items-center justify-between">
-          <div className="space-y-1">
-            <h2 className="text-lg font-medium">Potencia excedente</h2>
-            <p className="text-sm text-muted-foreground">Durante el período seleccionado en el filtro de fecha</p>
-          </div>
-          <Link href={"/energia/dashboard/monitoreo/potencia-excedente"}>
-            <Button variant="secondary" size="sm" className="gap-2">
-              <Eye className="w-4 h-4" />
-              Ver Alerta
-            </Button>
-          </Link>
-        </div>
+    <div id="POTENCIA-EXCEDENTE" className="p-4 space-y-4 flex-1">
+      <div className="flex items-center justify-between">
         <div className="space-y-1">
-          {excessPowerEvents.map((event, index) => (
-            <div key={index} className="p-3 rounded-lg text-sm flex flex-wrap items-center gap-1 bg-sky-50/50">
-              <span>
-                Se excedió la potencia instalada el {event.date} a las {event.time} con{" "}
-              </span>
-              <span className="font-medium">{event.power}</span>
-              <span>(</span>
-              <span className="text-red-500">{event.status}</span>
-              <span>)</span>
-              
-            </div>
-          ))}
-          {
-            excessPowerEvents.length === 0 ? <NoResultFound/> : <></>
-          }
+          <h2 className="text-lg font-medium">Potencia excedente</h2>
+          <p className="text-sm text-muted-foreground">Durante el período seleccionado en el filtro de fecha</p>
         </div>
+        <Link href={"/energia/dashboard/monitoreo/potencia-excedente"}>
+          <Button variant="secondary" size="sm" className="gap-2">
+            <Eye className="w-4 h-4" />
+            Ver Alerta
+          </Button>
+        </Link>
+      </div>
+      <div className="space-y-1">
+        {excessPowerEvents.map((event, index) => (
+          <div key={index} className="p-3 rounded-lg text-sm flex flex-wrap items-center gap-1 bg-sky-50/50">
+            <span>
+              Se excedió la potencia instalada el {event.date} a las {event.time} con{" "}
+            </span>
+            <span className="font-medium">{event.power}</span>
+            <span>(</span>
+            <span className="text-red-500">{event.status}</span>
+            <span>)</span>
+
+          </div>
+        ))}
+        {
+          excessPowerEvents.length === 0 ? <NoResultFound /> : <></>
+        }
       </div>
     </div>
   )

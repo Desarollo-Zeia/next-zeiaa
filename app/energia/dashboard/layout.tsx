@@ -5,9 +5,9 @@ import { AppSidebar } from "@/app/ui/sidebar/app-siderbar";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <SidebarProvider>
+    <SidebarProvider className="!min-h-0 [&>div]:!min-h-0">
       <AppSidebar />
-      <SidebarInset>
+      <SidebarInset className="!min-h-0">
         <header className="flex justify-between h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />

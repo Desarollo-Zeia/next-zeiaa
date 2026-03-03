@@ -25,7 +25,11 @@ export default function RoomSelect({ rooms, firstRoom }: { rooms: Room[], firstR
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const { replace } = useRouter()
-  const { roomId, setRoom } = useFiltersStore()
+  const { roomId, setRoom, syncFromUrl } = useFiltersStore()
+
+  useEffect(() => {
+    syncFromUrl(searchParams)
+  }, [searchParams, syncFromUrl])
 
   const roomParam = useRoomParam()
   const [selectedRoom, setSelectedRoom] = useState<string>(roomParam ?? firstRoom)

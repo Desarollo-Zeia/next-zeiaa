@@ -1,5 +1,5 @@
 'use client'
-import React, { useTransition } from 'react'
+import React, { useTransition, useEffect } from 'react'
 
 import {
   Select,
@@ -41,7 +41,11 @@ export default function MeasurementPointFilter({ measurementPoints, point }: { m
   const searchParams = useSearchParams();
   const pathname = usePathname()
   const { replace } = useRouter()
-  const { pointId, setPoint } = useFiltersStore()
+  const { pointId, setPoint, syncFromUrl } = useFiltersStore()
+
+  useEffect(() => {
+    syncFromUrl(searchParams)
+  }, [searchParams, syncFromUrl])
 
   const currentPointId = pointId || searchParams.get('point') || point
 
