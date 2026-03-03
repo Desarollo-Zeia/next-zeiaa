@@ -1,6 +1,6 @@
 import { getEnergyMeasurementPointPanels } from '@/app/services/energy/enterprise/data'
 import { getHeadquarters, getMeasurementPoints } from '@/app/services/filters/data'
-import { consumeGraph, dashboardTable, lastAlertToday, porcentageGraph } from '@/app/services/panel/data'
+import { consumeGraph, dashboardTable, porcentageGraph } from '@/app/services/panel/data'
 import { MeasurementPointResults, SearchParams } from '@/app/type'
 import { VoltageByDay } from '@/app/utils/thresholds'
 import HeadquarterEnergyFilter from '@/app/ui/energia/filters/headquarter-energy-filter'
@@ -77,8 +77,8 @@ async function DashboardContent({ searchParams }: SearchParams) {
   const formattedDateAfter = date_after ? format(date_after, 'yyyy-MM-dd') : undefined
   const formattedDateBefore = date_before ? format(date_before, 'yyyy-MM-dd') : undefined
 
-  const start = date_start || defaultStart;
-  const finish = date_end || defaultFinish;
+  const start = date_start || defaultStart
+  const finish = date_end || defaultFinish
 
   const headquarters = await getHeadquarters(authToken!)
 
@@ -111,8 +111,6 @@ async function DashboardContent({ searchParams }: SearchParams) {
     point: firstPoint,
     panelId: firstPanel
   })
-
-  const alertToday = await lastAlertToday(authToken!)
 
   const dashboardPorcentageGraph = await porcentageGraph({
     headquarterId: firstHeadquarter,

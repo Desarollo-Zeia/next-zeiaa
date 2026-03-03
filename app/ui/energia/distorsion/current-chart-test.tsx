@@ -51,8 +51,8 @@ const CurrentChartTest = ({ currentReadings } : { currentReadings : CurrentReadi
       {
         label: "THDIt",
         data: thditData,
-        borderColor: "#00c7b7",
-        backgroundColor: "#00c7b7",
+        borderColor: "#f97316",
+        backgroundColor: "#f97316",
         fill: false,
         stepped: false,
         tension: 0,
@@ -116,6 +116,38 @@ const CurrentChartTest = ({ currentReadings } : { currentReadings : CurrentReadi
             const val = ctx.parsed.y
             return `${label}: ${val.toFixed(2)}%`
           },
+        }
+      },
+      annotation: {
+        annotations: {
+          line1: {
+            type: 'line' as const,
+            yMin: 8,
+            yMax: 8,
+            borderColor: '#eab308',
+            borderWidth: 2,
+            borderDash: [5, 5],
+            label: {
+              display: true,
+              color: 'white',
+              backgroundColor: '#eab308',
+              content: ['Límite THD (8%)'],
+            }
+          },
+          line2: {
+            type: 'line' as const,
+            yMin: 5,
+            yMax: 5,
+            borderColor: '#ef4444',
+            borderWidth: 2,
+            borderDash: [5, 5],
+            label: {
+              display: true,
+              color: 'white',
+              backgroundColor: '#ef4444',
+              content: ['Límite armónico (5%)'],
+            }
+          }
         }
       }
     },
