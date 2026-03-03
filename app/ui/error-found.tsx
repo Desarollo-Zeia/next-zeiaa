@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 
 export default function CustomErrorUI({
   error,
-  // reset,
+  reset,
 }: {
   error: Error & { digest?: string };
   reset: () => void;
@@ -65,7 +65,7 @@ export default function CustomErrorUI({
               Ha ocurrido un error inesperado. Por favor, intenta nuevamente.
             </p>
             <button
-              onClick={() => router.push(pathname)}
+              onClick={reset}
               className="bg-[#00b0c7] text-white px-6 py-2 rounded-lg transition"
             >
               Intentar nuevamente

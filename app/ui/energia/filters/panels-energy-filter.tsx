@@ -1,7 +1,7 @@
 "use client"
 
 import { useSearchParams, useRouter, usePathname } from "next/navigation"
-import { useTransition } from "react"
+import { useTransition, useEffect } from "react"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useFiltersStore } from "@/app/lib/stores/filters-store"
 
@@ -22,7 +22,11 @@ export default function PanelsFilterEnergy({ energyPanels = [], panel }: PanelsF
   const searchParams = useSearchParams()
   const { replace } = useRouter()
   const pathname = usePathname()
-  const { panelId, setPanel } = useFiltersStore()
+  const { panelId, setPanel, syncFromUrl } = useFiltersStore()
+
+  useEffect(() => {
+    syncFromUrl(searchParams)
+  }, [searchParams, syncFromUrl])
 
   const currentPanelId = panelId || searchParams.get('panel') || panel
 

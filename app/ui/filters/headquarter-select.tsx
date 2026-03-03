@@ -1,7 +1,7 @@
 'use client'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
-import { useTransition } from 'react';
+import { useTransition, useEffect } from 'react';
 import { useFiltersStore } from '@/app/lib/stores/filters-store';
 import posthog from "posthog-js";
 
@@ -23,7 +23,11 @@ export default function HeadquarterSelect({ headquarters } : { headquarters : He
   const [isPending, startTransition] = useTransition();
   const pathname = usePathname()
   const { replace } = useRouter()
-  const { headquarterId, setHeadquarter } = useFiltersStore()
+  const { headquarterId, setHeadquarter, syncFromUrl } = useFiltersStore()
+
+  useEffect(() => {
+    syncFromUrl(searchParams)
+  }, [searchParams, syncFromUrl])
 
   const currentHeadquarterId = headquarterId || searchParams.get('headquarter') || ''
 
