@@ -136,3 +136,11 @@ export function formattedSecond(second: number) {
 export function formatFromUS(date: string) {
   return format(date, 'dd-MM-yyyy')
 }
+
+export function formatNumberWithCommas(value: number | undefined | null): string {
+  if (value === undefined || value === null || isNaN(value)) return '0.00'
+  return value.toLocaleString('es-PE', { 
+    minimumFractionDigits: 2, 
+    maximumFractionDigits: 2 
+  })
+}
