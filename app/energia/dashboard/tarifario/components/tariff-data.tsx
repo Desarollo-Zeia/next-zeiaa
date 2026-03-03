@@ -8,8 +8,8 @@ import CostDifferenceChecker from "@/app/ui/energia/tarifario/cost-difference-ch
 import CycleClientInfoTable from "@/app/ui/energia/tarifario/cycle-clientinfo-table"
 import TariffTable from "@/app/ui/energia/tarifario/tariff-table"
 import NoResultsFound from "@/app/ui/no-result"
-// import { cacheLife } from "next/cache"
 import { getToken } from "@/app/lib/auth"
+import { formatNumberWithCommas } from "@/app/utils/func"
 
 interface TariffDataProps {
   headquarterId: string
@@ -107,19 +107,19 @@ async function TariffDataContent({
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             <div className="text-center">
               <p className="text-xs text-muted-foreground">Energía punta</p>
-              <p className="text-lg font-bold">{calculatorResult?.consumption?.peak.toFixed(2)} kWh</p>
+              <p className="text-lg font-bold">{formatNumberWithCommas(calculatorResult?.consumption?.peak)} kWh</p>
             </div>
             <div className="text-center">
               <p className="text-xs text-muted-foreground">Energía fuera punta</p>
-              <p className="text-lg font-bold">{calculatorResult?.consumption?.off_peak.toFixed(2)} kWh</p>
+              <p className="text-lg font-bold">{formatNumberWithCommas(calculatorResult?.consumption?.off_peak)} kWh</p>
             </div>
             <div className="text-center">
               <p className="text-xs text-muted-foreground">Costo punta</p>
-              <p className="text-lg font-bold">S/ {calculatorResult?.cost?.peak.toFixed(2)}</p>
+              <p className="text-lg font-bold">S/ {formatNumberWithCommas(calculatorResult?.cost?.peak)}</p>
             </div>
             <div className="text-center">
               <p className="text-xs text-muted-foreground">Costo fuera punta</p>
-              <p className="text-lg font-bold">S/ {calculatorResult?.cost?.off_peak.toFixed(2)}</p>
+              <p className="text-lg font-bold">S/ {formatNumberWithCommas(calculatorResult?.cost?.off_peak)}</p>
             </div>
           </div>
         </div>
