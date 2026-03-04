@@ -2,12 +2,8 @@
 import { fetchWithAuth, fetchWithAuthEnergy } from "@/app/lib/api"
 import { baseUrl, baseUrlEnergy } from "@/app/lib/constant"
 import { Indicator, Unit } from "@/app/type"
-import { cacheLife } from "next/cache"
 
 export async function monitoringGraph({ headquarterId, date_after, date_before, group_by, token }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, group_by?: string, token?: string }) {
-  'use cache'
-  cacheLife('minutes')
-
   const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/powers/graph`, baseUrlEnergy)
 
   if (date_after) url.searchParams.set('date_after', date_after)
@@ -21,9 +17,6 @@ export async function monitoringGraph({ headquarterId, date_after, date_before, 
 
 
 export async function monitoringLastThree({ headquarterId, token }: { panelId?: string, headquarterId?: string, token?: string }) {
-  'use cache'
-  cacheLife('minutes')
-
   const res = await fetchWithAuthEnergy(`/api/v1/headquarter/${headquarterId}/electrical_panel/powers/last-exceeded`, {}, token)
   return res
 
@@ -31,9 +24,6 @@ export async function monitoringLastThree({ headquarterId, token }: { panelId?: 
 
 
 export async function exceeded({ headquarterId, date_after, date_before, page, token }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, page?: string, token?: string }) {
-  'use cache'
-  cacheLife('minutes')
-
   const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/powers/all-exceeded`, baseUrlEnergy)
 
   if (date_after) url.searchParams.set('date_after', date_after)

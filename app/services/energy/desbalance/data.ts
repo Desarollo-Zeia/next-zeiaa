@@ -1,11 +1,8 @@
 'use server'
 import { fetchWithAuthEnergy } from "@/app/lib/api"
 import { baseUrlEnergy } from "@/app/lib/constant"
-import { cacheLife } from "next/cache"
 
 export async function current({ headquarterId, panelId, point, date_after, date_before, status, page, token }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, status?: string, page?: string, point: string, token?: string }) {
-  'use cache'
-  cacheLife('minutes')
   const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/measurement_point/${point}/current-imbalanced`, baseUrlEnergy)
 
   if (date_after) url.searchParams.set('date_after', date_after)
@@ -20,9 +17,6 @@ export async function current({ headquarterId, panelId, point, date_after, date_
 }
 
 export async function currentGraph({ headquarterId, panelId, point, date_after, date_before, status, page, token }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, status?: string, page?: string, point: string, token?: string }) {
-  'use cache'
-  cacheLife('minutes')
-
   const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/measurement_point/${point}/unbalanced-current/counters-graph`, baseUrlEnergy)
 
   if (date_after) url.searchParams.set('date_after', date_after)
@@ -36,10 +30,6 @@ export async function currentGraph({ headquarterId, panelId, point, date_after, 
 }
 
 export async function voltage({ headquarterId, date_after, date_before, status, page, panelId, point, token }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, status?: string, page?: string, point?: string, token?: string }) {
-
-  'use cache'
-  cacheLife('minutes')
-
   const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/measurement_point/${point}/voltage-imbalanced`, baseUrlEnergy)
 
   if (date_after) url.searchParams.set('date_after', date_after)
@@ -54,10 +44,6 @@ export async function voltage({ headquarterId, date_after, date_before, status, 
 
 
 export async function voltageGraph({ headquarterId, panelId, point, date_after, date_before, status, token }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, status?: string, point?: string, token?: string }) {
-
-  'use cache'
-  cacheLife('minutes')
-
   const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/measurement_point/${point}/unbalanced-voltage/counters-graph`, baseUrlEnergy)
 
   if (date_after) url.searchParams.set('date_after', date_after)
@@ -71,10 +57,6 @@ export async function voltageGraph({ headquarterId, panelId, point, date_after, 
 
 
 export async function threeMostUnbalanced({ headquarterId, token }: { headquarterId?: string, token?: string }) {
-
-  'use cache'
-  cacheLife('minutes')
-
   const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/most-three-unbalanced`, baseUrlEnergy)
 
   const res = await fetchWithAuthEnergy(`${url.pathname}${url.search}`, {}, token)

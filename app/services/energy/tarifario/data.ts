@@ -1,12 +1,8 @@
 'use server'
 import { fetchWithAuthEnergy } from "@/app/lib/api"
 import { baseUrlEnergy } from "@/app/lib/constant"
-import { cacheLife } from "next/cache"
 
 export async function consumptionCalculator({ headquarterId, date_after, date_before, token }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, token?: string }) {
-
-  'use cache'
-  cacheLife('minutes')
 
   const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/rate-consumption`, baseUrlEnergy)
 
@@ -19,9 +15,6 @@ export async function consumptionCalculator({ headquarterId, date_after, date_be
 }
 
 export async function consumptionCalculatorMonthly({ headquarterId, filter_month, token }: { headquarterId?: string, filter_month?: string, token?: string }) {
-
-  'use cache'
-  cacheLife('minutes')
 
   const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/rate-consumption/monthly`, baseUrlEnergy)
 
@@ -37,18 +30,12 @@ export async function consumptionCalculatorMonthly({ headquarterId, filter_month
 
 export async function consumptionInvoice({ headquarterId, token }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, token?: string }) {
 
-  'use cache'
-  cacheLife('minutes')
-
   const res = await fetchWithAuthEnergy(`/api/v1/headquarter/${headquarterId}/electrical_panel/rate-consumption/cycle`, {}, token)
 
   return res
 }
 
 export async function consumptionTable({ headquarterId, date_after, date_before, page, token }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, page?: string, token?: string }) {
-
-  'use cache'
-  cacheLife('minutes')
 
   const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/rate-consumption/resume`, baseUrlEnergy)
 
@@ -63,9 +50,6 @@ export async function consumptionTable({ headquarterId, date_after, date_before,
 
 export async function consumptionGraph({ headquarterId, group_by, date_after, date_before, token }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, group_by?: string, token?: string }) {
 
-  'use cache'
-  cacheLife('minutes')
-
 
   const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/rate-consumption/historical`, baseUrlEnergy)
 
@@ -79,9 +63,6 @@ export async function consumptionGraph({ headquarterId, group_by, date_after, da
 }
 
 export async function consumptionTariff({ headquarterId, token }: { panelId?: string, headquarterId?: string, token?: string }) {
-
-  'use cache'
-  cacheLife('minutes')
 
   const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/rate-consumption/detail-tariff`, baseUrlEnergy)
 

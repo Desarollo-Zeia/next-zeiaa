@@ -102,17 +102,33 @@ async function resolvePanelContext(searchParams: SearchParams['searchParams']): 
     : null
 
   const headquarters = await headquartersPromise
+  
+  if (!headquarters?.results?.length) {
+    throw new Error('No hay sedes disponibles')
+  }
+  
   const firstHeadquarter = headquarter || headquarters.results[0].id.toString()
   const measurementPointsPanels = panelsPromise ?? await getEnergyMeasurementPointPanels({
     headquarterId: firstHeadquarter,
     token: authToken!
   })
+
+  if (!measurementPointsPanels?.results?.length) {
+    throw new Error('No hay paneles disponibles')
+  }
+
   const firstPanel = panel || measurementPointsPanels?.results[0]?.id.toString()
+
   const measurementPoints: MeasurementPointResults = measurementPointsPromise ?? await getMeasurementPoints({
     electricalpanelId: firstPanel,
     token: authToken!
   })
-  const firstPoint = point || measurementPoints?.results[0]?.measurement_points[0].id.toString()
+
+  if (!measurementPoints?.results?.length || !measurementPoints.results[0]?.measurement_points?.length) {
+    throw new Error('No hay puntos de medición disponibles')
+  }
+
+  const firstPoint = point || measurementPoints.results[0].measurement_points[0].id.toString()
   const selectedIndicador = indicador || 'EPpos'
 
   return {

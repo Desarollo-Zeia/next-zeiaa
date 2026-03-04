@@ -53,13 +53,28 @@ async function resolveDesbalanceContext(searchParams: SearchParams['searchParams
     : null
 
   const headquarters = await headquartersPromise
+
+  if (!headquarters?.results?.length) {
+    throw new Error('No hay sedes disponibles')
+  }
+
   const headquarterId = headquarter || headquarters.results[0]?.id.toString()
 
   const measurementPointsPanels = panelsPromise ?? await getEnergyMeasurementPointPanels({ headquarterId, token: authToken! })
+
+  if (!measurementPointsPanels?.results?.length) {
+    throw new Error('No hay paneles disponibles')
+  }
+
   const panelId = panel || measurementPointsPanels?.results[0]?.id.toString()
 
   const measurementPoints = measurementPointsPromise ?? await getMeasurementPoints({ electricalpanelId: panelId, token: authToken! })
-  const pointId = point || measurementPoints?.results[0]?.measurement_points[0]?.id.toString()
+
+  if (!measurementPoints?.results?.length || !measurementPoints.results[0]?.measurement_points?.length) {
+    throw new Error('No hay puntos de medición disponibles')
+  }
+
+  const pointId = point || measurementPoints.results[0].measurement_points[0]?.id.toString()
 
   return {
     metric,
