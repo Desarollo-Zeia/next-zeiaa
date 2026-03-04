@@ -77,7 +77,7 @@ export default function TariffTable({ tariffData }: { tariffData: TariffData }) 
                       {charge.consumption.value.toFixed(2)}
                     </TableCell>
                     <TableCell className="text-center">
-                      {charge.billed.toFixed(2)}
+                      S/ {charge.billed.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </TableCell>
                   </TableRow>
                 )
@@ -94,7 +94,7 @@ export default function TariffTable({ tariffData }: { tariffData: TariffData }) 
                 Costo total
               </TableCell>
               <TableCell className="text-center text-white font-bold">
-                S/  {total.toFixed(2)}
+                S/ {total.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </TableCell>
             </TableRow>
           </TableBody>
