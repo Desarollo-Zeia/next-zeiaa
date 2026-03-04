@@ -1,6 +1,19 @@
 'use server'
 import { fetchWithAuth, fetchWithAuthAmbiental, fetchWithAuthEnergy } from "@/app/lib/api"
 import { cacheLife } from 'next/cache'
+import { cache } from 'react'
+
+const getHeadquartersEnergyCached = cache(async (token: string) => {
+  'use cache'
+  cacheLife('minutes')
+  return await fetchWithAuthEnergy('/api/v1/user/headquarters/', {}, token)
+})
+
+const getMeasurementPointsCached = cache(async (electricalpanelId: string, token: string) => {
+  'use cache'
+  cacheLife('minutes')
+  return await fetchWithAuthEnergy(`/api/v1/electrical-panel/${electricalpanelId}/devices/measurement-points/`, {}, token)
+})
 
 export async function getRooms(token?: string) {
   'use cache'
@@ -24,9 +37,7 @@ export async function getHeadquartersOcupacional({ token }: { token: string }) {
 }
 
 export async function getHeadquarters(token: string) {
-  'use cache'
-  cacheLife('minutes')
-  return await fetchWithAuthEnergy('/api/v1/user/headquarters/', {}, token)
+  return await getHeadquartersEnergyCached(token)
 }
 
 export async function getHeadquartersAmbiental({ token }: { token: string }) {
@@ -37,8 +48,6 @@ export async function getHeadquartersAmbiental({ token }: { token: string }) {
 }
 
 export async function getMeasurementPoints({ electricalpanelId, token }: { electricalpanelId: string, token: string }) {
-  'use cache'
-  cacheLife('minutes')
-  return await fetchWithAuthEnergy(`/api/v1/electrical-panel/${electricalpanelId}/devices/measurement-points/`, {}, token)
+  return await getMeasurementPointsCached(electricalpanelId, token)
 
 }

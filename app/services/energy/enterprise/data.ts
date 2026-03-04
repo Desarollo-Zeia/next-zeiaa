@@ -3,6 +3,19 @@ import { fetchWithAuthEnergy } from "@/app/lib/api"
 import { cacheLife, unstable_cache } from 'next/cache'
 import { CACHE_DURATION, CACHE_TAGS } from "@/app/lib/cache"
 import { getToken } from "@/app/lib/auth"
+import { cache } from 'react'
+
+const getHeadquartersRequestCached = cache(async (token: string) => {
+  'use cache'
+  cacheLife('minutes')
+  return await fetchWithAuthEnergy('/api/v1/user/headquarters/', {}, token)
+})
+
+const getEnergyMeasurementPointPanelsRequestCached = cache(async (token: string, headquarterId: string) => {
+  'use cache'
+  cacheLife('minutes')
+  return await fetchWithAuthEnergy(`/api/v1/headquarter/${headquarterId}/measurement-points/`, {}, token)
+})
 
 const _getHeadquartersCached = unstable_cache(
   async (token: string) => {
@@ -16,9 +29,7 @@ const _getHeadquartersCached = unstable_cache(
 )
 
 export async function getHeadquarters(token: string) {
-  'use cache'
-  cacheLife('minutes')
-  return await fetchWithAuthEnergy(`/api/v1/user/headquarters/`, {}, token)
+  return await getHeadquartersRequestCached(token)
 }
 
 const _getEnergyMeasurementPointPanelsCached = unstable_cache(
@@ -33,9 +44,7 @@ const _getEnergyMeasurementPointPanelsCached = unstable_cache(
 )
 
 export async function getEnergyMeasurementPointPanels({ headquarterId, token }: { headquarterId: string, token: string }) {
-  'use cache'
-  cacheLife('minutes')
-  return await fetchWithAuthEnergy(`/api/v1/headquarter/${headquarterId}/measurement-points/`, {}, token)
+  return await getEnergyMeasurementPointPanelsRequestCached(token, headquarterId)
 
 }
 

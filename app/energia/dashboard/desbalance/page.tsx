@@ -16,7 +16,20 @@ import { format } from "date-fns";
 import { Suspense } from "react";
 import { PageSkeleton } from "@/app/ui/energia/desbalance/skeletons";
 
-async function DesbalanceContent({ searchParams }: SearchParams) {
+interface DesbalanceContext {
+  metric: string
+  authToken: string
+  headquarterId: string
+  panelId: string
+  pointId: string
+  formattedDateAfter: string
+  formattedDateBefore: string
+  headquarters: Awaited<ReturnType<typeof getHeadquarters>>
+  measurementPointsPanels: Awaited<ReturnType<typeof getEnergyMeasurementPointPanels>>
+  measurementPoints: Awaited<ReturnType<typeof getMeasurementPoints>>
+}
+
+async function resolveDesbalanceContext(searchParams: SearchParams['searchParams']): Promise<DesbalanceContext> {
   const {
     headquarter,
     panel,
@@ -31,69 +44,100 @@ async function DesbalanceContent({ searchParams }: SearchParams) {
   const formattedDateAfter = format(date_after, 'yyyy-MM-dd')
   const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
 
-  const headquarters = await getHeadquarters(authToken!)
+  const headquartersPromise = getHeadquarters(authToken!)
+  const panelsPromise = headquarter
+    ? getEnergyMeasurementPointPanels({ headquarterId: String(headquarter), token: authToken! })
+    : null
+  const measurementPointsPromise = panel
+    ? getMeasurementPoints({ electricalpanelId: String(panel), token: authToken! })
+    : null
+
+  const headquarters = await headquartersPromise
   const headquarterId = headquarter || headquarters.results[0]?.id.toString()
 
-  const measurementPointsPanels = await getEnergyMeasurementPointPanels({ headquarterId, token: authToken! })
+  const measurementPointsPanels = panelsPromise ?? await getEnergyMeasurementPointPanels({ headquarterId, token: authToken! })
   const panelId = panel || measurementPointsPanels?.results[0]?.id.toString()
 
-  const measurementPoints = await getMeasurementPoints({ electricalpanelId: panelId, token: authToken! })
+  const measurementPoints = measurementPointsPromise ?? await getMeasurementPoints({ electricalpanelId: panelId, token: authToken! })
   const pointId = point || measurementPoints?.results[0]?.measurement_points[0]?.id.toString()
 
+  return {
+    metric,
+    authToken: authToken!,
+    headquarterId,
+    panelId,
+    pointId,
+    formattedDateAfter,
+    formattedDateBefore,
+    headquarters,
+    measurementPointsPanels,
+    measurementPoints,
+  }
+}
+
+async function DesbalanceFiltersSection({ contextPromise }: { contextPromise: Promise<DesbalanceContext> }) {
+  const context = await contextPromise
+
+  return (
+    <FiltersContainer>
+      <HeadquarterEnergyFilter energyHeadquarter={context.headquarters.results} energy={context.headquarterId} />
+      <PanelsFilterEnergy energyPanels={context.measurementPointsPanels.results} panel={context.panelId} />
+      <MeasurementPointFilter measurementPoints={context.measurementPoints} point={context.pointId} />
+      <DatepickerRange />
+    </FiltersContainer>
+  )
+}
+
+async function DesbalanceDataSection({ contextPromise }: { contextPromise: Promise<DesbalanceContext> }) {
+  const context = await contextPromise
+
+  const chartDataPromise = context.metric === 'current'
+    ? currentGraph({
+      headquarterId: context.headquarterId,
+      panelId: context.panelId,
+      point: context.pointId,
+      date_after: context.formattedDateAfter,
+      date_before: context.formattedDateBefore,
+      token: context.authToken
+    })
+    : voltageGraph({
+      headquarterId: context.headquarterId,
+      panelId: context.panelId,
+      point: context.pointId,
+      date_after: context.formattedDateAfter,
+      date_before: context.formattedDateBefore,
+      token: context.authToken
+    })
+
   const [threeUnbalanced, chartData] = await Promise.all([
-    threeMostUnbalanced({ headquarterId, token: authToken! }),
-    metric === 'current'
-      ? currentGraph({
-          headquarterId,
-          panelId,
-          point: pointId,
-          date_after: formattedDateAfter,
-          date_before: formattedDateBefore,
-          token: authToken!
-        })
-      : voltageGraph({
-          headquarterId,
-          panelId,
-          point: pointId,
-          date_after: formattedDateAfter,
-          date_before: formattedDateBefore,
-          token: authToken!
-        })
+    threeMostUnbalanced({ headquarterId: context.headquarterId, token: context.authToken }),
+    chartDataPromise
   ])
 
   const { top_unbalanced_measurement_points: [first, second, third] } = threeUnbalanced
 
   return (
-    <div className="w-full min-h-[calc(100svh-4rem)] flex flex-col">
-      <FiltersContainer>
-        <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} energy={headquarterId} />
-        <PanelsFilterEnergy energyPanels={measurementPointsPanels.results} panel={panelId} />
-        <MeasurementPointFilter measurementPoints={measurementPoints} point={pointId} />
-        <DatepickerRange />
-      </FiltersContainer>
-
-      <div className="px-4 pb-4 flex-1 flex flex-col">
-        <div className="flex-1 min-h-0 lg:min-h-[calc(100svh-14rem)] flex flex-col lg:flex-row gap-4">
-          <div className="w-full lg:w-1/3 space-y-2">
-            <h3 className="text-lg font-medium text-gray-700">Top 3 equipos con mayor desbalance</h3>
-            <div className="grid grid-cols-1 gap-2">
-              <MostThreeUnbalanced title={first?.measurement_point_name} frequency={first?.total_readings} cup={first?.current_unbalanced} vup={first?.voltage_unbalanced} />
-              <MostThreeUnbalanced title={second?.measurement_point_name} frequency={second?.total_readings} cup={second?.current_unbalanced} vup={second?.voltage_unbalanced} />
-              <MostThreeUnbalanced title={third?.measurement_point_name} frequency={third?.total_readings} cup={third?.current_unbalanced} vup={third?.voltage_unbalanced} />
-            </div>
+    <div className="px-4 pb-4 flex-1 flex flex-col">
+      <div className="flex-1 min-h-0 lg:min-h-[calc(100svh-14rem)] flex flex-col lg:flex-row gap-4">
+        <div className="w-full lg:w-1/3 space-y-2">
+          <h3 className="text-lg font-medium text-gray-700">Top 3 equipos con mayor desbalance del día</h3>
+          <div className="grid grid-cols-1 gap-2">
+            <MostThreeUnbalanced title={first?.measurement_point_name} frequency={first?.total_readings} cup={first?.current_unbalanced} vup={first?.voltage_unbalanced} />
+            <MostThreeUnbalanced title={second?.measurement_point_name} frequency={second?.total_readings} cup={second?.current_unbalanced} vup={second?.voltage_unbalanced} />
+            <MostThreeUnbalanced title={third?.measurement_point_name} frequency={third?.total_readings} cup={third?.current_unbalanced} vup={third?.voltage_unbalanced} />
           </div>
+        </div>
 
-          <div className="w-full lg:w-2/3 space-y-2 flex flex-col min-h-0">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-medium text-gray-700">Desbalances totales por día</h3>
-              <MetricSelector />
-            </div>
-            <div className="w-full h-full flex-1 min-h-[420px]">
-              {metric === 'current'
-                ? <CurrentChartCount currentReadings={chartData} />
-                : <VoltageChartCount voltageReadings={chartData} />
-              }
-            </div>
+        <div className="w-full lg:w-2/3 space-y-2 flex flex-col min-h-0">
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-medium text-gray-700">Desbalances totales por día</h3>
+            <MetricSelector />
+          </div>
+          <div className="w-full h-full flex-1 min-h-[420px]">
+            {context.metric === 'current'
+              ? <CurrentChartCount currentReadings={chartData} />
+              : <VoltageChartCount voltageReadings={chartData} />
+            }
           </div>
         </div>
       </div>
@@ -102,9 +146,16 @@ async function DesbalanceContent({ searchParams }: SearchParams) {
 }
 
 export default async function page({ searchParams }: SearchParams) {
+  const contextPromise = resolveDesbalanceContext(searchParams)
+
   return (
-    <Suspense fallback={<PageSkeleton />}>
-      <DesbalanceContent searchParams={searchParams} />
-    </Suspense>
+    <div className="w-full min-h-[calc(100svh-4rem)] flex flex-col">
+      <Suspense fallback={<div className="h-12 rounded bg-gray-200 animate-pulse" />}>
+        <DesbalanceFiltersSection contextPromise={contextPromise} />
+      </Suspense>
+      <Suspense fallback={<PageSkeleton />}>
+        <DesbalanceDataSection contextPromise={contextPromise} />
+      </Suspense>
+    </div>
   )
 }

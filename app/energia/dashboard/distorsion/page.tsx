@@ -1,16 +1,12 @@
-// import { getCompanyData } from '@/app/lib/auth'
 import { getToken } from '@/app/lib/auth'
 import { armonicsGraph } from '@/app/services/energy/distorsion/data'
 import { getHeadquarters } from '@/app/services/energy/enterprise/data'
 import { SearchParams } from '@/app/type'
-// import CurrentChart from '@/app/ui/energia/distorsion/current-chart'
 import CurrentChartTest from '@/app/ui/energia/distorsion/current-chart-test'
 import CurrentVoltageToggle from '@/app/ui/energia/distorsion/current-voltage-toggle'
 import IndicatorsModal from '@/app/ui/energia/distorsion/indicators-modal'
 import VoltageChartTest from '@/app/ui/energia/distorsion/voltage-chart-test'
-// import VoltageChart from '@/app/ui/energia/distorsion/voltage-current'
 import HeadquarterEnergyFilter from '@/app/ui/energia/filters/headquarter-energy-filter'
-// import PanelsFilterEnergy from '@/app/ui/energia/filters/panels-energy-filter'
 import { DatepickerRange } from '@/app/ui/filters/datepicker-range'
 import FiltersContainer from '@/app/ui/filters/filters-container'
 import NoResultFound from '@/app/ui/no-result-found'
@@ -22,28 +18,45 @@ import { Suspense } from 'react'
 
 async function DistorsionContent({ searchParams }: SearchParams) {
 
-  const { headquarter, panel = '1', date_after = new Date(), date_before = new Date(), data_type = 'current' } = await searchParams
+  const { headquarter, panel, date_after = new Date(), date_before = new Date(), data_type = 'current' } = await searchParams
 
   const authToken = await getToken()
+
+  const prefetchGraphPromise = headquarter
+    ? armonicsGraph({
+      headquarterId: String(headquarter),
+      date_after: format(date_after, 'yyyy-MM-dd'),
+      date_before: format(date_before, 'yyyy-MM-dd'),
+      data_type,
+      token: authToken!
+    })
+    : null
 
 
   const headquarters = await getHeadquarters(authToken!)
 
   const { results } = headquarters
   const firstHeadquarter = headquarter || results[0].id.toString()
+  const selectedHeadquarter = results.find((hq: { id: number; electrical_panels?: Array<{ id: number }> }) => hq.id === Number(firstHeadquarter)) ?? results[0]
+  const selectedPanel = panel || selectedHeadquarter?.electrical_panels?.[0]?.id?.toString() || '1'
 
-  const armonicsGraphReadings = await armonicsGraph({ headquarterId: firstHeadquarter, panelId: panel, date_after: format(date_after, 'yyyy-MM-dd'), date_before: format(date_before, 'yyyy-MM-dd'), data_type, token: authToken! })
+  const armonicsGraphReadings = prefetchGraphPromise ?? await armonicsGraph({
+    headquarterId: firstHeadquarter,
+    date_after: format(date_after, 'yyyy-MM-dd'),
+    date_before: format(date_before, 'yyyy-MM-dd'),
+    data_type,
+    token: authToken!
+  })
 
   return (
     <div className='w-full'>
       <FiltersContainer>
         <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} energy={firstHeadquarter} />
-        {/* <PanelsFilterEnergy energyPanels={  energyDetails.energy_headquarters[0].electrical_panels} /> */}
         <DatepickerRange />
       </FiltersContainer>
       <div className="mx-6">
         <CurrentVoltageToggle type={data_type}>
-          <Link href={"/energia/dashboard/distorsion/detail"}>
+          <Link href={`/energia/dashboard/distorsion/detail?headquarter=${firstHeadquarter}&panel=${selectedPanel}&data_type=${data_type}`}>
             <Button variant="secondary" size="sm" className="gap-2">
               <Eye className="w-4 h-4" />
               Ver detalles
@@ -95,10 +108,20 @@ async function DistorsionContent({ searchParams }: SearchParams) {
   )
 }
 
+function DistorsionSkeleton() {
+  return (
+    <div className="w-full animate-pulse">
+      <div className="h-12 rounded bg-gray-200" />
+      <div className="mt-4 h-80 rounded bg-gray-200" />
+      <div className="mt-4 h-36 rounded bg-gray-200" />
+    </div>
+  )
+}
+
 export default async function page({ searchParams }: SearchParams) {
   return (
     <div>
-      <Suspense fallback={<div>Cargando...</div>}>
+      <Suspense fallback={<DistorsionSkeleton />}>
         <DistorsionContent searchParams={searchParams} />
       </Suspense>
     </div>

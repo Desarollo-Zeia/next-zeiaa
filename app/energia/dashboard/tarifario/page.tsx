@@ -1,34 +1,14 @@
-// import { getCompanyData } from "@/app/lib/auth"
 import { getHeadquarters, getEnergyMeasurementPointPanels } from "@/app/services/energy/enterprise/data"
 import TariffData from "./components/tariff-data"
 import { SearchParams } from "@/app/type"
 import HeadquarterEnergyFilter from "@/app/ui/energia/filters/headquarter-energy-filter"
-// import PanelsFilterEnergy from "@/app/ui/energia/filters/panels-energy-filter"
-// import ConsumeCalculator from "@/app/ui/energia/tarifario/consume-calculator"
-// import ConsumeCycle from "@/app/ui/energia/tarifario/consume-cycle"
-import { DatepickerRange } from "@/app/ui/filters/datepicker-range"
 import FiltersContainer from "@/app/ui/filters/filters-container"
-// import MonthFilter from "@/app/ui/filters/month-filter"
-// import MonthPicker from "@/app/ui/filters/month-picker"
-// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-// import NoResultFound from "@/app/ui/no-result-found"
-// import { Card } from "@/components/ui/card"
-import { format } from "date-fns";
-// import { cacheLife } from "next/cache"
+import { format, subMonths } from "date-fns"
 import { getToken } from "@/app/lib/auth"
-// import TariffTable from "@/app/ui/energia/tarifario/tariff-table"
-// import { BadgeAlert } from "lucide-react"
-
-// async function GetHeadquarters(token: string) {
-//   'use cache'
-//   cacheLife('minutes')
-//   return await getHeadquarters(token)
-// }
 
 export default async function Tarifario({ searchParams }: SearchParams) {
 
   const authToken = await getToken()
-
 
   const monthMap: Record<number, string> = {
     1: "january",
@@ -45,12 +25,13 @@ export default async function Tarifario({ searchParams }: SearchParams) {
     12: "december",
   }
 
-  const currentMonth = new Date().getMonth() + 1
-
-  const defaultMonth = monthMap[currentMonth]
-  const startDefaultMonth = monthMap[currentMonth - 1]
-
   const today = new Date()
+  const previousMonthDate = subMonths(today, 1)
+  const currentMonth = today.getMonth() + 1
+  const previousMonth = previousMonthDate.getMonth() + 1
+  const defaultMonth = monthMap[currentMonth]
+  const startDefaultMonth = monthMap[previousMonth]
+
   const thirtyDaysAgo = new Date(today)
   thirtyDaysAgo.setDate(today.getDate() - 30)
 
@@ -59,11 +40,16 @@ export default async function Tarifario({ searchParams }: SearchParams) {
   const formattedDateAfter = format(date_after, 'yyyy-MM-dd')
   const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
 
-  const headquarters = await getHeadquarters(authToken!)
+  const headquartersPromise = getHeadquarters(authToken!)
+  const panelsPromise = headquarter
+    ? getEnergyMeasurementPointPanels({ headquarterId: String(headquarter), token: authToken! })
+    : null
+
+  const headquarters = await headquartersPromise
   const { results } = headquarters
   const firstHeadquarter = headquarter || results[0].id.toString()
 
-  const measurementPointsPanels = await getEnergyMeasurementPointPanels({
+  const measurementPointsPanels = panelsPromise ?? await getEnergyMeasurementPointPanels({
     headquarterId: firstHeadquarter,
     token: authToken!
   })
@@ -75,7 +61,6 @@ export default async function Tarifario({ searchParams }: SearchParams) {
     <div className="w-full">
       <FiltersContainer>
         <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} energy={firstHeadquarter} />
-        {/* <DatepickerRange /> */}
       </FiltersContainer>
       <div className="w-full flex flex-col gap-4 px-6">
         <TariffData

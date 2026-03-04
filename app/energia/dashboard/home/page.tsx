@@ -27,6 +27,9 @@ interface ResolvedParams {
   page: string
   last_by: string
   category: string
+  headquarters: EnergyHeadquarter[]
+  panels: Array<{ id: number; name: string }>
+  measurementPoints: MeasurementPointResults
   headquarterName?: string
   panelName?: string
   measurementPointName?: string
@@ -52,15 +55,19 @@ async function resolveFilterIds(
   const formattedDateAfter = format(date_after, 'yyyy-MM-dd')
   const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
 
-  const headquarters = await getHeadquarters(token)
+  const headquartersPromise = getHeadquarters(token)
+  const panelsPromise = headquarter ? getEnergyMeasurementPointPanels({ headquarterId: String(headquarter), token }) : null
+  const measurementPointsPromise = panel ? getMeasurementPoints({ electricalpanelId: String(panel), token }) : null
+
+  const headquarters = await headquartersPromise
   const headquarterId = headquarter || headquarters.results[0]?.id.toString()
   const headquarterName = headquarters.results.find((h: EnergyHeadquarter) => h.id.toString() === headquarterId)?.name
 
-  const measurementPointsPanels = await getEnergyMeasurementPointPanels({ headquarterId, token })
+  const measurementPointsPanels = panelsPromise ?? await getEnergyMeasurementPointPanels({ headquarterId, token })
   const panelId = panel || measurementPointsPanels?.results[0]?.id.toString()
   const panelName = measurementPointsPanels.results.find((p: { id: number; name: string }) => p.id.toString() === panelId)?.name
 
-  const measurementPoints = await getMeasurementPoints({ electricalpanelId: panelId, token })
+  const measurementPoints = measurementPointsPromise ?? await getMeasurementPoints({ electricalpanelId: panelId, token })
   const pointId = point || measurementPoints?.results[0]?.measurement_points[0]?.id.toString()
   const measurementPointName = measurementPoints.results
     .flatMap((d: { measurement_points: Array<{ id: number; name: string }> }) => d.measurement_points)
@@ -77,6 +84,9 @@ async function resolveFilterIds(
     page,
     last_by,
     category,
+    headquarters: headquarters.results,
+    panels: measurementPointsPanels.results,
+    measurementPoints,
     headquarterName,
     panelName,
     measurementPointName
@@ -84,41 +94,31 @@ async function resolveFilterIds(
 }
 
 async function FiltersSection({
-  token,
-  headquarterId,
-  panelId,
-  pointId,
-  formattedDateAfter,
-  formattedDateBefore,
-  unit
+  resolvedPromise,
 }: {
-  token: string
-  headquarterId: string
-  panelId: string
-  pointId: string
-  formattedDateAfter: string
-  formattedDateBefore: string
-  unit: string
+  resolvedPromise: Promise<ResolvedParams>
 }) {
-  const [headquarters, measurementPointsPanels, measurementPoints]: [
-    { results: EnergyHeadquarter[] },
-    { results: Array<{ id: number; name: string }> },
-    MeasurementPointResults
-  ] = await Promise.all([
-    getHeadquarters(token),
-    getEnergyMeasurementPointPanels({ headquarterId, token }),
-    getMeasurementPoints({ electricalpanelId: panelId, token })
-  ])
+  const {
+    headquarterId,
+    panelId,
+    pointId,
+    formattedDateAfter,
+    formattedDateBefore,
+    unit,
+    headquarters,
+    panels,
+    measurementPoints,
+  } = await resolvedPromise
 
-  const energyPanel = (measurementPointsPanels.results.find((p) => p.id.toString() === panelId) as ElectricalPanel | undefined) ?? null
+  const energyPanel = (panels.find((p) => p.id.toString() === panelId) as ElectricalPanel | undefined) ?? null
   const energyMeasurementPoint = measurementPoints.results
     .flatMap((device) => device.measurement_points)
     .find((mp) => mp.id.toString() === pointId)?.name ?? ''
 
   return (
     <FiltersContainer>
-      <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} energy={headquarterId} />
-      <PanelsFilterEnergy energyPanels={measurementPointsPanels.results as ElectricalPanel[]} panel={panelId} />
+      <HeadquarterEnergyFilter energyHeadquarter={headquarters} energy={headquarterId} />
+      <PanelsFilterEnergy energyPanels={panels as ElectricalPanel[]} panel={panelId} />
       <MeasurementPointFilter measurementPoints={measurementPoints} point={pointId} />
       <DatepickerRange />
       <DownloadExcel
@@ -137,25 +137,22 @@ async function FiltersSection({
 
 async function TableSection({
   token,
-  headquarterId,
-  panelId,
-  pointId,
-  formattedDateAfter,
-  formattedDateBefore,
-  category,
-  indicator,
-  page
+  resolvedPromise,
 }: {
   token: string
-  headquarterId: string
-  panelId: string
-  pointId: string
-  formattedDateAfter: string
-  formattedDateBefore: string
-  category: string
-  indicator: string
-  page: string
+  resolvedPromise: Promise<ResolvedParams>
 }) {
+  const {
+    headquarterId,
+    panelId,
+    pointId,
+    formattedDateAfter,
+    formattedDateBefore,
+    category,
+    indicator,
+    page,
+  } = await resolvedPromise
+
   const readings = await consume({
     date_after: formattedDateAfter,
     date_before: formattedDateBefore,
@@ -172,33 +169,26 @@ async function TableSection({
 
 async function GraphSection({
   token,
-  headquarterId,
-  panelId,
-  pointId,
-  formattedDateAfter,
-  formattedDateBefore,
-  category,
-  indicator,
-  unit,
-  last_by,
-  headquarterName,
-  panelName,
-  measurementPointName
+  resolvedPromise,
 }: {
   token: string
-  headquarterId: string
-  panelId: string
-  pointId: string
-  formattedDateAfter: string
-  formattedDateBefore: string
-  category: string
-  indicator: string
-  unit: string
-  last_by: string
-  headquarterName?: string
-  panelName?: string
-  measurementPointName?: string
+  resolvedPromise: Promise<ResolvedParams>
 }) {
+  const {
+    headquarterId,
+    panelId,
+    pointId,
+    formattedDateAfter,
+    formattedDateBefore,
+    category,
+    indicator,
+    unit,
+    last_by,
+    headquarterName,
+    panelName,
+    measurementPointName,
+  } = await resolvedPromise
+
 
   const [readings, readingsGraph, tableData] = await Promise.all([
     consume({
@@ -272,21 +262,12 @@ async function GraphSection({
 export default async function page({ searchParams }: SearchParams) {
   const params = await searchParams
   const authToken = await getToken()
-
-  const resolved = await resolveFilterIds(params, authToken!)
+  const resolvedPromise = resolveFilterIds(params, authToken!)
 
   return (
     <div className="w-full">
       <Suspense fallback={<FiltersSkeleton />}>
-        <FiltersSection
-          token={authToken!}
-          headquarterId={resolved.headquarterId}
-          panelId={resolved.panelId}
-          pointId={resolved.pointId}
-          formattedDateAfter={resolved.formattedDateAfter}
-          formattedDateBefore={resolved.formattedDateBefore}
-          unit={resolved.unit}
-        />
+        <FiltersSection resolvedPromise={resolvedPromise} />
       </Suspense>
 
       <div className="flex gap-4 min-h-full">
@@ -294,14 +275,7 @@ export default async function page({ searchParams }: SearchParams) {
           <Suspense fallback={<TableSkeleton />}>
             <TableSection
               token={authToken!}
-              headquarterId={resolved.headquarterId}
-              panelId={resolved.panelId}
-              pointId={resolved.pointId}
-              formattedDateAfter={resolved.formattedDateAfter}
-              formattedDateBefore={resolved.formattedDateBefore}
-              category={resolved.category}
-              indicator={resolved.indicator}
-              page={resolved.page}
+              resolvedPromise={resolvedPromise}
             />
           </Suspense>
         </div>
@@ -309,18 +283,7 @@ export default async function page({ searchParams }: SearchParams) {
           <Suspense fallback={<GraphSkeleton />}>
             <GraphSection
               token={authToken!}
-              headquarterId={resolved.headquarterId}
-              panelId={resolved.panelId}
-              pointId={resolved.pointId}
-              formattedDateAfter={resolved.formattedDateAfter}
-              formattedDateBefore={resolved.formattedDateBefore}
-              category={resolved.category}
-              indicator={resolved.indicator}
-              unit={resolved.unit}
-              last_by={resolved.last_by}
-              headquarterName={resolved.headquarterName}
-              panelName={resolved.panelName}
-              measurementPointName={resolved.measurementPointName}
+              resolvedPromise={resolvedPromise}
             />
           </Suspense>
         </div>
