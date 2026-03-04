@@ -2,6 +2,9 @@
 import React from 'react'
 import NoResultsFound from '../../no-result'
 import { DynamicBar } from '@/components/charts'
+import { capitalizeFirstLetter } from '@/app/utils/func'
+import { es } from 'date-fns/locale'
+import { format } from 'date-fns'
 
 
 
@@ -33,7 +36,7 @@ export default function VoltageChartCount({ voltageReadings }: { voltageReadings
   const { results = [], message } = voltageReadings?.[0] ?? {}
 
   const dataPoints = results?.map((item: Result) => ({
-    x: item.date ? `${item.date}T12:00:00` : '',
+    x: item.date ? `${item.date}T12:00:00Z` : '',
     y: item.unbalanced_count,
   })) || []
 
@@ -55,11 +58,29 @@ export default function VoltageChartCount({ voltageReadings }: { voltageReadings
     scales: {
       x: {
         type: "time",
+        adapters: {
+          date: {
+            locale: es,
+          },
+        },
+        time: {
+          unit: 'day',
+          displayFormats: {
+            day: "d 'de' MMMM",
+          },
+        },
         grid: {
           display: false
         },
         ticks: {
-          font: { size: 11 }
+          font: { size: 11 },
+          callback: function (val: number | string) {
+            const date = new Date(Number(val))
+            if (Number.isNaN(date.getTime())) return ''
+            const formattedDate = format(date, "d 'de' MMMM", { locale: es })
+            const [day, month] = formattedDate.split(' de ')
+            return month ? `${day} de ${capitalizeFirstLetter(month)}` : formattedDate
+          },
         }
 
       },
@@ -76,6 +97,23 @@ export default function VoltageChartCount({ voltageReadings }: { voltageReadings
     },
     plugins: {
       legend: { display: false },
+      tooltip: {
+        backgroundColor: "white",
+        titleColor: "#666",
+        bodyColor: "#00b0c7",
+        borderColor: "#e5e7eb",
+        borderWidth: 1,
+        padding: 12,
+        callbacks: {
+          title: function (tooltipItems: Array<{ parsed?: { x?: number } }>) {
+            const x = tooltipItems?.[0]?.parsed?.x
+            if (!x) return ''
+            const date = new Date(x)
+            if (Number.isNaN(date.getTime())) return ''
+            return capitalizeFirstLetter(format(date, "EEEE d 'de' MMMM", { locale: es }))
+          },
+        },
+      },
     }
   }
 

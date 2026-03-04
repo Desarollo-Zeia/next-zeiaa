@@ -64,7 +64,7 @@ async function DesbalanceContent({ searchParams }: SearchParams) {
   const { top_unbalanced_measurement_points: [first, second, third] } = threeUnbalanced
 
   return (
-    <div className="w-full space-y-4">
+    <div className="w-full min-h-[calc(100svh-4rem)] flex flex-col">
       <FiltersContainer>
         <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} energy={headquarterId} />
         <PanelsFilterEnergy energyPanels={measurementPointsPanels.results} panel={panelId} />
@@ -72,8 +72,8 @@ async function DesbalanceContent({ searchParams }: SearchParams) {
         <DatepickerRange />
       </FiltersContainer>
 
-      <div className="px-4 space-y-4">
-        <div className="flex flex-col lg:flex-row gap-4">
+      <div className="px-4 pb-4 flex-1 flex flex-col">
+        <div className="flex-1 min-h-0 lg:min-h-[calc(100svh-14rem)] flex flex-col lg:flex-row gap-4">
           <div className="w-full lg:w-1/3 space-y-2">
             <h3 className="text-lg font-medium text-gray-700">Top 3 equipos con mayor desbalance</h3>
             <div className="grid grid-cols-1 gap-2">
@@ -83,12 +83,12 @@ async function DesbalanceContent({ searchParams }: SearchParams) {
             </div>
           </div>
 
-          <div className="w-full lg:w-2/3 space-y-2">
+          <div className="w-full lg:w-2/3 space-y-2 flex flex-col min-h-0">
             <div className="flex justify-between items-center">
               <h3 className="text-lg font-medium text-gray-700">Desbalances totales por día</h3>
               <MetricSelector />
             </div>
-            <div className="w-full h-[400px]">
+            <div className="w-full h-full flex-1 min-h-[420px]">
               {metric === 'current'
                 ? <CurrentChartCount currentReadings={chartData} />
                 : <VoltageChartCount voltageReadings={chartData} />

@@ -1,7 +1,7 @@
 "use client"
 
 import { useSearchParams, useRouter, usePathname } from "next/navigation"
-import { useTransition } from "react"
+import { useTransition, useEffect } from "react"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useFiltersStore } from "@/app/lib/stores/filters-store"
 
@@ -34,7 +34,11 @@ export default function HeadquarterEnergyFilter({ energyHeadquarter = [], energy
   const searchParams = useSearchParams()
   const { replace } = useRouter()
   const pathname = usePathname()
-  const { headquarterId, setHeadquarter } = useFiltersStore()
+  const { headquarterId, setHeadquarter, syncFromUrl } = useFiltersStore()
+
+  useEffect(() => {
+    syncFromUrl(searchParams)
+  }, [searchParams, syncFromUrl])
 
   const currentHeadquarterId = headquarterId || searchParams.get('headquarter') || energy
 

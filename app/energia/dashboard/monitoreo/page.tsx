@@ -73,11 +73,9 @@ async function MonitoreoContent({ searchParams }: SearchParams) {
         <DatepickerRange />
         <DownloadExcelMonitoreo headquarterId={firstHeadquarter} panelId={panel} />
       </FiltersContainer>
-      <div className="flex gap-4 mx-6">
-        <div className="flex-1">
-          <PowerUsageChart readings={monitoringGraphReadings} group={group_by} powers={results[0].powers} />
-          <ExcessPower excessPowerData={monitoringLastThreeReadings} panel={electrical_panels[0]} powers={results[0].powers} />
-        </div>
+      <div className="w-full px-6">
+        <PowerUsageChart readings={monitoringGraphReadings} group={group_by} powers={results[0].powers} panel={electrical_panels[0]} />
+        <ExcessPower excessPowerData={monitoringLastThreeReadings} panel={electrical_panels[0]} powers={results[0].powers} />
       </div>
     </div>
   )
