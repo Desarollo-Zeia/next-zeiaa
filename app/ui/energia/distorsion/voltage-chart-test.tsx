@@ -5,24 +5,24 @@ import { es } from 'date-fns/locale'
 import { format } from "date-fns"
 
 export type VoltageReading = {
-    date: string;
-    time: string;
-    voltage: {
-      THDVr: number;
-      THDVs: number;
-      THDVt: number;
-    };
-  };
-  
+  date: string
+  time: string
+  voltage: {
+    THDVr: number
+    THDVs: number
+    THDVt: number
+  }
+}
 
-const VoltageChartTest = ({ voltageReadings } : { voltageReadings : VoltageReading[]}) => {
+
+const VoltageChartTest = ({ voltageReadings }: { voltageReadings: VoltageReading[] }) => {
   // Preparar etiquetas y datos
   const labels = voltageReadings.map(
     (item) => `${item.date} ${item.time}`
-  );
-  const thdvrData = voltageReadings.map((item) => item.voltage.THDVr);
-  const thdvsData = voltageReadings.map((item) => item.voltage.THDVs);
-  const thdvtData = voltageReadings.map((item) => item.voltage.THDVt);
+  )
+  const thdvrData = voltageReadings.map((item) => item.voltage.THDVr)
+  const thdvsData = voltageReadings.map((item) => item.voltage.THDVs)
+  const thdvtData = voltageReadings.map((item) => item.voltage.THDVt)
 
   const data = {
     labels,
@@ -58,7 +58,7 @@ const VoltageChartTest = ({ voltageReadings } : { voltageReadings : VoltageReadi
         pointRadius: 0,
       },
     ],
-  };
+  }
 
   const options: Record<string, unknown> = {
     interaction: {
@@ -115,6 +115,38 @@ const VoltageChartTest = ({ voltageReadings } : { voltageReadings : VoltageReadi
             return `${label}: ${val.toFixed(2)}%`
           },
         }
+      },
+      annotation: {
+        annotations: {
+          line1: {
+            type: 'line' as const,
+            yMin: 8,
+            yMax: 8,
+            borderColor: '#eab308',
+            borderWidth: 2,
+            borderDash: [5, 5],
+            label: {
+              display: true,
+              color: 'white',
+              backgroundColor: '#eab308',
+              content: ['Límite THD (8%)'],
+            }
+          },
+          line2: {
+            type: 'line' as const,
+            yMin: 5,
+            yMax: 5,
+            borderColor: '#ef4444',
+            borderWidth: 2,
+            borderDash: [5, 5],
+            label: {
+              display: true,
+              color: 'white',
+              backgroundColor: '#ef4444',
+              content: ['Límite armónico (5%)'],
+            }
+          }
+        }
       }
     },
     scales: {
@@ -134,8 +166,8 @@ const VoltageChartTest = ({ voltageReadings } : { voltageReadings : VoltageReadi
         },
         ticks: {
           callback: function (value: string | number | Date) {
-            const date = new Date(value);
-            return format(date, "PP", { locale: es });
+            const date = new Date(value)
+            return format(date, "PP", { locale: es })
           }
         },
       },
@@ -153,9 +185,9 @@ const VoltageChartTest = ({ voltageReadings } : { voltageReadings : VoltageReadi
         }
       },
     },
-  };
+  }
 
-  return <DynamicLine data={data} options={options} />; 
-};
+  return <DynamicLine data={data} options={options} />
+}
 
-export default VoltageChartTest;
+export default VoltageChartTest
