@@ -70,6 +70,9 @@ function getTableroImage(name: string, key: string): string | null {
   if (searchText.includes('sala operaciones') || searchText.includes('qx')) {
     return '/images/tableros/sala-operaciones-TGA.JPG'
   }
+  if (searchText.includes('tablero general') || searchText.includes('tg')) {
+    return '/images/tableros/PH.jpeg'
+  }
 
   return null
 }
@@ -118,8 +121,8 @@ export default function TableComponent({ readings, hoveredPoint, onRowHover }: T
           </TableHeader>
           <TableBody>
             {readings.results.map(reading => (
-              <TableRow 
-                key={reading.id} 
+              <TableRow
+                key={reading.id}
                 className={`transition-colors ${hoveredPoint === reading.name ? 'bg-blue-50' : 'bg-white hover:bg-gray-50'}`}
                 onMouseEnter={() => onRowHover?.(reading.name)}
                 onMouseLeave={() => onRowHover?.(null)}
