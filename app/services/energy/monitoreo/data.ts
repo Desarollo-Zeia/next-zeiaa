@@ -2,8 +2,13 @@
 import { fetchWithAuth, fetchWithAuthEnergy } from "@/app/lib/api"
 import { baseUrl, baseUrlEnergy } from "@/app/lib/constant"
 import { Indicator, Unit } from "@/app/type"
+import { cacheLife } from 'next/cache'
+import { cache } from 'react'
 
-export async function monitoringGraph({ headquarterId, date_after, date_before, group_by, token }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, group_by?: string, token?: string }) {
+const monitoringGraphCached = cache(async (headquarterId: string, date_after?: string, date_before?: string, group_by?: string, token?: string) => {
+  'use cache'
+  cacheLife('minutes')
+
   const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/powers/graph`, baseUrlEnergy)
 
   if (date_after) url.searchParams.set('date_after', date_after)
@@ -13,17 +18,20 @@ export async function monitoringGraph({ headquarterId, date_after, date_before, 
   const res = await fetchWithAuthEnergy(`${url.pathname}${url.search}`, {}, token)
 
   return res
-}
+})
 
+const monitoringLastThreeCached = cache(async (headquarterId: string, token?: string) => {
+  'use cache'
+  cacheLife('minutes')
 
-export async function monitoringLastThree({ headquarterId, token }: { panelId?: string, headquarterId?: string, token?: string }) {
   const res = await fetchWithAuthEnergy(`/api/v1/headquarter/${headquarterId}/electrical_panel/powers/last-exceeded`, {}, token)
   return res
+})
 
-}
+const exceededCached = cache(async (headquarterId: string, date_after?: string, date_before?: string, page?: string, token?: string) => {
+  'use cache'
+  cacheLife('minutes')
 
-
-export async function exceeded({ headquarterId, date_after, date_before, page, token }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, page?: string, token?: string }) {
   const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/powers/all-exceeded`, baseUrlEnergy)
 
   if (date_after) url.searchParams.set('date_after', date_after)
@@ -33,10 +41,21 @@ export async function exceeded({ headquarterId, date_after, date_before, page, t
   const res = await fetchWithAuthEnergy(`${url.pathname}${url.search}`, {}, token)
 
   return res
+})
+
+export async function monitoringGraph({ headquarterId, date_after, date_before, group_by, token }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, group_by?: string, token?: string }) {
+  return await monitoringGraphCached(headquarterId!, date_after, date_before, group_by, token)
+}
+
+export async function monitoringLastThree({ headquarterId, token }: { panelId?: string, headquarterId?: string, token?: string }) {
+  return await monitoringLastThreeCached(headquarterId!, token)
+}
+
+export async function exceeded({ headquarterId, date_after, date_before, page, token }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, page?: string, token?: string }) {
+  return await exceededCached(headquarterId!, date_after, date_before, page, token)
 }
 
 export async function exceededExcel({ headquarterId }: { headquarterId?: string, panelId?: string }) {
-
   const res = await fetchWithAuthEnergy(`/api/v1/headquarter/${headquarterId}/electrical_panel/powers/report-exceeded`)
 
   return res
@@ -56,5 +75,3 @@ export async function alertsExcel({ room, indicator, unit, date_after, date_befo
 
   return res
 }
-
-
