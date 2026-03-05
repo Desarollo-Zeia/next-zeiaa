@@ -37,8 +37,8 @@ interface MeasurementPointResults {
 
 export default function MeasurementPointFilter({ measurementPoints, point }: { measurementPoints: MeasurementPointResults, point: string }) {
 
-  const [isPending, startTransition] = useTransition();
-  const searchParams = useSearchParams();
+  const [isPending, startTransition] = useTransition()
+  const searchParams = useSearchParams()
   const pathname = usePathname()
   const { replace } = useRouter()
   const { pointId, setPoint, syncFromUrl } = useFiltersStore()
@@ -51,23 +51,23 @@ export default function MeasurementPointFilter({ measurementPoints, point }: { m
 
   const handlePointChange = (point: string) => {
     setPoint(point === 'none' ? '' : point)
-    
-    startTransition(() => {
-      const newParams = new URLSearchParams(searchParams);
 
-      newParams.set('page', '1');
+    startTransition(() => {
+      const newParams = new URLSearchParams(searchParams)
+
+      newParams.set('page', '1')
 
       if (point && point !== 'none') {
-        newParams.set('point', point);
+        newParams.set('point', point)
       }
 
       if (point === 'none') {
-        newParams.delete('point');
+        newParams.delete('point')
       }
 
-      replace(`${pathname}?${newParams.toString()}`, { scroll: false });
-    });
-  };
+      replace(`${pathname}?${newParams.toString()}`, { scroll: false })
+    })
+  }
 
 
 
@@ -85,7 +85,6 @@ export default function MeasurementPointFilter({ measurementPoints, point }: { m
           <SelectGroup>
             {
               measurementPoints.results
-                .filter((device) => !device.name.includes("Device Falso"))
                 .map((device) => {
                   return (
                     <React.Fragment key={device.id}>

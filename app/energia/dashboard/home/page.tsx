@@ -67,7 +67,7 @@ async function resolveFilterIds(
   const panelId = panel || measurementPointsPanels?.results[0]?.id.toString()
   const panelName = measurementPointsPanels.results.find((p: { id: number; name: string }) => p.id.toString() === panelId)?.name
 
-  const measurementPoints = measurementPointsPromise ?? await getMeasurementPoints({ electricalpanelId: panelId, token })
+  const measurementPoints = await getMeasurementPoints({ electricalpanelId: panelId, token })
   const pointId = point || measurementPoints?.results[0]?.measurement_points[0]?.id.toString()
   const measurementPointName = measurementPoints.results
     .flatMap((d: { measurement_points: Array<{ id: number; name: string }> }) => d.measurement_points)

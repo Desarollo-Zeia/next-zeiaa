@@ -1,7 +1,7 @@
 import { getEnergyMeasurementPointPanels } from '@/app/services/energy/enterprise/data'
 import { getHeadquarters, getMeasurementPoints } from '@/app/services/filters/data'
 import { consumeGraph, dashboardTable, porcentageGraph } from '@/app/services/panel/data'
-import { EnergyHeadquarter, MeasurementPointResults, SearchParams } from '@/app/type'
+import { MeasurementPointResults, SearchParams } from '@/app/type'
 import { VoltageByDay } from '@/app/utils/thresholds'
 import HeadquarterEnergyFilter from '@/app/ui/energia/filters/headquarter-energy-filter'
 import BarChart from '@/app/ui/energia/panel/bar-chart'
@@ -14,8 +14,9 @@ import YearFilter from '@/app/ui/filters/year-filter'
 import PeriodPickerFilter from '@/app/ui/filters/period-picker-filter'
 import { format } from 'date-fns'
 import React, { Suspense } from 'react'
+import TodayAlertBanner from '@/app/ui/energia/panel/today-alert-banner'
 import { getToken } from '@/app/lib/auth'
-import PanelsFilterEnergy, { ElectricalPanel } from '@/app/ui/energia/filters/panels-energy-filter'
+import PanelsFilterEnergy from '@/app/ui/energia/filters/panels-energy-filter'
 import IndicatorEnergyFilter from '@/app/ui/filters/indicator-energy-filter'
 
 function isLeapYear(year: number): boolean {
@@ -47,26 +48,8 @@ function getMonthDateRange(year: number, month: number): string {
   return `${startDate}:${endDate}`
 }
 
-interface PanelContext {
-  authToken: string
-  weekday: string
-  this_month?: string
-  this_week?: string
-  selectedYear: number
-  selectedIndicador: string
-  firstHeadquarter: string
-  firstPanel: string
-  firstPoint: string
-  formattedDateAfter?: string
-  formattedDateBefore?: string
-  start: string
-  finish: string
-  headquarters: { results: EnergyHeadquarter[] }
-  measurementPointsPanels: { results: ElectricalPanel[] }
-  measurementPoints: MeasurementPointResults
-}
-
-async function resolvePanelContext(searchParams: SearchParams['searchParams']): Promise<PanelContext> {
+// Componente que maneja la carga de datos
+async function DashboardContent({ searchParams }: SearchParams) {
   const {
     headquarter,
     panel,
@@ -83,146 +66,109 @@ async function resolvePanelContext(searchParams: SearchParams['searchParams']): 
   } = await searchParams
 
   const authToken = await getToken()
+
   const currentYear = new Date().getFullYear()
   const selectedYear = year ? parseInt(year, 10) : currentYear
   const currentMonth = new Date().getMonth() + 1
+
   const defaultMonthRange = getMonthDateRange(selectedYear, currentMonth)
-  const [defaultStart, defaultFinish] = defaultMonthRange.split(':')
+  const [defaultStart, defaultFinish] = defaultMonthRange.split(":")
+
   const formattedDateAfter = date_after ? format(date_after, 'yyyy-MM-dd') : undefined
   const formattedDateBefore = date_before ? format(date_before, 'yyyy-MM-dd') : undefined
+
   const start = date_start || defaultStart
   const finish = date_end || defaultFinish
 
-  const headquartersPromise = getHeadquarters(authToken!)
-  const panelsPromise = headquarter
-    ? getEnergyMeasurementPointPanels({ headquarterId: String(headquarter), token: authToken! })
-    : null
-  const measurementPointsPromise = panel
-    ? getMeasurementPoints({ electricalpanelId: String(panel), token: authToken! })
-    : null
+  const headquarters = await getHeadquarters(authToken!)
 
-  const headquarters = await headquartersPromise
-  
-  if (!headquarters?.results?.length) {
-    throw new Error('No hay sedes disponibles')
-  }
-  
-  const firstHeadquarter = headquarter || headquarters.results[0].id.toString()
-  const measurementPointsPanels = panelsPromise ?? await getEnergyMeasurementPointPanels({
+  const { results } = headquarters
+  const firstHeadquarter = headquarter || results[0].id.toString()
+
+  const measurementPointsPanels = await getEnergyMeasurementPointPanels({
     headquarterId: firstHeadquarter,
     token: authToken!
   })
 
-  if (!measurementPointsPanels?.results?.length) {
-    throw new Error('No hay paneles disponibles')
-  }
-
   const firstPanel = panel || measurementPointsPanels?.results[0]?.id.toString()
 
-  const measurementPoints: MeasurementPointResults = measurementPointsPromise ?? await getMeasurementPoints({
+  const measurementPoints: MeasurementPointResults = await getMeasurementPoints({
     electricalpanelId: firstPanel,
     token: authToken!
   })
 
-  if (!measurementPoints?.results?.length || !measurementPoints.results[0]?.measurement_points?.length) {
-    throw new Error('No hay puntos de medición disponibles')
-  }
 
-  const firstPoint = point || measurementPoints.results[0].measurement_points[0].id.toString()
+
+  const firstPoint = point || measurementPoints?.results[0]?.measurement_points[0].id.toString()
+
   const selectedIndicador = indicador || 'EPpos'
 
-  return {
-    authToken: authToken!,
-    weekday,
+  const dashboardTableReadings = await dashboardTable({
+    headquarterId: firstHeadquarter,
+    token: authToken!,
+    date_after: formattedDateAfter,
+    date_before: formattedDateBefore,
+    point: firstPoint,
+    panelId: firstPanel
+  })
+
+  const dashboardPorcentageGraph = await porcentageGraph({
+    headquarterId: firstHeadquarter,
     this_month,
     this_week,
-    selectedYear,
-    selectedIndicador,
-    firstHeadquarter,
-    firstPanel,
-    firstPoint,
-    formattedDateAfter,
-    formattedDateBefore,
-    start,
-    finish,
-    headquarters,
-    measurementPointsPanels,
-    measurementPoints,
-  }
-}
+    date_after: formattedDateAfter,
+    date_before: formattedDateBefore,
+    panelId: firstPanel,
+    token: authToken!
+  })
 
-async function PanelFiltersSection({ contextPromise }: { contextPromise: Promise<PanelContext> }) {
-  const context = await contextPromise
+  const consumeGraphReadings = await consumeGraph({
+    date_after: start,
+    date_before: finish,
+    headquarterId: firstHeadquarter,
+    indicador: selectedIndicador,
+    panelId: firstPanel,
+    point: firstPoint,
+    last_by: 'day',
+    weekday,
+    token: authToken!
+  })
 
-  return (
-    <FiltersContainer>
-      <PanelsFilterEnergy energyPanels={context.measurementPointsPanels.results} panel={context.firstPanel} />
-      <HeadquarterEnergyFilter energyHeadquarter={context.headquarters.results} energy={context.firstHeadquarter} />
-    </FiltersContainer>
-  )
-}
-
-async function PanelMainSection({ contextPromise }: { contextPromise: Promise<PanelContext> }) {
-  const context = await contextPromise
-
-  const [dashboardTableReadings, dashboardPorcentageGraph, consumeGraphReadings] = await Promise.all([
-    dashboardTable({
-      headquarterId: context.firstHeadquarter,
-      token: context.authToken,
-      date_after: context.formattedDateAfter,
-      date_before: context.formattedDateBefore,
-      point: context.firstPoint,
-      panelId: context.firstPanel
-    }),
-    porcentageGraph({
-      headquarterId: context.firstHeadquarter,
-      this_month: context.this_month,
-      this_week: context.this_week,
-      date_after: context.formattedDateAfter,
-      date_before: context.formattedDateBefore,
-      panelId: context.firstPanel,
-      token: context.authToken
-    }),
-    consumeGraph({
-      date_after: context.start,
-      date_before: context.finish,
-      headquarterId: context.firstHeadquarter,
-      indicador: context.selectedIndicador,
-      panelId: context.firstPanel,
-      point: context.firstPoint,
-      last_by: 'day',
-      weekday: context.weekday,
-      token: context.authToken
-    })
-  ])
-
-  const thresholds = context.measurementPoints?.results[0]?.measurement_points?.find((mp) =>
-    mp.id === Number(context.firstPoint)
+  const thresholds = measurementPoints?.results[0]?.measurement_points?.find((mp) =>
+    mp.id === Number(firstPoint)
   )?.energy_thresholds?.thresholds_values as VoltageByDay | undefined
+
+  console.log(dashboardTableReadings)
 
   return (
     <>
+      <FiltersContainer>
+        <PanelsFilterEnergy energyPanels={measurementPointsPanels.results} panel={firstPanel} />
+        <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} energy={firstHeadquarter} />
+      </FiltersContainer>
+      {/* <TodayAlertBanner alertToday={alertToday} /> */}
       <ChartComponent electricalPanelData={dashboardPorcentageGraph} />
       <PanelViewWrapper readings={dashboardTableReadings} />
       <div className='w-full'>
         <div className='flex justify-between gap-4'>
+
           <div className='flex flex-col gap-4 px-4'>
             <div className='flex items-end justify-end relative gap-2'>
-              <YearFilter year={context.selectedYear.toString()} />
-              <MonthFilter year={context.selectedYear.toString()} />
+              <YearFilter year={selectedYear.toString()} />
+              <MonthFilter year={selectedYear.toString()} />
             </div>
             <div className='flex justify-between items-center gap-4'>
-              <PeriodPickerFilter weekday={context.weekday} />
+              <PeriodPickerFilter weekday={weekday} />
               <div className='flex gap-2'>
-                <PanelsFilterEnergy energyPanels={context.measurementPointsPanels.results} panel={context.firstPanel} />
-                <MeasurementPointFilter measurementPoints={context.measurementPoints} point={context.firstPoint} />
-                <IndicatorEnergyFilter indicador={context.selectedIndicador} />
+                <PanelsFilterEnergy energyPanels={measurementPointsPanels.results} panel={firstPanel} />
+                <MeasurementPointFilter measurementPoints={measurementPoints} point={firstPoint} />
+                <IndicatorEnergyFilter indicador={selectedIndicador} />
               </div>
             </div>
           </div>
         </div>
         <div className='w-[80%] flex justify-center items-center m-auto'>
-          <BarChart readingsGraph={consumeGraphReadings} weekday={context.weekday} thresholds={thresholds} />
+          <BarChart readingsGraph={consumeGraphReadings} weekday={weekday} thresholds={thresholds} />
         </div>
       </div>
     </>
@@ -268,15 +214,10 @@ function DashboardSkeleton() {
 
 // Componente de página principal
 export default function Page({ searchParams }: SearchParams) {
-  const contextPromise = resolvePanelContext(searchParams)
-
   return (
     <div className="relative p-6 flex flex-col justify-center gap-8">
-      <Suspense fallback={<div className="h-12 bg-gray-200 rounded animate-pulse" />}>
-        <PanelFiltersSection contextPromise={contextPromise} />
-      </Suspense>
       <Suspense fallback={<DashboardSkeleton />}>
-        <PanelMainSection contextPromise={contextPromise} />
+        <DashboardContent searchParams={searchParams} />
       </Suspense>
     </div>
   )

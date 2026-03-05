@@ -15,6 +15,7 @@ import {
   type TooltipItem,
   type Scale,
 } from "chart.js";
+import annotationPlugin from 'chartjs-plugin-annotation'
 import "chartjs-adapter-date-fns";
 import NoResultsFound from '../../no-result';
 import { formattedDate, formattedWithoutMonth } from '@/app/utils/func';
@@ -27,7 +28,8 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  TimeScale
+  TimeScale,
+  annotationPlugin
 );
 
 interface ReadingGraphItem {
