@@ -76,7 +76,7 @@ async function MonitoreoContent({ searchParams }: SearchParams) {
       <FiltersContainer>
         <HeadquarterEnergyFilter energyHeadquarter={headquarters.results} energy={firstHeadquarter} />
         <DatepickerRange />
-        <DownloadExcelMonitoreo headquarterId={firstHeadquarter} panelId={selectedPanel} />
+        {/* <DownloadExcelMonitoreo headquarterId={firstHeadquarter} panelId={selectedPanel} /> */}
       </FiltersContainer>
       <div className="w-full px-6">
         <PowerUsageChart readings={monitoringGraphReadings} group={group_by} powers={powers} panel={electricalPanel} />

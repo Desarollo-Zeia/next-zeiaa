@@ -138,8 +138,6 @@ async function DashboardContent({ searchParams }: SearchParams) {
     mp.id === Number(firstPoint)
   )?.energy_thresholds?.thresholds_values as VoltageByDay | undefined
 
-  console.log(dashboardTableReadings)
-
   return (
     <>
       <FiltersContainer>
