@@ -31,58 +31,6 @@ interface PanelViewWrapperProps {
   }
 }
 
-function getTableroImage(name: string, key: string): string | null {
-  const searchText = (name + ' ' + key).toLowerCase()
-
-  if (searchText.includes('tn-p') || searchText.includes('te-p') || searchText.includes('tn-te')) {
-    return '/images/tableros/tn-te-TGA.JPG'
-  }
-  if (searchText.includes('pediatria') || searchText.includes('semisotano')) {
-    return '/images/tableros/tablero-pediatria-semisotano-TGA.JPG'
-  }
-  if (searchText.includes('tomografo') || searchText.includes('tg-rt')) {
-    return '/images/tableros/tomografo-TG-RT.jpg'
-  }
-  if (searchText.includes('llave general') && searchText.includes('p1')) {
-    return '/images/tableros/llave-general-TG-P1.JPG'
-  }
-  if (searchText.includes('llave general') && searchText.includes('tga')) {
-    return '/images/tableros/llave-general-TGA.JPG'
-  }
-  if (searchText.includes('bombas') || searchText.includes('fuerza')) {
-    return '/images/tableros/llave-general-bombas-FUERZA.jpg'
-  }
-  if (searchText.includes('aire acondicionado') || searchText.includes('ac')) {
-    return '/images/tableros/aire-acondicionado-TGA.JPG'
-  }
-  if (searchText.includes('ascensor')) {
-    return '/images/tableros/ascensor-derecho-TGA.JPG'
-  }
-  if (searchText.includes('data center') || searchText.includes('ups')) {
-    return '/images/tableros/data-center-ups-TGA.JPG'
-  }
-  if (searchText.includes('hemodialisis')) {
-    return '/images/tableros/hemodialisis-TGA.JPG'
-  }
-  if (searchText.includes('resonador')) {
-    return '/images/tableros/resonador-TGA.JPG'
-  }
-  if (searchText.includes('rx') || searchText.includes('pb')) {
-    return '/images/tableros/rx-pb-TGA.JPG'
-  }
-  if (searchText.includes('sala operaciones') || searchText.includes('qx')) {
-    return '/images/tableros/sala-operaciones-TGA.JPG'
-  }
-
-  return null
-}
-
-function isGroundFloor(name: string): boolean {
-  const firstFloorOnly = ['tomografo']
-  const lowerName = name.toLowerCase()
-  return !firstFloorOnly.some(keyword => lowerName.includes(keyword))
-}
-
 export default function PanelViewWrapper({ readings }: PanelViewWrapperProps) {
   const [viewMode, setViewMode] = useState<'table' | 'floorplan'>('table')
   const [selectedFloor, setSelectedFloor] = useState<'ground' | 'first'>('ground')
