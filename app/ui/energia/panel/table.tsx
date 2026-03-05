@@ -34,28 +34,28 @@ function getTableroImage(name: string, key: string): string | null {
   if (searchText.includes('tn-p') || searchText.includes('te-p') || searchText.includes('tn-te')) {
     return '/images/tableros/tn-te-TGA.JPG'
   }
-  if (searchText.includes('pediatria') || searchText.includes('semisotano')) {
+  if (searchText.includes('pediatria')) {
     return '/images/tableros/tablero-pediatria-semisotano-TGA.JPG'
   }
   if (searchText.includes('tomografo') || searchText.includes('tg-rt')) {
     return '/images/tableros/tomografo-TG-RT.jpg'
   }
-  if (searchText.includes('llave general') && searchText.includes('p1')) {
+  if (searchText.includes('tg-p1')) {
     return '/images/tableros/llave-general-TG-P1.JPG'
   }
-  if (searchText.includes('llave general') && searchText.includes('tga')) {
+  if (searchText.includes('tga')) {
     return '/images/tableros/llave-general-TGA.JPG'
   }
-  if (searchText.includes('bombas') || searchText.includes('fuerza')) {
+  if (searchText.includes('bombas')) {
     return '/images/tableros/llave-general-bombas-FUERZA.jpg'
   }
-  if (searchText.includes('aire acondicionado') || searchText.includes('ac')) {
+  if (searchText.includes('aire acondicionado')) {
     return '/images/tableros/aire-acondicionado-TGA.JPG'
   }
   if (searchText.includes('ascensor')) {
     return '/images/tableros/ascensor-derecho-TGA.JPG'
   }
-  if (searchText.includes('data center') || searchText.includes('ups')) {
+  if (searchText.includes('data center')) {
     return '/images/tableros/data-center-ups-TGA.JPG'
   }
   if (searchText.includes('hemodialisis')) {
@@ -64,13 +64,13 @@ function getTableroImage(name: string, key: string): string | null {
   if (searchText.includes('resonador')) {
     return '/images/tableros/resonador-TGA.JPG'
   }
-  if (searchText.includes('rx') || searchText.includes('pb')) {
+  if (searchText.includes('rx-pb')) {
     return '/images/tableros/rx-pb-TGA.JPG'
   }
   if (searchText.includes('sala operaciones') || searchText.includes('qx')) {
     return '/images/tableros/sala-operaciones-TGA.JPG'
   }
-  if (searchText.includes('tablero general') || searchText.includes('tg')) {
+  if (searchText.includes('PH') || searchText.includes('tg')) {
     return '/images/tableros/PH.jpeg'
   }
 

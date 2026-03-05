@@ -5,25 +5,25 @@ import { es } from 'date-fns/locale'
 import { format } from "date-fns"
 
 export type CurrentReading = {
-    date: string;
-    time: string;
-    current: {
-        THDIr: number;
-        THDIs: number;
-        THDIt: number;
-    };
+  date: string
+  time: string
+  current: {
+    THDIr: number
+    THDIs: number
+    THDIt: number
   }
+}
 
-const CurrentChartTest = ({ currentReadings } : { currentReadings : CurrentReading[]}) => {
+const CurrentChartTest = ({ currentReadings }: { currentReadings: CurrentReading[] }) => {
 
   // Preparar etiquetas y datos
   const labels = currentReadings.map(
     (item: CurrentReading) => `${item.date} ${item.time}`
   )
 
-  const thdirData = currentReadings.map((item) => item.current.THDIr);
-  const thdisData = currentReadings.map((item) => item.current.THDIs);
-  const thditData = currentReadings.map((item) => item.current.THDIt);
+  const thdirData = currentReadings.map((item) => item.current.THDIr)
+  const thdisData = currentReadings.map((item) => item.current.THDIs)
+  const thditData = currentReadings.map((item) => item.current.THDIt)
 
   const data = {
     labels,
@@ -63,10 +63,10 @@ const CurrentChartTest = ({ currentReadings } : { currentReadings : CurrentReadi
 
   const options: Record<string, unknown> = {
     interaction: {
-        mode: 'nearest',
-        axis: 'x',
-        intersect: false
-      },
+      mode: 'nearest',
+      axis: 'x',
+      intersect: false
+    },
     responsive: true,
     plugins: {
       legend: {
@@ -78,9 +78,9 @@ const CurrentChartTest = ({ currentReadings } : { currentReadings : CurrentReadi
       },
       zoom: {
         pan: {
-            enabled: true,
-            mode: "x",
-          },
+          enabled: true,
+          mode: "x",
+        },
         zoom: {
           wheel: {
             enabled: true,
@@ -88,7 +88,7 @@ const CurrentChartTest = ({ currentReadings } : { currentReadings : CurrentReadi
             speed: 0.1,
             threshold: 2,
           },
-           pan: {
+          pan: {
             enabled: true,
             mode: "xy",
           },
@@ -118,38 +118,7 @@ const CurrentChartTest = ({ currentReadings } : { currentReadings : CurrentReadi
           },
         }
       },
-      annotation: {
-        annotations: {
-          line1: {
-            type: 'line' as const,
-            yMin: 8,
-            yMax: 8,
-            borderColor: '#eab308',
-            borderWidth: 2,
-            borderDash: [5, 5],
-            label: {
-              display: true,
-              color: 'white',
-              backgroundColor: '#eab308',
-              content: ['Límite THD (8%)'],
-            }
-          },
-          line2: {
-            type: 'line' as const,
-            yMin: 5,
-            yMax: 5,
-            borderColor: '#ef4444',
-            borderWidth: 2,
-            borderDash: [5, 5],
-            label: {
-              display: true,
-              color: 'white',
-              backgroundColor: '#ef4444',
-              content: ['Límite armónico (5%)'],
-            }
-          }
-        }
-      }
+
     },
     scales: {
       x: {
@@ -157,7 +126,7 @@ const CurrentChartTest = ({ currentReadings } : { currentReadings : CurrentReadi
           display: true,
         },
         grid: {
-            color: '#e5e7eb'
+          color: '#e5e7eb'
         },
         type: "time",
         time: {
@@ -167,10 +136,10 @@ const CurrentChartTest = ({ currentReadings } : { currentReadings : CurrentReadi
           },
         },
         ticks: {
-            callback: function (value: string | number | Date) {
+          callback: function (value: string | number | Date) {
             const date = new Date(value)
             return format(date, "PP", { locale: es })
-            }
+          }
         },
       },
       y: {
@@ -180,17 +149,17 @@ const CurrentChartTest = ({ currentReadings } : { currentReadings : CurrentReadi
           text: "THDI (%)",
         },
         grid: {
-            color: '#e5e7eb'
+          color: '#e5e7eb'
         },
         ticks: {
-            display: true
+          display: true
         }
       },
     },
   }
 
 
-  return <DynamicLine data={data} options={options} />;
-};
+  return <DynamicLine data={data} options={options} />
+}
 
-export default CurrentChartTest;
+export default CurrentChartTest

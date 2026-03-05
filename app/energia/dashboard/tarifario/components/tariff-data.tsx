@@ -124,7 +124,7 @@ async function TariffDataContent({
           </div>
         </div>
       )}
-
+      {/* 
       {!calculatorResult?.detail && (
         <>
           <div>
@@ -135,7 +135,7 @@ async function TariffDataContent({
             secondCalculatorResultMonthly={secondCalculatorResultMonthly}
           />
         </>
-      )}
+      )} */}
       <div className="py-2">
         <h2 className="text-lg font-semibold">Facturación Actual</h2>
       </div>
