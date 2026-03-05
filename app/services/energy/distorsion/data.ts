@@ -1,8 +1,12 @@
 'use server'
 import { fetchWithAuthEnergy } from "@/app/lib/api"
 import { baseUrlEnergy } from "@/app/lib/constant"
+import { cacheLife } from 'next/cache'
+import { cache } from 'react'
 
-export async function armonics({ headquarterId, date_after, date_before, data_type, page, token }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, data_type?: string, page?: string, token?: string }) {
+const armonicsCached = cache(async (headquarterId: string, date_after?: string, date_before?: string, data_type?: string, page?: string, token?: string) => {
+  'use cache'
+  cacheLife('minutes')
 
   const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/harmonic-distortion/list`, baseUrlEnergy)
 
@@ -14,9 +18,11 @@ export async function armonics({ headquarterId, date_after, date_before, data_ty
   const res = await fetchWithAuthEnergy(`${url.pathname}${url.search}`, {}, token)
 
   return res
-}
+})
 
-export async function armonicsGraph({ headquarterId, date_after, date_before, data_type, token }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, data_type?: string, token?: string }) {
+const armonicsGraphCached = cache(async (headquarterId: string, date_after?: string, date_before?: string, data_type?: string, token?: string) => {
+  'use cache'
+  cacheLife('minutes')
 
   const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/harmonic-distortion/graph`, baseUrlEnergy)
 
@@ -27,12 +33,17 @@ export async function armonicsGraph({ headquarterId, date_after, date_before, da
   const res = await fetchWithAuthEnergy(`${url.pathname}${url.search}`, {}, token)
 
   return res
+})
+
+export async function armonics({ headquarterId, date_after, date_before, data_type, page, token }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, data_type?: string, page?: string, token?: string }) {
+  return await armonicsCached(headquarterId!, date_after, date_before, data_type, page, token)
+}
+
+export async function armonicsGraph({ headquarterId, date_after, date_before, data_type, token }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, data_type?: string, token?: string }) {
+  return await armonicsGraphCached(headquarterId!, date_after, date_before, data_type, token)
 }
 
 export async function armonicsExcel({ headquarterId, date_after, date_before, data_type }: { headquarterId?: string, panelId?: string, date_after?: string, date_before?: string, data_type?: string }) {
-
-
-
   const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/harmonic-distortion/report`, baseUrlEnergy)
 
   if (date_after) url.searchParams.set('date_after', date_after)
