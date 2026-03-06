@@ -20,34 +20,6 @@ interface TariffDataProps {
   secondmonth: string
 }
 
-// async function GetConsumptionCalculator({ headquarterId, date_after, date_before, token }: { headquarterId: string, date_after: string, date_before: string, token?: string }) {
-//   'use cache'
-//   return await consumptionCalculator({ headquarterId, date_after, date_before, token })
-// }
-
-// async function GetConsumptionCalculatorMonthly({ headquarterId, filter_month, token }: { headquarterId: string, filter_month: string, token?: string }) {
-//   'use cache'
-//   return await consumptionCalculatorMonthly({ headquarterId, filter_month, token })
-// }
-
-// async function GetSecondConsumptionCalculatorMonthly({ headquarterId, filter_month, token }: { headquarterId: string, filter_month: string, token?: string }) {
-//   'use cache'
-//   return await consumptionCalculatorMonthly({ headquarterId, filter_month, token })
-// }
-
-// async function GetConsumptionInvoice({ headquarterId, token }: { headquarterId: string, token?: string }) {
-//   'use cache'
-//   cacheLife('minutes')
-//   return await consumptionInvoice({ headquarterId, token })
-// }
-
-// async function GetConsumptionTariff({ headquarterId, token }: { headquarterId: string, token?: string }) {
-//   'use cache'
-//   cacheLife('minutes')
-
-//   return await consumptionTariff({ headquarterId, token })
-// }
-
 async function TariffDataContent({
   headquarterId,
   panel,
@@ -124,7 +96,7 @@ async function TariffDataContent({
           </div>
         </div>
       )}
-      {/* 
+
       {!calculatorResult?.detail && (
         <>
           <div>
@@ -135,7 +107,7 @@ async function TariffDataContent({
             secondCalculatorResultMonthly={secondCalculatorResultMonthly}
           />
         </>
-      )} */}
+      )}
       <div className="py-2">
         <h2 className="text-lg font-semibold">Facturación Actual</h2>
       </div>
