@@ -32,7 +32,7 @@ export default async function page({ searchParams }: SearchParams) {
         <StatusSelect />
         <DatepickerRange />
       </FiltersContainer>
-      <TableComponent generalRoomData={generalRoomData} readings={readings} count={readings.count} indicator={indicator as Indicator} unit={unit as Unit} date_after={format(date_after, "yyyy-MM-dd")} date_before={format(date_before, "yyyy-MM-dd")} room={currentFirstRoom} />
+      <TableComponent generalRoomData={generalRoomData} readings={readings} count={readings.count} indicator={indicator as Indicator} unit={unit as Unit} date_after={format(date_after, "yyyy-MM-dd")} date_before={format(date_before, "yyyy-MM-dd")} room={currentFirstRoom} headquarterId="0" />
 
     </div>
   )
