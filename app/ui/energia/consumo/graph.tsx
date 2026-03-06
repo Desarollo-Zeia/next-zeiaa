@@ -203,7 +203,7 @@ const SimpleLineChart = ({ readingsGraph, category, indicator, last_by, readings
   const dataPointsBar = processData(readingsGraph, false) || []
   const dataPoints = chartType === 'line' ? dataPointsLine : dataPointsBar
 
-  // Verificar si todos los valores son cero o null/undefined
+  // Verificar sip todos los valores son cero o null/undefined
   const hasOnlyZeros = dataPoints.length > 0 && dataPoints.every((point: { y: number | null | undefined | string }) =>
     point.y === 0 || point.y === null || point.y === undefined || point.y === ''
   )

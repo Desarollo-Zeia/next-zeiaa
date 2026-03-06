@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
 import { Camera, X } from 'lucide-react'
 import Image from 'next/image'
 
+
 type Reading = {
   id: number,
   name: string,
