@@ -284,16 +284,17 @@ export async function readinsgExcel({
   unit = 'PPM',
   date_after,
   date_before,
-  token
+  token,
+  headquarterId
 }: {
   indicator: string
   unit: string
   date_after?: string
   date_before?: string
-  token?: string
+  token?: string,
+  headquarterId?: string
 }) {
   // TODO: Cambiar este headquarterId hardcodeado por un parametro dinamico
-  const headquarterId = 49
   const url = new URL(`/readings/api/headquarter/${headquarterId}/room/indicator/report/all-rooms?frequency=hourly`, baseUrl)
 
   if (indicator) url.searchParams.set('indicator', indicator)

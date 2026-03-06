@@ -1,5 +1,5 @@
 import { getToken } from "@/app/lib/auth";
-import { getRooms } from "@/app/services/filters/data";
+import { getHeadquartersOcupacional, getRooms } from "@/app/services/filters/data";
 import { readingsData, roomGeneralData } from "@/app/services/readings/data";
 import { Indicator, Room, SearchParams, Unit } from "@/app/type";
 import TableComponent from "@/app/ui/analisis/table";
@@ -11,6 +11,7 @@ import { TimeRangeSlider } from "@/app/ui/filters/time-range-slider";
 import { format } from "date-fns";
 import { Suspense } from "react";
 import IndicadoresSkeleton from "./loading";
+import HeadquarterSelect from "@/app/ui/filters/headquarter-select";
 // import { cacheLife } from "next/cache";
 
 // async function GetRooms(token: string) {
@@ -34,7 +35,7 @@ import IndicadoresSkeleton from "./loading";
 
 async function Indicadores({ searchParams }: SearchParams) {
 
-  const { room, indicator, unit, date_after = new Date(), date_before = new Date(), page = '1', status, start, end, ordering } = await searchParams
+  const { room, indicator, unit, headquarter, date_after = new Date(), date_before = new Date(), page = '1', status, start, end, ordering } = await searchParams
 
   const authToken = await getToken()
 
@@ -43,6 +44,8 @@ async function Indicadores({ searchParams }: SearchParams) {
   const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
 
   const rooms: Room[] = await getRooms(authToken!)
+  const headquarters = await getHeadquartersOcupacional({ token: authToken! })
+
 
   const firstRoom = rooms.find((room) => room.is_activated === true)
 
@@ -51,8 +54,12 @@ async function Indicadores({ searchParams }: SearchParams) {
 
   const { indicator: currentFirstIndicator, unit: currentFirstUnit } = generalRoomData.indicators_activated[0]
 
+
+  const currentFirstHeadquarter = headquarters.results[0].id
+
   const currentIndicator = indicator ?? currentFirstIndicator
   const currentUnit = unit ?? currentFirstUnit
+  const currentHeadquarter = headquarter ?? currentFirstHeadquarter
 
   const readings = await readingsData({ roomId: currentFirstRoom, indicator: currentIndicator, unit: currentUnit, date_after: formattedDateAfter, date_before: formattedDateBefore, page, status, hour_before: end, hour_after: start, ordering, token: authToken! })
   const thresholdsFilters = generalRoomData?.thresholds_filter[indicator as Indicator]
@@ -60,12 +67,13 @@ async function Indicadores({ searchParams }: SearchParams) {
   return (
     <div>
       <FiltersContainer>
+        <HeadquarterSelect headquarters={headquarters} />
         <RoomSelect firstRoom={currentFirstRoom} rooms={rooms} />
         <StatusSelect status_filter={thresholdsFilters} />
         <TimeRangeSlider />
         <DatepickerRange />
       </FiltersContainer>
-      <TableComponent generalRoomData={generalRoomData} readings={readings} count={readings.count} indicator={currentIndicator as Indicator} unit={currentUnit as Unit} date_after={formattedDateAfter} date_before={formattedDateBefore} room={currentFirstRoom} />
+      <TableComponent generalRoomData={generalRoomData} readings={readings} count={readings.count} indicator={currentIndicator as Indicator} unit={currentUnit as Unit} date_after={formattedDateAfter} date_before={formattedDateBefore} room={currentFirstRoom} headquarterId={currentHeadquarter.toString() as string} />
     </div>
   )
 }

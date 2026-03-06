@@ -6,18 +6,18 @@ import { useFiltersStore } from '@/app/lib/stores/filters-store';
 import posthog from "posthog-js";
 
 interface Headquarter {
-  id:number
-  name:string
+  id: number
+  name: string
 }
 
 interface Headquarters {
   count: number,
   next: string,
   previous: string,
-  results : Headquarter[]
+  results: Headquarter[]
 }
 
-export default function HeadquarterSelect({ headquarters } : { headquarters : Headquarters }) {
+export default function HeadquarterSelect({ headquarters }: { headquarters: Headquarters }) {
 
   const searchParams = useSearchParams()
   const [isPending, startTransition] = useTransition();
@@ -29,12 +29,17 @@ export default function HeadquarterSelect({ headquarters } : { headquarters : He
     syncFromUrl(searchParams)
   }, [searchParams, syncFromUrl])
 
-  const currentHeadquarterId = headquarterId || searchParams.get('headquarter') || ''
+  const firstHeadquarter = headquarters?.results?.[0]
+  const currentHeadquarterId = firstHeadquarter ? String(firstHeadquarter.id) : ''
+
+  if (!firstHeadquarter) {
+    return null
+  }
 
   const handleRoomChange = (headquarter: string) => {
     const previousValue = currentHeadquarterId
     const newValue = headquarter === 'none' ? '' : headquarter
-    
+
     if (previousValue !== newValue) {
       posthog.capture('filter_used', {
         filter_type: 'headquarter',
@@ -44,33 +49,32 @@ export default function HeadquarterSelect({ headquarters } : { headquarters : He
         timestamp: new Date().toISOString(),
       })
     }
-    
+
     setHeadquarter(headquarter === 'none' ? '' : headquarter)
-    
+
     startTransition(() => {
       const params = new URLSearchParams(searchParams);
       if (headquarter && headquarter !== 'none') {
         params.set('headquarter', headquarter);
-      } 
- 
+      }
+
       if (headquarter === 'none') {
         params.delete('headquarter');
       }
- 
-      replace(`${pathname}?${params.toString()}`, { scroll: false});
+
+      replace(`${pathname}?${params.toString()}`, { scroll: false });
     })
   }
-  
+
   return (
     <div className="relative">
-      <Select onValueChange={handleRoomChange} value={currentHeadquarterId || 'none'}>
+      <Select onValueChange={handleRoomChange} defaultValue={currentHeadquarterId}>
         <SelectTrigger className="w-[240px] bg-[#00b0c7]">
-          <SelectValue placeholder="Selecciona una sede" className="text-white font-bold"/>
+          <SelectValue className="text-white font-bold" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value='none'>Sin área</SelectItem>
           {
-            headquarters?.results?.map((headquarter : Headquarter) => (
+            headquarters?.results?.map((headquarter: Headquarter) => (
               <SelectItem key={headquarter.id} value={String(headquarter.id)} >{headquarter.name}</SelectItem>
             ))
           }
@@ -82,6 +86,6 @@ export default function HeadquarterSelect({ headquarters } : { headquarters : He
         </div>
       )}
     </div>
-    
+
   )
 }

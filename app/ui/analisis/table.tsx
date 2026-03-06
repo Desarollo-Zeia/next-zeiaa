@@ -39,9 +39,11 @@ type TableComponentProps = {
   date_after?: string,
   date_before?: string,
   room: string,
+  headquarterId: string
+
 }
 
-export default function TableComponent({ generalRoomData, readings, count, indicator, unit, room, date_before, date_after }: TableComponentProps) {
+export default function TableComponent({ generalRoomData, readings, count, indicator, unit, room, date_before, date_after, headquarterId }: TableComponentProps) {
 
   const newDateBefore = parse(date_before as string, "yyyy-MM-dd", new Date()) ?? ''
   const newDateAfter = parse(date_after as string, "yyyy-MM-dd", new Date()) ?? ''
@@ -71,6 +73,7 @@ export default function TableComponent({ generalRoomData, readings, count, indic
             unit,
             date_before: DbFormat,
             date_after: DaFormat,
+            headquarterId
           });
         }
 
