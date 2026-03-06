@@ -41,15 +41,12 @@ export default async function Tarifario({ searchParams }: SearchParams) {
   const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
 
   const headquartersPromise = getHeadquarters(authToken!)
-  const panelsPromise = headquarter
-    ? getEnergyMeasurementPointPanels({ headquarterId: String(headquarter), token: authToken! })
-    : null
 
   const headquarters = await headquartersPromise
   const { results } = headquarters
   const firstHeadquarter = headquarter || results[0].id.toString()
 
-  const measurementPointsPanels = panelsPromise ?? await getEnergyMeasurementPointPanels({
+  const measurementPointsPanels = await getEnergyMeasurementPointPanels({
     headquarterId: firstHeadquarter,
     token: authToken!
   })

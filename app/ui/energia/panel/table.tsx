@@ -118,9 +118,9 @@ export default function TableComponent({ readings, hoveredPoint, onRowHover }: T
           </TableHeader>
           <TableBody>
             {readings.results.map(reading => (
-              <TableRow 
-                key={reading.id} 
-                className={`transition-colors ${hoveredPoint === reading.name ? 'bg-blue-50' : 'bg-white hover:bg-gray-50'}`}
+              <TableRow
+                key={reading.id}
+                className={`transition-colors ${hoveredPoint === reading.name ? 'bg-blue-50' : 'bg-white hover:bg-gray-50'} ${reading?.hardware === 'No asignado' && 'text-gray-400'}`}
                 onMouseEnter={() => onRowHover?.(reading.name)}
                 onMouseLeave={() => onRowHover?.(null)}
               >
@@ -136,7 +136,7 @@ export default function TableComponent({ readings, hoveredPoint, onRowHover }: T
                 <TableCell className='text-center'>
                   {reading.capacity}
                 </TableCell>
-                <TableCell className='text-center'>
+                <TableCell className={`text-center `}>
                   {reading.hardware}
                 </TableCell>
                 <TableCell className='text-center'>

@@ -7,16 +7,17 @@ import HeadquarterEnergyFilter from '@/app/ui/energia/filters/headquarter-energy
 import BarChart from '@/app/ui/energia/panel/bar-chart'
 import ChartComponent from '@/app/ui/energia/panel/chart'
 import PanelViewWrapper from '@/app/ui/energia/panel/panel-view-wrapper'
-import FiltersContainer from '@/app/ui/filters/filters-container'
-import MeasurementPointFilter from '@/app/ui/filters/measurement-points-filter'
-import MonthFilter from '@/app/ui/filters/month-filter'
-import YearFilter from '@/app/ui/filters/year-filter'
-import PeriodPickerFilter from '@/app/ui/filters/period-picker-filter'
-import { format } from 'date-fns'
-import React, { Suspense } from 'react'
-import { getToken } from '@/app/lib/auth'
-import PanelsFilterEnergy, { ElectricalPanel } from '@/app/ui/energia/filters/panels-energy-filter'
-import IndicatorEnergyFilter from '@/app/ui/filters/indicator-energy-filter'
+import FiltersContainer from "@/app/ui/filters/filters-container"
+import MeasurementPointFilter from "@/app/ui/filters/measurement-points-filter"
+import MonthFilter from "@/app/ui/filters/month-filter"
+import YearFilter from "@/app/ui/filters/year-filter"
+import PeriodPickerFilter from "@/app/ui/filters/period-picker-filter"
+import { format } from "date-fns"
+import React, { Suspense } from "react"
+import { getToken } from "@/app/lib/auth"
+import PanelsFilterEnergy, { ElectricalPanel } from "@/app/ui/energia/filters/panels-energy-filter"
+import IndicatorEnergyFilter from "@/app/ui/filters/indicator-energy-filter"
+import NoResultsFound from "@/app/ui/no-result"
 
 function isLeapYear(year: number): boolean {
   return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0)
@@ -64,6 +65,8 @@ interface PanelContext {
   headquarters: { results: EnergyHeadquarter[] }
   measurementPointsPanels: { results: ElectricalPanel[] }
   measurementPoints: MeasurementPointResults
+  hasData: boolean
+  errorMessage?: string
 }
 
 async function resolvePanelContext(searchParams: SearchParams['searchParams']): Promise<PanelContext> {
@@ -104,7 +107,26 @@ async function resolvePanelContext(searchParams: SearchParams['searchParams']): 
   const headquarters = await headquartersPromise
   
   if (!headquarters?.results?.length) {
-    throw new Error('No hay sedes disponibles')
+    return {
+      authToken: authToken!,
+      weekday,
+      this_month,
+      this_week,
+      selectedYear,
+      selectedIndicador: indicador || 'EPpos',
+      firstHeadquarter: '',
+      firstPanel: '',
+      firstPoint: '',
+      formattedDateAfter,
+      formattedDateBefore,
+      start,
+      finish,
+      headquarters: { results: [] },
+      measurementPointsPanels: { results: [] },
+      measurementPoints: { results: [] },
+      hasData: false,
+      errorMessage: 'No hay sedes disponibles'
+    }
   }
   
   const firstHeadquarter = headquarter || headquarters.results[0].id.toString()
@@ -114,7 +136,26 @@ async function resolvePanelContext(searchParams: SearchParams['searchParams']): 
   })
 
   if (!measurementPointsPanels?.results?.length) {
-    throw new Error('No hay paneles disponibles')
+    return {
+      authToken: authToken!,
+      weekday,
+      this_month,
+      this_week,
+      selectedYear,
+      selectedIndicador: indicador || 'EPpos',
+      firstHeadquarter,
+      firstPanel: '',
+      firstPoint: '',
+      formattedDateAfter,
+      formattedDateBefore,
+      start,
+      finish,
+      headquarters,
+      measurementPointsPanels: { results: [] },
+      measurementPoints: { results: [] },
+      hasData: false,
+      errorMessage: 'No hay paneles disponibles'
+    }
   }
 
   const firstPanel = panel || measurementPointsPanels?.results[0]?.id.toString()
@@ -125,7 +166,26 @@ async function resolvePanelContext(searchParams: SearchParams['searchParams']): 
   })
 
   if (!measurementPoints?.results?.length || !measurementPoints.results[0]?.measurement_points?.length) {
-    throw new Error('No hay puntos de medición disponibles')
+    return {
+      authToken: authToken!,
+      weekday,
+      this_month,
+      this_week,
+      selectedYear,
+      selectedIndicador: indicador || 'EPpos',
+      firstHeadquarter,
+      firstPanel,
+      firstPoint: '',
+      formattedDateAfter,
+      formattedDateBefore,
+      start,
+      finish,
+      headquarters,
+      measurementPointsPanels,
+      measurementPoints: { results: [] },
+      hasData: false,
+      errorMessage: 'No hay puntos de medición disponibles'
+    }
   }
 
   const firstPoint = point || measurementPoints.results[0].measurement_points[0].id.toString()
@@ -148,11 +208,20 @@ async function resolvePanelContext(searchParams: SearchParams['searchParams']): 
     headquarters,
     measurementPointsPanels,
     measurementPoints,
+    hasData: true,
   }
 }
 
 async function PanelFiltersSection({ contextPromise }: { contextPromise: Promise<PanelContext> }) {
   const context = await contextPromise
+
+  if (!context.hasData) {
+    return (
+      <div className="p-6">
+        <NoResultsFound message={context.errorMessage || "No hay datos disponibles"} />
+      </div>
+    )
+  }
 
   return (
     <FiltersContainer>
@@ -164,6 +233,14 @@ async function PanelFiltersSection({ contextPromise }: { contextPromise: Promise
 
 async function PanelMainSection({ contextPromise }: { contextPromise: Promise<PanelContext> }) {
   const context = await contextPromise
+
+  if (!context.hasData) {
+    return (
+      <div className="p-6">
+        <NoResultsFound message={context.errorMessage || "No hay datos disponibles"} />
+      </div>
+    )
+  }
 
   const [dashboardTableReadings, dashboardPorcentageGraph, consumeGraphReadings] = await Promise.all([
     dashboardTable({
