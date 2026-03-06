@@ -1,20 +1,20 @@
-import { getToken } from "@/app/lib/auth";
-import { currentGraph, threeMostUnbalanced, voltageGraph } from "@/app/services/energy/desbalance/data";
-import { getEnergyMeasurementPointPanels, getHeadquarters } from "@/app/services/energy/enterprise/data";
-import { getMeasurementPoints } from "@/app/services/filters/data";
-import { SearchParams } from "@/app/type";
-import CurrentChartCount from "@/app/ui/energia/desbalance/current-chart-count";
-import { MetricSelector } from "@/app/ui/energia/desbalance/metric-selector";
-import MostThreeUnbalanced from "@/app/ui/energia/desbalance/most-three-unbalanced";
-import VoltageChartCount from "@/app/ui/energia/desbalance/voltage-chart-count";
-import HeadquarterEnergyFilter from "@/app/ui/energia/filters/headquarter-energy-filter";
-import PanelsFilterEnergy from "@/app/ui/energia/filters/panels-energy-filter";
-import { DatepickerRange } from "@/app/ui/filters/datepicker-range";
-import FiltersContainer from "@/app/ui/filters/filters-container";
-import MeasurementPointFilter from "@/app/ui/filters/measurement-points-filter";
-import { format } from "date-fns";
-import { Suspense } from "react";
-import { PageSkeleton } from "@/app/ui/energia/desbalance/skeletons";
+import { getToken } from "@/app/lib/auth"
+import { currentGraph, threeMostUnbalanced, voltageGraph } from "@/app/services/energy/desbalance/data"
+import { getEnergyMeasurementPointPanels, getHeadquarters } from "@/app/services/energy/enterprise/data"
+import { getMeasurementPoints } from "@/app/services/filters/data"
+import { SearchParams } from "@/app/type"
+import CurrentChartCount from "@/app/ui/energia/desbalance/current-chart-count"
+import { MetricSelector } from "@/app/ui/energia/desbalance/metric-selector"
+import MostThreeUnbalanced from "@/app/ui/energia/desbalance/most-three-unbalanced"
+import VoltageChartCount from "@/app/ui/energia/desbalance/voltage-chart-count"
+import HeadquarterEnergyFilter from "@/app/ui/energia/filters/headquarter-energy-filter"
+import PanelsFilterEnergy from "@/app/ui/energia/filters/panels-energy-filter"
+import { DatepickerRange } from "@/app/ui/filters/datepicker-range"
+import FiltersContainer from "@/app/ui/filters/filters-container"
+import MeasurementPointFilter from "@/app/ui/filters/measurement-points-filter"
+import { format } from "date-fns"
+import { Suspense } from "react"
+import { PageSkeleton } from "@/app/ui/energia/desbalance/skeletons"
 
 interface DesbalanceContext {
   metric: string
@@ -45,12 +45,7 @@ async function resolveDesbalanceContext(searchParams: SearchParams['searchParams
   const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
 
   const headquartersPromise = getHeadquarters(authToken!)
-  const panelsPromise = headquarter
-    ? getEnergyMeasurementPointPanels({ headquarterId: String(headquarter), token: authToken! })
-    : null
-  const measurementPointsPromise = panel
-    ? getMeasurementPoints({ electricalpanelId: String(panel), token: authToken! })
-    : null
+
 
   const headquarters = await headquartersPromise
 
@@ -60,19 +55,11 @@ async function resolveDesbalanceContext(searchParams: SearchParams['searchParams
 
   const headquarterId = headquarter || headquarters.results[0]?.id.toString()
 
-  const measurementPointsPanels = panelsPromise ?? await getEnergyMeasurementPointPanels({ headquarterId, token: authToken! })
-
-  if (!measurementPointsPanels?.results?.length) {
-    throw new Error('No hay paneles disponibles')
-  }
+  const measurementPointsPanels = await getEnergyMeasurementPointPanels({ headquarterId, token: authToken! })
 
   const panelId = panel || measurementPointsPanels?.results[0]?.id.toString()
 
-  const measurementPoints = measurementPointsPromise ?? await getMeasurementPoints({ electricalpanelId: panelId, token: authToken! })
-
-  if (!measurementPoints?.results?.length || !measurementPoints.results[0]?.measurement_points?.length) {
-    throw new Error('No hay puntos de medición disponibles')
-  }
+  const measurementPoints = await getMeasurementPoints({ electricalpanelId: panelId, token: authToken! })
 
   const pointId = point || measurementPoints.results[0].measurement_points[0]?.id.toString()
 

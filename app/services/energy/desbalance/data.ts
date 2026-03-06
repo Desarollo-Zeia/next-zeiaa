@@ -1,8 +1,13 @@
 'use server'
 import { fetchWithAuthEnergy } from "@/app/lib/api"
 import { baseUrlEnergy } from "@/app/lib/constant"
+import { cacheLife } from 'next/cache'
+import { cache } from 'react'
 
-export async function current({ headquarterId, panelId, point, date_after, date_before, status, page, token }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, status?: string, page?: string, point: string, token?: string }) {
+const currentCached = cache(async (headquarterId: string, panelId: string, point: string, date_after?: string, date_before?: string, status?: string, page?: string, token?: string) => {
+  'use cache'
+  cacheLife('minutes')
+
   const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/measurement_point/${point}/current-imbalanced`, baseUrlEnergy)
 
   if (date_after) url.searchParams.set('date_after', date_after)
@@ -10,13 +15,15 @@ export async function current({ headquarterId, panelId, point, date_after, date_
   if (status) url.searchParams.set('status', status)
   if (page) url.searchParams.set('page', page)
 
-
   const res = await fetchWithAuthEnergy(`${url.pathname}${url.search}`, {}, token)
 
   return res
-}
+})
 
-export async function currentGraph({ headquarterId, panelId, point, date_after, date_before, status, page, token }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, status?: string, page?: string, point: string, token?: string }) {
+const currentGraphCached = cache(async (headquarterId: string, panelId: string, point: string, date_after?: string, date_before?: string, status?: string, page?: string, token?: string) => {
+  'use cache'
+  cacheLife('minutes')
+
   const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/measurement_point/${point}/unbalanced-current/counters-graph`, baseUrlEnergy)
 
   if (date_after) url.searchParams.set('date_after', date_after)
@@ -27,9 +34,12 @@ export async function currentGraph({ headquarterId, panelId, point, date_after, 
   const res = await fetchWithAuthEnergy(`${url.pathname}${url.search}`, {}, token)
 
   return res
-}
+})
 
-export async function voltage({ headquarterId, date_after, date_before, status, page, panelId, point, token }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, status?: string, page?: string, point?: string, token?: string }) {
+const voltageCached = cache(async (headquarterId: string, panelId: string, point: string, date_after?: string, date_before?: string, status?: string, page?: string, token?: string) => {
+  'use cache'
+  cacheLife('minutes')
+
   const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/measurement_point/${point}/voltage-imbalanced`, baseUrlEnergy)
 
   if (date_after) url.searchParams.set('date_after', date_after)
@@ -40,10 +50,12 @@ export async function voltage({ headquarterId, date_after, date_before, status, 
   const res = await fetchWithAuthEnergy(`${url.pathname}${url.search}`, {}, token)
 
   return res
-}
+})
 
+const voltageGraphCached = cache(async (headquarterId: string, panelId: string, point: string, date_after?: string, date_before?: string, status?: string, token?: string) => {
+  'use cache'
+  cacheLife('minutes')
 
-export async function voltageGraph({ headquarterId, panelId, point, date_after, date_before, status, token }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, status?: string, point?: string, token?: string }) {
   const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/measurement_point/${point}/unbalanced-voltage/counters-graph`, baseUrlEnergy)
 
   if (date_after) url.searchParams.set('date_after', date_after)
@@ -53,16 +65,35 @@ export async function voltageGraph({ headquarterId, panelId, point, date_after, 
   const res = await fetchWithAuthEnergy(`${url.pathname}${url.search}`, {}, token)
 
   return res
-}
+})
 
+const threeMostUnbalancedCached = cache(async (headquarterId: string, token?: string) => {
+  'use cache'
+  cacheLife('minutes')
 
-export async function threeMostUnbalanced({ headquarterId, token }: { headquarterId?: string, token?: string }) {
   const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/most-three-unbalanced`, baseUrlEnergy)
 
   const res = await fetchWithAuthEnergy(`${url.pathname}${url.search}`, {}, token)
 
   return res
+})
+
+export async function current({ headquarterId, panelId, point, date_after, date_before, status, page, token }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, status?: string, page?: string, point: string, token?: string }) {
+  return await currentCached(headquarterId!, panelId!, point, date_after, date_before, status, page, token)
 }
 
+export async function currentGraph({ headquarterId, panelId, point, date_after, date_before, status, page, token }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, status?: string, page?: string, point: string, token?: string }) {
+  return await currentGraphCached(headquarterId!, panelId!, point, date_after, date_before, status, page, token)
+}
 
+export async function voltage({ headquarterId, date_after, date_before, status, page, panelId, point, token }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, status?: string, page?: string, point?: string, token?: string }) {
+  return await voltageCached(headquarterId!, panelId!, point!, date_after, date_before, status, page, token)
+}
 
+export async function voltageGraph({ headquarterId, panelId, point, date_after, date_before, status, token }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, status?: string, point?: string, token?: string }) {
+  return await voltageGraphCached(headquarterId!, panelId!, point!, date_after, date_before, status, token)
+}
+
+export async function threeMostUnbalanced({ headquarterId, token }: { headquarterId?: string, token?: string }) {
+  return await threeMostUnbalancedCached(headquarterId!, token)
+}

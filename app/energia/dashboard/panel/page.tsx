@@ -105,7 +105,7 @@ async function resolvePanelContext(searchParams: SearchParams['searchParams']): 
     : null
 
   const headquarters = await headquartersPromise
-  
+
   if (!headquarters?.results?.length) {
     return {
       authToken: authToken!,
@@ -128,7 +128,7 @@ async function resolvePanelContext(searchParams: SearchParams['searchParams']): 
       errorMessage: 'No hay sedes disponibles'
     }
   }
-  
+
   const firstHeadquarter = headquarter || headquarters.results[0].id.toString()
   const measurementPointsPanels = panelsPromise ?? await getEnergyMeasurementPointPanels({
     headquarterId: firstHeadquarter,

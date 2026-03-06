@@ -56,18 +56,19 @@ async function resolveFilterIds(
   const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
 
   const headquartersPromise = getHeadquarters(token)
-  const panelsPromise = headquarter ? getEnergyMeasurementPointPanels({ headquarterId: String(headquarter), token }) : null
-  const measurementPointsPromise = panel ? getMeasurementPoints({ electricalpanelId: String(panel), token }) : null
 
-  const headquarters = await headquartersPromise
+  const headquarters = await getHeadquarters(token)
+  console.log('[DEBUG] headquarters:', headquarters)
   const headquarterId = headquarter || headquarters.results[0]?.id.toString()
   const headquarterName = headquarters.results.find((h: EnergyHeadquarter) => h.id.toString() === headquarterId)?.name
 
-  const measurementPointsPanels = panelsPromise ?? await getEnergyMeasurementPointPanels({ headquarterId, token })
+  const measurementPointsPanels = await getEnergyMeasurementPointPanels({ headquarterId, token })
+  console.log('[DEBUG] measurementPointsPanels:', measurementPointsPanels)
   const panelId = panel || measurementPointsPanels?.results[0]?.id.toString()
   const panelName = measurementPointsPanels.results.find((p: { id: number; name: string }) => p.id.toString() === panelId)?.name
 
-  const measurementPoints = measurementPointsPromise ?? await getMeasurementPoints({ electricalpanelId: panelId, token })
+  const measurementPoints = await getMeasurementPoints({ electricalpanelId: panelId, token })
+  console.log('[DEBUG] measurementPoints:', measurementPoints)
   const pointId = point || measurementPoints?.results[0]?.measurement_points[0]?.id.toString()
   const measurementPointName = measurementPoints.results
     .flatMap((d: { measurement_points: Array<{ id: number; name: string }> }) => d.measurement_points)
@@ -223,6 +224,8 @@ async function GraphSection({
   let thresholdLower: number | undefined
   let thresholdUpper: number | undefined
   let capacity: string | undefined
+
+  console.log('[DEBUG] tableData:', tableData)
 
   if (category === 'voltage' && tableData?.results) {
     const pointData = tableData.results.find((p: { id: number }) => p.id.toString() === pointId)
