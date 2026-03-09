@@ -97,16 +97,9 @@ async function resolvePanelContext(searchParams: SearchParams['searchParams']): 
   const finish = date_end || defaultFinish
 
   const headquartersPromise = getHeadquarters(authToken!)
-  const panelsPromise = headquarter
-    ? getEnergyMeasurementPointPanels({ headquarterId: String(headquarter), token: authToken! })
-    : null
-  const measurementPointsPromise = panel
-    ? getMeasurementPoints({ electricalpanelId: String(panel), token: authToken! })
-    : null
-
   const headquarters = await headquartersPromise
 
-  if (!headquarters?.results?.length) {
+  if (headquarters?.results?.length === 0) {
     return {
       authToken: authToken!,
       weekday,
@@ -130,12 +123,12 @@ async function resolvePanelContext(searchParams: SearchParams['searchParams']): 
   }
 
   const firstHeadquarter = headquarter || headquarters.results[0].id.toString()
-  const measurementPointsPanels = panelsPromise ?? await getEnergyMeasurementPointPanels({
+  const measurementPointsPanels = await getEnergyMeasurementPointPanels({
     headquarterId: firstHeadquarter,
     token: authToken!
   })
 
-  if (!measurementPointsPanels?.results?.length) {
+  if (measurementPointsPanels?.results?.length === 0) {
     return {
       authToken: authToken!,
       weekday,
@@ -160,12 +153,12 @@ async function resolvePanelContext(searchParams: SearchParams['searchParams']): 
 
   const firstPanel = panel || measurementPointsPanels?.results[0]?.id.toString()
 
-  const measurementPoints: MeasurementPointResults = measurementPointsPromise ?? await getMeasurementPoints({
+  const measurementPoints: MeasurementPointResults = await getMeasurementPoints({
     electricalpanelId: firstPanel,
     token: authToken!
   })
 
-  if (!measurementPoints?.results?.length || !measurementPoints.results[0]?.measurement_points?.length) {
+  if (measurementPointsPanels?.results?.length === 0) {
     return {
       authToken: authToken!,
       weekday,
@@ -188,7 +181,7 @@ async function resolvePanelContext(searchParams: SearchParams['searchParams']): 
     }
   }
 
-  const firstPoint = point || measurementPoints.results[0].measurement_points[0].id.toString()
+  const firstPoint = point || measurementPoints?.results?.[0].measurement_points?.[0]?.id.toString()
   const selectedIndicador = indicador || 'EPpos'
 
   return {

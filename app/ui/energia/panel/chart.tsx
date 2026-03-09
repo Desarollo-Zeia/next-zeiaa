@@ -45,6 +45,7 @@ interface ElectricalPanelData {
 
 const CHART_COLORS = ['#00b0c7', '#D9C4B0', '#F7A5A5', '#A5D6A7', '#CE93D8', '#90CAF9', '#FFCC80']
 
+
 export default function ChartComponent({ electricalPanelData }: { electricalPanelData: ElectricalPanelData }) {
   const [isPending, startTransition] = useTransition()
   const searchParams = useSearchParams()
@@ -126,7 +127,6 @@ export default function ChartComponent({ electricalPanelData }: { electricalPane
     <div className='flex flex-col gap-4'>
       {electricalPanelData.results?.length > 0 ? (
         <div className='flex gap-6'>
-          {/* Mostrar mensaje de ancho completo cuando no hay datos de distribución */}
           {chartData.labels.length === 0 ? (
             <div className="w-full flex flex-col items-center justify-center py-16 px-4">
               <div className="relative">

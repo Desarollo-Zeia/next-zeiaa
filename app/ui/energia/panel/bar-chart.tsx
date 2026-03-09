@@ -38,6 +38,12 @@ interface ReadingGraphItem {
   unit?: string
 }
 
+interface ChartDataPoint {
+  x: string
+  y: number
+  unit?: string
+}
+
 export default function BarChart({ readingsGraph, weekday, thresholds }: { readingsGraph: ReadingGraphItem[], weekday?: string, thresholds?: VoltageByDay }) {
   const { inferior: inferiorThreshold, superior: superiorThreshold } = useMemo(
     () => getThresholdsByWeekday(thresholds, weekday || ''),
@@ -50,6 +56,7 @@ export default function BarChart({ readingsGraph, weekday, thresholds }: { readi
       {
         x: item.first_reading,
         y: item.difference,
+        unit: item.unit
       }
     )
   }
@@ -59,7 +66,7 @@ export default function BarChart({ readingsGraph, weekday, thresholds }: { readi
     datasets: [
       {
         label: 'Consumo',
-        data: dataPoints,
+        data: dataPoints as ChartDataPoint[],
         backgroundColor: "#00b0c7",
         borderColor: "#00b0c7",
       },
@@ -81,7 +88,7 @@ export default function BarChart({ readingsGraph, weekday, thresholds }: { readi
       },
       y: {
         ticks: {
-          callback: function(this: Scale, val: string | number) {
+          callback: function (this: Scale, val: string | number) {
             const numVal = typeof val === 'string' ? parseFloat(val) : val
             return `${numVal.toFixed(2)} ${readingsGraph[0]?.unit || ''}`
           },
@@ -131,7 +138,8 @@ export default function BarChart({ readingsGraph, weekday, thresholds }: { readi
             return `${formattedDateX}`
           },
           label: function (context: TooltipItem<'bar'>) {
-            return `Consumo energético: ${context.formattedValue} kWh`
+            const currentDataPoint = context.dataset.data[context.dataIndex] as unknown as ChartDataPoint
+            return `Consumo energético: ${context.formattedValue} ${currentDataPoint?.unit || 'kWh'}`
           }
         },
       }
