@@ -29,53 +29,13 @@ interface PanelReadings {
   results: Reading[]
 }
 
-function getTableroImage(name: string, key: string): string | null {
-  const searchText = (name + ' ' + key).toLowerCase()
-
-  if (searchText.includes('tn-p') || searchText.includes('te-p') || searchText.includes('tn-te')) {
-    return '/images/tableros/tn-te-TGA.JPG'
+function isValidImageUrl(url: string): boolean {
+  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+    return false
   }
-  if (searchText.includes('pediatria')) {
-    return '/images/tableros/tablero-pediatria-semisotano-TGA.JPG'
-  }
-  if (searchText.includes('tomografo') || searchText.includes('tg-rt')) {
-    return '/images/tableros/tomografo-TG-RT.jpg'
-  }
-  if (searchText.includes('tg-p1')) {
-    return '/images/tableros/llave-general-TG-P1.JPG'
-  }
-  if (searchText.includes('tga')) {
-    return '/images/tableros/llave-general-TGA.JPG'
-  }
-  if (searchText.includes('bombas')) {
-    return '/images/tableros/llave-general-bombas-FUERZA.jpg'
-  }
-  if (searchText.includes('aire acondicionado')) {
-    return '/images/tableros/aire-acondicionado-TGA.JPG'
-  }
-  if (searchText.includes('ascensor')) {
-    return '/images/tableros/ascensor-derecho-TGA.JPG'
-  }
-  if (searchText.includes('data center')) {
-    return '/images/tableros/data-center-ups-TGA.JPG'
-  }
-  if (searchText.includes('hemodialisis')) {
-    return '/images/tableros/hemodialisis-TGA.JPG'
-  }
-  if (searchText.includes('resonador')) {
-    return '/images/tableros/resonador-TGA.JPG'
-  }
-  if (searchText.includes('rx-pb')) {
-    return '/images/tableros/rx-pb-TGA.JPG'
-  }
-  if (searchText.includes('sala operaciones') || searchText.includes('qx')) {
-    return '/images/tableros/sala-operaciones-TGA.JPG'
-  }
-  if (searchText.includes('PH') || searchText.includes('tg')) {
-    return '/images/tableros/PH.jpeg'
-  }
-
-  return null
+  const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg']
+  const lowerUrl = url.toLowerCase()
+  return imageExtensions.some(ext => lowerUrl.includes(ext)) || lowerUrl.includes('.ufs.sh') || lowerUrl.includes('imgur') || lowerUrl.includes('cloudinary') || lowerUrl.includes('s3')
 }
 
 interface TableComponentProps {
@@ -112,9 +72,7 @@ export default function TableComponent({ readings, hoveredPoint, onRowHover }: T
               <TableHead className='text-center bg-gray-50'>
                 Ubicacion
               </TableHead>
-              <TableHead className='text-center bg-gray-50'>
-                Referencia
-              </TableHead>
+
               <TableHead className='text-center bg-gray-50'>
                 Foto
               </TableHead>
@@ -147,11 +105,9 @@ export default function TableComponent({ readings, hoveredPoint, onRowHover }: T
                   {reading.electrical_panel}
                 </TableCell>
                 <TableCell className='text-center'>
-                  {reading.location_reference || 'No precisa'}
-                </TableCell>
-                <TableCell className='text-center'>
+
                   {(() => {
-                    const imagePath = getTableroImage(reading.name, reading.key)
+                    const imagePath = reading.location_reference && isValidImageUrl(reading.location_reference) ? reading.location_reference : null
                     if (imagePath) {
                       return (
                         <button

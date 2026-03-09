@@ -36,6 +36,8 @@ export default function PanelViewWrapper({ readings }: PanelViewWrapperProps) {
   const [selectedFloor, setSelectedFloor] = useState<'ground' | 'first'>('ground')
   const [hoveredPoint, setHoveredPoint] = useState<string | null>(null)
 
+  console.log(readings)
+
   return (
     <div className='space-y-6'>
       {/* Main Toggle: Table vs Floor Plan */}
