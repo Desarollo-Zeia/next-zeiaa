@@ -79,18 +79,25 @@ async function TariffDataContent({
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             <div className="text-center">
               <p className="text-xs text-muted-foreground">Energía punta</p>
+              <p className="text-[8px] text-red-400">6 pm a 11 pm</p>
               <p className="text-lg font-bold">{formatNumberWithCommas(calculatorResult?.consumption?.peak)} kWh</p>
             </div>
             <div className="text-center">
               <p className="text-xs text-muted-foreground">Energía fuera punta</p>
+              <p className="text-[8px] py-[5px]"></p>
+
               <p className="text-lg font-bold">{formatNumberWithCommas(calculatorResult?.consumption?.off_peak)} kWh</p>
             </div>
             <div className="text-center">
               <p className="text-xs text-muted-foreground">Costo punta</p>
+              <p className="text-[8px] py-[5px]"></p>
+
               <p className="text-lg font-bold">S/ {formatNumberWithCommas(calculatorResult?.cost?.peak)}</p>
             </div>
             <div className="text-center">
               <p className="text-xs text-muted-foreground">Costo fuera punta</p>
+              <p className="text-[8px] py-[5px]"></p>
+
               <p className="text-lg font-bold">S/ {formatNumberWithCommas(calculatorResult?.cost?.off_peak)}</p>
             </div>
           </div>
