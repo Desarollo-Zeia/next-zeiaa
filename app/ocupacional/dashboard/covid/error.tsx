@@ -1,15 +1,13 @@
-// Importa el componente reutilizable
 'use client'
 
-import CustomErrorUI from "@/app/ui/error-found";
+import ErrorView from '@/app/ui/error-view'
 
 export default function Error({
   error,
   reset,
 }: {
-  error: Error & { digest?: string };
-  reset: () => void;
+  error: Error & { digest?: string }
+  reset: () => void
 }) {
-  // Simplemente delega la lógica y la UI al componente importado
-  return <CustomErrorUI error={error} reset={reset} />;
+  return <ErrorView error={error} reset={reset} />
 }
