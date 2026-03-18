@@ -34,7 +34,7 @@ export function AppSidebar() {
 
   const handleModuleClick = (moduleName: string, moduleUrl: string) => {
     if (moduleUrl === '#') return
-    
+
     posthog.capture('section_viewed', {
       section: moduleName,
       portal: 'energia',
@@ -74,10 +74,10 @@ export function AppSidebar() {
             <SidebarMenu>
               {energyModules?.map((item) => (
                 <SidebarMenuItem key={item.name}>
-                  <SidebarMenuButton 
-                    asChild 
-                    data-active={pathname.includes(item.url) && 'true'} 
-                    tooltip={item.name} 
+                  <SidebarMenuButton
+                    asChild
+                    data-active={pathname.includes(item.url) && 'true'}
+                    tooltip={item.name}
                     disabled={item.is_active}
                     onClick={() => handleModuleClick(item.name, item.url)}
                   >

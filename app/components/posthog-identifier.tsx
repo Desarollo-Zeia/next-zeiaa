@@ -5,7 +5,7 @@ import { useEffect } from 'react'
 
 interface User {
   email: string
-  enterprise_name: string
+  enterprise_name?: string
   energy_modules?: string[]
 }
 
@@ -16,8 +16,6 @@ export function PostHogIdentifier({ user }: { user: User | null }) {
       
       posthog.identify(user.email, {
         email: user.email,
-        enterprise_name: user.enterprise_name,
-        energy_modules: user.energy_modules,
       })
 
       if (user.enterprise_name) {
@@ -28,7 +26,6 @@ export function PostHogIdentifier({ user }: { user: User | null }) {
 
       posthog.capture('user_identified', {
         email: user.email,
-        enterprise_name: user.enterprise_name,
       })
 
       console.log('[PostHog] User identified successfully!')

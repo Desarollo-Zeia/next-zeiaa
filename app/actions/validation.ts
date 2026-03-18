@@ -19,7 +19,7 @@ export async function actionOccupational(prevState: { message: string }, formDat
     if (response.ok) {
       const data = await response.json()
       await setToken(data.token)
-      await setCompanyData(data.user)
+      await setCompanyData(data)
       shouldRedirect = true
     } else {
       await removeToken()
@@ -83,6 +83,7 @@ export async function actionEnergy(prevState: { message: string }, formData: For
 
     if (response.ok) {
       const data = await response.json()
+      console.log(data)
       await setToken(data.token)
       await setCompanyData(data.user)
       shouldRedirect = true
