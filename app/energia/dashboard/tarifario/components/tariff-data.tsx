@@ -40,8 +40,6 @@ async function TariffDataContent({
   ] = await Promise.all([
     consumptionCalculator({
       headquarterId,
-      date_after: formattedDateAfter,
-      date_before: formattedDateBefore,
       token: authToken!
     }),
     consumptionCalculatorMonthly({
