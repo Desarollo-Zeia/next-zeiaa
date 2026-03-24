@@ -18,6 +18,10 @@ interface TariffDataProps {
   formattedDateBefore: string
   firstmonth: string
   secondmonth: string
+  formattedDateAfter1: string
+  formattedDateBefore1: string
+  formattedDateAfter2: string
+  formattedDateBefore2: string
 }
 
 async function TariffDataContent({
@@ -26,7 +30,11 @@ async function TariffDataContent({
   formattedDateAfter,
   formattedDateBefore,
   firstmonth,
-  secondmonth
+  secondmonth,
+  formattedDateAfter1,
+  formattedDateBefore1,
+  formattedDateAfter2,
+  formattedDateBefore2
 }: TariffDataProps) {
 
   const authToken = await getToken()
@@ -46,12 +54,14 @@ async function TariffDataContent({
     }),
     consumptionCalculatorMonthly({
       headquarterId,
-      filter_month: firstmonth || '',
+      date_after: formattedDateAfter1,
+      date_before: formattedDateBefore1,
       token: authToken!
     }),
     consumptionCalculatorMonthly({
       headquarterId,
-      filter_month: secondmonth || '',
+      date_after: formattedDateAfter2,
+      date_before: formattedDateBefore2,
       token: authToken!
     }),
     consumptionInvoice({
@@ -64,6 +74,8 @@ async function TariffDataContent({
     })
   ])
 
+  console.log(invoiceResult)
+
   return (
     <>
       {calculatorResult?.detail ? (
@@ -73,32 +85,23 @@ async function TariffDataContent({
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-              <h3 className="font-semibold text-green-800">Consumo de energía</h3>
+              <h3 className="font-semibold text-green-800">Consumo total de energía</h3>
             </div>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-2 gap-3">
             <div className="text-center">
-              <p className="text-xs text-muted-foreground">Energía punta</p>
-              <p className="text-[8px] text-red-400">6 pm a 11 pm</p>
-              <p className="text-lg font-bold">{formatNumberWithCommas(calculatorResult?.consumption?.peak)} kWh</p>
+              <p className="text-xs text-muted-foreground">Consumo total</p>
+              <p className="text-lg font-bold">{formatNumberWithCommas(calculatorResult?.consumption?.total)} kWh</p>
+              <p className="text-[10px] text-muted-foreground/60">
+                Punta: {formatNumberWithCommas(calculatorResult?.consumption?.peak)} | F. Punta: {formatNumberWithCommas(calculatorResult?.consumption?.off_peak)}
+              </p>
             </div>
             <div className="text-center">
-              <p className="text-xs text-muted-foreground">Energía fuera punta</p>
-              <p className="text-[8px] py-[5px]"></p>
-
-              <p className="text-lg font-bold">{formatNumberWithCommas(calculatorResult?.consumption?.off_peak)} kWh</p>
-            </div>
-            <div className="text-center">
-              <p className="text-xs text-muted-foreground">Costo punta</p>
-              <p className="text-[8px] py-[5px]"></p>
-
-              <p className="text-lg font-bold">S/ {formatNumberWithCommas(calculatorResult?.cost?.peak)}</p>
-            </div>
-            <div className="text-center">
-              <p className="text-xs text-muted-foreground">Costo fuera punta</p>
-              <p className="text-[8px] py-[5px]"></p>
-
-              <p className="text-lg font-bold">S/ {formatNumberWithCommas(calculatorResult?.cost?.off_peak)}</p>
+              <p className="text-xs text-muted-foreground">Costo total</p>
+              <p className="text-lg font-bold">S/ {formatNumberWithCommas(calculatorResult?.cost?.total)}</p>
+              <p className="text-[10px] text-muted-foreground/60">
+                Punta: S/ {formatNumberWithCommas(calculatorResult?.cost?.peak)} | F. Punta: S/ {formatNumberWithCommas(calculatorResult?.cost?.off_peak)}
+              </p>
             </div>
           </div>
         </div>
@@ -112,6 +115,10 @@ async function TariffDataContent({
           <CostDifferenceChecker
             firstCalculatorResultMonthly={firstCalculatorResultMonthly}
             secondCalculatorResultMonthly={secondCalculatorResultMonthly}
+            formattedDateAfter1={formattedDateAfter1}
+            formattedDateBefore1={formattedDateBefore1}
+            formattedDateAfter2={formattedDateAfter2}
+            formattedDateBefore2={formattedDateBefore2}
           />
         </>
       )}

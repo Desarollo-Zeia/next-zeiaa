@@ -10,21 +10,22 @@ const consumptionCalculatorCached = cache(async (headquarterId: string, date_aft
 
   const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/rate-consumption`, baseUrlEnergy)
 
-  if (date_after) url.searchParams.set('date_after', date_after)
-  if (date_before) url.searchParams.set('date_before', date_before)
+  // if (date_after) url.searchParams.set('date_after', date_after)
+  // if (date_before) url.searchParams.set('date_before', date_before)
 
   const res = await fetchWithAuthEnergy(`${url.pathname}${url.search}`, {}, token)
 
   return res
 })
 
-const consumptionCalculatorMonthlyCached = cache(async (headquarterId: string, filter_month?: string, token?: string) => {
+const consumptionCalculatorMonthlyCached = cache(async (headquarterId: string, date_after?: string, date_before?: string, token?: string) => {
   'use cache'
   cacheLife('minutes')
 
-  const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/rate-consumption/monthly`, baseUrlEnergy)
+  const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/rate-consumption/date-range`, baseUrlEnergy)
 
-  if (filter_month) url.searchParams.set('filter_month', filter_month)
+  if (date_after) url.searchParams.set('date_after', date_after)
+  if (date_before) url.searchParams.set('date_before', date_before)
 
   try {
     const res = await fetchWithAuthEnergy(`${url.pathname}${url.search}`, {}, token)
@@ -88,8 +89,8 @@ export async function consumptionCalculator({ headquarterId, date_after, date_be
   return await consumptionCalculatorCached(headquarterId!, date_after, date_before, token)
 }
 
-export async function consumptionCalculatorMonthly({ headquarterId, filter_month, token }: { headquarterId?: string, filter_month?: string, token?: string }) {
-  return await consumptionCalculatorMonthlyCached(headquarterId!, filter_month, token)
+export async function consumptionCalculatorMonthly({ headquarterId, date_after, date_before, token }: { headquarterId?: string, date_after?: string, date_before?: string, token?: string }) {
+  return await consumptionCalculatorMonthlyCached(headquarterId!, date_after, date_before, token)
 }
 
 export async function consumptionInvoice({ headquarterId, token }: { date_after?: string, date_before?: string, panelId?: string, headquarterId?: string, token?: string }) {

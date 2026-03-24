@@ -14,26 +14,26 @@ import {
 
 
 interface BillingData {
-  billing_data_type: string;
-  billing_cycle_start: string; // Formato de fecha: YYYY-MM-DD
-  billing_cycle_end: string;   // Formato de fecha: YYYY-MM-DD
+  billing_data_type: string
+  billing_cycle_start: string // Formato de fecha: YYYY-MM-DD
+  billing_cycle_end: string   // Formato de fecha: YYYY-MM-DD
 }
 
 interface Consumption {
-  value: number;
+  value: number
 }
 
 interface Charge {
-  description: string;
-  unit: string; // O podrías usar un tipo literal de unión si sabes los valores exactos, ej: "S/" | "$"
-  cargo: number;
-  consumption: Consumption;
-  billed: number;
+  description: string
+  unit: string // O podrías usar un tipo literal de unión si sabes los valores exactos, ej: "S/" | "$"
+  cargo: number
+  consumption: Consumption
+  billed: number
 }
 
 interface TariffData {
-  billing_data: BillingData;
-  charges: Charge[];
+  billing_data: BillingData
+  charges: Charge[]
   total: number
 
 }

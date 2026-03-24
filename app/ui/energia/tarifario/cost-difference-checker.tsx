@@ -2,19 +2,26 @@
 
 import { Card } from '@/components/ui/card'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import React, { useTransition } from 'react'
-import MonthPicker from '../../filters/month-picker'
+import React from 'react'
 import NoResultsFound from '../../no-result'
 import { DollarSign, Zap } from 'lucide-react'
+import { format } from 'date-fns'
+import { es } from 'date-fns/locale'
+import { Calendar } from '@/components/ui/calendar'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
+import { Button } from '@/components/ui/button'
+import { CalendarIcon } from 'lucide-react'
+import type { DateRange } from 'react-day-picker'
+import { cn } from '@/lib/utils'
 
 export type CalculatorDifferenceResult = {
   month: string
   year: number
-
-  // ✅ Caso sin lecturas
   detail?: string
-
-  // ✅ Caso con lecturas
   consumption?: {
     total: number
     peak: number
@@ -29,197 +36,224 @@ export type CalculatorDifferenceResult = {
   last_value?: number
   date_first_value?: string
   date_last_value?: string
-
   date_range: {
     start: string
     end: string
   }
 }
 
-const monthMap: Record<number, string> = {
-  1: "january",
-  2: "february",
-  3: "march",
-  4: "april",
-  5: "may",
-  6: "june",
-  7: "july",
-  8: "august",
-  9: "september",
-  10: "october",
-  11: "november",
-  12: "december",
+interface CostDifferenceCheckerProps {
+  firstCalculatorResultMonthly?: CalculatorDifferenceResult
+  secondCalculatorResultMonthly?: CalculatorDifferenceResult
+  formattedDateAfter1?: string
+  formattedDateBefore1?: string
+  formattedDateAfter2?: string
+  formattedDateBefore2?: string
 }
 
+interface DatePickerRangeLocalProps {
+  startParam: string
+  endParam: string
+  className?: string
+}
 
-export default function CostDifferenceChecker({ firstCalculatorResultMonthly, secondCalculatorResultMonthly }: { firstCalculatorResultMonthly?: CalculatorDifferenceResult, secondCalculatorResultMonthly?: CalculatorDifferenceResult }) {
+function parseISOorUndefined(s?: string | null): Date | undefined {
+  if (!s) return undefined
+  const t = Date.parse(s)
+  return isNaN(t) ? undefined : new Date(t)
+}
 
-  const [isPending, startTransition] = useTransition()
+function formatNumberWithCommas(num?: number): string {
+  if (num === undefined || num === null) return '0'
+  return num.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+}
+
+function DatePickerRangeLocal({ startParam, endParam, className }: DatePickerRangeLocalProps) {
   const searchParams = useSearchParams()
+  const params = new URLSearchParams(searchParams as unknown as string)
   const pathname = usePathname()
   const { replace } = useRouter()
+  const [isPending, startTransition] = React.useTransition()
 
-  const currentMonth = new Date().getMonth() + 1
+  const start = params.get(startParam)
+  const end = params.get(endParam)
 
-  const firstMonth = searchParams.get('firstmonth') || monthMap[currentMonth - 1]
-  const secondMonth = searchParams.get('secondmonth') || monthMap[currentMonth]
+  const [fecha, setFecha] = React.useState<DateRange | undefined>({
+    from: parseISOorUndefined(start),
+    to: parseISOorUndefined(end),
+  })
 
-  const handleFisrtMonthChange = (month: string) => {
-    startTransition(() => {
-      const newParams = new URLSearchParams(searchParams);
+  React.useEffect(() => {
+    const newFrom = parseISOorUndefined(start)
+    const newTo = parseISOorUndefined(end)
 
-      newParams.set('page', '1');
+    setFecha((prev) => {
+      const prevFromISO = prev?.from?.toISOString()
+      const prevToISO = prev?.to?.toISOString()
+      const newFromISO = newFrom?.toISOString()
+      const newToISO = newTo?.toISOString()
 
-      if (month) {
-        newParams.set('firstmonth', month);
+      if (prevFromISO === newFromISO && prevToISO === newToISO) {
+        return prev
+      }
+      return { from: newFrom, to: newTo }
+    })
+  }, [start, end])
+
+  const debounceRef = React.useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+
+  React.useEffect(() => {
+    const nextParams = new URLSearchParams(searchParams?.toString() ?? "")
+    if (fecha?.from || fecha?.to) {
+      nextParams.delete("page")
+    }
+    clearTimeout(debounceRef.current)
+
+    debounceRef.current = setTimeout(() => {
+      if (fecha?.from) {
+        nextParams.set(startParam, fecha.from.toISOString())
+      } else {
+        nextParams.delete(startParam)
       }
 
-      if (month === 'none') {
-        newParams.delete('firstmonth');
+      if (fecha?.to) {
+        nextParams.set(endParam, fecha.to.toISOString())
+      } else {
+        nextParams.delete(endParam)
       }
 
-      replace(`${pathname}?${newParams.toString()}`, { scroll: false });
-    });
-  }
+      const nextQuery = nextParams.toString()
+      const currentQuery = searchParams?.toString() ?? ""
 
-  const handleSecondMonthChange = (month: string) => {
-    startTransition(() => {
-      const newParams = new URLSearchParams(searchParams);
-
-      newParams.set('page', '1');
-
-      if (month) {
-        newParams.set('secondmonth', month);
+      if (nextQuery !== currentQuery) {
+        startTransition(() => {
+          replace(`${pathname}?${nextQuery}`, { scroll: false })
+        })
       }
+    }, 500)
 
-      if (month === 'none') {
-        newParams.delete('secondmonth');
+    return () => {
+      clearTimeout(debounceRef.current)
+    }
+  }, [fecha, startParam, endParam, searchParams, pathname, replace])
+
+  return (
+    <div className={cn("grid gap-2", className)}>
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button
+            id="fecha"
+            variant="outline"
+            className={cn(
+              " justify-start text-left font-normal relative w-auto",
+              !fecha?.from && "text-muted-foreground"
+            )}
+          >
+            <CalendarIcon className="mr-2 h-4 w-4" />
+            {fecha?.from ? (
+              fecha.to ? (
+                <>
+                  {format(fecha.from, "d MMMM, yyyy", { locale: es })} -{" "}
+                  {format(fecha.to, "d MMMM, yyyy", { locale: es })}
+                </>
+              ) : (
+                format(fecha.from, "d MMMM, yyyy", { locale: es })
+              )
+            ) : (
+              <span>Selecciona un rango</span>
+            )}
+
+            {isPending && (
+              <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-black" />
+              </div>
+            )}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-0" align="start">
+          <Calendar
+            initialFocus
+            mode="range"
+            defaultMonth={fecha?.from}
+            selected={fecha}
+            onSelect={setFecha}
+            numberOfMonths={2}
+            locale={es}
+            className="rounded-lg border shadow-sm"
+          />
+        </PopoverContent>
+      </Popover>
+    </div>
+  )
+}
+
+function ResultCard({ result, label }: { result?: CalculatorDifferenceResult, label: string }) {
+  return (
+    <Card className="p-4 shadow-md justify-center h-auto text-xl">
+      {
+        result?.detail ? (
+          <NoResultsFound message="No se encontraron lecturas para este período." />
+        ) : (
+          <div className="flex flex-row gap-4 w-full">
+            <div className="flex-1 space-y-2">
+              <h4 className="font-medium text-sm text-muted-foreground flex items-center gap-2">
+                <Zap className="h-4 w-4" />
+                {label}
+              </h4>
+              <div className="bg-[#00b0c7] p-3 rounded-lg border border-primary/20">
+                <p className="text-xs text-white">Consumo total</p>
+                <p className="text-xl font-bold text-white">{formatNumberWithCommas(result?.consumption?.total)} kWh</p>
+                <p className="text-[10px] text-white/60">
+                  Punta: {formatNumberWithCommas(result?.consumption?.peak)} | F. Punta: {formatNumberWithCommas(result?.consumption?.off_peak)}
+                </p>
+              </div>
+            </div>
+            <div className="flex-1 space-y-2">
+              <h4 className="font-medium text-sm text-muted-foreground flex items-center gap-2">
+                <DollarSign className="h-4 w-4" />
+                Costos
+              </h4>
+              <div className="bg-destructive/10 p-3 rounded-lg border border-destructive/20">
+                <p className="text-xs text-muted-foreground">Costo total</p>
+                <p className="text-xl font-bold text-destructive">S/{formatNumberWithCommas(result?.cost?.total)}</p>
+                <p className="text-[10px] text-muted-foreground/60">
+                  Punta: S/{formatNumberWithCommas(result?.cost?.peak)} | F. Punta: S/{formatNumberWithCommas(result?.cost?.off_peak)}
+                </p>
+              </div>
+            </div>
+          </div>
+        )
       }
+    </Card>
+  )
+}
 
-      replace(`${pathname}?${newParams.toString()}`, { scroll: false });
-    });
-  }
+export default function CostDifferenceChecker({
+  firstCalculatorResultMonthly,
+  secondCalculatorResultMonthly,
+  formattedDateAfter1,
+  formattedDateBefore1,
+  formattedDateAfter2,
+  formattedDateBefore2
+}: CostDifferenceCheckerProps) {
 
   return (
     <div className="flex justify-between gap-4">
       <div className="flex-1">
-        <MonthPicker
-          onChange={handleFisrtMonthChange}
-          isPending={isPending}
-          value={firstMonth}
-          firstMonth={firstMonth}
-          secondMonth={secondMonth}
+        <DatePickerRangeLocal
+          startParam="date_after_1"
+          endParam="date_before_1"
+          className="mb-2"
         />
-        <Card className="p-4 flex flex-col gap-2 shadow-md justify-center h-auto items-center text-xl">
-          {
-            firstCalculatorResultMonthly?.detail ? (
-              <NoResultsFound message="No se encontraron lecturas para este mes." />
-            ) : (
-              <>
-                <div className="space-y-3 w-full">
-                  <h4 className="font-medium text-sm text-muted-foreground flex items-center gap-2">
-                    <Zap className="h-4 w-4" />
-                    Consumo de Energía
-                  </h4>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="bg-muted/50 p-3 rounded-lg">
-                      <p className="text-xs text-muted-foreground">En punta</p>
-                      <p className="text-lg font-semibold">{firstCalculatorResultMonthly?.consumption?.peak.toFixed(2)} kWh</p>
-                    </div>
-                    <div className="bg-muted/50 p-3 rounded-lg">
-                      <p className="text-xs text-muted-foreground">Fuera de punta</p>
-                      <p className="text-lg font-semibold">{firstCalculatorResultMonthly?.consumption?.off_peak.toFixed(2)} kWh</p>
-                    </div>
-                  </div>
-                  <div className="bg-[#00b0c7] p-3 rounded-lg border border-primary/20">
-                    <p className="text-xs text-white">Total</p>
-                    <p className="text-xl font-bold text-white">{firstCalculatorResultMonthly?.consumption?.total.toFixed(2)} kWh</p>
-                  </div>
-                </div>
-                <div className="space-y-3 w-full">
-                  <h4 className="font-medium text-sm text-muted-foreground flex items-center gap-2">
-                    <DollarSign className="h-4 w-4" />
-                    Costos
-                  </h4>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="bg-muted/50 p-3 rounded-lg">
-                      <p className="text-xs text-muted-foreground">En punta</p>
-                      <p className="text-lg font-semibold">S/{firstCalculatorResultMonthly?.cost?.peak.toFixed(2)}</p>
-                    </div>
-                    <div className="bg-muted/50 p-3 rounded-lg">
-                      <p className="text-xs text-muted-foreground">Fuera de punta</p>
-                      <p className="text-lg font-semibold">S/{firstCalculatorResultMonthly?.cost?.off_peak?.toFixed(2)}</p>
-                    </div>
-                  </div>
-                  <div className="bg-destructive/10 p-3 rounded-lg border border-destructive/20">
-                    <p className="text-xs text-muted-foreground">Total a pagar</p>
-                    <p className="text-xl font-bold text-destructive">S/{firstCalculatorResultMonthly?.cost?.total.toFixed(2)}</p>
-                  </div>
-                </div>
-              </>
-
-            )
-          }
-
-        </Card>
+        <ResultCard result={firstCalculatorResultMonthly} label="Consumo de energía" />
       </div>
       <div className="flex-1">
-        <MonthPicker onChange={handleSecondMonthChange}
-          isPending={isPending}
-          value={secondMonth}
-          firstMonth={firstMonth}
-          secondMonth={secondMonth}
+        <DatePickerRangeLocal
+          startParam="date_after_2"
+          endParam="date_before_2"
+          className="mb-2"
         />
-        <Card className="p-4 flex flex-col gap-2 shadow-md justify-center h-auto items-center text-xl">
-          {
-            secondCalculatorResultMonthly?.detail ? (
-              <NoResultsFound message="No se encontraron lecturas para este mes." />
-            ) : (
-              <>
-                <div className="space-y-3 w-full">
-                  <h4 className="font-medium text-sm text-muted-foreground flex items-center gap-2">
-                    <Zap className="h-4 w-4" />
-                    Consumo de Energía
-                  </h4>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="bg-muted/50 p-3 rounded-lg">
-                      <p className="text-xs text-muted-foreground">En punta</p>
-                      <p className="text-lg font-semibold">{secondCalculatorResultMonthly?.consumption?.peak.toFixed(2)} kWh</p>
-                    </div>
-                    <div className="bg-muted/50 p-3 rounded-lg">
-                      <p className="text-xs text-muted-foreground">Fuera de punta</p>
-                      <p className="text-lg font-semibold">{secondCalculatorResultMonthly?.consumption?.off_peak.toFixed(2)} kWh</p>
-                    </div>
-                  </div>
-                  <div className="bg-[#00b0c7] p-3 rounded-lg border border-primary/20">
-                    <p className="text-xs text-white">Total</p>
-                    <p className="text-xl font-bold text-white">{secondCalculatorResultMonthly?.consumption?.total.toFixed(2)} kWh</p>
-                  </div>
-                </div>
-                <div className="space-y-3 w-full">
-                  <h4 className="font-medium text-sm text-muted-foreground flex items-center gap-2">
-                    <DollarSign className="h-4 w-4" />
-                    Costos
-                  </h4>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="bg-muted/50 p-3 rounded-lg">
-                      <p className="text-xs text-muted-foreground">En punta</p>
-                      <p className="text-lg font-semibold">S/{secondCalculatorResultMonthly?.cost?.peak.toFixed(2)}</p>
-                    </div>
-                    <div className="bg-muted/50 p-3 rounded-lg">
-                      <p className="text-xs text-muted-foreground">Fuera de punta</p>
-                      <p className="text-lg font-semibold">S/{secondCalculatorResultMonthly?.cost?.off_peak?.toFixed(2)}</p>
-                    </div>
-                  </div>
-                  <div className="bg-destructive/10 p-3 rounded-lg border border-destructive/20">
-                    <p className="text-xs text-muted-foreground">Total a pagar</p>
-                    <p className="text-xl font-bold text-destructive">S/{secondCalculatorResultMonthly?.cost?.total.toFixed(2)}</p>
-                  </div>
-                </div>
-              </>
-            )
-          }
-        </Card>
+        <ResultCard result={secondCalculatorResultMonthly} label="Consumo de energía" />
       </div>
     </div>
   )

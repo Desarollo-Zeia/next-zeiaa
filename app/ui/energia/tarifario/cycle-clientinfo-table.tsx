@@ -12,6 +12,7 @@ interface TariffData {
     billing_cycle_start: string
     billing_cycle_end: string
     ratedays: number
+    totalratedays: number
     total_consumption: number
     cost: number
     first_value: number
@@ -22,8 +23,6 @@ interface TariffData {
 
 export default function CycleClientInfoTable({ tariffData }: { tariffData: TariffData }) {
 
-    const formattedDateAfter = format(new Date(tariffData?.billing_cycle_start), 'dd-MM-yyyy')
-    const formattedDateBefore = format(new Date(tariffData?.billing_cycle_end), 'dd-MM-yyyy')
 
     return (
         <Table className='rounded-t-lg overflow-hidden'>
@@ -39,10 +38,10 @@ export default function CycleClientInfoTable({ tariffData }: { tariffData: Tarif
             </TableHeader>
             <TableBody>
                 <TableRow className="hover:bg-gray-50">
-                    <TableCell className="font-medium text-center">{tariffData.energy_provider}</TableCell>
+                    <TableCell className="font-medium text-center">{tariffData.energy_provider || "Sin especificar"}</TableCell>
                     <TableCell className="font-medium text-center">{tariffData.supply_number || "N/A"}</TableCell>
-                    <TableCell className="font-medium text-center">{tariffData.ratedays} días</TableCell>
-                    <TableCell className="font-medium text-center">{`${formattedDateAfter} - ${formattedDateBefore}`}</TableCell>
+                    <TableCell className="font-medium text-center">{tariffData.ratedays} de {tariffData.totalratedays} dias</TableCell>
+                    <TableCell className="font-medium text-center">{`${tariffData.billing_cycle_start} - ${tariffData.billing_cycle_end}`}</TableCell>
                     <TableCell className="font-medium text-center">{tariffData.power_contracted}kW</TableCell>
                     <TableCell className="font-medium text-center">{`${tariffData.electrical_panel_type} ${tariffData.electrical_panel_threads} hilos`}</TableCell>
                 </TableRow>

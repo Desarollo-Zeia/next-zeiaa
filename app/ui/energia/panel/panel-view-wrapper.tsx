@@ -2,8 +2,9 @@
 
 import React, { useState } from 'react'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import { Table2 } from 'lucide-react'
+import { Building2, Map, Table2 } from 'lucide-react'
 import TableComponent from './table'
+import FloorPlanViewer from './floor-plan-viewer'
 // FloorPlanViewer import hidden - not ready yet
 // import FloorPlanViewer from './floor-plan-viewer'
 
@@ -36,8 +37,6 @@ export default function PanelViewWrapper({ readings }: PanelViewWrapperProps) {
   const [selectedFloor, setSelectedFloor] = useState<'ground' | 'first'>('ground')
   const [hoveredPoint, setHoveredPoint] = useState<string | null>(null)
 
-  console.log(readings)
-
   return (
     <div className='space-y-6'>
       {/* Main Toggle: Table vs Floor Plan */}
@@ -45,7 +44,7 @@ export default function PanelViewWrapper({ readings }: PanelViewWrapperProps) {
         <h3 className='font-semibold text-[#6d6c6c]'>
           Tablero de distribución
         </h3>
-        <ToggleGroup
+        {/* <ToggleGroup
           type='single'
           value={viewMode}
           onValueChange={(value) => {
@@ -57,12 +56,11 @@ export default function PanelViewWrapper({ readings }: PanelViewWrapperProps) {
             <Table2 className='w-4 h-4' />
             <span className='hidden sm:inline'>Tabla</span>
           </ToggleGroupItem>
-          {/* FloorPlanViewer option hidden - not ready yet */}
-          {/* <ToggleGroupItem value='floorplan' className='gap-2'>
+          <ToggleGroupItem value='floorplan' className='gap-2'>
             <Map className='w-4 h-4' />
             <span className='hidden sm:inline'>Planos</span>
-          </ToggleGroupItem> */}
-        </ToggleGroup>
+          </ToggleGroupItem>
+        </ToggleGroup> */}
       </div>
 
       {/* Floor selector - hidden - not ready yet */}
@@ -97,15 +95,17 @@ export default function PanelViewWrapper({ readings }: PanelViewWrapperProps) {
           onRowHover={setHoveredPoint}
         />
       ) : (
-        /* FloorPlanViewer hidden - not ready yet */
-        /* <FloorPlanViewer
-          floor={selectedFloor}
-        /> */
-        <TableComponent
-          readings={readings}
-          hoveredPoint={hoveredPoint}
-          onRowHover={setHoveredPoint}
-        />
+        // /* FloorPlanViewer hidden - not ready yet */
+        <>
+          {/* <FloorPlanViewer
+            floor={selectedFloor}
+          /> */}
+          <TableComponent
+            readings={readings}
+            hoveredPoint={hoveredPoint}
+            onRowHover={setHoveredPoint}
+          />
+        </>
       )}
     </div>
   )
