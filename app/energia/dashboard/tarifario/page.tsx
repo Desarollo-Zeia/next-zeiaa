@@ -36,10 +36,14 @@ export default async function Tarifario({ searchParams }: SearchParams) {
   const thirtyDaysAgo = new Date(today)
   thirtyDaysAgo.setDate(today.getDate() - 30)
 
-  const { headquarter, panel, date_after = thirtyDaysAgo, date_before = today, firstmonth = startDefaultMonth, secondmonth = defaultMonth } = await searchParams
+  const { headquarter, panel, date_after = thirtyDaysAgo, date_before = today, firstmonth = startDefaultMonth, secondmonth = defaultMonth, date_after_1, date_before_1, date_after_2, date_before_2 } = await searchParams
 
   const formattedDateAfter = format(date_after, 'yyyy-MM-dd')
   const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
+  const formattedDateAfter1 = date_after_1 ? format(date_after_1, 'yyyy-MM-dd') : ''
+  const formattedDateBefore1 = date_before_1 ? format(date_before_1, 'yyyy-MM-dd') : ''
+  const formattedDateAfter2 = date_after_2 ? format(date_after_2, 'yyyy-MM-dd') : ''
+  const formattedDateBefore2 = date_before_2 ? format(date_before_2, 'yyyy-MM-dd') : ''
 
   const headquartersPromise = getHeadquarters(authToken!)
 
@@ -68,6 +72,10 @@ export default async function Tarifario({ searchParams }: SearchParams) {
           formattedDateBefore={formattedDateBefore}
           firstmonth={firstmonth || ''}
           secondmonth={secondmonth || ''}
+          formattedDateAfter1={formattedDateAfter1}
+          formattedDateBefore1={formattedDateBefore1}
+          formattedDateAfter2={formattedDateAfter2}
+          formattedDateBefore2={formattedDateBefore2}
         />
       </div>
     </div>
