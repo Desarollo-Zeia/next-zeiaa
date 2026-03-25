@@ -27,23 +27,23 @@ export default function CycleClientInfoTable({ tariffData }: { tariffData: Tarif
     return (
         <Table className='rounded-t-lg overflow-hidden'>
             <TableHeader>
-                <TableRow className="bg-[#01b7ca] hover:bg-[#01b7ca] border-b-0">
-                    <TableHead className="text-white font-medium bg-[#01b7ca] text-center">Empresa concesionaria</TableHead>
-                    <TableHead className="text-white font-medium bg-[#01b7ca] text-center">N° de Suministro</TableHead>
-                    <TableHead className="text-white font-medium bg-[#01b7ca] text-center">Días facturados</TableHead>
-                    <TableHead className="text-white font-medium bg-[#01b7ca] text-center">Ciclo de facturación</TableHead>
-                    <TableHead className="text-white font-medium bg-[#01b7ca] text-center">Potencia contratada</TableHead>
-                    <TableHead className="text-white font-medium bg-[#01b7ca] text-center">Tipo</TableHead>
+                <TableRow className="bg-gray-100 border-t-2 border-b-0 hover:bg-gray-100">
+                    <TableHead className="text-[#4D5A63] font-medium text-center">Empresa concesionaria</TableHead>
+                    <TableHead className="text-[#4D5A63] font-medium text-center">N° de Suministro</TableHead>
+                    <TableHead className="text-[#4D5A63] font-medium text-center">Días facturados</TableHead>
+                    <TableHead className="text-[#4D5A63] font-medium text-center">Ciclo de facturación</TableHead>
+                    <TableHead className="text-[#4D5A63] font-medium text-center">Potencia contratada</TableHead>
+                    <TableHead className="text-[#4D5A63] font-medium text-center">Tipo</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
-                <TableRow className="hover:bg-gray-50">
-                    <TableCell className="font-medium text-center">{tariffData.energy_provider || "Sin especificar"}</TableCell>
-                    <TableCell className="font-medium text-center">{tariffData.supply_number || "N/A"}</TableCell>
-                    <TableCell className="font-medium text-center">{tariffData.ratedays} de {tariffData.totalratedays} dias</TableCell>
-                    <TableCell className="font-medium text-center">{`${tariffData.billing_cycle_start} - ${tariffData.billing_cycle_end}`}</TableCell>
-                    <TableCell className="font-medium text-center">{tariffData.power_contracted}kW</TableCell>
-                    <TableCell className="font-medium text-center">{`${tariffData.electrical_panel_type} ${tariffData.electrical_panel_threads} hilos`}</TableCell>
+                <TableRow className="bg-gray-100 hover:bg-gray-100">
+                    <TableCell className="font-medium text-center text-[#4D5A63]">{tariffData.energy_provider || "Sin especificar"}</TableCell>
+                    <TableCell className="font-medium text-center text-[#4D5A63]">{tariffData.supply_number || "N/A"}</TableCell>
+                    <TableCell className="font-medium text-center text-[#4D5A63]">{tariffData.ratedays} de {tariffData.totalratedays} dias</TableCell>
+                    <TableCell className="font-medium text-center text-[#4D5A63]">{`${tariffData.billing_cycle_start} - ${tariffData.billing_cycle_end}`}</TableCell>
+                    <TableCell className="font-medium text-center text-[#4D5A63]">{tariffData.power_contracted}kW</TableCell>
+                    <TableCell className="font-medium text-center text-[#4D5A63]">{`${tariffData.electrical_panel_type} ${tariffData.electrical_panel_threads} hilos`}</TableCell>
                 </TableRow>
             </TableBody>
         </Table>
