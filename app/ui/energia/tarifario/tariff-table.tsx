@@ -43,16 +43,11 @@ export default function TariffTable({ tariffData }: { tariffData: TariffData }) 
 
   return (
     <Card className="w-full mx-auto border-none shadow-lg relative">
-      <CardHeader className="bg-[#01b7ca] py-6">
-        <CardTitle className="text-white text-xl font-bold tracking-tight">
-          BAJA TENSIÓN : TARIFA {billing_data?.billing_data_type}
-        </CardTitle>
-      </CardHeader>
       <CardContent className="bg-[#f4f9ff] p-0">
         <Table className="w-full">
           <TableHeader>
             <TableRow className="bg-[#01b7ca] hover:bg-[#01b7ca]">
-              <TableHead className="text-white font-medium ">Descripción</TableHead>
+              <TableHead className="text-white font-medium">{billing_data?.billing_data_type}</TableHead>
               <TableHead className="text-center text-white font-medium">Unidad</TableHead>
               <TableHead className="text-center text-white font-medium">Tarifa</TableHead>
               <TableHead className="text-center text-white font-medium">Consumo</TableHead>
@@ -63,7 +58,7 @@ export default function TariffTable({ tariffData }: { tariffData: TariffData }) 
             {
               charges?.map((charge, i) => {
                 return (
-                  <TableRow key={i}>
+                  <TableRow key={i} className="bg-white">
                     <TableCell className="text-left">
                       {charge.description}
                     </TableCell>
@@ -83,17 +78,17 @@ export default function TariffTable({ tariffData }: { tariffData: TariffData }) 
                 )
               })
             }
-            <TableRow className="bg-[#01b7ca] hover:bg-[#01b7ca]">
+            <TableRow className="bg-[#FDECEC] hover:bg-[#FDECEC]">
               <TableCell>
               </TableCell>
               <TableCell>
               </TableCell>
               <TableCell className="text-center">
               </TableCell>
-              <TableCell className="text-center text-white">
+              <TableCell className="text-center text-[#EF4444] font-bold">
                 Costo total
               </TableCell>
-              <TableCell className="text-center text-white font-bold">
+              <TableCell className="text-center text-[#EF4444]  font-bold">
                 S/ {total.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </TableCell>
             </TableRow>

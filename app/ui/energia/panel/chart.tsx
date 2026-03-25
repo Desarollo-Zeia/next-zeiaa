@@ -76,10 +76,10 @@ export default function ChartComponent({ electricalPanelData }: { electricalPane
 
   // Datos para el PieChart (excluyendo la llave general que es el primer elemento)
   const secondaryItems = electricalPanelData?.results?.slice(1) || []
-  
+
   // Filtrar items con consumo > 0 para el chart
   const itemsWithConsumption = secondaryItems.filter((item) => item.consumption_percentage > 0)
-  
+
   // Verificar si hay items secundarios pero todos tienen 0%
   const hasSecondaryItemsButAllZero = secondaryItems.length > 0 && itemsWithConsumption.length === 0
 
