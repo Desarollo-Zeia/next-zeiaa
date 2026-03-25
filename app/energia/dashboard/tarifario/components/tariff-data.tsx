@@ -38,6 +38,7 @@ async function TariffDataContent({
 }: TariffDataProps) {
 
   const authToken = await getToken()
+  const startTotal = Date.now()
 
   const [
     calculatorResult,
@@ -46,59 +47,87 @@ async function TariffDataContent({
     invoiceResult,
     tariffResult,
   ] = await Promise.all([
-    consumptionCalculator({
-      headquarterId,
-      token: authToken!
-    }),
-    consumptionCalculatorMonthly({
-      headquarterId,
-      date_after: formattedDateAfter1,
-      date_before: formattedDateBefore1,
-      token: authToken!
-    }),
-    consumptionCalculatorMonthly({
-      headquarterId,
-      date_after: formattedDateAfter2,
-      date_before: formattedDateBefore2,
-      token: authToken!
-    }),
-    consumptionInvoice({
-      headquarterId,
-      token: authToken!
-    }),
-    consumptionTariff({
-      headquarterId,
-      token: authToken!
-    })
+    (async () => {
+      const start = Date.now()
+      const result = await consumptionCalculator({
+        headquarterId,
+        token: authToken!
+      })
+      console.log(`[TIMING] consumptionCalculator: ${Date.now() - start}ms`)
+      return result
+    })(),
+    (async () => {
+      const start = Date.now()
+      const result = await consumptionCalculatorMonthly({
+        headquarterId,
+        date_after: formattedDateAfter1,
+        date_before: formattedDateBefore1,
+        token: authToken!
+      })
+      console.log(`[TIMING] consumptionCalculatorMonthly (1): ${Date.now() - start}ms`)
+      return result
+    })(),
+    (async () => {
+      const start = Date.now()
+      const result = await consumptionCalculatorMonthly({
+        headquarterId,
+        date_after: formattedDateAfter2,
+        date_before: formattedDateBefore2,
+        token: authToken!
+      })
+      console.log(`[TIMING] consumptionCalculatorMonthly (2): ${Date.now() - start}ms`)
+      return result
+    })(),
+    (async () => {
+      const start = Date.now()
+      const result = await consumptionInvoice({
+        headquarterId,
+        token: authToken!
+      })
+      console.log(`[TIMING] consumptionInvoice: ${Date.now() - start}ms`)
+      return result
+    })(),
+    (async () => {
+      const start = Date.now()
+      const result = await consumptionTariff({
+        headquarterId,
+        token: authToken!
+      })
+      console.log(`[TIMING] consumptionTariff: ${Date.now() - start}ms`)
+      return result
+    })()
   ])
 
-  console.log(invoiceResult)
+  console.log(`[TIMING] TOTAL TariffData requests: ${Date.now() - startTotal}ms`)
 
   return (
     <>
       {calculatorResult?.detail ? (
         <NoResultsFound message="No hay datos de consumo" suggestion="Intente revisar otros módulos" />
       ) : (
-        <div className="mb-6 p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg border border-green-200">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-              <h3 className="font-semibold text-green-800">Consumo total de energía</h3>
-            </div>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-2 gap-3">
-            <div className="text-center">
-              <p className="text-xs text-muted-foreground">Consumo total</p>
-              <p className="text-lg font-bold">{formatNumberWithCommas(calculatorResult?.consumption?.total)} kWh</p>
-              <p className="text-[10px] text-muted-foreground/60">
-                Punta: {formatNumberWithCommas(calculatorResult?.consumption?.peak)} | F. Punta: {formatNumberWithCommas(calculatorResult?.consumption?.off_peak)}
+        <div className="mb-6 max-w-2xl mx-auto">
+          <h3 className="font-semibold text-white text-center py-2 bg-[#00b0c7] rounded-t-lg">
+            Consumo total de energía
+          </h3>
+          <div className="grid grid-cols-2 shadow-lg rounded-b-lg">
+            <div className="p-6 bg-cyan-100 text-center">
+              <p className="text-xs text-gray-600 mb-1">Consumo total</p>
+              <p className="text-xl font-bold text-gray-900">{formatNumberWithCommas(calculatorResult?.consumption?.total)} kWh</p>
+              <p className="text-[10px] text-gray-600 mt-2">
+                Punta: {formatNumberWithCommas(calculatorResult?.consumption?.peak)} kWh
+              </p>
+              <p className="text-[10px] text-gray-600">
+                Fuera de Punta: {formatNumberWithCommas(calculatorResult?.consumption?.off_peak)} kWh
               </p>
             </div>
-            <div className="text-center">
-              <p className="text-xs text-muted-foreground">Costo total</p>
-              <p className="text-lg font-bold">S/ {formatNumberWithCommas(calculatorResult?.cost?.total)}</p>
-              <p className="text-[10px] text-muted-foreground/60">
-                Punta: S/ {formatNumberWithCommas(calculatorResult?.cost?.peak)} | F. Punta: S/ {formatNumberWithCommas(calculatorResult?.cost?.off_peak)}
+            <div className="p-6 bg-cyan-100 text-center">
+              <p className="text-xs text-gray-600 mb-1">Costo total</p>
+              <p className="text-xl font-bold text-gray-900">S/ {formatNumberWithCommas(calculatorResult?.cost?.total)}</p>
+              <p className="text-[10px] text-gray-600 mt-2">
+                Punta: S/ {formatNumberWithCommas(calculatorResult?.cost?.peak)}
+              </p>
+              <p className="text-[10px] text-gray-600">
+                Fuera de Punta: S/ {formatNumberWithCommas(calculatorResult?.cost?.off_peak)}
               </p>
             </div>
           </div>
@@ -136,15 +165,21 @@ async function TariffDataContent({
 function TariffDataSkeleton() {
   return (
     <div className="w-full flex flex-col gap-4">
-      <div className="mb-6 p-4 bg-gray-100 rounded-lg border">
-        <div className="h-6 w-48 bg-gray-200 animate-pulse rounded mb-3" />
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {[...Array(4)].map((_, i) => (
-            <div key={i} className="text-center">
-              <div className="h-4 w-24 bg-gray-200 animate-pulse rounded mb-2 mx-auto" />
-              <div className="h-6 w-16 bg-gray-200 animate-pulse rounded mx-auto" />
-            </div>
-          ))}
+      <div className="mb-6 max-w-2xl mx-auto">
+        <div className="h-8 bg-gray-200 animate-pulse rounded-t-lg" />
+        <div className="grid grid-cols-2 shadow-lg rounded-b-lg">
+          <div className="p-6 bg-white text-center">
+            <div className="h-4 w-20 bg-gray-200 animate-pulse rounded mx-auto mb-2" />
+            <div className="h-7 w-32 bg-gray-200 animate-pulse rounded mx-auto mb-3" />
+            <div className="h-3 w-24 bg-gray-200 animate-pulse rounded mx-auto mb-1" />
+            <div className="h-3 w-28 bg-gray-200 animate-pulse rounded mx-auto" />
+          </div>
+          <div className="p-6 bg-cyan-100 text-center">
+            <div className="h-4 w-20 bg-gray-200 animate-pulse rounded mx-auto mb-2" />
+            <div className="h-7 w-32 bg-gray-200 animate-pulse rounded mx-auto mb-3" />
+            <div className="h-3 w-24 bg-gray-200 animate-pulse rounded mx-auto mb-1" />
+            <div className="h-3 w-28 bg-gray-200 animate-pulse rounded mx-auto" />
+          </div>
         </div>
       </div>
       <div className="h-8 w-56 bg-gray-200 animate-pulse rounded mb-4" />

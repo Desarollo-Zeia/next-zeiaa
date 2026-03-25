@@ -76,12 +76,18 @@ export default function ChartComponent({ electricalPanelData }: { electricalPane
 
   // Datos para el PieChart (excluyendo la llave general que es el primer elemento)
   const secondaryItems = electricalPanelData?.results?.slice(1) || []
+  
+  // Filtrar items con consumo > 0 para el chart
+  const itemsWithConsumption = secondaryItems.filter((item) => item.consumption_percentage > 0)
+  
+  // Verificar si hay items secundarios pero todos tienen 0%
+  const hasSecondaryItemsButAllZero = secondaryItems.length > 0 && itemsWithConsumption.length === 0
 
   const chartData = {
-    labels: secondaryItems.map((item) => item?.measurement_point_name),
+    labels: itemsWithConsumption.map((item) => item?.measurement_point_name),
     datasets: [
       {
-        data: secondaryItems.map((item) => item?.consumption_percentage),
+        data: itemsWithConsumption.map((item) => item?.consumption_percentage),
         backgroundColor: CHART_COLORS,
         borderColor: '#ffffff',
         borderWidth: 2,
@@ -91,7 +97,7 @@ export default function ChartComponent({ electricalPanelData }: { electricalPane
 
   // Extraer datos adicionales para tooltip
   const getTooltipData = (index: number) => {
-    const item = secondaryItems[index]
+    const item = itemsWithConsumption[index]
     if (!item) return ''
     const kwh = item.daily_consumption_kwh !== undefined
       ? `${item.daily_consumption_kwh.toFixed(2)} kWh`
@@ -149,7 +155,9 @@ export default function ChartComponent({ electricalPanelData }: { electricalPane
                 No hay datos de distribución
               </h3>
               <p className="text-gray-500 text-center max-w-md">
-                Este panel no tiene puntos de monitoreo secundarios configurados.
+                {hasSecondaryItemsButAllZero
+                  ? "El panel tiene puntos de monitoreo configurados, pero todos tienen 0% de consumo en el período seleccionado."
+                  : "Este panel no tiene puntos de monitoreo secundarios configurados."}
               </p>
             </div>
           ) : (
@@ -209,21 +217,28 @@ export default function ChartComponent({ electricalPanelData }: { electricalPane
                     {/* Lista de items secundarios (siempre visible) */}
                     <div className="bg-white">
                       {secondaryItems.length > 0 ? (
-                        secondaryItems.map((item, index) => (
-                          <div
-                            key={item.measurement_point_id}
-                            className="flex justify-between items-center px-4 py-3 border-b last:border-b-0 hover:bg-gray-50 transition-colors"
-                          >
-                            <div className="flex items-center gap-3">
-                              <div
-                                className="w-3 h-3 rounded-full shrink-0"
-                                style={{ backgroundColor: CHART_COLORS[index % CHART_COLORS.length] }}
-                              />
-                              <span className="font-medium text-gray-700">{item.measurement_point_name}</span>
+                        <>
+                          {hasSecondaryItemsButAllZero && (
+                            <div className="px-4 py-3 bg-amber-50 text-amber-700 text-sm text-center border-b">
+                              Todos los puntos tienen 0% de consumo en el período seleccionado
                             </div>
-                            <span className="font-semibold text-gray-900">{item.consumption_percentage}%</span>
-                          </div>
-                        ))
+                          )}
+                          {secondaryItems.map((item, index) => (
+                            <div
+                              key={item.measurement_point_id}
+                              className="flex justify-between items-center px-4 py-3 border-b last:border-b-0 hover:bg-gray-50 transition-colors"
+                            >
+                              <div className="flex items-center gap-3">
+                                <div
+                                  className="w-3 h-3 rounded-full shrink-0"
+                                  style={{ backgroundColor: CHART_COLORS[index % CHART_COLORS.length] }}
+                                />
+                                <span className="font-medium text-gray-700">{item.measurement_point_name}</span>
+                              </div>
+                              <span className="font-semibold text-gray-900">{item.consumption_percentage}%</span>
+                            </div>
+                          ))}
+                        </>
                       ) : (
                         <div className="px-4 py-6 text-center text-gray-500 text-sm">
                           Este panel no tiene puntos de monitoreo secundarios configurados
