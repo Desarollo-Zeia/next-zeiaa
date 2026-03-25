@@ -23,7 +23,6 @@ interface TariffDataProps {
   formattedDateAfter2: string
   formattedDateBefore2: string
 }
-
 async function TariffDataContent({
   headquarterId,
   panel,
@@ -38,7 +37,6 @@ async function TariffDataContent({
 }: TariffDataProps) {
 
   const authToken = await getToken()
-  const startTotal = Date.now()
 
   const [
     calculatorResult,
@@ -47,58 +45,33 @@ async function TariffDataContent({
     invoiceResult,
     tariffResult,
   ] = await Promise.all([
-    (async () => {
-      const start = Date.now()
-      const result = await consumptionCalculator({
-        headquarterId,
-        token: authToken!
-      })
-      console.log(`[TIMING] consumptionCalculator: ${Date.now() - start}ms`)
-      return result
-    })(),
-    (async () => {
-      const start = Date.now()
-      const result = await consumptionCalculatorMonthly({
-        headquarterId,
-        date_after: formattedDateAfter1,
-        date_before: formattedDateBefore1,
-        token: authToken!
-      })
-      console.log(`[TIMING] consumptionCalculatorMonthly (1): ${Date.now() - start}ms`)
-      return result
-    })(),
-    (async () => {
-      const start = Date.now()
-      const result = await consumptionCalculatorMonthly({
-        headquarterId,
-        date_after: formattedDateAfter2,
-        date_before: formattedDateBefore2,
-        token: authToken!
-      })
-      console.log(`[TIMING] consumptionCalculatorMonthly (2): ${Date.now() - start}ms`)
-      return result
-    })(),
-    (async () => {
-      const start = Date.now()
-      const result = await consumptionInvoice({
-        headquarterId,
-        token: authToken!
-      })
-      console.log(`[TIMING] consumptionInvoice: ${Date.now() - start}ms`)
-      return result
-    })(),
-    (async () => {
-      const start = Date.now()
-      const result = await consumptionTariff({
-        headquarterId,
-        token: authToken!
-      })
-      console.log(`[TIMING] consumptionTariff: ${Date.now() - start}ms`)
-      return result
-    })()
+    consumptionCalculator({
+      headquarterId,
+      date_after: formattedDateAfter,
+      date_before: formattedDateBefore,
+      token: authToken!
+    }),
+    consumptionCalculatorMonthly({
+      headquarterId,
+      date_after: formattedDateAfter1,
+      date_before: formattedDateBefore1,
+      token: authToken!
+    }),
+    consumptionCalculatorMonthly({
+      headquarterId,
+      date_after: formattedDateAfter2,
+      date_before: formattedDateBefore2,
+      token: authToken!
+    }),
+    consumptionInvoice({
+      headquarterId,
+      token: authToken!
+    }),
+    consumptionTariff({
+      headquarterId,
+      token: authToken!
+    })
   ])
-
-  console.log(`[TIMING] TOTAL TariffData requests: ${Date.now() - startTotal}ms`)
 
   return (
     <>

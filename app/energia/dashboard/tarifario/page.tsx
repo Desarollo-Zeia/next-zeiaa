@@ -3,7 +3,7 @@ import TariffData from "./components/tariff-data"
 import { SearchParams } from "@/app/type"
 import HeadquarterEnergyFilter from "@/app/ui/energia/filters/headquarter-energy-filter"
 import FiltersContainer from "@/app/ui/filters/filters-container"
-import { format, subMonths } from "date-fns"
+import { format, subMonths, startOfMonth, endOfMonth, getDate } from "date-fns"
 import { getToken } from "@/app/lib/auth"
 
 
@@ -36,14 +36,19 @@ export default async function Tarifario({ searchParams }: SearchParams) {
   const thirtyDaysAgo = new Date(today)
   thirtyDaysAgo.setDate(today.getDate() - 30)
 
+  const defaultDateAfter1 = startOfMonth(previousMonthDate)
+  const defaultDateBefore1 = endOfMonth(previousMonthDate)
+  const defaultDateAfter2 = startOfMonth(today)
+  const defaultDateBefore2 = today
+
   const { headquarter, panel, date_after = thirtyDaysAgo, date_before = today, firstmonth = startDefaultMonth, secondmonth = defaultMonth, date_after_1, date_before_1, date_after_2, date_before_2 } = await searchParams
 
   const formattedDateAfter = format(date_after, 'yyyy-MM-dd')
   const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
-  const formattedDateAfter1 = date_after_1 ? format(date_after_1, 'yyyy-MM-dd') : ''
-  const formattedDateBefore1 = date_before_1 ? format(date_before_1, 'yyyy-MM-dd') : ''
-  const formattedDateAfter2 = date_after_2 ? format(date_after_2, 'yyyy-MM-dd') : ''
-  const formattedDateBefore2 = date_before_2 ? format(date_before_2, 'yyyy-MM-dd') : ''
+  const formattedDateAfter1 = date_after_1 ? format(date_after_1, 'yyyy-MM-dd') : format(defaultDateAfter1, 'yyyy-MM-dd')
+  const formattedDateBefore1 = date_before_1 ? format(date_before_1, 'yyyy-MM-dd') : format(defaultDateBefore1, 'yyyy-MM-dd')
+  const formattedDateAfter2 = date_after_2 ? format(date_after_2, 'yyyy-MM-dd') : format(defaultDateAfter2, 'yyyy-MM-dd')
+  const formattedDateBefore2 = date_before_2 ? format(date_before_2, 'yyyy-MM-dd') : format(defaultDateBefore2, 'yyyy-MM-dd')
 
   const headquartersPromise = getHeadquarters(authToken!)
 

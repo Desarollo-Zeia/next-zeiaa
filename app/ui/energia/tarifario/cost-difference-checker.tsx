@@ -5,7 +5,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import React from 'react'
 import NoResultsFound from '../../no-result'
 import { DollarSign, Zap } from 'lucide-react'
-import { format } from 'date-fns'
+import { format, subMonths, startOfMonth, endOfMonth } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { Calendar } from '@/components/ui/calendar'
 import {
@@ -55,6 +55,8 @@ interface DatePickerRangeLocalProps {
   startParam: string
   endParam: string
   className?: string
+  defaultFrom?: Date
+  defaultTo?: Date
 }
 
 function parseISOorUndefined(s?: string | null): Date | undefined {
@@ -68,7 +70,7 @@ function formatNumberWithCommas(num?: number): string {
   return num.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
 
-function DatePickerRangeLocal({ startParam, endParam, className }: DatePickerRangeLocalProps) {
+function DatePickerRangeLocal({ startParam, endParam, className, defaultFrom, defaultTo }: DatePickerRangeLocalProps) {
   const searchParams = useSearchParams()
   const params = new URLSearchParams(searchParams as unknown as string)
   const pathname = usePathname()
@@ -79,13 +81,13 @@ function DatePickerRangeLocal({ startParam, endParam, className }: DatePickerRan
   const end = params.get(endParam)
 
   const [fecha, setFecha] = React.useState<DateRange | undefined>({
-    from: parseISOorUndefined(start),
-    to: parseISOorUndefined(end),
+    from: parseISOorUndefined(start) || defaultFrom,
+    to: parseISOorUndefined(end) || defaultTo,
   })
 
   React.useEffect(() => {
-    const newFrom = parseISOorUndefined(start)
-    const newTo = parseISOorUndefined(end)
+    const newFrom = parseISOorUndefined(start) || defaultFrom
+    const newTo = parseISOorUndefined(end) || defaultTo
 
     setFecha((prev) => {
       const prevFromISO = prev?.from?.toISOString()
@@ -98,7 +100,7 @@ function DatePickerRangeLocal({ startParam, endParam, className }: DatePickerRan
       }
       return { from: newFrom, to: newTo }
     })
-  }, [start, end])
+  }, [start, end, defaultFrom, defaultTo])
 
   const debounceRef = React.useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
@@ -237,6 +239,14 @@ export default function CostDifferenceChecker({
   formattedDateBefore2
 }: CostDifferenceCheckerProps) {
 
+  const today = new Date()
+  const previousMonthDate = subMonths(today, 1)
+
+  const defaultDateAfter1 = startOfMonth(previousMonthDate)
+  const defaultDateBefore1 = endOfMonth(previousMonthDate)
+  const defaultDateAfter2 = startOfMonth(today)
+  const defaultDateBefore2 = today
+
   return (
     <div className="flex justify-between gap-4">
       <div className="flex-1">
@@ -244,6 +254,8 @@ export default function CostDifferenceChecker({
           startParam="date_after_1"
           endParam="date_before_1"
           className="mb-2"
+          defaultFrom={defaultDateAfter1}
+          defaultTo={defaultDateBefore1}
         />
         <ResultCard result={firstCalculatorResultMonthly} label="Consumo de energía" />
       </div>
@@ -252,6 +264,8 @@ export default function CostDifferenceChecker({
           startParam="date_after_2"
           endParam="date_before_2"
           className="mb-2"
+          defaultFrom={defaultDateAfter2}
+          defaultTo={defaultDateBefore2}
         />
         <ResultCard result={secondCalculatorResultMonthly} label="Consumo de energía" />
       </div>
