@@ -28,12 +28,12 @@ export default function CycleClientInfoTable({ tariffData }: { tariffData: Tarif
         <Table className='rounded-t-lg overflow-hidden'>
             <TableHeader>
                 <TableRow className="bg-gray-100 border-t-2 border-b-0 hover:bg-gray-100">
-                    <TableHead className="text-[#4D5A63] font-medium text-center">Empresa concesionaria</TableHead>
-                    <TableHead className="text-[#4D5A63] font-medium text-center">N° de Suministro</TableHead>
-                    <TableHead className="text-[#4D5A63] font-medium text-center">Días facturados</TableHead>
-                    <TableHead className="text-[#4D5A63] font-medium text-center">Ciclo de facturación</TableHead>
-                    <TableHead className="text-[#4D5A63] font-medium text-center">Potencia contratada</TableHead>
-                    <TableHead className="text-[#4D5A63] font-medium text-center">Tipo</TableHead>
+                    <TableHead className="text-[#4D5A63] font-bold text-center">Empresa concesionaria</TableHead>
+                    <TableHead className="text-[#4D5A63] font-bold text-center">N° de Suministro</TableHead>
+                    <TableHead className="text-[#4D5A63] font-bold text-center">Días facturados</TableHead>
+                    <TableHead className="text-[#4D5A63] font-bold text-center">Ciclo de facturación</TableHead>
+                    <TableHead className="text-[#4D5A63] font-bold text-center">Potencia contratada</TableHead>
+                    <TableHead className="text-[#4D5A63] font-bold text-center">Tipo</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
