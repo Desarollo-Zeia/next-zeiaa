@@ -15,8 +15,8 @@ export default function ErrorView({ error, reset }: ErrorViewProps) {
   return (
     <div className="flex min-h-screen items-center justify-center p-4 bg-gray-50">
       <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">
-        <h1 className="text-4xl font-bold text-gray-800 mb-2">Ups</h1>
-        <h2 className="text-lg text-gray-600 mb-6">Ocurrió un error y lo estamos revisando</h2>
+        <h1 className="text-4xl font-bold text-gray-800 mb-2">Ups!</h1>
+        <h2 className="text-lg text-gray-600 mb-6">Algo pasó por aquí y lo estamos revisando</h2>
         <p className="text-sm text-gray-500 mb-6">Recarga la página para continuar</p>
         <button
           onClick={() => window.location.reload()}
