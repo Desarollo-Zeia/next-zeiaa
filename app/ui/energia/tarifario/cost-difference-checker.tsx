@@ -198,7 +198,7 @@ function ResultCard({ result, label }: { result?: CalculatorDifferenceResult, la
         ) : (
           <div className="flex flex-row gap-4 w-full items-center">
             <div className="flex-1 space-y-2">
-              <div className="bg-[#F5F6F9] p-3 rounded-lg border border-primary/20">
+              <div className="bg-[#F5F6F9] p-3 rounded-lg">
                 <p className="text-xl font-bold text-[#4D5A63] text-center pb-2">{formatNumberWithCommas(result?.consumption?.total)} kWh</p>
                 <p className="text-[10px] text-[#4D5A63] -mt-1">
                   Punta: {formatNumberWithCommas(result?.consumption?.peak)}
@@ -210,7 +210,7 @@ function ResultCard({ result, label }: { result?: CalculatorDifferenceResult, la
               <span className="text-2xl font-bold text-[#4D5A63]">=</span>
             </div>
             <div className="flex-1 space-y-2">
-              <div className="bg-destructive/10 p-3 rounded-lg border border-destructive/20 leading-0">
+              <div className="bg-destructive/10 p-3 rounded-lg leading-0">
                 <p className="text-xl font-bold text-destructive text-center pb-2">S/{formatNumberWithCommas(result?.cost?.total)}</p>
                 <p className="text-[10px] text-destructive -mt-1">
                   Punta: S/{formatNumberWithCommas(result?.cost?.peak)}
