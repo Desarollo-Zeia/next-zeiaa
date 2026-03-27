@@ -203,7 +203,7 @@ function ResultCard({ result, label }: { result?: CalculatorDifferenceResult, la
                 <p className="text-[10px] text-[#4D5A63] -mt-1">
                   Punta: {formatNumberWithCommas(result?.consumption?.peak)}
                 </p>
-                <p className="text-[10px] text-[#4D5A63] -mt-3"> F. Punta: {formatNumberWithCommas(result?.consumption?.off_peak)}</p>
+                <p className="text-[10px] text-[#4D5A63] -mt-3">  Fuera de Punta: {formatNumberWithCommas(result?.consumption?.off_peak)}</p>
               </div>
             </div>
             <div className="flex items-center px-2">
@@ -215,7 +215,7 @@ function ResultCard({ result, label }: { result?: CalculatorDifferenceResult, la
                 <p className="text-[10px] text-destructive -mt-1">
                   Punta: S/{formatNumberWithCommas(result?.cost?.peak)}
                 </p>
-                <p className="text-[10px] text-destructive -mt-3"> F. Punta: S/{formatNumberWithCommas(result?.cost?.off_peak)}</p>
+                <p className="text-[10px] text-destructive -mt-3">  Fuera de Punta: S/{formatNumberWithCommas(result?.cost?.off_peak)}</p>
               </div>
             </div>
           </div>

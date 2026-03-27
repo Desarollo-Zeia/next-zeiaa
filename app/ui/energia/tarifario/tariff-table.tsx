@@ -58,7 +58,7 @@ export default function TariffTable({ tariffData }: { tariffData: TariffData }) 
             {
               charges?.map((charge, i) => {
                 return (
-                  <TableRow key={i} className="bg-white">
+                  <TableRow key={i} className="bg-white text-[#707070]">
                     <TableCell className="text-left">
                       {charge.description}
                     </TableCell>

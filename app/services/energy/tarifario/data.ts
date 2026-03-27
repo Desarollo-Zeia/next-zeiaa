@@ -10,8 +10,8 @@ const consumptionCalculatorCached = cache(async (headquarterId: string, date_aft
 
   const url = new URL(`/api/v1/headquarter/${headquarterId}/electrical_panel/rate-consumption`, baseUrlEnergy)
 
-  // if (date_after) url.searchParams.set('date_after', date_after)
-  // if (date_before) url.searchParams.set('date_before', date_before)
+  if (date_after) url.searchParams.set('date_after', date_after)
+  if (date_before) url.searchParams.set('date_before', date_before)
 
   const res = await fetchWithAuthEnergy(`${url.pathname}${url.search}`, {}, token)
 

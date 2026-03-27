@@ -84,7 +84,7 @@ async function TariffDataContent({
       ) : (
         <div className="mb-6 max-w-2xl mx-auto">
           <p className="text-xs text-gray-500 mb-1 text-left">
-            Período: {format(parseISO(formattedDateAfter), 'dd MMM yyyy', { locale: es })} - {format(parseISO(formattedDateBefore), 'dd MMM yyyy', { locale: es })}
+            <span className="font-bold">Período</span>: {format(parseISO(formattedDateAfter), 'dd MMM yyyy', { locale: es })} - {format(parseISO(formattedDateBefore), 'dd MMM yyyy', { locale: es })}
           </p>
           <h3 className="font-bold text-center py-2 bg-[#E0F6F9] text-[#00b0c7] rounded-t-lg">
             CONSUMO TOTAL DE ENERGÍA
