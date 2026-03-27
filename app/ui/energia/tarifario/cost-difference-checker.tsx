@@ -304,7 +304,7 @@ export default function CostDifferenceChecker({
       {(greeting || showDefaultMessage) && (
         <div className="mt-4 border rounded-lg p-3 text-center">
           {showDefaultMessage ? (
-            <p className="text-sm font-bold text-gray-500">¿QUIERES VER TU AHORRO REAL? Compara periodos con la misma cantidad de días</p>
+            <p className="text-sm text-gray-500"><span className='font-bold'>¿QUIERES VER TU AHORRO REAL?</span>  Compara periodos con la misma cantidad de días</p>
           ) : (
             <p className="text-sm font-bold">
               <span>{greeting}</span>
