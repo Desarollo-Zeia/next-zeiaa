@@ -249,6 +249,7 @@ export default function CostDifferenceChecker({
   let greeting = ""
   let messageText = ""
   let messageColor = ""
+  let showDefaultMessage = false
 
   if (formattedDateAfter1 && formattedDateBefore1 && formattedDateAfter2 && formattedDateBefore2) {
     const daysRange1 = differenceInDays(parseISO(formattedDateBefore1), parseISO(formattedDateAfter1))
@@ -268,6 +269,8 @@ export default function CostDifferenceChecker({
         messageText = `Tu consumo se ha excedido en S/${formatNumberWithCommas(costDifference)}`
         messageColor = "text-[#EF4444]"
       }
+    } else {
+      showDefaultMessage = true
     }
   }
 
@@ -298,12 +301,16 @@ export default function CostDifferenceChecker({
           <ResultCard result={secondCalculatorResultMonthly} label="Consumo de energía" />
         </div>
       </div>
-      {greeting && (
+      {(greeting || showDefaultMessage) && (
         <div className="mt-4 border rounded-lg p-3 text-center">
-          <p className="text-sm font-bold">
-            <span>{greeting}</span>
-            <span className={`${messageColor} ml-1`}>{messageText}</span>
-          </p>
+          {showDefaultMessage ? (
+            <p className="text-sm font-bold text-gray-500">¿QUIERES VER TU AHORRO REAL? Compara periodos con la misma cantidad de días</p>
+          ) : (
+            <p className="text-sm font-bold">
+              <span>{greeting}</span>
+              <span className={`${messageColor} ml-1`}>{messageText}</span>
+            </p>
+          )}
         </div>
       )}
     </div>
