@@ -11,6 +11,8 @@ import NoResultsFound from "@/app/ui/no-result"
 import { getToken } from "@/app/lib/auth"
 import { formatNumberWithCommas } from "@/app/utils/func"
 
+export const maxDuration = 60
+
 interface TariffDataProps {
   headquarterId: string
   panel: string
