@@ -16,6 +16,8 @@ import { getToken } from "@/app/lib/auth"
 import { Suspense } from "react"
 import { FiltersSkeleton, TableSkeleton, GraphSkeleton } from "@/app/ui/energia/consumo/skeletons"
 
+export const maxDuration = 60
+
 interface ResolvedParams {
   headquarterId: string
   panelId: string

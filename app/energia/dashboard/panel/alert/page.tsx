@@ -16,6 +16,8 @@ import NoResultsFound from '@/app/ui/no-result'
 import HeadquarterEnergyFilter from '@/app/ui/energia/filters/headquarter-energy-filter'
 import { getToken } from '@/app/lib/auth'
 
+export const maxDuration = 60
+
 const formatDate = (timestamp: string) => {
   const date = new Date(timestamp)
   return date.toLocaleDateString("es-ES", {

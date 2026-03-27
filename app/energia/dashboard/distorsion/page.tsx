@@ -16,6 +16,8 @@ import { Eye } from 'lucide-react'
 import Link from 'next/link'
 import { Suspense } from 'react'
 
+export const maxDuration = 60
+
 async function DistorsionContent({ searchParams }: SearchParams) {
 
   const { headquarter, panel, date_after = new Date(), date_before = new Date(), data_type = 'current' } = await searchParams

@@ -11,6 +11,8 @@ import FiltersContainer from "@/app/ui/filters/filters-container"
 import { format } from "date-fns"
 import { Suspense } from "react"
 
+export const maxDuration = 60
+
 async function MonitoreoContent({ searchParams }: SearchParams) {
 
   const { headquarter, panel, date_after = new Date(), date_before = new Date(), group_by = 'minute' } = await searchParams

@@ -16,6 +16,8 @@ import { format } from "date-fns"
 import { Suspense } from "react"
 import { PageSkeleton } from "@/app/ui/energia/desbalance/skeletons"
 
+export const maxDuration = 60
+
 interface DesbalanceContext {
   metric: string
   authToken: string
