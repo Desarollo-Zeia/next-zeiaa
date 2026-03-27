@@ -5,7 +5,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import React from 'react'
 import NoResultsFound from '../../no-result'
 import { DollarSign, Zap } from 'lucide-react'
-import { format, subMonths, startOfMonth, endOfMonth } from 'date-fns'
+import { format, subMonths, startOfMonth, endOfMonth, parseISO, differenceInDays } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { Calendar } from '@/components/ui/calendar'
 import {
@@ -242,31 +242,70 @@ export default function CostDifferenceChecker({
   const defaultDateAfter2 = startOfMonth(today)
   const defaultDateBefore2 = today
 
+  const firstCost = firstCalculatorResultMonthly?.cost?.total ?? 0
+  const secondCost = secondCalculatorResultMonthly?.cost?.total ?? 0
+  const costDifference = secondCost - firstCost
+
+  let greeting = ""
+  let messageText = ""
+  let messageColor = ""
+
+  if (formattedDateAfter1 && formattedDateBefore1 && formattedDateAfter2 && formattedDateBefore2) {
+    const daysRange1 = differenceInDays(parseISO(formattedDateBefore1), parseISO(formattedDateAfter1))
+    const daysRange2 = differenceInDays(parseISO(formattedDateBefore2), parseISO(formattedDateAfter2))
+
+    if (daysRange1 === daysRange2) {
+      if (costDifference < 0) {
+        greeting = "¡FELICIDADES!"
+        messageText = `Has ahorrado S/${formatNumberWithCommas(Math.abs(costDifference))}`
+        messageColor = "text-green-600"
+      } else if (costDifference === 0) {
+        greeting = "¡FELICIDADES!"
+        messageText = `Has mantenido tu consumo estable en S/${formatNumberWithCommas(firstCost)}`
+        messageColor = "text-[#00b0c7]"
+      } else {
+        greeting = "¡OH NO!"
+        messageText = `Tu consumo se ha excedido en S/${formatNumberWithCommas(costDifference)}`
+        messageColor = "text-[#EF4444]"
+      }
+    }
+  }
+
   return (
-    <div className="flex gap-4 items-stretch">
-      <div className="flex-1">
-        <DatePickerRangeLocal
-          startParam="date_after_1"
-          endParam="date_before_1"
-          className="mb-2"
-          defaultFrom={defaultDateAfter1}
-          defaultTo={defaultDateBefore1}
-        />
-        <ResultCard result={firstCalculatorResultMonthly} label="Consumo de energía" />
+    <div>
+      <div className="flex gap-4 items-stretch">
+        <div className="flex-1">
+          <DatePickerRangeLocal
+            startParam="date_after_1"
+            endParam="date_before_1"
+            className="mb-2"
+            defaultFrom={defaultDateAfter1}
+            defaultTo={defaultDateBefore1}
+          />
+          <ResultCard result={firstCalculatorResultMonthly} label="Consumo de energía" />
+        </div>
+        <div className='flex justify-center items-center font-bold text-[#4D5A63] text-2xl'>
+          VS
+        </div>
+        <div className="flex-1">
+          <DatePickerRangeLocal
+            startParam="date_after_2"
+            endParam="date_before_2"
+            className="mb-2"
+            defaultFrom={defaultDateAfter2}
+            defaultTo={defaultDateBefore2}
+          />
+          <ResultCard result={secondCalculatorResultMonthly} label="Consumo de energía" />
+        </div>
       </div>
-      <div className='flex justify-center items-center font-bold text-[#4D5A63] text-2xl'>
-        VS
-      </div>
-      <div className="flex-1">
-        <DatePickerRangeLocal
-          startParam="date_after_2"
-          endParam="date_before_2"
-          className="mb-2"
-          defaultFrom={defaultDateAfter2}
-          defaultTo={defaultDateBefore2}
-        />
-        <ResultCard result={secondCalculatorResultMonthly} label="Consumo de energía" />
-      </div>
+      {greeting && (
+        <div className="mt-4 border rounded-lg p-3 text-center">
+          <p className="text-sm font-bold">
+            <span>{greeting}</span>
+            <span className={`${messageColor} ml-1`}>{messageText}</span>
+          </p>
+        </div>
+      )}
     </div>
   )
 }
