@@ -1,4 +1,6 @@
 import { Suspense } from "react"
+import { format, parseISO } from "date-fns"
+import { es } from "date-fns/locale"
 import {
   consumptionCalculator, consumptionCalculatorMonthly,
   consumptionInvoice,
@@ -81,27 +83,31 @@ async function TariffDataContent({
         <NoResultsFound message="No hay datos de consumo" suggestion="Intente revisar otros módulos" />
       ) : (
         <div className="mb-6 max-w-2xl mx-auto">
-          <h3 className="font-semibold text-white text-center py-2 bg-[#00b0c7] rounded-t-lg">
-            Consumo total de energía
+          <p className="text-xs text-gray-500 mb-1 text-left">
+            Período: {format(parseISO(formattedDateAfter), 'dd MMM yyyy', { locale: es })} - {format(parseISO(formattedDateBefore), 'dd MMM yyyy', { locale: es })}
+          </p>
+          <h3 className="font-bold text-center py-2 bg-[#E0F6F9] text-[#00b0c7] rounded-t-lg">
+            CONSUMO TOTAL DE ENERGÍA
           </h3>
-          <div className="grid grid-cols-2 shadow-lg rounded-b-lg">
-            <div className="p-6 bg-cyan-100 text-center">
-              <p className="text-xs text-gray-600 mb-1">Consumo total</p>
-              <p className="text-xl font-bold text-gray-900">{formatNumberWithCommas(calculatorResult?.consumption?.total)} kWh</p>
-              <p className="text-[10px] text-gray-600 mt-2">
+          <div className="flex shadow-lg rounded-b-lg bg-[#E0F6F9] bg-[#F3FCFD]">
+            <div className="p-6 text-center flex-1 border-r border-white/30">
+              <p className="text-xl font-bold text-[#4D5A63] text-nowrap">{formatNumberWithCommas(calculatorResult?.consumption?.total)} kWh</p>
+              <p className="text-[10px] text-gray-600 mt-2 text-left">
                 Punta: {formatNumberWithCommas(calculatorResult?.consumption?.peak)} kWh
               </p>
-              <p className="text-[10px] text-gray-600">
+              <p className="text-[10px] text-gray-600 text-left text-nowrap">
                 Fuera de Punta: {formatNumberWithCommas(calculatorResult?.consumption?.off_peak)} kWh
               </p>
             </div>
-            <div className="p-6 bg-cyan-100 text-center">
-              <p className="text-xs text-gray-600 mb-1">Costo total</p>
-              <p className="text-xl font-bold text-gray-900">S/ {formatNumberWithCommas(calculatorResult?.cost?.total)}</p>
-              <p className="text-[10px] text-gray-600 mt-2">
+            <div className="flex items-center px-2">
+              <span className="text-2xl font-bold text-[#4D5A63]">=</span>
+            </div>
+            <div className="p-6 text-center flex-1 border-l border-white/30">
+              <p className="text-xl font-bold text-[#4D5A63]">S/ {formatNumberWithCommas(calculatorResult?.cost?.total)}</p>
+              <p className="text-[10px] text-gray-600 mt-2 text-left">
                 Punta: S/ {formatNumberWithCommas(calculatorResult?.cost?.peak)}
               </p>
-              <p className="text-[10px] text-gray-600">
+              <p className="text-[10px] text-gray-600 text-left">
                 Fuera de Punta: S/ {formatNumberWithCommas(calculatorResult?.cost?.off_peak)}
               </p>
             </div>

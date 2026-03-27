@@ -33,18 +33,17 @@ export default async function Tarifario({ searchParams }: SearchParams) {
   const defaultMonth = monthMap[currentMonth]
   const startDefaultMonth = monthMap[previousMonth]
 
-  const thirtyDaysAgo = new Date(today)
-  thirtyDaysAgo.setDate(today.getDate() - 30)
+  const firstDayOfMonth = startOfMonth(today)
 
   const defaultDateAfter1 = startOfMonth(previousMonthDate)
   const defaultDateBefore1 = endOfMonth(previousMonthDate)
   const defaultDateAfter2 = startOfMonth(today)
   const defaultDateBefore2 = today
 
-  const { headquarter, panel, date_after = thirtyDaysAgo, date_before = today, firstmonth = startDefaultMonth, secondmonth = defaultMonth, date_after_1, date_before_1, date_after_2, date_before_2 } = await searchParams
+  const { headquarter, panel, date_after = firstDayOfMonth, date_before = today, firstmonth = startDefaultMonth, secondmonth = defaultMonth, date_after_1, date_before_1, date_after_2, date_before_2 } = await searchParams
 
   const formattedDateAfter = format(date_after, 'yyyy-MM-dd')
-  const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
+  const formattedDateBefore = format(today, 'yyyy-MM-dd')
   const formattedDateAfter1 = date_after_1 ? format(date_after_1, 'yyyy-MM-dd') : format(defaultDateAfter1, 'yyyy-MM-dd')
   const formattedDateBefore1 = date_before_1 ? format(date_before_1, 'yyyy-MM-dd') : format(defaultDateBefore1, 'yyyy-MM-dd')
   const formattedDateAfter2 = date_after_2 ? format(date_after_2, 'yyyy-MM-dd') : format(defaultDateAfter2, 'yyyy-MM-dd')

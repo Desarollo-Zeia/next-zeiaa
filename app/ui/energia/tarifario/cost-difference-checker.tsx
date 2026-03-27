@@ -191,36 +191,31 @@ function DatePickerRangeLocal({ startParam, endParam, className, defaultFrom, de
 
 function ResultCard({ result, label }: { result?: CalculatorDifferenceResult, label: string }) {
   return (
-    <Card className="p-4 shadow-md justify-center h-auto text-xl">
+    <Card className="p-4 border-[1px] justify-center h-auto text-xl">
       {
         result?.detail ? (
           <NoResultsFound message="No se encontraron lecturas para este período." />
         ) : (
-          <div className="flex flex-row gap-4 w-full">
+          <div className="flex flex-row gap-4 w-full items-center">
             <div className="flex-1 space-y-2">
-              <h4 className="font-medium text-sm text-muted-foreground flex items-center gap-2">
-                <Zap className="h-4 w-4" />
-                {label}
-              </h4>
-              <div className="bg-[#00b0c7] p-3 rounded-lg border border-primary/20">
-                <p className="text-xs text-white">Consumo total</p>
-                <p className="text-xl font-bold text-white">{formatNumberWithCommas(result?.consumption?.total)} kWh</p>
-                <p className="text-[10px] text-white/60">
-                  Punta: {formatNumberWithCommas(result?.consumption?.peak)} | F. Punta: {formatNumberWithCommas(result?.consumption?.off_peak)}
+              <div className="bg-[#F5F6F9] p-3 rounded-lg border border-primary/20">
+                <p className="text-xl font-bold text-[#4D5A63] text-center pb-2">{formatNumberWithCommas(result?.consumption?.total)} kWh</p>
+                <p className="text-[10px] text-[#4D5A63] -mt-1">
+                  Punta: {formatNumberWithCommas(result?.consumption?.peak)}
                 </p>
+                <p className="text-[10px] text-[#4D5A63] -mt-3"> F. Punta: {formatNumberWithCommas(result?.consumption?.off_peak)}</p>
               </div>
             </div>
+            <div className="flex items-center px-2">
+              <span className="text-2xl font-bold text-[#4D5A63]">=</span>
+            </div>
             <div className="flex-1 space-y-2">
-              <h4 className="font-medium text-sm text-muted-foreground flex items-center gap-2">
-                <DollarSign className="h-4 w-4" />
-                Costos
-              </h4>
-              <div className="bg-destructive/10 p-3 rounded-lg border border-destructive/20">
-                <p className="text-xs text-muted-foreground">Costo total</p>
-                <p className="text-xl font-bold text-destructive">S/{formatNumberWithCommas(result?.cost?.total)}</p>
-                <p className="text-[10px] text-muted-foreground/60">
-                  Punta: S/{formatNumberWithCommas(result?.cost?.peak)} | F. Punta: S/{formatNumberWithCommas(result?.cost?.off_peak)}
+              <div className="bg-destructive/10 p-3 rounded-lg border border-destructive/20 leading-0">
+                <p className="text-xl font-bold text-destructive text-center pb-2">S/{formatNumberWithCommas(result?.cost?.total)}</p>
+                <p className="text-[10px] text-destructive -mt-1">
+                  Punta: S/{formatNumberWithCommas(result?.cost?.peak)}
                 </p>
+                <p className="text-[10px] text-destructive -mt-3"> F. Punta: S/{formatNumberWithCommas(result?.cost?.off_peak)}</p>
               </div>
             </div>
           </div>
@@ -248,7 +243,7 @@ export default function CostDifferenceChecker({
   const defaultDateBefore2 = today
 
   return (
-    <div className="flex justify-between gap-4">
+    <div className="flex gap-4 items-stretch">
       <div className="flex-1">
         <DatePickerRangeLocal
           startParam="date_after_1"
@@ -258,6 +253,9 @@ export default function CostDifferenceChecker({
           defaultTo={defaultDateBefore1}
         />
         <ResultCard result={firstCalculatorResultMonthly} label="Consumo de energía" />
+      </div>
+      <div className='flex justify-center items-center font-bold text-[#4D5A63] text-2xl'>
+        VS
       </div>
       <div className="flex-1">
         <DatePickerRangeLocal
