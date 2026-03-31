@@ -91,24 +91,24 @@ async function TariffDataContent({
           </h3>
           <div className="flex shadow-lg rounded-b-lg bg-[#E0F6F9] bg-[#F3FCFD]">
             <div className="p-6 text-center flex-1 border-r border-white/30">
-              <p className="text-xl font-bold text-[#4D5A63] text-nowrap">{formatNumberWithCommas(calculatorResult?.consumption?.total)} kWh</p>
+              <p className="text-xl font-bold text-[#4D5A63] text-nowrap">{formatNumberWithCommas(calculatorResult?.consumption?.total)} {calculatorResult?.consumption?.unit_energy}</p>
               <p className="text-[10px] text-gray-600 mt-2 text-left">
-                Punta: {formatNumberWithCommas(calculatorResult?.consumption?.peak)} kWh
+                Punta: {formatNumberWithCommas(calculatorResult?.consumption?.peak)} {calculatorResult?.consumption?.unit_energy}
               </p>
               <p className="text-[10px] text-gray-600 text-left text-nowrap">
-                Fuera de Punta: {formatNumberWithCommas(calculatorResult?.consumption?.off_peak)} kWh
+                Fuera de Punta: {formatNumberWithCommas(calculatorResult?.consumption?.off_peak)} {calculatorResult?.consumption?.unit_energy}
               </p>
             </div>
             <div className="flex items-center px-2">
               <span className="text-2xl font-bold text-[#4D5A63]">=</span>
             </div>
             <div className="p-6 text-center flex-1 border-l border-white/30">
-              <p className="text-xl font-bold text-[#4D5A63]">S/ {formatNumberWithCommas(calculatorResult?.cost?.total)}</p>
+              <p className="text-xl font-bold text-[#4D5A63]">{calculatorResult?.cost?.unit}{formatNumberWithCommas(calculatorResult?.cost?.total)}</p>
               <p className="text-[10px] text-gray-600 mt-2 text-left">
-                Punta: S/ {formatNumberWithCommas(calculatorResult?.cost?.peak)}
+                Punta: {calculatorResult?.cost?.unit}{formatNumberWithCommas(calculatorResult?.cost?.peak)}
               </p>
               <p className="text-[10px] text-gray-600 text-left">
-                Fuera de Punta: S/ {formatNumberWithCommas(calculatorResult?.cost?.off_peak)}
+                Fuera de Punta: {calculatorResult?.cost?.unit}{formatNumberWithCommas(calculatorResult?.cost?.off_peak)}
               </p>
             </div>
           </div>
