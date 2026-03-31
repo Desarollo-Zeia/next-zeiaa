@@ -31,7 +31,7 @@ interface Billed {
 
 interface Cargo {
   value: number,
-  string: string
+  unit: string
 }
 
 interface Charge {
@@ -50,6 +50,8 @@ interface TariffData {
 }
 
 export default function TariffTable({ tariffData }: { tariffData: TariffData }) {
+
+  console.log(tariffData)
   const { billing_data, charges, total } = tariffData
 
   return (
