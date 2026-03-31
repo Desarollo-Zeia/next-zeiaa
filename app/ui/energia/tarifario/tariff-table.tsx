@@ -48,7 +48,6 @@ export default function TariffTable({ tariffData }: { tariffData: TariffData }) 
           <TableHeader>
             <TableRow className="bg-[#01b7ca] hover:bg-[#01b7ca]">
               <TableHead className="text-white font-medium">{billing_data?.billing_data_type}</TableHead>
-              <TableHead className="text-center text-white font-medium">Unidad</TableHead>
               <TableHead className="text-center text-white font-medium">Tarifa</TableHead>
               <TableHead className="text-center text-white font-medium">Consumo</TableHead>
               <TableHead className="text-center text-white font-medium">Importe</TableHead>
@@ -62,25 +61,21 @@ export default function TariffTable({ tariffData }: { tariffData: TariffData }) 
                     <TableCell className="text-left">
                       {charge.description}
                     </TableCell>
-                    <TableCell className="text-center">
-                      {charge.unit}
-                    </TableCell>
+
                     <TableCell className="text-center">
                       {charge.cargo.toFixed(2)}
                     </TableCell>
                     <TableCell className="text-center">
-                      {charge.consumption.value.toFixed(2)}
+                      {charge.consumption.value.toFixed(2)} {charge.consumption?.unit}
                     </TableCell>
                     <TableCell className="text-center">
-                      S/ {charge.billed.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      {charge.billed?.unit} {charge.billed.value.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </TableCell>
                   </TableRow>
                 )
               })
             }
             <TableRow className="bg-[#FDECEC] hover:bg-[#FDECEC]">
-              <TableCell>
-              </TableCell>
               <TableCell>
               </TableCell>
               <TableCell className="text-center">
