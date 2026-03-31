@@ -20,15 +20,26 @@ interface BillingData {
 }
 
 interface Consumption {
-  value: number
+  value: number,
+  unit: string
+}
+
+interface Billed {
+  value: number,
+  unit: string
+}
+
+interface Cargo {
+  value: number,
+  string: string
 }
 
 interface Charge {
   description: string
   unit: string // O podrías usar un tipo literal de unión si sabes los valores exactos, ej: "S/" | "$"
-  cargo: number
+  cargo: Cargo
   consumption: Consumption
-  billed: number
+  billed: Billed
 }
 
 interface TariffData {
@@ -63,7 +74,7 @@ export default function TariffTable({ tariffData }: { tariffData: TariffData }) 
                     </TableCell>
 
                     <TableCell className="text-center">
-                      {charge.cargo.toFixed(2)}
+                      {charge.cargo.value.toFixed(2)} {charge.consumption?.unit}
                     </TableCell>
                     <TableCell className="text-center">
                       {charge.consumption.value.toFixed(2)} {charge.consumption?.unit}
