@@ -27,6 +27,7 @@ type ConsumptionTableReadingsPromise =
 interface Consumption {
   value: number
   unit: string
+
 }
 
 interface Cargo {
@@ -50,7 +51,8 @@ interface Charge {
 interface TariffData {
   billing_data: BillingData
   charges: Charge[]
-  total: number
+  total: number,
+  unit_cost: string
 
 }
 

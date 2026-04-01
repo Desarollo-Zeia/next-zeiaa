@@ -193,7 +193,6 @@ function DatePickerRangeLocal({ startParam, endParam, className, defaultFrom, de
 
 function ResultCard({ result, label }: { result?: CalculatorDifferenceResult, label: string }) {
 
-  console.log(result)
   return (
     <Card className="p-4 border-[1px] justify-center h-auto text-xl">
       {
