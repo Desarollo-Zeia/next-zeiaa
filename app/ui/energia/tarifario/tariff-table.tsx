@@ -46,13 +46,14 @@ interface TariffData {
   billing_data: BillingData
   charges: Charge[]
   total: number
+  unit_cost: string
 
 }
 
 export default function TariffTable({ tariffData }: { tariffData: TariffData }) {
 
   console.log(tariffData)
-  const { billing_data, charges, total } = tariffData
+  const { billing_data, charges, total, unit_cost } = tariffData
 
   return (
     <Card className="w-full mx-auto border-none shadow-lg relative">
@@ -97,7 +98,7 @@ export default function TariffTable({ tariffData }: { tariffData: TariffData }) 
                 Costo total
               </TableCell>
               <TableCell className="text-center text-[#EF4444]  font-bold">
-                S/ {total.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                {unit_cost} {total.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </TableCell>
             </TableRow>
           </TableBody>

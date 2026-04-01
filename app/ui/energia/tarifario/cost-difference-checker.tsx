@@ -213,7 +213,7 @@ function ResultCard({ result, label }: { result?: CalculatorDifferenceResult, la
             </div>
             <div className="flex-1 space-y-2">
               <div className="bg-destructive/10 p-3 rounded-lg leading-0">
-                <p className="text-xl font-bold text-destructive text-center pb-2">S/{formatNumberWithCommas(result?.cost?.total)}</p>
+                <p className="text-xl font-bold text-destructive text-center pb-2">{result?.cost?.unit}{formatNumberWithCommas(result?.cost?.total)}</p>
                 <p className="text-[10px] text-destructive -mt-1">
                   Punta: {result?.cost?.unit}{formatNumberWithCommas(result?.cost?.peak)}
                 </p>
