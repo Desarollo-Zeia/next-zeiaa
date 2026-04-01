@@ -53,6 +53,7 @@ interface TariffData {
 export default function TariffTable({ tariffData }: { tariffData: TariffData }) {
 
   console.log(tariffData)
+
   const { billing_data, charges, total, unit_cost } = tariffData
 
   return (
@@ -75,9 +76,8 @@ export default function TariffTable({ tariffData }: { tariffData: TariffData }) 
                     <TableCell className="text-left">
                       {charge.description}
                     </TableCell>
-
                     <TableCell className="text-center">
-                      {charge.cargo.value.toFixed(2)} {charge.consumption?.unit}
+                      {charge.cargo.value.toFixed(2)} {charge.cargo?.unit}
                     </TableCell>
                     <TableCell className="text-center">
                       {charge.consumption.value.toFixed(2)} {charge.consumption?.unit}
