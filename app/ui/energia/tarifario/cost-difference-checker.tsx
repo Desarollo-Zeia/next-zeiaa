@@ -245,6 +245,9 @@ export default function CostDifferenceChecker({
   const defaultDateAfter2 = startOfMonth(today)
   const defaultDateBefore2 = today
 
+
+  console.log(firstCalculatorResultMonthly)
+
   const firstCost = firstCalculatorResultMonthly?.cost?.total ?? 0
   const secondCost = secondCalculatorResultMonthly?.cost?.total ?? 0
   const costDifference = secondCost - firstCost
@@ -261,15 +264,15 @@ export default function CostDifferenceChecker({
     if (daysRange1 === daysRange2) {
       if (costDifference < 0) {
         greeting = "¡FELICIDADES!"
-        messageText = `Has ahorrado S/${formatNumberWithCommas(Math.abs(costDifference))}`
+        messageText = `Has ahorrado ${firstCalculatorResultMonthly?.cost?.unit}${formatNumberWithCommas(Math.abs(costDifference))}`
         messageColor = "text-green-600"
       } else if (costDifference === 0) {
         greeting = "¡FELICIDADES!"
-        messageText = `Has mantenido tu consumo estable en S/${formatNumberWithCommas(firstCost)}`
+        messageText = `Has mantenido tu consumo estable en ${firstCalculatorResultMonthly?.cost?.unit}${formatNumberWithCommas(firstCost)}`
         messageColor = "text-[#00b0c7]"
       } else {
         greeting = "¡OH NO!"
-        messageText = `Tu consumo se ha excedido en S/${formatNumberWithCommas(costDifference)}`
+        messageText = `Tu consumo se ha excedido en ${firstCalculatorResultMonthly?.cost?.unit}${formatNumberWithCommas(costDifference)}`
         messageColor = "text-[#EF4444]"
       }
     } else {

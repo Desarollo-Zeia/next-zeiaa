@@ -136,23 +136,6 @@ export async function readingsPeaksTableHigh({ roomId, indicator, unit, date_aft
   return res
 }
 
-export async function readingsReal({ roomId, indicator, unit, date_after, date_before, hour_before, hour_after, token }: { roomId: string | number, indicator: string, unit: string, date_after?: string, date_before?: string, hour_before?: string, hour_after?: string, token?: string }) {
-  const url = new URL(`/readings/api/room/${roomId}/indicator/graph`, baseUrl)
-
-  if (indicator) url.searchParams.set('indicator', indicator)
-  if (unit) url.searchParams.set('unit', unit)
-  if (date_after) url.searchParams.set('date_after', date_after)
-  if (date_before) url.searchParams.set('date_before', date_before)
-  // if (hour_before) url.searchParams.set('hour_before', hour_before)
-  // if (hour_after) url.searchParams.set('hour_after', hour_after)
-
-  // POR QUE DE LA NADA
-
-  const res = await fetchWithAuth(`${url.pathname}${url.search}`, {}, token)
-
-  return res
-}
-
 export async function readingsGraph({ indicator, unit, date_after, date_before, hour_before, hour_after, interval, token }: { roomId?: string | number, indicator: string, unit: string, date_after?: string, date_before?: string, hour_before?: string, hour_after?: string, token?: string, interval?: string }) {
 
   'use cache'
@@ -170,28 +153,25 @@ export async function readingsGraph({ indicator, unit, date_after, date_before, 
   return res
 }
 
+export async function readingsGraphA({ indicator, unit, date_after, date_before, hour_before, hour_after, interval, token, roomId }: { roomId?: string | number, indicator: string, unit: string, date_after?: string, date_before?: string, hour_before?: string, hour_after?: string, token?: string, interval?: string }) {
 
-const _readingsGraphAmbientalCached = unstable_cache(
-  async (token: string, roomId: string | number, indicator: string, unit: string, date_after?: string, date_before?: string, hour_after?: string, hour_before?: string) => {
-    const url = new URL(`/readings/api/ambiental/point/${roomId}/indicator/graph`, baseUrl)
+  'use cache'
+  cacheLife('minutes')
+  const url = new URL(`/readings/api/room/${roomId}/indicator/graph`, baseUrl)
 
-    if (indicator) url.searchParams.set('indicator', indicator)
-    if (unit) url.searchParams.set('unit', unit)
-    if (date_after) url.searchParams.set('date_after', date_after)
-    if (date_before) url.searchParams.set('date_before', date_before)
-    if (hour_before) url.searchParams.set('hour_before', hour_before)
-    if (hour_after) url.searchParams.set('hour_after', hour_after)
+  if (indicator) url.searchParams.set('indicator', indicator)
+  if (unit) url.searchParams.set('unit', unit)
+  if (date_after) url.searchParams.set('date_after', date_after)
+  if (date_before) url.searchParams.set('date_before', date_before)
+  if (interval) url.searchParams.set('interval', interval)
 
-    const res = await fetchWithAuthAmbiental(`${url.pathname}${url.search}`, {}, token)
+  const res = await fetchWithAuth(`${url.pathname}${url.search}`, {}, token)
 
-    return res
-  },
-  ['ambiental-readings-graph'],
-  {
-    tags: [CACHE_TAGS.AMBIENTAL, CACHE_TAGS.READINGS],
-    revalidate: CACHE_DURATION.MEDIUM, // 5 minutes - graphs can be cached longer
-  }
-)
+  return res
+}
+
+
+
 
 export async function readingsGraphAmbiental({ roomId, indicator, unit, date_after, date_before, hour_before, hour_after, token }: { roomId: string | number, indicator: string, unit: string, date_after?: string, date_before?: string, hour_after: string, hour_before: string, token?: string }) {
   const url = new URL(`/readings/api/ambiental/point/${roomId}/indicator/graph`, baseUrl)

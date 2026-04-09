@@ -1,12 +1,12 @@
 'use client'
 import React, { useTransition } from 'react'
-import { saveAs } from 'file-saver';
-import { Button } from '@/components/ui/button';
-import { consumeExcel } from '@/app/services/energy/data';
-import Image from 'next/image';
+import { saveAs } from 'file-saver'
+import { Button } from '@/components/ui/button'
+import { consumeExcel } from '@/app/services/energy/data'
+import Image from 'next/image'
 import ExcelIconGreen from "@/public/icons/excel.png"
-import { formatFromUS } from '@/app/utils/func';
-import { START_DATE } from '@/app/utils/formatter';
+import { formatFromUS } from '@/app/utils/func'
+import { START_DATE } from '@/app/utils/formatter'
 
 
 interface EnergyPanel {
@@ -24,12 +24,12 @@ export default function DownloadExcel({ headquarterId, panelId, date_after = STA
     try {
       startTransition(async () => {
 
-        const blob = await consumeExcel({ headquarterId, panelId, date_after, date_before, unit, point });
+        const blob = await consumeExcel({ headquarterId, panelId, date_after, date_before, unit, point })
 
-        saveAs(blob, `${energyPanel?.name} - ${measurementPoint} - ${formatFromUS(date_after!)} - ${formatFromUS(date_before!)}`);
+        saveAs(blob, `${energyPanel?.name} - ${measurementPoint} - ${formatFromUS(date_after!)} - ${formatFromUS(date_before!)}`)
       })
     } catch (error) {
-      console.error('Error al descargar el reporte:', error);
+      console.error('Error al descargar el reporte:', error)
     }
   }
 

@@ -1,17 +1,17 @@
-import { getToken } from "@/app/lib/auth";
-import { getHeadquartersOcupacional, getRooms } from "@/app/services/filters/data";
-import { readingsData, roomGeneralData } from "@/app/services/readings/data";
-import { Indicator, Room, SearchParams, Unit } from "@/app/type";
-import TableComponent from "@/app/ui/analisis/table";
-import { DatepickerRange } from "@/app/ui/filters/datepicker-range";
-import FiltersContainer from "@/app/ui/filters/filters-container";
-import RoomSelect from "@/app/ui/filters/room-select";
-import StatusSelect from "@/app/ui/filters/status-select";
-import { TimeRangeSlider } from "@/app/ui/filters/time-range-slider";
-import { format } from "date-fns";
-import { Suspense } from "react";
-import IndicadoresSkeleton from "./loading";
-import HeadquarterSelect from "@/app/ui/filters/headquarter-select";
+import { getToken } from "@/app/lib/auth"
+import { getHeadquartersOcupacional, getRooms } from "@/app/services/filters/data"
+import { readingsData, roomGeneralData } from "@/app/services/readings/data"
+import { Indicator, Room, SearchParams, Unit } from "@/app/type"
+import TableComponent from "@/app/ui/analisis/table"
+import { DatepickerRange } from "@/app/ui/filters/datepicker-range"
+import FiltersContainer from "@/app/ui/filters/filters-container"
+import RoomSelect from "@/app/ui/filters/room-select"
+import StatusSelect from "@/app/ui/filters/status-select"
+import { TimeRangeSlider } from "@/app/ui/filters/time-range-slider"
+import { format } from "date-fns"
+import { Suspense } from "react"
+import IndicadoresSkeleton from "./loading"
+import HeadquarterSelect from "@/app/ui/filters/headquarter-select"
 // import { cacheLife } from "next/cache";
 
 // async function GetRooms(token: string) {
