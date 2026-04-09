@@ -8,6 +8,8 @@ import { Checkbox } from "@/components/ui/checkbox"
 import IndicatorToggle from "@/app/ui/filters/indicators-toggle"
 import { DatepickerRange } from "@/app/ui/filters/datepicker-range"
 import FrequencyIntervalFilter from "@/app/ui/filters/frequency-interval-filter"
+import RoomSelect from "@/app/ui/filters/room-select"
+import { ChartStatisticsHour } from "./chart-statistics-hour"
 
 type CO2Thresholds = { good: number; moderate: number; unhealthy: number; dangerous: number }
 type MinMaxThresholds = { min: number; max: number }
@@ -34,8 +36,20 @@ interface RoomData {
   readings: Reading[]
 }
 
+interface Room {
+  id: number
+  name: string
+  headquarter: {
+    id: number
+    name: string
+  }
+  is_activated: boolean
+}
+
 interface ReadingsChartProps {
-  roomsData: RoomData[]
+  roomsData: RoomData[],
+  rooms: Room[]
+  firstRoom: string
   indicator: IndicatorType
   unit: string
   title?: string
@@ -534,6 +548,9 @@ function ChartWithZoom({
 export function ReadingsChart({
   roomsData,
   indicator,
+  rooms,
+  // data,
+  firstRoom,
   unit,
   title = "Monitor de Calidad Ambiental",
   description,
@@ -551,8 +568,6 @@ export function ReadingsChart({
     return roomsData.length > 0 ? new Set([roomsData[0].room_id]) : new Set()
   })
 
-
-
   const roomColors = useMemo(() => {
     const colors = new Map<number, string>()
     roomsData.forEach((room, index) => {
@@ -568,10 +583,6 @@ export function ReadingsChart({
   const chartData = useMemo(() => mergeReadings(visibleRoomsData), [visibleRoomsData])
 
   const selectedRoom = roomsData.find((r) => visibleRooms.has(r.room_id))
-
-
-
-
 
   const yAxisDomain = useMemo(() => {
     const allValues = visibleRoomsData.flatMap((room) => room.readings.map((r) => r.value))
@@ -650,26 +661,15 @@ export function ReadingsChart({
       </CardHeader>
       <CardContent>
         <div className="mb-4 flex items-center justify-end gap-2">
-          {/* <Label htmlFor="room-select" className="text-sm font-medium whitespace-nowrap">
-            Mostrar umbrales de:
-          </Label>
-          <Select value={selectedRoomId} onValueChange={setSelectedRoomId}>
-            <SelectTrigger id="room-select" className="w-[280px] bg-[#00b0c7]">
-              <SelectValue placeholder="Seleccionar sala" />
-            </SelectTrigger>
-            <SelectContent>
-              {roomsData.map((room) => (
-                <SelectItem key={room.room_id} value={room.room_id.toString()}>
-                  {room.room_name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select> */}
+          {/* <RoomSelect firstRoom={firstRoom} rooms={rooms} /> */}
+
           <IndicatorToggle indicators={indicators} indicatorParam={indicator} />
           <DatepickerRange />
           <FrequencyIntervalFilter interval={interval as string} />
         </div>
 
+
+        {/* SALAS A MOSTAR EN LA GRAFICA */}
         <div className="mb-4 p-4 border rounded-lg bg-muted/20">
           <Label className="text-sm font-medium mb-3 block">Salas a mostrar en la gráfica:</Label>
           <div className="flex flex-wrap gap-4">
@@ -698,6 +698,7 @@ export function ReadingsChart({
         </div>
 
         {/* Thresholds display */}
+        {/* UMBRALES */}
         {selectedRoom && visibleRooms.size < 2 && indicator === "CO2" && (
           <CO2ThresholdsDisplay
             thresholds={selectedRoom.thresholds.co2}
@@ -737,6 +738,7 @@ export function ReadingsChart({
           dateAfter={dateAfter}
           dateBefore={dateBefore}
         />
+        {/* <ChartStatisticsHour data={data} /> */}
 
         <div className="mt-4 flex flex-wrap gap-4 justify-center">
           {visibleRoomsData.map((room) => (

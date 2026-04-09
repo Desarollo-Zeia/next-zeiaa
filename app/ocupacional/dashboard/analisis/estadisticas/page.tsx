@@ -1,17 +1,17 @@
-import { getToken } from "@/app/lib/auth";
-import { getRooms } from "@/app/services/filters/data";
-import { readingsGraph, readingsReal, roomGeneralData } from "@/app/services/readings/data";
-import { Room, SearchParams } from "@/app/type";
+import { getToken } from "@/app/lib/auth"
+import { getRooms } from "@/app/services/filters/data"
+import { readingsGraph, readingsGraphA, roomGeneralData } from "@/app/services/readings/data"
+import { Room, SearchParams } from "@/app/type"
 // import { ChartComponent } from "@/app/ui/analisis/estadisticas/chart";
-import { DatepickerRange } from "@/app/ui/filters/datepicker-range";
-import FiltersContainer from "@/app/ui/filters/filters-container";
+import { DatepickerRange } from "@/app/ui/filters/datepicker-range"
+import FiltersContainer from "@/app/ui/filters/filters-container"
 // import IndicatorToggle from "@/app/ui/filters/indicators-toggle";
 // import RoomSelect from "@/app/ui/filters/room-select";
-import { ReadingsChart } from "@/components/chart-statistics";
+import { ReadingsChart } from "@/components/chart-statistics"
 import { format } from "date-fns"
-import { cacheLife } from "next/cache";
-import { Suspense } from "react";
-import EstadisticasSkeleton from "./loading";
+import { cacheLife } from "next/cache"
+import { Suspense } from "react"
+import EstadisticasSkeleton from "./loading"
 // import { cacheLife } from "next/cache";
 
 // async function GetRooms(token: string) {
@@ -45,6 +45,7 @@ async function Estadisticas({ searchParams }: SearchParams) {
   const rooms: Room[] = await getRooms(authToken!)
 
   const firstRoom = rooms.find((room) => room.is_activated === true)
+
   const currentFirstRoom = room ?? String(firstRoom?.id ?? '')
 
   const generalRoomData = await roomGeneralData({ roomId: currentFirstRoom, token: authToken! })
@@ -55,13 +56,17 @@ async function Estadisticas({ searchParams }: SearchParams) {
 
   const readings = await readingsGraph({ indicator: currentIndicator, unit: currentUnit, date_after: formattedDateAfter, date_before: formattedDateBefore, hour_before: start, hour_after: end, token: authToken!, roomId: currentFirstRoom, interval })
 
-
   const indicators = generalRoomData.indicators_activated
+
+  // const readingsA = await readingsGraphA({ indicator: currentIndicator, unit: currentUnit, date_after: formattedDateAfter, date_before: formattedDateBefore, hour_before: start, hour_after: end, token: authToken!, roomId: currentFirstRoom, interval })
+
+  // console.log(readingsA)
+
 
   return (
     <div className="flex mx-2 justify-center gap-4">
 
-      <ReadingsChart indicator={currentIndicator as 'CO2' | 'HUMIDITY' | 'TEMPERATURE'} unit={currentUnit} roomsData={readings} indicators={indicators} interval={interval} dateAfter={formattedDateAfter} dateBefore={formattedDateBefore} />
+      <ReadingsChart indicator={currentIndicator as 'CO2' | 'HUMIDITY' | 'TEMPERATURE'} unit={currentUnit} roomsData={readings} indicators={indicators} interval={interval} dateAfter={formattedDateAfter} dateBefore={formattedDateBefore} rooms={rooms} firstRoom={currentFirstRoom} />
     </div>
   )
 }

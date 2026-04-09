@@ -66,9 +66,11 @@ export async function consumeExcel({ headquarterId, panelId, date_after = START_
   if (!token) throw new Error('No auth token')
 
   const url = new URL(
-    `/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/measurement_points/${point}/readings/report`,
+    `/api/v1/headquarter/${headquarterId}/electrical_panel/${panelId}/readings/report`,
     baseUrlEnergy
   )
+
+
 
   if (date_after) url.searchParams.set('date_after', date_after)
   if (date_before) url.searchParams.set('date_before', date_before)

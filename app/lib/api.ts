@@ -14,9 +14,9 @@ export async function fetchWithAuth(url: string, options: RequestInit = {}, toke
     throw new Error(`HTTP error! status: ${response.status} - URL: ${baseUrl}${url} - Response: ${errorText.substring(0, 200)}`)
   }
 
-  const contentType = response.headers.get('Content-Type');
+  const contentType = response.headers.get('Content-Type')
   if (contentType && contentType.includes('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')) {
-    return response.blob();
+    return response.blob()
   }
 
   if (contentType && contentType.includes('application/json')) {
@@ -39,9 +39,9 @@ export async function fetchWithAuthAmbiental(url: string, options: RequestInit =
     throw new Error(`HTTP error! status: ${response.status} - URL: ${baseUrlAmbiental}${url} - Response: ${errorText.substring(0, 200)}`)
   }
 
-  const contentType = response.headers.get('Content-Type');
+  const contentType = response.headers.get('Content-Type')
   if (contentType && contentType.includes('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')) {
-    return response.blob();
+    return response.blob()
   }
 
   if (contentType && contentType.includes('application/json')) {
@@ -78,9 +78,9 @@ export async function fetchWithAuthEnergy(url: string, options: RequestInit = {}
     throw new Error(`HTTP error! status: ${response.status} - URL: ${baseUrlEnergy}${url} - Response: ${errorText.substring(0, 200)}`)
   }
 
-  const contentType = response.headers.get('Content-Type');
+  const contentType = response.headers.get('Content-Type')
   if (contentType && contentType.includes('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')) {
-    return response.blob();
+    return response.blob()
   }
 
   if (contentType && contentType.includes('application/json')) {
