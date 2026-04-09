@@ -6,6 +6,8 @@ import FiltersContainer from "@/app/ui/filters/filters-container"
 import { format, subMonths, startOfMonth, endOfMonth, getDate } from "date-fns"
 import { getToken } from "@/app/lib/auth"
 
+export const maxDuration = 300
+
 
 export default async function Tarifario({ searchParams }: SearchParams) {
 
