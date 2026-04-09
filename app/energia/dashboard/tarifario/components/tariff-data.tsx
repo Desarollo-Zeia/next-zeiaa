@@ -13,7 +13,7 @@ import NoResultsFound from "@/app/ui/no-result"
 import { getToken } from "@/app/lib/auth"
 import { formatNumberWithCommas } from "@/app/utils/func"
 
-export const maxDuration = 60
+export const maxDuration = 300
 
 interface TariffDataProps {
   headquarterId: string
