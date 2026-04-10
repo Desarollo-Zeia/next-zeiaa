@@ -58,15 +58,12 @@ async function Estadisticas({ searchParams }: SearchParams) {
 
   const indicators = generalRoomData.indicators_activated
 
-  // const readingsA = await readingsGraphA({ indicator: currentIndicator, unit: currentUnit, date_after: formattedDateAfter, date_before: formattedDateBefore, hour_before: start, hour_after: end, token: authToken!, roomId: currentFirstRoom, interval })
-
-  // console.log(readingsA)
-
+  const readingsA = await readingsGraphA({ indicator: currentIndicator, unit: currentUnit, date_after: formattedDateAfter, date_before: formattedDateBefore, hour_before: start, hour_after: end, token: authToken!, roomId: currentFirstRoom, interval })
 
   return (
     <div className="flex mx-2 justify-center gap-4">
 
-      <ReadingsChart indicator={currentIndicator as 'CO2' | 'HUMIDITY' | 'TEMPERATURE'} unit={currentUnit} roomsData={readings} indicators={indicators} interval={interval} dateAfter={formattedDateAfter} dateBefore={formattedDateBefore} rooms={rooms} firstRoom={currentFirstRoom} />
+      <ReadingsChart indicator={currentIndicator as 'CO2' | 'HUMIDITY' | 'TEMPERATURE'} unit={currentUnit} roomsData={readings} indicators={indicators} interval={interval} dateAfter={formattedDateAfter} dateBefore={formattedDateBefore} rooms={rooms} firstRoom={currentFirstRoom} data={readingsA} />
     </div>
   )
 }
