@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useRef, useEffect } from "react"
 import { DynamicLine } from "@/components/charts"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
@@ -52,6 +52,7 @@ interface ReadingsChartProps {
   firstRoom: string
   indicator: IndicatorType
   unit: string
+  data?: unknown
   title?: string
   description?: string
   indicators: Array<{ indicator: string; unit: string }>
@@ -286,6 +287,8 @@ function ChartWithZoom({
   indicator,
   dateAfter,
   dateBefore,
+  zoomRange,
+  onZoomChange,
 }: {
   chartData: Record<string, string | number | null>[]
   visibleRoomsData: RoomData[]
@@ -297,8 +300,24 @@ function ChartWithZoom({
   indicator: IndicatorType
   dateAfter?: string
   dateBefore?: string
+  zoomRange?: { min: number; max: number } | null
+  onZoomChange?: (range: { min: number; max: number } | null) => void
 }) {
-  // Determinar si es el mismo día
+  const chartRef = useRef<any>(null)
+  const lastZoomRef = useRef<any>(null)
+  const hasZoomRestored = useRef(false)
+
+  // Restaurar zoom solo una vez cuando el componente se monta con un zoomRange existente
+  useEffect(() => {
+    if (zoomRange && !hasZoomRestored.current && chartRef.current) {
+      hasZoomRestored.current = true
+      try {
+        chartRef.current.zoomScale('x', zoomRange)
+      } catch (e) {
+        // Ignore errors
+      }
+    }
+  }, [])
   const isSameDay = dateAfter === dateBefore
 
   // Cambiar formato de labels según si es el mismo día o rango de fechas
@@ -320,8 +339,8 @@ function ChartWithZoom({
     backgroundColor: roomColors.get(room.room_id),
     tension: 0.3,
     borderWidth: 2,
-    pointRadius: 3,
-    pointHoverRadius: 5,
+    pointRadius: 0,
+    pointHoverRadius: 4,
     spanGaps: true,
   }))
 
@@ -336,48 +355,64 @@ function ChartWithZoom({
         type: 'line',
         yMin: selectedRoom.thresholds.co2.good,
         yMax: selectedRoom.thresholds.co2.good,
-        borderColor: '#22c55e',
-        borderWidth: 1.5,
-        borderDash: [5, 5],
+        borderColor: '#166534',
+        borderWidth: 3,
+        borderDash: [8, 4],
         label: {
           display: true,
-          content: `Bueno ${selectedRoom.thresholds.co2.good}`,
+          content: `Bueno ${selectedRoom.thresholds.co2.good} ${formattedUnit}`,
           position: 'end',
-          backgroundColor: 'transparent',
-          color: '#22c55e',
-          font: { size: 10 }
+          backgroundColor: '#166534',
+          color: '#ffffff',
+          font: { size: 11, weight: 'bold' as const }
         }
       }
       annotations.co2Moderate = {
         type: 'line',
         yMin: selectedRoom.thresholds.co2.moderate,
         yMax: selectedRoom.thresholds.co2.moderate,
-        borderColor: '#eab308',
-        borderWidth: 1.5,
-        borderDash: [5, 5],
+        borderColor: '#a16207',
+        borderWidth: 3,
+        borderDash: [8, 4],
         label: {
           display: true,
-          content: `Moderado ${selectedRoom.thresholds.co2.moderate}`,
+          content: `Moderado ${selectedRoom.thresholds.co2.moderate} ${formattedUnit}`,
           position: 'end',
-          backgroundColor: 'transparent',
-          color: '#eab308',
-          font: { size: 10 }
+          backgroundColor: '#a16207',
+          color: '#ffffff',
+          font: { size: 11, weight: 'bold' as const }
         }
       }
       annotations.co2Unhealthy = {
         type: 'line',
         yMin: selectedRoom.thresholds.co2.unhealthy,
         yMax: selectedRoom.thresholds.co2.unhealthy,
-        borderColor: '#f97316',
-        borderWidth: 1.5,
-        borderDash: [5, 5],
+        borderColor: '#c2410c',
+        borderWidth: 3,
+        borderDash: [8, 4],
         label: {
           display: true,
-          content: `No saludable ${selectedRoom.thresholds.co2.unhealthy}`,
+          content: `No saludable ${selectedRoom.thresholds.co2.unhealthy} ${formattedUnit}`,
           position: 'end',
-          backgroundColor: 'transparent',
-          color: '#f97316',
-          font: { size: 10 }
+          backgroundColor: '#c2410c',
+          color: '#ffffff',
+          font: { size: 11, weight: 'bold' as const }
+        }
+      }
+      annotations.co2Dangerous = {
+        type: 'line',
+        yMin: selectedRoom.thresholds.co2.dangerous,
+        yMax: selectedRoom.thresholds.co2.dangerous,
+        borderColor: '#991b1b',
+        borderWidth: 3,
+        borderDash: [8, 4],
+        label: {
+          display: true,
+          content: `Peligroso ${selectedRoom.thresholds.co2.dangerous} ${formattedUnit}`,
+          position: 'end',
+          backgroundColor: '#991b1b',
+          color: '#ffffff',
+          font: { size: 11, weight: 'bold' as const }
         }
       }
     } else if (indicator === "TEMPERATURE") {
@@ -385,32 +420,32 @@ function ChartWithZoom({
         type: 'line',
         yMin: selectedRoom.thresholds.temperature.min,
         yMax: selectedRoom.thresholds.temperature.min,
-        borderColor: '#3b82f6',
-        borderWidth: 2,
-        borderDash: [5, 5],
+        borderColor: '#1e3a8a',
+        borderWidth: 3,
+        borderDash: [8, 4],
         label: {
           display: true,
-          content: `Mín ${selectedRoom.thresholds.temperature.min}${formattedUnit}`,
+          content: `Mín ${selectedRoom.thresholds.temperature.min} ${formattedUnit}`,
           position: 'start',
-          backgroundColor: 'transparent',
-          color: '#FA891A',
-          font: { size: 11 }
+          backgroundColor: '#1e3a8a',
+          color: '#ffffff',
+          font: { size: 11, weight: 'bold' as const }
         }
       }
       annotations.tempMax = {
         type: 'line',
         yMin: selectedRoom.thresholds.temperature.max,
         yMax: selectedRoom.thresholds.temperature.max,
-        borderColor: '#ef4444',
-        borderWidth: 2,
-        borderDash: [5, 5],
+        borderColor: '#7f1d1d',
+        borderWidth: 3,
+        borderDash: [8, 4],
         label: {
           display: true,
-          content: `Máx ${selectedRoom.thresholds.temperature.max}${formattedUnit}`,
+          content: `Máx ${selectedRoom.thresholds.temperature.max} ${formattedUnit}`,
           position: 'start',
-          backgroundColor: 'transparent',
-          color: '#ef4444',
-          font: { size: 11 }
+          backgroundColor: '#7f1d1d',
+          color: '#ffffff',
+          font: { size: 11, weight: 'bold' as const }
         }
       }
     } else if (indicator === "HUMIDITY") {
@@ -418,32 +453,32 @@ function ChartWithZoom({
         type: 'line',
         yMin: selectedRoom.thresholds.humidity.min,
         yMax: selectedRoom.thresholds.humidity.min,
-        borderColor: '#FA891A',
-        borderWidth: 2,
-        borderDash: [5, 5],
+        borderColor: '#1e3a8a',
+        borderWidth: 3,
+        borderDash: [8, 4],
         label: {
           display: true,
-          content: `Mín ${selectedRoom.thresholds.humidity.min}${formattedUnit}`,
+          content: `Mín ${selectedRoom.thresholds.humidity.min} ${formattedUnit}`,
           position: 'start',
-          backgroundColor: 'transparent',
-          color: '#FA891A',
-          font: { size: 11 }
+          backgroundColor: '#1e3a8a',
+          color: '#ffffff',
+          font: { size: 11, weight: 'bold' as const }
         }
       }
       annotations.humidityMax = {
         type: 'line',
         yMin: selectedRoom.thresholds.humidity.max,
         yMax: selectedRoom.thresholds.humidity.max,
-        borderColor: '#ef4444',
-        borderWidth: 2,
-        borderDash: [5, 5],
+        borderColor: '#7f1d1d',
+        borderWidth: 3,
+        borderDash: [8, 4],
         label: {
           display: true,
-          content: `Máx ${selectedRoom.thresholds.humidity.max}${formattedUnit}`,
+          content: `Máx ${selectedRoom.thresholds.humidity.max} ${formattedUnit}`,
           position: 'start',
-          backgroundColor: 'transparent',
-          color: '#ef4444',
-          font: { size: 11 }
+          backgroundColor: '#7f1d1d',
+          color: '#ffffff',
+          font: { size: 11, weight: 'bold' as const }
         }
       }
     }
@@ -527,6 +562,16 @@ function ChartWithZoom({
         limits: {
           y: { min: 'original', max: 'original' },
           x: { min: 'original', max: 'original' }
+        },
+        onZoom: ({ chart }: { chart: any }) => {
+          const range = {
+            min: chart.scales.x.min,
+            max: chart.scales.x.max
+          }
+          lastZoomRef.current = range
+          if (onZoomChange) {
+            onZoomChange(range)
+          }
         }
       },
       annotation: {
@@ -540,7 +585,7 @@ function ChartWithZoom({
 
   return (
     <div className="h-[450px] w-full">
-      <DynamicLine data={data} options={options} />
+      <DynamicLine ref={chartRef} data={data} options={options} />
     </div>
   )
 }
@@ -549,7 +594,7 @@ export function ReadingsChart({
   roomsData,
   indicator,
   rooms,
-  // data,
+  data,
   firstRoom,
   unit,
   title = "Monitor de Calidad Ambiental",
@@ -562,6 +607,9 @@ export function ReadingsChart({
   const [selectedRoomId, setSelectedRoomId] = useState<string>(
     roomsData.length > 0 ? roomsData[0].room_id.toString() : "",
   )
+
+  const [chartType, setChartType] = useState<"salas" | "horas">("salas")
+  const [salasZoomRange, setSalasZoomRange] = useState<{ min: number; max: number } | null>(null)
 
   const [visibleRooms, setVisibleRooms] = useState<Set<number>>(() => {
     // Solo selecciona la primera sala por defecto
@@ -660,17 +708,38 @@ export function ReadingsChart({
         <CardDescription>{description || defaultDescription}</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="mb-4 flex items-center justify-end gap-2">
-          {/* <RoomSelect firstRoom={firstRoom} rooms={rooms} /> */}
+        {/* Chart Type Switch */}
+        <div className="mb-4 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setChartType("salas")}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${chartType === "salas"
+                ? "bg-[#00b0c7] text-white"
+                : "bg-muted text-muted-foreground hover:bg-muted/80"
+                }`}
+            >
+              Gráfico por Salas
+            </button>
+            <button
+              onClick={() => setChartType("horas")}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${chartType === "horas"
+                ? "bg-[#00b0c7] text-white"
+                : "bg-muted text-muted-foreground hover:bg-muted/80"
+                }`}
+            >
+              Gráfico por Horas
+            </button>
+          </div>
 
-          <IndicatorToggle indicators={indicators} indicatorParam={indicator} />
-          <DatepickerRange />
-          <FrequencyIntervalFilter interval={interval as string} />
+          <div className="flex items-center gap-2">
+            {chartType !== "salas" && <RoomSelect firstRoom={firstRoom} rooms={rooms} />}
+            <IndicatorToggle indicators={indicators} indicatorParam={indicator} />
+            <DatepickerRange />
+            {chartType === "salas" && <FrequencyIntervalFilter interval={interval as string} />}
+          </div>
         </div>
 
-
-        {/* SALAS A MOSTAR EN LA GRAFICA */}
-        <div className="mb-4 p-4 border rounded-lg bg-muted/20">
+        {chartType === "salas" && <div className="mb-4 p-4 border rounded-lg bg-muted/20">
           <Label className="text-sm font-medium mb-3 block">Salas a mostrar en la gráfica:</Label>
           <div className="flex flex-wrap gap-4">
             {roomsData.map((room) => {
@@ -695,18 +764,19 @@ export function ReadingsChart({
               )
             })}
           </div>
-        </div>
+        </div>}
+
 
         {/* Thresholds display */}
         {/* UMBRALES */}
-        {selectedRoom && visibleRooms.size < 2 && indicator === "CO2" && (
+        {selectedRoom && visibleRooms.size < 2 && indicator === "CO2" && chartType === "salas" && (
           <CO2ThresholdsDisplay
             thresholds={selectedRoom.thresholds.co2}
             roomName={selectedRoom.room_name}
             roomColor={roomColors.get(selectedRoom.room_id) || "#FA891A"}
           />
         )}
-        {selectedRoom && visibleRooms.size < 2 && indicator === "TEMPERATURE" && (
+        {selectedRoom && visibleRooms.size < 2 && indicator === "TEMPERATURE" && chartType === "salas" && (
           <MinMaxThresholdsDisplay
             thresholds={selectedRoom.thresholds.temperature}
             roomName={selectedRoom.room_name}
@@ -715,7 +785,7 @@ export function ReadingsChart({
             unit={formattedUnit}
           />
         )}
-        {selectedRoom && visibleRooms.size < 2 && indicator === "HUMIDITY" && (
+        {selectedRoom && visibleRooms.size < 2 && indicator === "HUMIDITY" && chartType === "salas" && (
           <MinMaxThresholdsDisplay
             thresholds={selectedRoom.thresholds.humidity}
             roomName={selectedRoom.room_name}
@@ -726,28 +796,41 @@ export function ReadingsChart({
         )}
 
         {/* Chart */}
-        <ChartWithZoom
-          chartData={chartData}
-          visibleRoomsData={visibleRoomsData}
-          roomColors={roomColors}
-          yAxisDomain={yAxisDomain}
-          formattedUnit={formattedUnit}
-          selectedRoom={selectedRoom}
-          visibleRooms={visibleRooms}
-          indicator={indicator}
-          dateAfter={dateAfter}
-          dateBefore={dateBefore}
-        />
-        {/* <ChartStatisticsHour data={data} /> */}
+        {chartType === "salas" ? (
+          <ChartWithZoom
+            chartData={chartData}
+            visibleRoomsData={visibleRoomsData}
+            roomColors={roomColors}
+            yAxisDomain={yAxisDomain}
+            formattedUnit={formattedUnit}
+            selectedRoom={selectedRoom}
+            visibleRooms={visibleRooms}
+            indicator={indicator}
+            dateAfter={dateAfter}
+            dateBefore={dateBefore}
+            zoomRange={salasZoomRange}
+            onZoomChange={(range) => setSalasZoomRange(range)}
+          />
+        ) : (
+          <ChartStatisticsHour
+            data={data}
+            indicator={indicator}
+            unit={formattedUnit}
+            thresholds={selectedRoom?.thresholds[indicator === "CO2" ? "co2" : indicator === "TEMPERATURE" ? "temperature" : "humidity"]}
+          />
+        )}
 
-        <div className="mt-4 flex flex-wrap gap-4 justify-center">
-          {visibleRoomsData.map((room) => (
-            <div key={room.room_id} className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: roomColors.get(room.room_id) }} />
-              <span className="text-sm text-muted-foreground">{room.room_name}</span>
-            </div>
-          ))}
-        </div>
+        {/* Legend de salas - Solo para Gráfico por Salas */}
+        {chartType === "salas" && (
+          <div className="mt-4 flex flex-wrap gap-4 justify-center">
+            {visibleRoomsData.map((room) => (
+              <div key={room.room_id} className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: roomColors.get(room.room_id) }} />
+                <span className="text-sm text-muted-foreground">{room.room_name}</span>
+              </div>
+            ))}
+          </div>
+        )}
       </CardContent>
     </Card>
   )
