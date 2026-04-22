@@ -1,0 +1,271 @@
+'use client'
+
+import React, { useRef, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { ChartOptions } from 'chart.js'
+import { DynamicLine } from '@/components/charts/dynamic-charts'
+import { ELECTRIC_PARAMETERS } from '@/app/utils/formatter'
+
+interface DataEntry {
+  time: string
+  indicator: string
+  unit: string
+  value: number
+  difference: null
+  device: string
+  measurement_point: string
+}
+
+interface DateData {
+  [date: string]: DataEntry[]
+}
+
+const colors = ['#8884d8', '#82ca9d', '#ffc658', '#ff7300']
+
+const formatDateInSpanish = (dateStr: string): string => {
+  const [year, month, day] = dateStr.split('-').map(Number)
+  const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
+  const months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
+  const date = new Date(Date.UTC(year, month - 1, day))
+  const dayName = days[date.getUTCDay()]
+  const dayNum = date.getUTCDate()
+  const monthName = months[date.getUTCMonth()]
+  return `${dayName}, ${dayNum} de ${monthName}`
+}
+
+export default function ComparisonGraph({ mock, indicators, category }: { mock: DateData[], indicators: string[], category: string }) {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const chartRef = useRef<any>(null)
+  const [hiddenDatasets, setHiddenDatasets] = useState<Set<string>>(new Set())
+  const [hasInteracted, setHasInteracted] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+
+  const currentIndicator = searchParams.get('indicator') || indicators[0]
+
+  React.useEffect(() => {
+    const handleIndicatorUpdate = () => {
+      if (indicators.length > 0 && !indicators.includes(currentIndicator)) {
+        setIsLoading(true)
+        const params = new URLSearchParams(searchParams.toString())
+        params.set('indicator', indicators[0])
+        router.push(`?${params.toString()}`, { scroll: false })
+      }
+    }
+
+    const timeout = setTimeout(handleIndicatorUpdate, 100)
+    return () => clearTimeout(timeout)
+  }, [category])
+
+  React.useEffect(() => {
+    if (!isLoading) return
+    const timer = setTimeout(() => setIsLoading(false), 500)
+    return () => clearTimeout(timer)
+  }, [isLoading, currentIndicator])
+
+  const handleIndicatorChange = (indicator: string) => {
+    const params = new URLSearchParams(searchParams.toString())
+    params.set('indicator', indicator)
+    router.push(`?${params.toString()}`, { scroll: false })
+  }
+
+  const toggleDataset = (date: string) => {
+    if (!hasInteracted) {
+      setHasInteracted(true)
+      setHiddenDatasets(new Set(dates.filter(d => d !== date)))
+    } else {
+      setHiddenDatasets(prev => {
+        const newSet = new Set(prev)
+
+        if (newSet.has(date)) {
+          newSet.delete(date)
+        } else {
+          const currentlyVisible = dates.length - newSet.size
+          if (currentlyVisible > 1) {
+            newSet.add(date)
+          }
+        }
+        return newSet
+      })
+    }
+  }
+
+  const transformData = () => {
+    const chartData: { time: string;[key: string]: string | number }[] = []
+
+    mock.forEach((dateObj: DateData) => {
+      const dateKey = Object.keys(dateObj)[0]
+      const entries = dateObj[dateKey]
+
+      entries.forEach((entry: DataEntry, index: number) => {
+        if (!chartData[index]) {
+          chartData[index] = { time: entry.time.split(':').slice(0, 2).join(':') }
+        }
+        chartData[index][dateKey] = entry.value
+      })
+    })
+
+    return chartData
+  }
+
+  const data = transformData()
+  const dates = mock.map(obj => Object.keys(obj)[0])
+  const labels = data.map(d => d.time)
+
+  console.log('Mock received in graph:', JSON.stringify(mock, null, 2))
+
+  const chartData = {
+    labels,
+    datasets: dates.map((date, index) => ({
+      label: date,
+      data: data.map(d => d[date] as number),
+      borderColor: colors[index % colors.length],
+      backgroundColor: colors[index % colors.length],
+      tension: 0.3,
+      hidden: hiddenDatasets.has(date),
+      borderWidth: 2,
+      pointRadius: 0,
+      pointHoverRadius: 4,
+      spanGaps: true,
+    }))
+  }
+
+  const options: ChartOptions<'line'> = {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: {
+      mode: 'index',
+      intersect: false,
+    },
+    plugins: {
+      legend: {
+        display: false,
+      },
+      title: {
+        display: false,
+      },
+      tooltip: {
+        callbacks: {
+          title: (items) => {
+            return items[0].label || ''
+          },
+          label: (context) => {
+            const value = context.parsed.y
+            if (value === null) return ''
+            const dateLabel = context.dataset.label || ''
+            const unit = ELECTRIC_PARAMETERS[currentIndicator as keyof typeof ELECTRIC_PARAMETERS]?.unit || 'KW'
+            return `${formatDateInSpanish(dateLabel)}: ${value.toFixed(2)} ${unit}`
+          },
+        },
+      },
+      zoom: {
+        zoom: {
+          wheel: {
+            enabled: true,
+          },
+          pinch: {
+            enabled: true,
+          },
+          mode: 'x',
+        },
+        pan: {
+          enabled: true,
+          mode: 'x',
+        },
+      },
+    },
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: 'Hora',
+        },
+      },
+      y: {
+        title: {
+          display: true,
+          text: ELECTRIC_PARAMETERS[currentIndicator as keyof typeof ELECTRIC_PARAMETERS]?.unit || 'KW',
+        },
+      },
+    },
+    onHover: () => { },
+  }
+
+  const handleResetZoom = () => {
+    if (chartRef.current) {
+      chartRef.current.resetZoom()
+    }
+  }
+
+  return (
+    <div className="w-full h-[600px] p-4 relative">
+      {isLoading && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-white bg-opacity-70">
+          <div className="animate-spin rounded-full h-8 w-8 border-4 border-gray-300 border-t-black"></div>
+        </div>
+      )}
+      <div className="flex gap-2 mb-4">
+        {indicators.map(indicator => (
+          <button
+            key={indicator}
+            onClick={() => handleIndicatorChange(indicator)}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${currentIndicator === indicator
+                ? 'bg-black text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              }`}
+          >
+            {ELECTRIC_PARAMETERS[indicator as keyof typeof ELECTRIC_PARAMETERS].parameter}
+          </button>
+        ))}
+      </div>
+      <div className="border rounded-lg p-4 bg-gray-50 shadow-sm">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+              Seleccionar fechas
+            </span>
+            <button
+              onClick={() => {
+                setHasInteracted(false)
+                setHiddenDatasets(new Set())
+              }}
+              className="text-xs text-blue-600 hover:text-blue-800 underline"
+            >
+              Marcar todos
+            </button>
+          </div>
+          <button
+            onClick={handleResetZoom}
+            className="px-3 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded"
+          >
+            Reset Zoom
+          </button>
+        </div>
+        <div className="flex flex-wrap gap-4">
+          {dates.map((date, index) => (
+            <label
+              key={date}
+              className="flex items-center gap-2 cursor-pointer px-3 py-2 bg-white rounded-md border hover:bg-gray-50 transition-colors"
+            >
+              <input
+                type="checkbox"
+                checked={!hiddenDatasets.has(date)}
+                onChange={() => toggleDataset(date)}
+                className="w-4 h-4 accent-black"
+              />
+              <span
+                className="text-sm text-black"
+                style={{ borderBottom: `2px solid ${colors[index % colors.length]}` }}
+              >
+                {formatDateInSpanish(date)}
+              </span>
+            </label>
+          ))}
+        </div>
+      </div>
+      <div className="mt-6 h-[450px]">
+        <DynamicLine ref={chartRef} data={chartData} options={options} />
+      </div>
+    </div>
+  )
+}
