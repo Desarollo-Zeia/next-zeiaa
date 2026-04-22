@@ -41,7 +41,7 @@ async function resolveFilterIds(
 ): Promise<ResolvedParams> {
     const today = new Date()
     today.setHours(0, 0, 0, 0)
-    
+
     const {
         headquarter,
         panel,
@@ -150,8 +150,6 @@ async function GraphicSpecificSection({
         panelName,
         measurementPointName,
     } = await resolvedPromise
-
-    console.log('Fetching data with dates:', formattedDateAfter, formattedDateBefore)
 
     const [readingsGraph, readings] = await Promise.all([
         consumeGraphSpecific({
