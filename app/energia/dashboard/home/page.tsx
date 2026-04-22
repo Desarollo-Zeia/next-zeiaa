@@ -60,17 +60,14 @@ async function resolveFilterIds(
   const headquartersPromise = getHeadquarters(token)
 
   const headquarters = await getHeadquarters(token)
-  console.log('[DEBUG] headquarters:', headquarters)
   const headquarterId = headquarter || headquarters.results[0]?.id.toString()
   const headquarterName = headquarters.results.find((h: EnergyHeadquarter) => h.id.toString() === headquarterId)?.name
 
   const measurementPointsPanels = await getEnergyMeasurementPointPanels({ headquarterId, token })
-  console.log('[DEBUG] measurementPointsPanels:', measurementPointsPanels)
   const panelId = panel || measurementPointsPanels?.results[0]?.id.toString()
   const panelName = measurementPointsPanels.results.find((p: { id: number; name: string }) => p.id.toString() === panelId)?.name
 
   const measurementPoints = await getMeasurementPoints({ electricalpanelId: panelId, token })
-  console.log('[DEBUG] measurementPoints:', measurementPoints)
   const pointId = point || measurementPoints?.results[0]?.measurement_points[0]?.id.toString()
   const measurementPointName = measurementPoints.results
     .flatMap((d: { measurement_points: Array<{ id: number; name: string }> }) => d.measurement_points)
@@ -227,7 +224,7 @@ async function GraphSection({
   let thresholdUpper: number | undefined
   let capacity: string | undefined
 
-  console.log('[DEBUG] tableData:', tableData)
+  // console.log('[DEBUG] tableData:', tableData)
 
   if (category === 'voltage' && tableData?.results) {
     const pointData = tableData.results.find((p: { id: number }) => p.id.toString() === pointId)

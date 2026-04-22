@@ -1,38 +1,38 @@
 'use client'
 
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { CalendarIcon, ClockIcon } from "lucide-react";
-import ElectricUnitFilter from "../filters/unit-energy-filter";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useState, useTransition } from "react";
-import PaginationNumberComponent from "../../pagination-number";
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { CalendarIcon, ClockIcon } from "lucide-react"
+import ElectricUnitFilter from "../filters/unit-energy-filter"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { useCallback, useEffect, useState, useTransition } from "react"
+import PaginationNumberComponent from "../../pagination-number"
 // import NoResultsFound from "../../no-result";
-import { ELECTRIC_PARAMETERS } from "@/app/utils/formatter";
-import NoResultFound from "../../no-result-found";
+import { ELECTRIC_PARAMETERS } from "@/app/utils/formatter"
+import NoResultFound from "../../no-result-found"
 
 
 interface Readings {
-  count: number;
-  next: string | null;
-  previous: string | null;
-  results: Reading[];
+  count: number
+  next: string | null
+  previous: string | null
+  results: Reading[]
 }
 
 interface Reading {
-  created_at: string;
-  device: Device;
-  indicators: Indicators;
+  created_at: string
+  device: Device
+  indicators: Indicators
 }
 
 interface Device {
-  id: number;
-  name: string;
-  dev_eui: string;
+  id: number
+  name: string
+  dev_eui: string
 }
 
 interface Indicators {
-  id: number;
+  id: number
   values: {
     [key: string]: number
   }
@@ -64,6 +64,7 @@ export default function MeasurementTable({ readings, category }: { readings: Rea
     : allIndicators
 
 
+
   const handleIndicatorSelect = (indicator: string) => {
     setSelectedIndicator(indicator)
     startTransition(() => {
@@ -75,15 +76,15 @@ export default function MeasurementTable({ readings, category }: { readings: Rea
 
   useEffect(() => {
     const params = new URLSearchParams(searchParams.toString())
-    params.delete('last_by');
+    params.delete('last_by')
 
     if (avaibleIndicators.length > 0) {
 
       setSelectedIndicator(avaibleIndicators[0])
-      params.delete('frequency');
+      params.delete('frequency')
       router.push(pathname + "?" + createQueryString("indicator", avaibleIndicators[0]), { scroll: false })
     }
-  }, [category]);
+  }, [category])
 
   const createQueryString = useCallback(
     (name: string, value: string) => {
@@ -115,6 +116,7 @@ export default function MeasurementTable({ readings, category }: { readings: Rea
     const formattedTime = `${hours}:${minutes}`
 
     return { date: formattedDate, time: formattedTime }
+
   }
 
   return (
