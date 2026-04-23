@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react'
 import { EnergyHeadquarter, MeasurementPointResults, SearchParams } from "@/app/type"
 import { format } from "date-fns"
-import { getEnergyMeasurementPointPanels, getHeadquarters } from '@/app/services/energy/enterprise/data'
+import { getEnergyMeasurementPointPanels, getFavorites, getHeadquarters } from '@/app/services/energy/enterprise/data'
 import { getMeasurementPoints } from '@/app/services/filters/data'
 import FiltersContainer from '@/app/ui/filters/filters-container'
 import HeadquarterEnergyFilter from '@/app/ui/energia/filters/headquarter-energy-filter'
@@ -13,7 +13,21 @@ import { getToken } from '@/app/lib/auth'
 import { consume, consumeGraphSpecific } from '@/app/services/energy/data'
 import ComparisonGraph from '@/app/ui/energia/comparison/comparison-graph'
 import ElectricUnitFilter from '@/app/ui/energia/filters/unit-energy-filter'
+import Favorites from '@/app/ui/filters/favorites'
 
+interface Favorite {
+    id: number,
+    name: string,
+    measurement_point: number,
+    enterprise_id: number,
+    energy_headquarter_id: number,
+    electrical_panel_id: number
+}
+
+
+interface FavoriteResults {
+    results: Favorite[]
+}
 
 
 interface ResolvedParams {
@@ -32,7 +46,8 @@ interface ResolvedParams {
     measurementPoints: MeasurementPointResults
     headquarterName?: string
     panelName?: string
-    measurementPointName?: string
+    measurementPointName?: string,
+    favorites: FavoriteResults
 }
 
 async function resolveFilterIds(
@@ -60,8 +75,9 @@ async function resolveFilterIds(
     const formattedDateAfter = format(parsedDateAfter, 'yyyy-MM-dd')
     const formattedDateBefore = format(parsedDateBefore, 'yyyy-MM-dd')
 
-    const headquartersPromise = getHeadquarters(token)
+    const favorites = await getFavorites(token)
 
+    const headquartersPromise = getHeadquarters(token)
     const headquarters = await getHeadquarters(token)
     const headquarterId = headquarter || headquarters.results[0]?.id.toString()
     const headquarterName = headquarters.results.find((h: EnergyHeadquarter) => h.id.toString() === headquarterId)?.name
@@ -69,6 +85,7 @@ async function resolveFilterIds(
     const measurementPointsPanels = await getEnergyMeasurementPointPanels({ headquarterId, token })
     const panelId = panel || measurementPointsPanels?.results[0]?.id.toString()
     const panelName = measurementPointsPanels.results.find((p: { id: number; name: string }) => p.id.toString() === panelId)?.name
+
 
     const measurementPoints = await getMeasurementPoints({ electricalpanelId: panelId, token })
     const pointId = point || measurementPoints?.results[0]?.measurement_points[0]?.id.toString()
@@ -92,7 +109,8 @@ async function resolveFilterIds(
         measurementPoints,
         headquarterName,
         panelName,
-        measurementPointName
+        measurementPointName,
+        favorites
     }
 }
 
@@ -111,6 +129,7 @@ async function FiltersSection({
         headquarters,
         panels,
         measurementPoints,
+        favorites
     } = await resolvedPromise
 
     const energyPanel = (panels.find((p) => p.id.toString() === panelId) as ElectricalPanel | undefined) ?? null
@@ -123,6 +142,7 @@ async function FiltersSection({
             <HeadquarterEnergyFilter energyHeadquarter={headquarters} energy={headquarterId} />
             <PanelsFilterEnergy energyPanels={panels as ElectricalPanel[]} panel={panelId} />
             <MeasurementPointFilter measurementPoints={measurementPoints} point={pointId} />
+            <Favorites data={favorites} />
             <DatepickerRange />
         </FiltersContainer>
     )

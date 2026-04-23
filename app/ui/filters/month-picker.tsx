@@ -30,7 +30,7 @@ export default memo(function MonthPicker({ value, onChange, isPending, firstMont
   return (
     <div className='relative'>
       <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className="w-[180px] bg-[#00b0c7]">
+        <SelectTrigger className="w-[180px] bg-[#00b0c7] text-white">
           <SelectValue placeholder="Meses" />
         </SelectTrigger>
         <SelectContent>

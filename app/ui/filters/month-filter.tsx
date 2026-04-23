@@ -56,7 +56,7 @@ export default function MonthFilter({ year }: { year: string }) {
   const yearNumber = parseInt(year, 10)
   const currentMonth = new Date().getMonth() + 1
   const currentYear = new Date().getFullYear()
-  
+
   // Default to current month if we're in the selected year, otherwise January
   const defaultMonth = yearNumber === currentYear ? currentMonth : 1
   const defaultValue = getMonthDateRange(yearNumber, defaultMonth)
@@ -81,14 +81,14 @@ export default function MonthFilter({ year }: { year: string }) {
   return (
     <div className='relative'>
       <Select onValueChange={handleMonth} defaultValue={defaultValue}>
-        <SelectTrigger className="w-[180px] bg-[#00b0c7]">
+        <SelectTrigger className="w-[180px] bg-[#00b0c7] text-white">
           <SelectValue placeholder="Meses" />
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="none">Ninguno</SelectItem>
           {MONTHS.map((month) => (
-            <SelectItem 
-              key={month.value} 
+            <SelectItem
+              key={month.value}
               value={getMonthDateRange(yearNumber, month.value)}
             >
               {month.label}

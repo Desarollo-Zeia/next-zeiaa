@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/toggle-group"
 import { useTransition } from "react"
 
-export default function FrequencyEnergyFilter({ category, frequencyP } : { category: string, frequencyP: string }) {
+export default function FrequencyEnergyFilter({ category, frequencyP }: { category: string, frequencyP: string }) {
   const [isPending, startTransition] = useTransition()
   const searchParams = useSearchParams()
   const { replace } = useRouter()
@@ -18,7 +18,7 @@ export default function FrequencyEnergyFilter({ category, frequencyP } : { categ
   const frequencyDicc = {
     power: [
       { label: "Hora", value: "hour" }
-    ] ,
+    ],
     current: [
       { label: "Hora", value: "hour" },
     ],
@@ -33,18 +33,18 @@ export default function FrequencyEnergyFilter({ category, frequencyP } : { categ
     ]
   }
 
-  const handleFrequencyChange = (value: string) => { 
+  const handleFrequencyChange = (value: string) => {
     startTransition(() => {
       const params = new URLSearchParams(searchParams)
       params.set("last_by", value)
       params.set("page", '1')
       replace(`${pathname}?${params.toString()}`)
-  })
+    })
   }
 
   return (
     <div className="flex justify-center flex-wrap gap-2">
-      <ToggleGroup type="single" onValueChange={handleFrequencyChange} defaultValue={frequencyP.toString()}   aria-label="Frequency" className="flex gap-2 relative">
+      <ToggleGroup type="single" onValueChange={handleFrequencyChange} defaultValue={frequencyP.toString()} aria-label="Frequency" className="flex gap-2 relative">
         {
           frequencyDicc[category as keyof typeof frequencyDicc].map((frequency) => (
             <ToggleGroupItem
@@ -61,10 +61,10 @@ export default function FrequencyEnergyFilter({ category, frequencyP } : { categ
           ))
         }
         {isPending && (
-              <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50">
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
-              </div>
-          )}
+          <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50">
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+          </div>
+        )}
       </ToggleGroup>
     </div>
   )
