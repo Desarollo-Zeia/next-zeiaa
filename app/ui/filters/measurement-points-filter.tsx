@@ -78,8 +78,8 @@ export default function MeasurementPointFilter({ measurementPoints, point }: { m
         disabled={isPending}
         value={currentPointId || point}
       >
-        <SelectTrigger className="w-[240px] bg-[#00b0c7]">
-          <SelectValue placeholder="Puntos de medición" />
+        <SelectTrigger className="w-[240px] bg-[#E8E5E5] border-[#E8E5E5] ring-[#E8E5E5] focus:ring-[#E8E5E5] focus:ring-offset-0 text-[#929292] font-medium">
+          <SelectValue className="text-[#929292]" placeholder="Puntos de medición" />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
@@ -92,7 +92,7 @@ export default function MeasurementPointFilter({ measurementPoints, point }: { m
                       {
                         device.measurement_points.map((point) =>
                         (
-                          <SelectItem value={point.id.toString()} key={point.id} disabled={!point.is_active}>
+                          <SelectItem value={point.id.toString()} key={point.id} disabled={!point.is_active} >
                             {point.name}
                           </SelectItem>
                         )

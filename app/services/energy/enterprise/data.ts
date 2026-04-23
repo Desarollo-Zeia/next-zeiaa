@@ -9,6 +9,16 @@ const getHeadquartersRequestCached = cache(async (token: string) => {
   return await fetchWithAuthEnergy('/api/v1/user/headquarters/', {}, token)
 })
 
+
+export const getFavorites = async (token: string) => {
+  'use cache'
+  cacheLife('minutes')
+  return await fetchWithAuthEnergy('/api/v1/favorite-points', {}, token)
+
+}
+
+
+
 const getEnergyMeasurementPointPanelsRequestCached = cache(async (token: string, headquarterId: string) => {
   'use cache'
   cacheLife('minutes')

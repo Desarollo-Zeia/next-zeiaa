@@ -1,9 +1,9 @@
 'use client'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useSearchParams, usePathname, useRouter } from 'next/navigation';
-import { useTransition, useEffect } from 'react';
-import { useFiltersStore } from '@/app/lib/stores/filters-store';
-import posthog from "posthog-js";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useSearchParams, usePathname, useRouter } from 'next/navigation'
+import { useTransition, useEffect } from 'react'
+import { useFiltersStore } from '@/app/lib/stores/filters-store'
+import posthog from "posthog-js"
 
 interface Headquarter {
   id: number
@@ -20,7 +20,7 @@ interface Headquarters {
 export default function HeadquarterSelect({ headquarters }: { headquarters: Headquarters }) {
 
   const searchParams = useSearchParams()
-  const [isPending, startTransition] = useTransition();
+  const [isPending, startTransition] = useTransition()
   const pathname = usePathname()
   const { replace } = useRouter()
   const { headquarterId, setHeadquarter, syncFromUrl } = useFiltersStore()
@@ -53,23 +53,23 @@ export default function HeadquarterSelect({ headquarters }: { headquarters: Head
     setHeadquarter(headquarter === 'none' ? '' : headquarter)
 
     startTransition(() => {
-      const params = new URLSearchParams(searchParams);
+      const params = new URLSearchParams(searchParams)
       if (headquarter && headquarter !== 'none') {
-        params.set('headquarter', headquarter);
+        params.set('headquarter', headquarter)
       }
 
       if (headquarter === 'none') {
-        params.delete('headquarter');
+        params.delete('headquarter')
       }
 
-      replace(`${pathname}?${params.toString()}`, { scroll: false });
+      replace(`${pathname}?${params.toString()}`, { scroll: false })
     })
   }
 
   return (
     <div className="relative">
       <Select onValueChange={handleRoomChange} defaultValue={currentHeadquarterId}>
-        <SelectTrigger className="w-[240px] bg-[#00b0c7]">
+        <SelectTrigger className="w-[240px] bg-[#00b0c7] text-white">
           <SelectValue className="text-white font-bold" />
         </SelectTrigger>
         <SelectContent>

@@ -35,7 +35,7 @@ export default memo(function YearFilter({ year }: { year: string }) {
   return (
     <div className='relative'>
       <Select onValueChange={handleYear} value={year}>
-        <SelectTrigger className="w-[120px] bg-[#00b0c7]">
+        <SelectTrigger className="w-[120px] bg-[#00b0c7] text-white">
           <SelectValue placeholder="Año" />
         </SelectTrigger>
         <SelectContent>

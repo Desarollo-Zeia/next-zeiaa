@@ -1,6 +1,6 @@
 'use client'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useSearchParams, usePathname, useRouter } from 'next/navigation';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useSearchParams, usePathname, useRouter } from 'next/navigation'
 import { useTransition } from 'react'
 
 type Time = {
@@ -40,7 +40,7 @@ export default function FrequencyIntervalFilter({ interval }: { interval: string
       }
 
       replace(`${pathname}?${newParams.toString()}`, { scroll: false })
-    });
+    })
   }
 
   return (
@@ -50,7 +50,7 @@ export default function FrequencyIntervalFilter({ interval }: { interval: string
         value={interval}
         disabled={isPending}
       >
-        <SelectTrigger className="w-[240px] bg-[#00b0c7]">
+        <SelectTrigger className="w-[240px] bg-[#00b0c7] text-white">
           <SelectValue
             placeholder={isPending ? "Cargando..." : "Selecciona un frecuencia de intervalo"}
             className="text-white font-bold"

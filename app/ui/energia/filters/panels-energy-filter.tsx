@@ -32,21 +32,21 @@ export default function PanelsFilterEnergy({ energyPanels = [], panel }: PanelsF
 
   const handlePanelChange = (panelId: string) => {
     setPanel(panelId)
-    
+
     startTransition(() => {
       const params = new URLSearchParams(searchParams)
 
       params.set("panel", panelId)
       params.set("page", '1')
       params.delete('point')
-      replace(`${pathname}?${params.toString()}`, { scroll: false });
+      replace(`${pathname}?${params.toString()}`, { scroll: false })
     })
   }
 
   return (
     <div className="relative">
       <Select value={currentPanelId || panel} onValueChange={handlePanelChange}>
-        <SelectTrigger className="w-[240px] bg-[#00b0c7]">
+        <SelectTrigger className="w-[240px] bg-[#E8E5E5] border-[#E8E5E5] ring-[#E8E5E5] focus:ring-[#E8E5E5] focus:ring-offset-0 text-[#929292] font-medium">
           <SelectValue placeholder="Seleccionar panel" />
         </SelectTrigger>
         <SelectContent>

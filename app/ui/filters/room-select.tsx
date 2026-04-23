@@ -1,8 +1,8 @@
 'use client'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useSearchParams, usePathname, useRouter } from 'next/navigation';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useSearchParams, usePathname, useRouter } from 'next/navigation'
 import { useTransition, useEffect, useState, useMemo } from 'react'
-import { useFiltersStore } from '@/app/lib/stores/filters-store';
+import { useFiltersStore } from '@/app/lib/stores/filters-store'
 
 interface Room {
   id: number
@@ -41,7 +41,7 @@ export default function RoomSelect({ rooms, firstRoom }: { rooms: Room[], firstR
   }, [roomParam, selectedRoom])
 
   const handleRoomChange = (newRoomId: string) => {
-    if (newRoomId === selectedRoom) return;
+    if (newRoomId === selectedRoom) return
 
     setSelectedRoom(newRoomId)
 
@@ -54,7 +54,7 @@ export default function RoomSelect({ rooms, firstRoom }: { rooms: Room[], firstR
       newParams.set('page', '1')
 
       replace(`${pathname}?${newParams.toString()}`, { scroll: false })
-    });
+    })
   }
 
   return (
@@ -64,7 +64,7 @@ export default function RoomSelect({ rooms, firstRoom }: { rooms: Room[], firstR
         value={roomParam ?? selectedRoom ?? firstRoom}
         disabled={isPending}
       >
-        <SelectTrigger className="w-[240px] bg-[#00b0c7]">
+        <SelectTrigger className="w-[240px] bg-[#00b0c7] text-white">
           <SelectValue
             placeholder={isPending ? "Cargando..." : "Selecciona una sala"}
             className="text-white font-bold"
@@ -89,5 +89,5 @@ export default function RoomSelect({ rooms, firstRoom }: { rooms: Room[], firstR
         </div>
       )}
     </div>
-  );
+  )
 }

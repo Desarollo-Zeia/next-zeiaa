@@ -1,7 +1,7 @@
 import { consume, consumeGraph } from "@/app/services/energy/data"
 import { dashboardTable } from "@/app/services/panel/data"
 import FiltersContainer from "@/app/ui/filters/filters-container"
-import { getEnergyMeasurementPointPanels, getHeadquarters } from "@/app/services/energy/enterprise/data"
+import { getEnergyMeasurementPointPanels, getFavorites, getHeadquarters } from "@/app/services/energy/enterprise/data"
 import HeadquarterEnergyFilter from "@/app/ui/energia/filters/headquarter-energy-filter"
 import PanelsFilterEnergy, { ElectricalPanel } from "@/app/ui/energia/filters/panels-energy-filter"
 import MeasurementTable from "@/app/ui/energia/consumo/measurement-table"
@@ -15,8 +15,22 @@ import MeasurementPointFilter from "@/app/ui/filters/measurement-points-filter"
 import { getToken } from "@/app/lib/auth"
 import { Suspense } from "react"
 import { FiltersSkeleton, TableSkeleton, GraphSkeleton } from "@/app/ui/energia/consumo/skeletons"
+import Favorites from "@/app/ui/filters/favorites"
 
 export const maxDuration = 60
+
+interface Favorite {
+  id: number
+  name: string
+  measurement_point: number
+  enterprise_id: number
+  energy_headquarter_id: number
+  electrical_panel_id: number
+}
+
+interface Favorites {
+  results: Favorite[]
+}
 
 interface ResolvedParams {
   headquarterId: string
@@ -34,7 +48,8 @@ interface ResolvedParams {
   measurementPoints: MeasurementPointResults
   headquarterName?: string
   panelName?: string
-  measurementPointName?: string
+  measurementPointName?: string,
+  favorites: Favorites
 }
 
 async function resolveFilterIds(
@@ -58,6 +73,9 @@ async function resolveFilterIds(
   const formattedDateBefore = format(date_before, 'yyyy-MM-dd')
 
   const headquartersPromise = getHeadquarters(token)
+
+  const favorites = await getFavorites(token)
+
 
   const headquarters = await getHeadquarters(token)
   const headquarterId = headquarter || headquarters.results[0]?.id.toString()
@@ -89,7 +107,8 @@ async function resolveFilterIds(
     measurementPoints,
     headquarterName,
     panelName,
-    measurementPointName
+    measurementPointName,
+    favorites
   }
 }
 
@@ -108,6 +127,7 @@ async function FiltersSection({
     headquarters,
     panels,
     measurementPoints,
+    favorites
   } = await resolvedPromise
 
   const energyPanel = (panels.find((p) => p.id.toString() === panelId) as ElectricalPanel | undefined) ?? null
@@ -120,6 +140,8 @@ async function FiltersSection({
       <HeadquarterEnergyFilter energyHeadquarter={headquarters} energy={headquarterId} />
       <PanelsFilterEnergy energyPanels={panels as ElectricalPanel[]} panel={panelId} />
       <MeasurementPointFilter measurementPoints={measurementPoints} point={pointId} />
+      <Favorites data={favorites} />
+
       <DatepickerRange />
       <DownloadExcel
         headquarterId={headquarterId}

@@ -8,39 +8,39 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { useTransition } from "react";
-import { useSearchParams, usePathname, useRouter } from 'next/navigation';
-import { STATUS_TO_SPANISH } from "@/app/utils/formatter";
+import { useTransition } from "react"
+import { useSearchParams, usePathname, useRouter } from 'next/navigation'
+import { STATUS_TO_SPANISH } from "@/app/utils/formatter"
 
 export default function StatusSelect({ status_filter }: { status_filter?: string[] }) {
 
   const [isPending, startTransition] = useTransition()
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const { replace } = useRouter();
+  const searchParams = useSearchParams()
+  const pathname = usePathname()
+  const { replace } = useRouter()
 
   const handleChangeStatus = (status: string) => {
     startTransition(() => {
-      const newParams = new URLSearchParams(searchParams);
+      const newParams = new URLSearchParams(searchParams)
 
-      newParams.set('page', '1');
+      newParams.set('page', '1')
 
       if (status) {
-        newParams.set('status', status);
+        newParams.set('status', status)
       }
 
       if (status === 'none') {
-        newParams.delete('status');
+        newParams.delete('status')
       }
 
-      replace(`${pathname}?${newParams.toString()}`, { scroll: false });
-    });
-  };
+      replace(`${pathname}?${newParams.toString()}`, { scroll: false })
+    })
+  }
 
   return (
     <div className="relative">
       <Select onValueChange={handleChangeStatus}>
-        <SelectTrigger className="w-[180px] text-black bg-[#00b0c7]">
+        <SelectTrigger className="w-[180px] text-black bg-[#00b0c7] text-white">
           <SelectValue placeholder={isPending ? "Cargando..." : "Selecciona estado"}
             className="text-white font-bold" />
         </SelectTrigger>

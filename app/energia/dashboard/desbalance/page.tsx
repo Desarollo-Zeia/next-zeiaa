@@ -1,6 +1,6 @@
 import { getToken } from "@/app/lib/auth"
 import { currentGraph, threeMostUnbalanced, voltageGraph } from "@/app/services/energy/desbalance/data"
-import { getEnergyMeasurementPointPanels, getHeadquarters } from "@/app/services/energy/enterprise/data"
+import { getEnergyMeasurementPointPanels, getFavorites, getHeadquarters } from "@/app/services/energy/enterprise/data"
 import { getMeasurementPoints } from "@/app/services/filters/data"
 import { SearchParams } from "@/app/type"
 import CurrentChartCount from "@/app/ui/energia/desbalance/current-chart-count"
@@ -15,8 +15,25 @@ import MeasurementPointFilter from "@/app/ui/filters/measurement-points-filter"
 import { format } from "date-fns"
 import { Suspense } from "react"
 import { PageSkeleton } from "@/app/ui/energia/desbalance/skeletons"
+import Favorites from "@/app/ui/filters/favorites"
 
 export const maxDuration = 60
+
+
+interface Favorite {
+  id: number,
+  name: string,
+  measurement_point: number,
+  enterprise_id: number,
+  energy_headquarter_id: number,
+  electrical_panel_id: number
+}
+
+
+interface FavoriteResults {
+  results: Favorite[]
+}
+
 
 interface DesbalanceContext {
   metric: string
@@ -29,6 +46,7 @@ interface DesbalanceContext {
   headquarters: Awaited<ReturnType<typeof getHeadquarters>>
   measurementPointsPanels: Awaited<ReturnType<typeof getEnergyMeasurementPointPanels>>
   measurementPoints: Awaited<ReturnType<typeof getMeasurementPoints>>
+  favorites: FavoriteResults
 }
 
 async function resolveDesbalanceContext(searchParams: SearchParams['searchParams']): Promise<DesbalanceContext> {
@@ -50,6 +68,9 @@ async function resolveDesbalanceContext(searchParams: SearchParams['searchParams
 
 
   const headquarters = await headquartersPromise
+
+  const favorites = await getFavorites(authToken!)
+
 
   if (!headquarters?.results?.length) {
     throw new Error('No hay sedes disponibles')
@@ -76,6 +97,7 @@ async function resolveDesbalanceContext(searchParams: SearchParams['searchParams
     headquarters,
     measurementPointsPanels,
     measurementPoints,
+    favorites
   }
 }
 
@@ -87,6 +109,7 @@ async function DesbalanceFiltersSection({ contextPromise }: { contextPromise: Pr
       <HeadquarterEnergyFilter energyHeadquarter={context.headquarters.results} energy={context.headquarterId} />
       <PanelsFilterEnergy energyPanels={context.measurementPointsPanels.results} panel={context.panelId} />
       <MeasurementPointFilter measurementPoints={context.measurementPoints} point={context.pointId} />
+      <Favorites data={context.favorites} />
       <DatepickerRange />
     </FiltersContainer>
   )

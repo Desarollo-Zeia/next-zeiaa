@@ -32,7 +32,7 @@ export default function OrderingFilter() {
         onValueChange={handleTableOrdering}
         disabled={isPending}
       >
-        <SelectTrigger className="w-[240px] bg-[#00b0c7]">
+        <SelectTrigger className="w-[240px] bg-[#00b0c7] text-white">
           <SelectValue
             placeholder={isPending ? "Cargando..." : "Ordenar datos"}
             className="text-white font-bold"
