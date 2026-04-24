@@ -26,7 +26,7 @@ export type CalculatorDifferenceResult = {
     total: number
     peak: number
     off_peak: number,
-    unit_energy: string
+    unit: string
   }
   cost?: {
     total: number
@@ -202,11 +202,11 @@ function ResultCard({ result, label }: { result?: CalculatorDifferenceResult, la
           <div className="flex flex-row gap-4 w-full items-center">
             <div className="flex-1 space-y-2">
               <div className="bg-[#F5F6F9] p-3 rounded-lg">
-                <p className="text-xl font-bold text-[#4D5A63] text-center pb-2">{formatNumberWithCommas(result?.consumption?.total)} {result?.consumption?.unit_energy}</p>
+                <p className="text-xl font-bold text-[#4D5A63] text-center pb-2">{formatNumberWithCommas(result?.consumption?.total)} {result?.consumption?.unit}</p>
                 <p className="text-[10px] text-[#4D5A63] -mt-1">
-                  Punta: {formatNumberWithCommas(result?.consumption?.peak)} {result?.consumption?.unit_energy}
+                  Punta: {formatNumberWithCommas(result?.consumption?.peak)} {result?.consumption?.unit}
                 </p>
-                <p className="text-[10px] text-[#4D5A63] -mt-3">  Fuera de Punta: {formatNumberWithCommas(result?.consumption?.off_peak)} {result?.consumption?.unit_energy}</p>
+                <p className="text-[10px] text-[#4D5A63] -mt-3">  Fuera de Punta: {formatNumberWithCommas(result?.consumption?.off_peak)} {result?.consumption?.unit}</p>
               </div>
             </div>
             <div className="flex items-center px-2">

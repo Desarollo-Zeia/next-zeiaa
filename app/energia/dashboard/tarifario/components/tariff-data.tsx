@@ -77,6 +77,8 @@ async function TariffDataContent({
     })
   ])
 
+  console.log(calculatorResult)
+
   return (
     <>
       {calculatorResult?.detail ? (
@@ -91,12 +93,12 @@ async function TariffDataContent({
           </h3>
           <div className="flex shadow-lg rounded-b-lg bg-[#E0F6F9] bg-[#F3FCFD]">
             <div className="p-6 text-center flex-1 border-r border-white/30">
-              <p className="text-xl font-bold text-[#4D5A63] text-nowrap">{formatNumberWithCommas(calculatorResult?.consumption?.total)} {calculatorResult?.consumption?.unit_energy}</p>
+              <p className="text-xl font-bold text-[#4D5A63] text-nowrap">{formatNumberWithCommas(calculatorResult?.consumption?.total)} {calculatorResult?.consumption?.unit}</p>
               <p className="text-[10px] text-gray-600 mt-2 text-left">
-                Punta: {formatNumberWithCommas(calculatorResult?.consumption?.peak)} {calculatorResult?.consumption?.unit_energy}
+                Punta: {formatNumberWithCommas(calculatorResult?.consumption?.peak)} {calculatorResult?.consumption?.unit}
               </p>
               <p className="text-[10px] text-gray-600 text-left text-nowrap">
-                Fuera de Punta: {formatNumberWithCommas(calculatorResult?.consumption?.off_peak)} {calculatorResult?.consumption?.unit_energy}
+                Fuera de Punta: {formatNumberWithCommas(calculatorResult?.consumption?.off_peak)} {calculatorResult?.consumption?.unit}
               </p>
             </div>
             <div className="flex items-center px-2">
