@@ -46,6 +46,8 @@ export default function ComparisonGraph({ mock, category, currentIndicator }: { 
   const [hasInteracted, setHasInteracted] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
+  console.log(mock)
+
 
   // React.useEffect(() => {
   //   const handleIndicatorUpdate = () => {
@@ -237,7 +239,7 @@ export default function ComparisonGraph({ mock, category, currentIndicator }: { 
             return (
               <label
                 key={date}
-                className="flex items-center gap-2 cursor-pointer px-3 py-2 bg-white rounded-md border-2 hover:bg-gray-50 transition-colors"
+                className="flex items-center gap-2 cursor-pointer px-3 py-2 bg-white rounded-md hover:bg-gray-50 transition-colors"
                 style={{ borderColor: HABITUAL_COLOR }}
               >
                 <input
@@ -303,6 +305,9 @@ export default function ComparisonGraph({ mock, category, currentIndicator }: { 
             )
           })}
         </div>
+      </div>
+      <div className='p-2 mt-2'>
+        <p className='text-[#707070] font-bold text-xl'>Gráfica comparativa por días</p>
       </div>
       <div className="mt-6 h-[450px]">
         <DynamicLine ref={chartRef} data={chartData} options={options} />
