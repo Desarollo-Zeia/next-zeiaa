@@ -14,6 +14,8 @@ interface DataEntry {
   difference: null
   device: string
   measurement_point: string
+  unit_cost: string
+  value_cost: number
 }
 
 interface DateData {
@@ -21,6 +23,9 @@ interface DateData {
 }
 
 const colors = ['#8884d8', '#82ca9d', '#ffc658', '#ff7300']
+const HABITUAL_KEY = 'habitual'
+const HABITUAL_LABEL = 'Consumo Habitual'
+const HABITUAL_COLOR = '#000000'
 
 const formatDateInSpanish = (dateStr: string): string => {
   const [year, month, day] = dateStr.split('-').map(Number)
@@ -33,7 +38,7 @@ const formatDateInSpanish = (dateStr: string): string => {
   return `${dayName}, ${dayNum} de ${monthName}`
 }
 
-export default function ComparisonGraph({ mock, indicators, category }: { mock: DateData[], indicators: string[], category: string }) {
+export default function ComparisonGraph({ mock, category, currentIndicator }: { mock: DateData[], category: string, currentIndicator: string }) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const chartRef = useRef<any>(null)
@@ -41,33 +46,20 @@ export default function ComparisonGraph({ mock, indicators, category }: { mock: 
   const [hasInteracted, setHasInteracted] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
-  const currentIndicator = searchParams.get('indicator') || indicators[0]
 
-  React.useEffect(() => {
-    const handleIndicatorUpdate = () => {
-      if (indicators.length > 0 && !indicators.includes(currentIndicator)) {
-        setIsLoading(true)
-        const params = new URLSearchParams(searchParams.toString())
-        params.set('indicator', indicators[0])
-        router.push(`?${params.toString()}`, { scroll: false })
-      }
-    }
+  // React.useEffect(() => {
+  //   const handleIndicatorUpdate = () => {
+  //     if (indicators.length > 0 && !indicators.includes(currentIndicator)) {
+  //       setIsLoading(true)
+  //       const params = new URLSearchParams(searchParams.toString())
+  //       params.set('indicator', indicators[0])
+  //       router.push(`?${params.toString()}`, { scroll: false })
+  //     }
+  //   }
 
-    const timeout = setTimeout(handleIndicatorUpdate, 100)
-    return () => clearTimeout(timeout)
-  }, [category])
-
-  React.useEffect(() => {
-    if (!isLoading) return
-    const timer = setTimeout(() => setIsLoading(false), 500)
-    return () => clearTimeout(timer)
-  }, [isLoading, currentIndicator])
-
-  const handleIndicatorChange = (indicator: string) => {
-    const params = new URLSearchParams(searchParams.toString())
-    params.set('indicator', indicator)
-    router.push(`?${params.toString()}`, { scroll: false })
-  }
+  //   const timeout = setTimeout(handleIndicatorUpdate, 100)
+  //   return () => clearTimeout(timeout)
+  // }, [category])
 
   const toggleDataset = (date: string) => {
     if (!hasInteracted) {
@@ -101,7 +93,7 @@ export default function ComparisonGraph({ mock, indicators, category }: { mock: 
         if (!chartData[index]) {
           chartData[index] = { time: entry.time.split(':').slice(0, 2).join(':') }
         }
-        chartData[index][dateKey] = entry.value
+        chartData[index][dateKey] = entry.value_cost
       })
     })
 
@@ -112,22 +104,29 @@ export default function ComparisonGraph({ mock, indicators, category }: { mock: 
   const dates = mock.map(obj => Object.keys(obj)[0])
   const labels = data.map(d => d.time)
 
+  const firstEntry = mock[0]?.[dates[0]]?.[0]
+  const costUnitLabel = firstEntry?.unit_cost || '€'
+
   console.log('Mock received in graph:', JSON.stringify(mock, null, 2))
 
   const chartData = {
     labels,
-    datasets: dates.map((date, index) => ({
-      label: date,
-      data: data.map(d => d[date] as number),
-      borderColor: colors[index % colors.length],
-      backgroundColor: colors[index % colors.length],
-      tension: 0.3,
-      hidden: hiddenDatasets.has(date),
-      borderWidth: 2,
-      pointRadius: 0,
-      pointHoverRadius: 4,
-      spanGaps: true,
-    }))
+    datasets: dates.map((date, index) => {
+      const isHabitual = date === HABITUAL_KEY
+      return {
+        label: date,
+        data: data.map(d => d[date] as number),
+        borderColor: isHabitual ? HABITUAL_COLOR : colors[index % colors.length],
+        backgroundColor: isHabitual ? HABITUAL_COLOR : colors[index % colors.length],
+        tension: 0.3,
+        hidden: hiddenDatasets.has(date),
+        borderWidth: isHabitual ? 6 : 2,
+        borderDash: isHabitual ? [5, 5] : undefined,
+        pointRadius: 0,
+        pointHoverRadius: 4,
+        spanGaps: true,
+      }
+    })
   }
 
   const options: ChartOptions<'line'> = {
@@ -150,11 +149,23 @@ export default function ComparisonGraph({ mock, indicators, category }: { mock: 
             return items[0].label || ''
           },
           label: (context) => {
-            const value = context.parsed.y
-            if (value === null) return ''
+            const costValue = context.parsed.y
+            if (costValue === null) return ''
             const dateLabel = context.dataset.label || ''
-            const unit = ELECTRIC_PARAMETERS[currentIndicator as keyof typeof ELECTRIC_PARAMETERS]?.unit || 'KW'
-            return `${formatDateInSpanish(dateLabel)}: ${value.toFixed(2)} ${unit}`
+            const timeLabel = context.label || ''
+            const isHabitual = dateLabel === HABITUAL_KEY
+
+            const dateObj = mock.find(d => Object.keys(d)[0] === dateLabel)
+            const entry = dateObj?.[dateLabel]?.find(e => e.time.startsWith(timeLabel))
+            const costUnit = entry?.unit_cost || ''
+            const energyValue = entry?.value ?? null
+            const energyUnit = entry?.unit || ''
+
+            const label = isHabitual
+              ? HABITUAL_LABEL
+              : formatDateInSpanish(dateLabel)
+
+            return `${label}: ${costValue.toFixed(2)} ${costUnit} / ${energyValue?.toFixed(2) ?? '--'} KWh`
           },
         },
       },
@@ -184,7 +195,7 @@ export default function ComparisonGraph({ mock, indicators, category }: { mock: 
       y: {
         title: {
           display: true,
-          text: ELECTRIC_PARAMETERS[currentIndicator as keyof typeof ELECTRIC_PARAMETERS]?.unit || 'KW',
+          text: costUnitLabel,
         },
       },
     },
@@ -204,7 +215,7 @@ export default function ComparisonGraph({ mock, indicators, category }: { mock: 
           <div className="animate-spin rounded-full h-8 w-8 border-4 border-gray-300 border-t-black"></div>
         </div>
       )}
-      <div className="flex gap-2 mb-4">
+      {/* <div className="flex gap-2 mb-4">
         {indicators.map(indicator => (
           <button
             key={indicator}
@@ -217,8 +228,34 @@ export default function ComparisonGraph({ mock, indicators, category }: { mock: 
             {ELECTRIC_PARAMETERS[indicator as keyof typeof ELECTRIC_PARAMETERS].parameter}
           </button>
         ))}
-      </div>
+      </div> */}
       <div className="border rounded-lg p-4 bg-gray-50 shadow-sm">
+        <div className="flex flex-wrap gap-4 mb-3">
+          {dates.map((date, index) => {
+            const isHabitual = date === HABITUAL_KEY
+            if (!isHabitual) return null
+            return (
+              <label
+                key={date}
+                className="flex items-center gap-2 cursor-pointer px-3 py-2 bg-white rounded-md border-2 hover:bg-gray-50 transition-colors"
+                style={{ borderColor: HABITUAL_COLOR }}
+              >
+                <input
+                  type="checkbox"
+                  checked={!hiddenDatasets.has(date)}
+                  onChange={() => toggleDataset(date)}
+                  className="w-4 h-4 accent-black"
+                />
+                <span
+                  className="text-sm text-black font-bold"
+                  style={{ borderBottom: `3px solid ${HABITUAL_COLOR}` }}
+                >
+                  {HABITUAL_LABEL}
+                </span>
+              </label>
+            )
+          })}
+        </div>
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
@@ -242,25 +279,29 @@ export default function ComparisonGraph({ mock, indicators, category }: { mock: 
           </button>
         </div>
         <div className="flex flex-wrap gap-4">
-          {dates.map((date, index) => (
-            <label
-              key={date}
-              className="flex items-center gap-2 cursor-pointer px-3 py-2 bg-white rounded-md border hover:bg-gray-50 transition-colors"
-            >
-              <input
-                type="checkbox"
-                checked={!hiddenDatasets.has(date)}
-                onChange={() => toggleDataset(date)}
-                className="w-4 h-4 accent-black"
-              />
-              <span
-                className="text-sm text-black"
-                style={{ borderBottom: `2px solid ${colors[index % colors.length]}` }}
+          {dates.map((date, index) => {
+            const isHabitual = date === HABITUAL_KEY
+            if (isHabitual) return null
+            return (
+              <label
+                key={date}
+                className="flex items-center gap-2 cursor-pointer px-3 py-2 bg-white rounded-md border hover:bg-gray-50 transition-colors"
               >
-                {formatDateInSpanish(date)}
-              </span>
-            </label>
-          ))}
+                <input
+                  type="checkbox"
+                  checked={!hiddenDatasets.has(date)}
+                  onChange={() => toggleDataset(date)}
+                  className="w-4 h-4 accent-black"
+                />
+                <span
+                  className="text-sm text-black font-medium"
+                  style={{ borderBottom: `3px solid ${colors[index % colors.length]}` }}
+                >
+                  {formatDateInSpanish(date)}
+                </span>
+              </label>
+            )
+          })}
         </div>
       </div>
       <div className="mt-6 h-[450px]">

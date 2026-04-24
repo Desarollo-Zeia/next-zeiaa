@@ -171,50 +171,50 @@ async function GraphicSpecificSection({
         measurementPointName,
     } = await resolvedPromise
 
-    const [readingsGraph, readings] = await Promise.all([
+    const [readingsGraph] = await Promise.all([
         consumeGraphSpecific({
             date_after: formattedDateAfter,
             date_before: formattedDateBefore,
             headquarterId,
             panelId,
-            indicador: indicator,
+            indicador: 'EPpos',
             point: pointId,
-            category,
+            category: 'energy',
             unit,
-            last_by,
+            last_by: 'hour',
             token
         }),
-        consume({
-            date_after: formattedDateAfter,
-            date_before: formattedDateBefore,
-            headquarterId,
-            panelId,
-            point: pointId,
-            category,
-            token
-        })
+        // consume({
+        //     date_after: formattedDateAfter,
+        //     date_before: formattedDateBefore,
+        //     headquarterId,
+        //     panelId,
+        //     point: pointId,
+        //     category,
+        //     token
+        // })
     ])
 
-    const indicatorsObject = readings.results?.[0]?.indicators?.values
+    // const indicatorsObject = readings.results?.[0]?.indicators?.values
 
-    const allIndicators = [] as Array<string>
+    // const allIndicators = [] as Array<string>
 
-    for (const key in indicatorsObject) {
-        allIndicators.push(key)
-    }
+    // for (const key in indicatorsObject) {
+    //     allIndicators.push(key)
+    // }
 
-    // Filter out indicators with all zero values when category is 'voltage'
-    const avaibleIndicators = category === 'voltage'
-        ? allIndicators.filter((indicator) => {
-            return readings.results?.some((reading: any) => {
-                const value = reading.indicators.values[indicator]
-                return value && value > 0
-            })
-        })
-        : allIndicators
+    // const avaibleIndicators = category === 'voltage'
+    //     ? allIndicators.filter((indicator) => {
+    //         return readings.results?.some((reading: any) => {
+    //             const value = reading.indicators.values[indicator]
+    //             return value && value > 0
+    //         })
+    //     })
+    //     : allIndicators
+
 
     return (
-        <ComparisonGraph mock={readingsGraph} indicators={avaibleIndicators} category={category}
+        <ComparisonGraph mock={readingsGraph} category={category} currentIndicator={'EPpos'}
         />
     )
 }
@@ -230,7 +230,7 @@ export default async function page({ searchParams }: SearchParams) {
         <div className='w-full'>
             <Suspense fallback={<FiltersSkeleton />}>
                 <FiltersSection resolvedPromise={resolvedPromise} />
-                <ElectricUnitFilter />
+                {/* <ElectricUnitFilter /> */}
             </Suspense>
             <div className="w-full">
                 <Suspense fallback={<GraphSkeleton />}>
