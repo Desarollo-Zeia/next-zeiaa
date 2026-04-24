@@ -165,7 +165,7 @@ export default function ComparisonGraph({ mock, category, currentIndicator }: { 
               ? HABITUAL_LABEL
               : formatDateInSpanish(dateLabel)
 
-            return `${label}: ${costValue.toFixed(2)} ${costUnit} / ${energyValue?.toFixed(2) ?? '--'} KWh`
+            return `${label}: ${costValue.toFixed(2)} ${costUnit} = ${energyValue?.toFixed(2) ?? '--'} KWh`
           },
         },
       },
@@ -244,10 +244,10 @@ export default function ComparisonGraph({ mock, category, currentIndicator }: { 
                   type="checkbox"
                   checked={!hiddenDatasets.has(date)}
                   onChange={() => toggleDataset(date)}
-                  className="w-4 h-4 accent-black"
+                  className="w-4 h-4 accent-[#707070]"
                 />
                 <span
-                  className="text-sm text-black font-bold"
+                  className="text-sm text-[#707070] font-bold"
                   style={{ borderBottom: `3px solid ${HABITUAL_COLOR}` }}
                 >
                   {HABITUAL_LABEL}
@@ -291,10 +291,10 @@ export default function ComparisonGraph({ mock, category, currentIndicator }: { 
                   type="checkbox"
                   checked={!hiddenDatasets.has(date)}
                   onChange={() => toggleDataset(date)}
-                  className="w-4 h-4 accent-black"
+                  className="w-4 h-4 accent-[#707070]"
                 />
                 <span
-                  className="text-sm text-black font-medium"
+                  className="text-sm text-[#707070] font-medium"
                   style={{ borderBottom: `3px solid ${colors[index % colors.length]}` }}
                 >
                   {formatDateInSpanish(date)}
