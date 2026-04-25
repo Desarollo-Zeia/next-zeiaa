@@ -46,9 +46,6 @@ export default function ComparisonGraph({ mock, category, currentIndicator }: { 
   const [hasInteracted, setHasInteracted] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
-  console.log(mock)
-
-
   // React.useEffect(() => {
   //   const handleIndicatorUpdate = () => {
   //     if (indicators.length > 0 && !indicators.includes(currentIndicator)) {
@@ -57,7 +54,7 @@ export default function ComparisonGraph({ mock, category, currentIndicator }: { 
   //       params.set('indicator', indicators[0])
   //       router.push(`?${params.toString()}`, { scroll: false })
   //     }
-  //   }
+  //   }∏
 
   //   const timeout = setTimeout(handleIndicatorUpdate, 100)
   //   return () => clearTimeout(timeout)
@@ -92,10 +89,11 @@ export default function ComparisonGraph({ mock, category, currentIndicator }: { 
       const entries = dateObj[dateKey]
 
       entries.forEach((entry: DataEntry, index: number) => {
+        console.log('Entry:', entry)
         if (!chartData[index]) {
           chartData[index] = { time: entry.time.split(':').slice(0, 2).join(':') }
         }
-        chartData[index][dateKey] = entry.value_cost
+        chartData[index][dateKey] = entry.value
       })
     })
 
@@ -167,7 +165,8 @@ export default function ComparisonGraph({ mock, category, currentIndicator }: { 
               ? HABITUAL_LABEL
               : formatDateInSpanish(dateLabel)
 
-            return `${label}: ${costValue.toFixed(2)} ${costUnit} = ${energyValue?.toFixed(2) ?? '--'} KWh`
+            // return `${label}: ${costValue.toFixed(2)} ${costUnit} = ${energyValue?.toFixed(2) ?? '--'} KWh`
+            return `${label}: ${energyValue?.toFixed(2) ?? '--'} KWh`
           },
         },
       },
