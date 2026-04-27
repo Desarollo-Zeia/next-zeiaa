@@ -107,8 +107,6 @@ export default function ComparisonGraph({ mock, category, currentIndicator }: { 
   const firstEntry = mock[0]?.[dates[0]]?.[0]
   const costUnitLabel = firstEntry?.unit || '€'
 
-  console.log('Mock received in graph:', JSON.stringify(mock, null, 2))
-
   const chartData = {
     labels,
     datasets: dates.map((date, index) => {
