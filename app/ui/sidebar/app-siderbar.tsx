@@ -40,8 +40,6 @@ export function AppSidebar() {
   const [userInfo, setUserInfo] = useState<object>({ email: '', name: '', avatar: '' })
   const [energyModules, setEnergyModules] = useState<EnergyElements[]>([])
 
-  console.log(energyModules)
-
   const handleModuleClick = (moduleName: string, moduleUrl: string) => {
     if (moduleUrl === '#') return
 
@@ -80,9 +78,9 @@ export function AppSidebar() {
       <SidebarContent className="relative">
         <SidebarGroup>
           {
-            energyModules.map(modules => {
+            energyModules.map((modules, i) => {
               return (
-                <>
+                <div key={i}>
                   <SidebarGroupLabel>{modules.name}</SidebarGroupLabel>
                   <SidebarGroupContent>
                     <SidebarMenu>
@@ -104,7 +102,7 @@ export function AppSidebar() {
                       ))}
                     </SidebarMenu>
                   </SidebarGroupContent>
-                </>
+                </div>
               )
             })
           }
