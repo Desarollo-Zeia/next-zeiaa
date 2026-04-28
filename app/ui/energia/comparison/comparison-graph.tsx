@@ -156,6 +156,7 @@ export default function ComparisonGraph({ mock, category, currentIndicator }: { 
             const dateObj = mock.find(d => Object.keys(d)[0] === dateLabel)
             const entry = dateObj?.[dateLabel]?.find(e => e.time.startsWith(timeLabel))
             const costUnit = entry?.unit_cost || ''
+            const cost = entry?.value_cost.toFixed(2) || ''
             const energyValue = entry?.value ?? null
             const energyUnit = entry?.unit || ''
 
@@ -164,7 +165,7 @@ export default function ComparisonGraph({ mock, category, currentIndicator }: { 
               : formatDateInSpanish(dateLabel)
 
             // return `${label}: ${costValue.toFixed(2)} ${costUnit} = ${energyValue?.toFixed(2) ?? '--'} KWh`
-            return `${label}: ${energyValue?.toFixed(2) ?? '--'} KWh`
+            return `${label}: ${energyValue?.toFixed(2) ?? '--'} KWh =  ${cost} ${costUnit}`
           },
         },
       },
