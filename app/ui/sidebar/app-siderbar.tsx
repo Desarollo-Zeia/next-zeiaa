@@ -21,16 +21,26 @@ import posthog from "posthog-js"
 interface EnergyItem {
   name: string
   url: string
-  is_active?: boolean
   icon: string
 }
+interface EnergyElements {
+  name: string,
+  url?: string | null,
+  icon: string,
+  is_active: boolean,
+  children: EnergyItem[]
+}
+
+
 
 
 export function AppSidebar() {
 
   const pathname = usePathname()
   const [userInfo, setUserInfo] = useState<object>({ email: '', name: '', avatar: '' })
-  const [energyModules, setEnergyModules] = useState<EnergyItem[]>([])
+  const [energyModules, setEnergyModules] = useState<EnergyElements[]>([])
+
+  console.log(energyModules)
 
   const handleModuleClick = (moduleName: string, moduleUrl: string) => {
     if (moduleUrl === '#') return
@@ -69,28 +79,35 @@ export function AppSidebar() {
       </SidebarHeader>
       <SidebarContent className="relative">
         <SidebarGroup>
-          <SidebarGroupLabel>Gestión energética</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {energyModules?.map((item) => (
-                <SidebarMenuItem key={item.name}>
-                  <SidebarMenuButton
-                    asChild
-                    data-active={pathname.includes(item.url) && 'true'}
-                    tooltip={item.name}
-                    disabled={item.is_active}
-                    onClick={() => handleModuleClick(item.name, item.url)}
-                  >
-                    <Link href={item.is_active === false ? "#" : item.url} className={item.is_active === false ? "pointer-events-none opacity-50 cursor-not-allowed" : ""}>
-                      {/* <item.icon /> */}
-                      <Image src={item.icon} alt={item.icon} width={16} height={16} className="w-4 h-4 text-white" priority />
-                      <span>{item.name}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
+          {
+            energyModules.map(modules => {
+              return (
+                <>
+                  <SidebarGroupLabel>{modules.name}</SidebarGroupLabel>
+                  <SidebarGroupContent>
+                    <SidebarMenu>
+                      {modules?.children.map((item) => (
+                        <SidebarMenuItem key={item.name}>
+                          <SidebarMenuButton
+                            asChild
+                            data-active={pathname.includes(item.url) && 'true'}
+                            tooltip={item.name}
+                            onClick={() => handleModuleClick(item.name, item.url)}
+                          >
+                            <Link href={item.url}>
+                              {/* <item.icon /> */}
+                              <Image src={item.icon} alt={item.icon} width={16} height={16} className="w-4 h-4 text-white" priority />
+                              <span>{item.name}</span>
+                            </Link>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
+                      ))}
+                    </SidebarMenu>
+                  </SidebarGroupContent>
+                </>
+              )
+            })
+          }
         </SidebarGroup>
         <div className="w-full absolute bottom-0 p-8 flex items-center justify-center">
           <Image src="/logozeia.png" width={120} height={80} className="h-12 w-auto" alt="Logo zeia" priority />
