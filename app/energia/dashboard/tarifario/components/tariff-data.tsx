@@ -77,8 +77,6 @@ async function TariffDataContent({
     })
   ])
 
-  console.log(calculatorResult)
-
   return (
     <>
       {calculatorResult?.detail ? (

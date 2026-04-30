@@ -25,7 +25,7 @@ export default function IndicatorEnergyFilter({ indicador }: { indicador: string
       pathname: pathname,
       timestamp: new Date().toISOString(),
     })
-    
+
     startTransition(() => {
       const params = new URLSearchParams(searchParams)
       params.set('indicador', selectedIndicator)
@@ -36,7 +36,7 @@ export default function IndicatorEnergyFilter({ indicador }: { indicador: string
   return (
     <div className='relative'>
       <Select onValueChange={handleIndicatorChange} value={indicador}>
-        <SelectTrigger className="w-[280px] bg-[#00b0c7]">
+        <SelectTrigger className="w-[280px] bg-[#00b0c7] text-white">
           <SelectValue placeholder="Indicador" />
         </SelectTrigger>
         <SelectContent>
