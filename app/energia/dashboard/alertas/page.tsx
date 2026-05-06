@@ -184,7 +184,7 @@ async function AlertsSummarySection({
                 </div>
                 <Card className="w-full max-w-xs overflow-hidden">
                     <CardHeader className="bg-[#00b0c7] py-3 flex items-center justify-center">
-                        <span className="text-sm font-semibold text-white uppercase tracking-wide">Voltaje</span>
+                        <span className="text-md font-semibold text-white uppercase tracking-wide">Voltaje</span>
                     </CardHeader>
                     <CardContent className="flex items-center justify-center gap-3 py-6">
                         <div className="text-4xl font-bold text-[#64656B]">{latestAlerts.today_count}</div>
