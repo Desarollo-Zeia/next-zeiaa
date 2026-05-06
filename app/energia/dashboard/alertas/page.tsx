@@ -177,7 +177,7 @@ async function AlertsSummarySection({
     return (
         <div className="space-y-6">
             {/* Card de alertas del día */}
-            <div className="flex flex-col items-center w-full gap-2">
+            <div className="flex flex-col items-center w-full gap-2 mt-6">
                 <div className="flex items-center gap-2 text-muted-foreground">
                     <Bell className="h-5 w-5" />
                     <span className="text-sm font-medium">Total de alertas registradas hoy</span>
@@ -202,7 +202,7 @@ async function AlertsSummarySection({
             {/* Botón de historial arriba */}
             <div className="flex justify-end">
                 <Link href="/energia/dashboard/alertas/historial">
-                    <Button className="text-white px-4 py-2 rounded bg-[#00b0c7]">
+                    <Button className="text-white px-4 py-2 rounded bg-[#707070]">
                         Ver historial de alertas
                     </Button>
                 </Link>
