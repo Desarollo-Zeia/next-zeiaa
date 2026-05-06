@@ -4,6 +4,7 @@ import { useSearchParams, usePathname, useRouter } from 'next/navigation'
 import { useTransition, useEffect } from 'react'
 import { useFiltersStore } from '@/app/lib/stores/filters-store'
 import posthog from "posthog-js"
+import { Star } from "lucide-react"
 
 interface Favorite {
   id: number
@@ -81,7 +82,12 @@ export default function Favorites({ data }: FavoritesProps) {
     <div className="relative">
       <Select onValueChange={handleFavoriteChange} defaultValue={getDisplayValue()}>
         <SelectTrigger className="w-[240px] bg-[#00b0c7] text-white">
-          <SelectValue className="text-white font-bold" placeholder="Favoritos" />
+          <SelectValue placeholder={
+            <div className="flex items-center gap-2">
+              <Star className="h-4 w-4 fill-white" />
+              <span>Favoritos</span>
+            </div>
+          } />
         </SelectTrigger>
         <SelectContent>
           {
