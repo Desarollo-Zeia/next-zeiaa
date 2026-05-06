@@ -59,7 +59,7 @@ export default function HeadquarterEnergyFilter({ energyHeadquarter = [], energy
   return (
     <div>
       <Select value={currentHeadquarterId || energy} onValueChange={handleHeadquarterChange}>
-        <SelectTrigger className="w-[240px] bg-[#00b0c7] text-white">
+        <SelectTrigger className="w-[240px] border-[#00b0c7] text-black">
           <SelectValue placeholder="Seleccionar sede" />
         </SelectTrigger>
         <SelectContent>
@@ -73,7 +73,7 @@ export default function HeadquarterEnergyFilter({ energyHeadquarter = [], energy
         </SelectContent>
         {isPending && (
           <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50">
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#00b0c7]"></div>
           </div>
         )}
       </Select>
