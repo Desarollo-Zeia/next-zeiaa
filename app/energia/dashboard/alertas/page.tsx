@@ -154,7 +154,7 @@ async function FiltersSection({
             <PanelsFilterEnergy energyPanels={panels as ElectricalPanel[]} panel={panelId} />
             <MeasurementPointFilter measurementPoints={measurementPoints} point={pointId} />
             <Favorites data={favorites} />
-            <DatepickerRange />
+            {/* <DatepickerRange /> */}
         </FiltersContainer>
     )
 }
@@ -184,10 +184,10 @@ async function AlertsSummarySection({
                 </div>
                 <Card className="w-full max-w-xs overflow-hidden">
                     <CardHeader className="bg-[#00b0c7] py-3 flex items-center justify-center">
-                        <span className="text-sm font-bold text-white uppercase tracking-wide">Voltaje</span>
+                        <span className="text-sm font-semibold text-white uppercase tracking-wide">Voltaje</span>
                     </CardHeader>
                     <CardContent className="flex items-center justify-center gap-3 py-6">
-                        <div className="text-4xl font-bold text-gray-800">{latestAlerts.today_count}</div>
+                        <div className="text-4xl font-bold text-[#64656B]">{latestAlerts.today_count}</div>
                         <span className="text-sm text-muted-foreground font-medium">Alertas</span>
                     </CardContent>
                 </Card>
@@ -199,20 +199,22 @@ async function AlertsSummarySection({
                 <p className="text-sm text-muted-foreground">Selecciona el origen de la alerta que necesitas verificar</p>
             </div>
 
-            {/* Toggle de fluctuation_subtype y botones de acción */}
+            {/* Botón de historial arriba */}
+            <div className="flex justify-end">
+                <Link href="/energia/dashboard/alertas/historial">
+                    <Button className="text-white px-4 py-2 rounded bg-[#00b0c7]">
+                        Ver historial de alertas
+                    </Button>
+                </Link>
+            </div>
+
+            {/* Toggle de fluctuation_subtype y botón de descarga */}
             <div className="flex justify-between items-center">
                 <FluctuationSubtypeToggle />
-                <div className="flex gap-2">
-                    <Link href="/energia/dashboard/alertas/historial">
-                        <Button className="text-white px-4 py-2 rounded bg-[#00b0c7]">
-                            Ver historial de alertas
-                        </Button>
-                    </Link>
-                    <DownloadExcelAlert
-                        measurement_point={pointId}
-                        fluctuation_subtype={fluctuationSubtype}
-                    />
-                </div>
+                <DownloadExcelAlert
+                    measurement_point={pointId}
+                    fluctuation_subtype={fluctuationSubtype}
+                />
             </div>
 
             {/* Tabla de últimas alertas por fase */}
