@@ -1,7 +1,7 @@
 'use server'
 
-import { fetchWithAuth, fetchWithAuthAmbiental, fetchWithAuthEnergy } from "@/app/lib/api"
-import { baseUrl, baseUrlAmbiental, baseUrlEnergy } from "@/app/lib/constant"
+import { fetchWithAuthEnergy } from "@/app/lib/api"
+import { baseUrlEnergy } from "@/app/lib/constant"
 import { getToken } from "@/app/lib/auth"
 import { cacheLife, unstable_cache } from 'next/cache'
 import { CACHE_DURATION, CACHE_TAGS } from "@/app/lib/cache"
