@@ -46,7 +46,7 @@ export default function PanelsFilterEnergy({ energyPanels = [], panel }: PanelsF
   return (
     <div className="relative">
       <Select value={currentPanelId || panel} onValueChange={handlePanelChange}>
-        <SelectTrigger className="w-[240px] bg-[#E8E5E5] border-[#E8E5E5] ring-[#E8E5E5] focus:ring-[#E8E5E5] focus:ring-offset-0 text-[#929292] font-medium">
+        <SelectTrigger className="w-[240px] bg-white border-[#707070] text-[#707070] font-semibold">
           <SelectValue placeholder="Seleccionar panel" />
         </SelectTrigger>
         <SelectContent>
@@ -60,7 +60,7 @@ export default function PanelsFilterEnergy({ energyPanels = [], panel }: PanelsF
         </SelectContent>
         {isPending && (
           <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50">
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#707070]"></div>
           </div>
         )}
       </Select>

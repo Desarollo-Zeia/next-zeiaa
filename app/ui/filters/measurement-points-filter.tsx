@@ -78,7 +78,7 @@ export default function MeasurementPointFilter({ measurementPoints, point }: { m
         disabled={isPending}
         value={currentPointId || point}
       >
-        <SelectTrigger className="w-[240px] bg-[#E8E5E5] border-[#E8E5E5] ring-[#E8E5E5] focus:ring-[#E8E5E5] focus:ring-offset-0 text-[#929292] font-medium">
+        <SelectTrigger className="w-[240px] bg-white border-[#707070] text-[#707070] font-semibold">
           <SelectValue className="text-[#929292]" placeholder="Puntos de medición" />
         </SelectTrigger>
         <SelectContent>
