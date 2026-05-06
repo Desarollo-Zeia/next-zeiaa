@@ -199,17 +199,17 @@ async function HistorySection({
             </div>
 
             {/* Filtros de fluctuation_subtype, fase y botón de descarga */}
-            <div className="flex justify-between items-center">
-                <div className="flex items-center gap-4">
-                    <FluctuationSubtypeToggle />
+            <div className="flex justify-between items-start">
+                <FluctuationSubtypeToggle />
+                <div className="flex flex-col items-end gap-2">
                     <PhaseTypeFilter />
+                    <DownloadExcelHistory
+                        measurement_point={pointId}
+                        fluctuation_subtype={fluctuationSubtype}
+                        date_after={dateAfter}
+                        date_before={dateBefore}
+                    />
                 </div>
-                <DownloadExcelHistory
-                    measurement_point={pointId}
-                    fluctuation_subtype={fluctuationSubtype}
-                    date_after={dateAfter}
-                    date_before={dateBefore}
-                />
             </div>
 
             {/* Tabla de historial de alertas */}
