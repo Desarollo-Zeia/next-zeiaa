@@ -18,6 +18,7 @@ export async function actionOccupational(prevState: { message: string }, formDat
 
     if (response.ok) {
       const data = await response.json()
+      console.log(data.token)
       await setToken(data.token)
       await setCompanyData(data)
       shouldRedirect = true

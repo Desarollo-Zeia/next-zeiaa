@@ -54,7 +54,6 @@ async function Indicadores({ searchParams }: SearchParams) {
 
   const { indicator: currentFirstIndicator, unit: currentFirstUnit } = generalRoomData.indicators_activated[0]
 
-
   const currentFirstHeadquarter = headquarters.results[0].id
 
   const currentIndicator = indicator ?? currentFirstIndicator
