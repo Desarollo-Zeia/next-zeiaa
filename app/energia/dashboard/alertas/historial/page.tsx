@@ -17,6 +17,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import FluctuationSubtypeToggle from "@/app/ui/energia/alertas/fluctuation-toggle"
 import PhaseTypeFilter from "@/app/ui/energia/alertas/phase-type-filter"
 import DownloadExcelHistory from "@/app/ui/energia/alertas/download-excel-history"
+import { TimeRangeSlider } from "@/app/ui/filters/time-range-slider"
 import NoResultFound from "@/app/ui/no-result-found"
 import PaginationNumberComponent from "@/app/ui/pagination-number"
 import Link from "next/link"
@@ -54,6 +55,22 @@ interface ResolvedParams {
     panelName?: string
     measurementPointName?: string
     favorites: Favorites
+    timeAfter?: string
+    timeBefore?: string
+}
+
+const PHASE_LABELS: Record<string, string> = {
+    A: 'Fase A',
+    B: 'Fase B',
+    C: 'Fase C',
+    AB: 'Fase AB',
+    BC: 'Fase BC',
+    AC: 'Fase AC',
+}
+
+const SUBTYPE_LABELS: Record<string, string> = {
+    undervoltage: 'Subtensión',
+    overvoltage: 'Sobretensión',
 }
 
 interface HistoryAlert {
@@ -95,7 +112,9 @@ async function resolveFilterIds(
         page = '1',
         last_by = 'minute',
         category = 'power',
-        point
+        point,
+        start,
+        end
     } = searchParams
 
     const formattedDateAfter = format(date_after, 'yyyy-MM-dd')
@@ -133,7 +152,9 @@ async function resolveFilterIds(
         headquarterName,
         panelName,
         measurementPointName,
-        favorites
+        favorites,
+        timeAfter: start,
+        timeBefore: end
     }
 }
 
@@ -149,17 +170,24 @@ async function FiltersSection({
         headquarters,
         panels,
         measurementPoints,
-        favorites
+        favorites,
+        timeAfter,
+        timeBefore
     } = await resolvedPromise
 
     return (
-        <FiltersContainer>
-            <HeadquarterEnergyFilter energyHeadquarter={headquarters} energy={headquarterId} />
-            <PanelsFilterEnergy energyPanels={panels as ElectricalPanel[]} panel={panelId} />
-            <MeasurementPointFilter measurementPoints={measurementPoints} point={pointId} />
-            <Favorites data={favorites} />
-            <DatepickerRange />
-        </FiltersContainer>
+        <div className="flex flex-col gap-4">
+            <FiltersContainer>
+                <HeadquarterEnergyFilter energyHeadquarter={headquarters} energy={headquarterId} />
+                <PanelsFilterEnergy energyPanels={panels as ElectricalPanel[]} panel={panelId} />
+                <MeasurementPointFilter measurementPoints={measurementPoints} point={pointId} />
+                <Favorites data={favorites} />
+                <DatepickerRange />
+            </FiltersContainer>
+            <div className="hidden md:flex justify-end px-4 mt-6">
+                <TimeRangeSlider initialStart={timeAfter} initialEnd={timeBefore} />
+            </div>
+        </div>
     )
 }
 
@@ -170,6 +198,8 @@ async function HistorySection({
     page,
     dateAfter,
     dateBefore,
+    timeAfter,
+    timeBefore,
     token,
 }: {
     pointId: string
@@ -178,6 +208,8 @@ async function HistorySection({
     page: string
     dateAfter: string
     dateBefore: string
+    timeAfter?: string
+    timeBefore?: string
     token: string
 }) {
     const history: HistoryResponse = await getVoltageFluctuationAlerts({
@@ -186,15 +218,24 @@ async function HistorySection({
         phase_type: phaseType,
         date_after: dateAfter,
         date_before: dateBefore,
+        time_after: timeAfter,
+        time_before: timeBefore,
         page,
         token,
     })
+
+    const phaseLabel = phaseType
+        ? PHASE_LABELS[phaseType] || `Fase ${phaseType}`
+        : 'Todas las fases'
+    const subtypeLabel = SUBTYPE_LABELS[fluctuationSubtype] || fluctuationSubtype
 
     return (
         <div className="space-y-6">
             {/* Título de la sección */}
             <div className="space-y-1">
-                <h2 className="text-lg font-semibold text-gray-900">Historial de alertas</h2>
+                <h2 className="text-lg font-semibold text-gray-900">
+                    Historial de {phaseLabel} - {subtypeLabel}
+                </h2>
                 <p className="text-sm text-muted-foreground">Selecciona el origen de la alerta que necesitas verificar</p>
             </div>
 
@@ -208,6 +249,8 @@ async function HistorySection({
                         fluctuation_subtype={fluctuationSubtype}
                         date_after={dateAfter}
                         date_before={dateBefore}
+                        time_after={timeAfter}
+                        time_before={timeBefore}
                     />
                 </div>
             </div>
@@ -290,6 +333,8 @@ export default async function page({ searchParams }: SearchParams) {
                     page={page as string}
                     dateAfter={resolved.formattedDateAfter}
                     dateBefore={resolved.formattedDateBefore}
+                    timeAfter={resolved.timeAfter}
+                    timeBefore={resolved.timeBefore}
                     token={authToken!}
                 />
             </Suspense>

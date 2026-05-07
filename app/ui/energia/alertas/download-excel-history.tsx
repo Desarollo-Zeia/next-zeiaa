@@ -13,11 +13,15 @@ export default function DownloadExcelHistory({
   fluctuation_subtype,
   date_after,
   date_before,
+  time_after,
+  time_before,
 }: {
   measurement_point: string
   fluctuation_subtype: string
   date_after: string
   date_before: string
+  time_after?: string
+  time_before?: string
 }) {
   const [isPending, startTransition] = useTransition()
 
@@ -29,6 +33,8 @@ export default function DownloadExcelHistory({
           fluctuation_subtype,
           date_after,
           date_before,
+          time_after,
+          time_before,
         })
         saveAs(blob, `Historial-Alertas-Voltaje-${fluctuation_subtype}-${format(new Date(), 'yyyy-MM-dd')}.xlsx`)
       })
