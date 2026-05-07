@@ -162,10 +162,14 @@ async function FiltersSection({
 async function AlertsSummarySection({
     pointId,
     fluctuationSubtype,
+    panelName,
+    measurementPointName,
     token,
 }: {
     pointId: string
     fluctuationSubtype: string
+    panelName?: string
+    measurementPointName?: string
     token: string
 }) {
     const latestAlerts: LatestByPhaseResponse = await getVoltageFluctuationLatestByPhase({
@@ -176,8 +180,16 @@ async function AlertsSummarySection({
 
     return (
         <div className="space-y-6">
+            {/* Título del tablero y punto de monitoreo */}
+            <div className="mt-6">
+                <h1 className="text-xl font-bold text-gray-900">
+                    {panelName} - {measurementPointName}
+                </h1>
+                <span className="text-sm text-muted-foreground">Tablero y punto de monitoreo seleccionado</span>
+            </div>
+
             {/* Card de alertas del día */}
-            <div className="flex flex-col items-center w-full gap-2 mt-6">
+            <div className="flex flex-col items-center w-full gap-2">
                 <div className="flex items-center gap-2 text-muted-foreground">
                     <Bell className="h-5 w-5" />
                     <span className="text-sm font-medium">Total de alertas registradas hoy</span>
@@ -275,6 +287,8 @@ export default async function page({ searchParams }: SearchParams) {
                 <AlertsSummarySection
                     pointId={resolved.pointId}
                     fluctuationSubtype={fluctuationSubtype as string}
+                    panelName={resolved.panelName}
+                    measurementPointName={resolved.measurementPointName}
                     token={authToken!}
                 />
             </Suspense>
