@@ -102,7 +102,6 @@ export default function MeasurementPointFilter({ measurementPoints, point }: { m
                   )
                 })
             }
-
           </SelectGroup>
         </SelectContent>
       </Select>

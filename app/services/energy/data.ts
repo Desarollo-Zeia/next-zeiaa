@@ -86,8 +86,6 @@ export async function consumeExcel({ headquarterId, panelId, date_after = START_
     baseUrlEnergy
   )
 
-
-
   if (date_after) url.searchParams.set('date_after', date_after)
   if (date_before) url.searchParams.set('date_before', date_before)
   if (unit) url.searchParams.set('unit', unit)

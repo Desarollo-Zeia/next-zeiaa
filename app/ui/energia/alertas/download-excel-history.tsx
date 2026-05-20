@@ -2,7 +2,7 @@
 import React, { useTransition } from 'react'
 import { saveAs } from 'file-saver'
 import { Button } from '@/components/ui/button'
-import { getVoltageFluctuationAlertsExcel } from '@/app/services/alerts/data'
+import { getVoltageFluctuationAlertsExcel } from '@/app/services/energy/alerts/data'
 import { format } from 'date-fns'
 import { Loader2 } from 'lucide-react'
 import Image from 'next/image'

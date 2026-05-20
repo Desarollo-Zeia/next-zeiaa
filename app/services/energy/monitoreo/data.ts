@@ -64,7 +64,7 @@ export async function exceededExcel({ headquarterId }: { headquarterId?: string,
 
 export async function alertsExcel({ room, indicator, unit, date_after, date_before }: { room?: string, indicator: Indicator, unit: Unit, date_after?: string, date_before?: string }) {
 
-  const url = new URL(`/alerts/api/room/${room}/report/`, baseUrl)
+  const url = new URL(`alerts/api/rooms/report/`, baseUrl)
 
   if (date_after) url.searchParams.set('date_after', date_after)
   if (date_before) url.searchParams.set('date_before', date_before)

@@ -1,5 +1,5 @@
 import { getToken } from "@/app/lib/auth";
-import { alerts } from "@/app/services/alerts/data";
+import { alerts } from "@/app/services/energy/alerts/data";
 import { getRooms } from "@/app/services/filters/data";
 import { roomGeneralData } from "@/app/services/readings/data";
 import { Indicator, Room, SearchParams } from "@/app/type";
