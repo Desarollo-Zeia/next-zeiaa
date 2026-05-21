@@ -84,7 +84,7 @@ async function resolveDesbalanceContext(searchParams: SearchParams['searchParams
 
   const measurementPoints = await getMeasurementPoints({ electricalpanelId: panelId, token: authToken! })
 
-  const pointId = point || measurementPoints.results[0].measurement_points[0]?.id.toString()
+  const pointId = point || measurementPoints.results[0]?.measurement_points[0]?.id.toString()
 
   return {
     metric,
@@ -141,7 +141,7 @@ async function DesbalanceDataSection({ contextPromise }: { contextPromise: Promi
     chartDataPromise
   ])
 
-  const { top_unbalanced_measurement_points: [first, second, third] } = threeUnbalanced
+  const [first, second, third] = threeUnbalanced?.top_unbalanced_measurement_points || []
 
   return (
     <div className="px-4 pb-4 flex-1 flex flex-col">
