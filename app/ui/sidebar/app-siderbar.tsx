@@ -55,15 +55,15 @@ export function AppSidebar() {
 
     const handleRequest = async () => {
       try {
-        const res = await accountData()
+        // const res = await accountData()
         const userData = await accountDataEnergy()
 
         console.log(userData)
-        const { results } = res
-        const user = results[0]
-        const { email, last_name, energy_modules, enterprise_name } = user
-        setUserInfo({ email: userData.user?.email, name: userData.user?.enterprise_name, avatar: '' })
-        setEnergyModules(userData?.user?.energy_modules)
+        // const { results } = res
+        // const user = results[0]
+        // const { email, last_name, energy_modules, enterprise_name } = user
+        setUserInfo({ email: userData?.email, name: userData?.enterprise_name, avatar: '' })
+        setEnergyModules(userData?.energy_modules)
       } catch {
         // Error silenciado - manejo de errores de carga de usuario
       }
