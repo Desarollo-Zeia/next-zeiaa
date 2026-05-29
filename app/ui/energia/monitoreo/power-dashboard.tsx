@@ -39,11 +39,15 @@ interface Powers {
   power_max: number
 }
 
-interface Powers {
-  id: number
-  power_installed: number
-  power_contracted: number
-  power_max: number
+interface PowerThresholds {
+  power_max: number | null
+  power_contracted: number | null
+  power_installed: number | null
+}
+
+interface MonitoringResponse {
+  power_thresholds: PowerThresholds
+  results: PowerReading[]
 }
 
 interface Thread {
@@ -60,16 +64,17 @@ interface Panel {
   threads: Thread[] | null
 }
 
-export default function PowerUsageChart({ readings, group, powers, panel }: { readings: PowerReading[], group?: string, powers: Powers[], panel?: Panel }) {
+export default function PowerUsageChart({ readings, group, powers, panel }: { readings: MonitoringResponse, group?: string, powers: Powers[], panel?: Panel }) {
 
-  const { power_contracted, power_max } = powers?.[0] ?? {}
+  const { power_contracted, power_max } = readings?.power_thresholds ?? {}
+  const results = readings?.results ?? []
 
   const [isPending, startTransition] = useTransition()
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const { replace } = useRouter()
 
-  const dataPoints = readings?.map((item: PowerReading) => ({
+  const dataPoints = results?.map((item: PowerReading) => ({
     x: new Date(item?.created_at).toISOString(),
     y: item.values_per_channel?.[0].power,
   })) || []
@@ -91,7 +96,7 @@ export default function PowerUsageChart({ readings, group, powers, panel }: { re
   const data = {
     datasets: [
       {
-        label: readings?.[0]?.values_per_channel?.[0]?.measurement_point_name,
+        label: results?.[0]?.values_per_channel?.[0]?.measurement_point_name,
         data: dataPoints,
         fill: false,
         borderColor: "#00b0c7",
@@ -160,7 +165,7 @@ export default function PowerUsageChart({ readings, group, powers, panel }: { re
             if (label) {
               label += ": "
             }
-            label += context.parsed.y.toFixed(2) + ' ' + readings?.[0]?.unit
+            label += context.parsed.y.toFixed(2) + ' ' + results?.[0]?.unit
             return label
           },
         },
@@ -231,7 +236,7 @@ export default function PowerUsageChart({ readings, group, powers, panel }: { re
         display: false
       }
     }
-  }), [isHourMode, power_max, power_contracted, readings])
+  }), [isHourMode, power_max, power_contracted, results])
 
   return (
     <div className="w-full p-6">
@@ -268,7 +273,7 @@ export default function PowerUsageChart({ readings, group, powers, panel }: { re
         </div>
         <div className="flex-1 h-[740px] w-full min-w-0 flex justify-center items-center">
           {
-            readings?.length > 0 ? (
+            results?.length > 0 ? (
               <DynamicLine data={data} options={options} />
             ) : (
               <NoResultFound />
