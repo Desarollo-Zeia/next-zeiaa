@@ -61,7 +61,7 @@ export function AppSidebar() {
         const user = results[0]
         const { email, last_name, energy_modules, enterprise_name } = user
         setUserInfo({ email: userData.email, name: userData.enterprise_name, avatar: '' })
-        setEnergyModules(energy_modules?.userData)
+        setEnergyModules(userData?.energy_modules)
       } catch {
         // Error silenciado - manejo de errores de carga de usuario
       }
